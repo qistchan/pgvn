@@ -105,7 +105,7 @@ def migration_and_privileges():
         results = list(executor.map(lambda _: meta("db", "init", role=migration_role), range(4)))
     assert all(r["ok"] for r in results)
     check = meta("db", "check", role="pgvn_owner")
-    assert check["schema"] == {"pgfs": 4, "pgvn": 4, "checksums": "match"}
+    assert check["schema"] == {"pgfs": 4, "pgvn": 5, "checksums": "match"}
     installed = sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v")
     meta("db", "migrate", role=migration_role)
     assert sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v") == installed
@@ -120,7 +120,7 @@ def migration_and_privileges():
         sql("INSERT INTO pgfs.schema_versions(version) VALUES(99)")
         meta("db", "check", role="pgvn_owner", expected=4)
         meta("db", "migrate", role="pgvn_owner", expected=4)
-        assert sql("SELECT count(*) FROM pgvn.schema_versions") == "4"
+        assert sql("SELECT count(*) FROM pgvn.schema_versions") == "5"
     finally:
         sql("DELETE FROM pgfs.schema_versions WHERE version=99")
     meta("db", "grant", "--admin-role", "pgvn_admin", "--service-role", "pgvn_service", "--monitor-role", "pgvn_monitor", role=migration_role)
@@ -459,7 +459,7 @@ def portable_binary():
     shutil.copy2(ADMIN, portable / ADMIN.name)
     for dll in (RUNTIME / "bin").glob("*.dll"):
         shutil.copy2(dll, portable / dll.name)
-    assert meta("db", "check", executable=portable / ADMIN.name)["schema"]["pgvn"] == 4
+    assert meta("db", "check", executable=portable / ADMIN.name)["schema"]["pgvn"] == 5
     assert meta("look", "youngest", state["repository"]["id"], executable=portable / ADMIN.name)["youngest"] == 6
     return {"standalone_binary_and_dll_directory": True, "runtime_python_node_not_required": True}
 

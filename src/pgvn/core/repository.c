@@ -1,5 +1,6 @@
 #include <string.h>
 #include "internal.h"
+#include "telemetry.h"
 #include <apr_strings.h>
 #include "repos.h"
 #include "pgfs_native.h"
@@ -7,6 +8,14 @@
 static void query_observer(void *baton,const char *state,apr_interval_time_t elapsed)
 {
     pgvn_metric_query(((pgvn_repository *)baton)->context,state,elapsed);
+}
+
+static void query_started_observer(void *baton) { pgvn_telemetry_query_start(); }
+static void writer_observer(void *baton,int change) { pgvn_telemetry_writer(change); }
+
+static void published_observer(void *baton,svn_boolean_t receipt)
+{
+    pgvn_telemetry_publication(receipt);
 }
 
 static void close_observer(void *baton)
@@ -33,7 +42,7 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
     PGconn *connection;
     SVN_ERR(pgvn_connect(&connection,context));
     pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository,
-        administrative ? NULL : pgvn_guard_mutation};
+        administrative ? NULL : pgvn_guard_mutation,published_observer,query_started_observer,writer_observer};
     SVN_ERR(pgfs_native_bind(repository->fs,connection,context->connection_string,id,&observer,pool));
     if(!administrative) SVN_ERR(pgvn_policy_revalidate(repository->policy,context,pool));
     *output=repository;
@@ -111,5 +120,7 @@ svn_error_t *pgvn_transaction_receipt(svn_revnum_t *revision,pgvn_repository *re
 {
     *revision=SVN_INVALID_REVNUM;
     SVN_ERR(pgvn_control_begin(repository->context));
-    return pgvn_control_end(repository->context,receipt_body(revision,repository,txn,username,pool));
+    svn_error_t *error=pgvn_control_end(repository->context,receipt_body(revision,repository,txn,username,pool));
+    if(!error && SVN_IS_VALID_REVNUM(*revision)) pgvn_telemetry_publication(TRUE);
+    return error;
 }

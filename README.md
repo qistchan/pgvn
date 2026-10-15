@@ -2,7 +2,7 @@
 
 基于 PostgreSQL 的专用 SVN 服务端。目标是按数据库 ID 管理仓库，服务节点不保留每库目录。
 
-当前已完成 M0 构建/服务验证、M1 无目录公共核心和 M2 原生管理工具。`pgvnadmin.exe` 已支持数据库、仓库、标准 dump/load、verify/look、维护和配置管理，见 [M2 管理指南](docs/pgvn/M2-admin.zh-CN.md)。SVN/DAV 网络服务和中文监控网页继续按 [PgVN 计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的 M3–M5 实施。请以 [进展与验证](docs/pgvn/progress.zh-CN.md) 判断可用范围。
+当前已完成 M0–M4：无目录公共核心、原生管理工具、svn 协议服务及内置中文只读监控。使用说明见 [M2 管理指南](docs/pgvn/M2-admin.zh-CN.md)、[M3 服务指南](docs/pgvn/M3-serve.zh-CN.md) 和 [M4 监控指南](docs/pgvn/M4-monitor.zh-CN.md)。Apache DAV、完整性能/故障验证与 Polarion 隔离验收继续按 [PgVN 计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的 M5–M7 推进。当前尚不能据此替换 Polarion 生产后端，实际范围以 [进展与验证](docs/pgvn/progress.zh-CN.md) 为准。
 
 ## Windows 开发构建
 
@@ -10,7 +10,7 @@
 
 1. 复制 `config/build.example.json` 为 `config/build.local.json`，填入实际 SDK 路径；本地配置不提交。
 2. 执行 `python scripts/pgvn/build.py --config config/build.local.json --configuration Release`。
-3. 执行 `python tests/pgvn/run_gates.py --milestone M2` 验证管理功能，fixture 在专用 16432 实例内创建独立测试数据库。
+3. 配置测试 JDK/SVNKit，运行 `tests/pgvn/monitor_browser_fixture.py` 完成真实浏览器验收并保存摘要绑定的记录，再执行 `python tests/pgvn/run_gates.py --milestone M4`；它串行包含 M0–M3 及监控检查，使用专用 16432 实例。详见 M4 指南。
 4. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
 5. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
 

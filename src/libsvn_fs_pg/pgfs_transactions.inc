@@ -239,7 +239,7 @@ static svn_error_t *pgfs_merge_nodes(apr_int64_t *merged,const char **conflict,s
 }
 
 static svn_error_t *pgfs_commit_body(const char **conflict,svn_revnum_t *new_rev,
-                                    svn_fs_txn_t *txn,apr_pool_t *pool)
+                                    svn_fs_txn_t *txn,svn_boolean_t *receipt,apr_pool_t *pool)
 {
     pgfs_data_t *data=txn->fs->fsap_data;
     const char *v[]={data->repository_id,txn->id};
@@ -252,7 +252,7 @@ static svn_error_t *pgfs_commit_body(const char **conflict,svn_revnum_t *new_rev
     if(head==LONG_MAX) return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"Native SVN revision range exhausted");
     SVN_ERR(pgfs_txn_record(&result,txn->fs,txn->id,TRUE,pool));
     if(!strcmp(PQgetvalue(result,0,3),"committed")) {
-        *new_rev=(svn_revnum_t)apr_atoi64(PQgetvalue(result,0,4)); PQclear(result); return SVN_NO_ERROR;
+        *receipt=TRUE; *new_rev=(svn_revnum_t)apr_atoi64(PQgetvalue(result,0,4)); PQclear(result); return SVN_NO_ERROR;
     }
     svn_boolean_t active=!strcmp(PQgetvalue(result,0,3),"active");
     txn->base_rev=(svn_revnum_t)apr_atoi64(PQgetvalue(result,0,0));
@@ -333,15 +333,23 @@ static svn_error_t *pgfs_commit_txn(const char **conflict,svn_revnum_t *new_rev,
 {
     if(conflict) *conflict=NULL; *new_rev=SVN_INVALID_REVNUM;
     SVN_ERR(pgfs_unit_begin(txn->fs));
-    svn_error_t *error=pgfs_commit_body(conflict,new_rev,txn,pool);
+    svn_boolean_t receipt=FALSE,reconciled=FALSE;
+    svn_error_t *error=pgfs_commit_body(conflict,new_rev,txn,&receipt,pool);
+    svn_boolean_t attempted_new=!receipt && SVN_IS_VALID_REVNUM(*new_rev);
     error=pgfs_unit_end(txn->fs,error);
     /* A valid revision must never escape a failed publication. The persistent
        origin transaction lets a caller resolve an uncertain COMMIT outcome. */
     if(error) {
         *new_rev=SVN_INVALID_REVNUM;
         if(pgfs_resolve_commit_receipt(new_rev,txn)) {
-            svn_error_clear(error); error=SVN_NO_ERROR;
+            svn_error_clear(error); error=SVN_NO_ERROR; reconciled=TRUE;
+            if(!attempted_new) receipt=TRUE;
         }
+    }
+    pgfs_data_t *data=txn->fs->fsap_data;
+    if(!error && SVN_IS_VALID_REVNUM(*new_rev) && data->observer.published) {
+        data->observer.published(data->observer.baton,receipt);
+        if(reconciled && !receipt) data->observer.published(data->observer.baton,TRUE);
     }
     return error;
 }

@@ -88,7 +88,7 @@ def check_probe(port):
     assert status == 405 and headers.get("Allow") == "GET"
     assert request(port, "/health/live", body=b"not accepted")[0] == 413
     status, _, body = request(port, "/monitor/")
-    assert status == 200 and "M0" in body and "not ready" in body
+    assert status == 200 and 'lang="zh-CN"' in body and "PgVN" in body
 
 
 def parallel_requests(port, count=128):

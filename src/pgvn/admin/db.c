@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "admin.h"
+#include "telemetry.h"
 #include <apr_strings.h>
 
 typedef struct admin_migration {
@@ -69,6 +70,14 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
         svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 4 is missing protocol validators");
     }
+    if(catalog>=5) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regclass('pgvn_monitor.nodes') IS NOT NULL "
+            "AND to_regclass('pgvn_monitor.samples') IS NOT NULL "
+            "AND to_regprocedure('pgvn_monitor.token_snapshot()') IS NOT NULL "
+            "AND to_regprocedure('pgvn_monitor.publish(uuid,text,text,text,integer,timestamptz,jsonb)') IS NOT NULL",0,NULL));
+        svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 5 is missing monitor surfaces");
+    }
     for(apr_size_t i=0;i<sizeof(pgvn_migrations)/sizeof(pgvn_migrations[0]);++i) {
         const admin_migration *migration=&pgvn_migrations[i];
         if(!latest && !strcmp(migration->namespace_name,"pgvn") && migration->version>catalog) continue;
@@ -82,7 +91,7 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
 
 static svn_error_t *script(pgvn_context *context,const char *sql)
 {
-    apr_time_t start=apr_time_now(); PGresult *result=PQexec(context->control,sql);
+    apr_time_t start=apr_time_now(); pgvn_telemetry_query_start(); PGresult *result=PQexec(context->control,sql);
     const char *state=result ? PQresultErrorField(result,PG_DIAG_SQLSTATE) : NULL;
     svn_boolean_t success=result && (PQresultStatus(result)==PGRES_COMMAND_OK || PQresultStatus(result)==PGRES_TUPLES_OK);
     pgvn_metric_query(context,success ? "00000" : state ? state : "08006",apr_time_now()-start);
@@ -173,7 +182,22 @@ static svn_error_t *grant_role(admin_command *command,const char *role,int kind)
         "GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint),pgvn.guard_credential(text,text,bigint) TO %s;",identifier,identifier,identifier,identifier,identifier);
     else sql=apr_psprintf(command->pool,
         "GRANT USAGE ON SCHEMA pgfs,pgvn TO %s;"
-        "GRANT SELECT ON pgfs.repositories,pgvn.repositories,pgvn.routes,pgvn.schema_versions TO %s;",identifier,identifier);
+        "GRANT SELECT ON pgfs.repositories,pgvn.repositories,pgvn.routes,pgvn.schema_versions,pgvn.storage_migrations,pgfs.schema_versions TO %s;",identifier,identifier);
+    SVN_ERR(script(command->context,sql));
+    if(kind==0) sql=apr_psprintf(command->pool,
+        "GRANT USAGE ON SCHEMA pgvn_monitor TO %s;"
+        "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA pgvn_monitor TO %s;"
+        "GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA pgvn_monitor TO %s;",identifier,identifier,identifier);
+    else {
+        sql=apr_psprintf(command->pool,
+            "GRANT USAGE ON SCHEMA pgvn_monitor TO %s;"
+            "GRANT SELECT ON pgvn_monitor.repositories,pgvn_monitor.transactions,pgvn_monitor.locks,pgvn_monitor.nodes,pgvn_monitor.samples,pgvn_monitor.lock_items,pgvn_monitor.recent_revisions,pgvn_monitor.configuration_health TO %s;"
+            "GRANT EXECUTE ON FUNCTION pgvn_monitor.token_snapshot(),pgvn_monitor.safe_revision_date(bytea) TO %s;",identifier,identifier,identifier);
+        SVN_ERR(script(command->context,sql));
+        if(kind==1) sql=apr_psprintf(command->pool,
+            "GRANT EXECUTE ON FUNCTION pgvn_monitor.publish(uuid,text,text,text,integer,timestamptz,jsonb) TO %s;",identifier);
+        else return SVN_NO_ERROR;
+    }
     return script(command->context,sql);
 }
 
@@ -196,5 +220,5 @@ svn_error_t *admin_db(admin_command *command)
     }
     return admin_emit_query(command,
         "SELECT json_build_object('ok',true,'database',current_database(),'server_version_num',current_setting('server_version_num')::integer,"
-        "'schema',json_build_object('pgfs',4,'pgvn',4,'checksums','match'))",0,NULL);
+        "'schema',json_build_object('pgfs',4,'pgvn',5,'checksums','match'))",0,NULL);
 }

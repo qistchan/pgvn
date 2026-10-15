@@ -18,6 +18,7 @@ import subprocess
 from prepare_upstream import prepare
 from prepare_protocol import prepare_protocol
 from embed_migrations import embed
+from embed_web import embed_web
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build/pgvn"
@@ -143,6 +144,7 @@ def main():
     legacy.TOOLS, legacy.RUNTIME, legacy.SVN_BIN = tools, RUNTIME / "legacy/bin", svn_bin
     legacy.generate_stubs()
     embed(ROOT,BUILD / "generated/pgvn_migrations.h")
+    embed_web(ROOT,BUILD / "generated")
     includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/monitor",
                 ROOT / "src/pgvn/serve", BUILD / "upstream/svnserve",
                 ROOT / "src/libsvn_fs_pg", repository_source,
@@ -180,7 +182,7 @@ def main():
              "-c", source, "-o", output])
         protocol_objects.append(output)
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/serve").glob("*.c")),
-         ROOT / "src/pgvn/monitor/http_win.c", *protocol_objects, *core_links, "-lhttpapi", "-ladvapi32",
+         *sorted((ROOT / "src/pgvn/monitor").glob("*.c")), BUILD / "generated/pgvn_web.c", *protocol_objects, *core_links, "-lhttpapi", "-lws2_32", "-lpsapi", "-ladvapi32",
          "-Wl,--no-insert-timestamp", "-o", products[0]])
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
          "-Wl,--no-insert-timestamp", "-o", products[1]])
@@ -192,6 +194,10 @@ def main():
         run([compiler, *options, "-municode", probe, *core_links, "-Wl,--no-insert-timestamp",
              "-o", RUNTIME / "bin/core_probe.exe"])
     hook_probe = ROOT / "tests/pgvn/hook_probe.c"
+    monitor_probe = ROOT / "tests/pgvn/monitor_probe.c"
+    if monitor_probe.exists():
+        run([compiler, *options, monitor_probe, ROOT / "src/pgvn/monitor/data.c", BUILD / "generated/pgvn_web.c",
+             *core_links, "-lws2_32", "-lpsapi", "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/monitor_probe.exe"])
     if hook_probe.exists():
         run([compiler, *options, "-municode", hook_probe, "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/hook_probe.exe"])
     # Copy runtime dependencies into the isolated output; input installations are read-only.
@@ -226,7 +232,7 @@ def main():
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "milestone": re.search(r'#define PGVN_MILESTONE "([^"]+)"', (ROOT / "src/pgvn/core/pgvn.h").read_text()).group(1), "configuration": args.configuration,
-        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": False, "monitor": "bootstrap"},
+        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": False, "monitor": "full"},
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
         "inputs": {k: str(v) for k, v in paths.items()},
@@ -235,7 +241,7 @@ def main():
                              "applied_sha256": digest(BUILD / "upstream/applied-repos.patch"), "outputs": patched},
         "protocol_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/protocol.json"),
                              "applied_sha256": digest(BUILD / "upstream/applied-protocol.patch"), "outputs": protocol_patched},
-        "sources": {**{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
+        "sources": {**{"web/" + k: v for k, v in inventory(ROOT / "web").items()}, **{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
                     **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
                     **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()},
                     **{"tests/pgvn/" + k: v for k, v in inventory(ROOT / "tests/pgvn", {".py", ".c", ".inc", ".java"}).items()}},

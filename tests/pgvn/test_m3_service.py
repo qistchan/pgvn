@@ -57,7 +57,8 @@ def checks():
     valid=a.config.read_text(encoding="utf-8")
     for value in ("-1","18446744073709551616","junk"):
         rejected_config(valid+"max-request-bytes = "+value+"\n",2)
-    rejected_config(valid.replace(setup.dsn("pgvn_service"),"host=127.0.0.1 port=1 user=absent password=PGVN_TEST_SECRET"),3)
+    # M4 keeps live monitoring during transient startup outages; its separate
+    # cold-start gate verifies recovery instead of expecting process exit 3.
     rejected_config(valid.replace(key.as_posix(),(WORK/"missing.key").as_posix()),5)
     setup.sql("INSERT INTO pgvn.schema_versions(version,migration_sha256) VALUES(99,repeat('0',64))")
     try: rejected_config(valid,4)
@@ -125,7 +126,7 @@ def checks():
         setup.admin("verify",rid)
         assert setup.sql("SELECT count(*) FROM pgfs.transactions WHERE state='active'")=="0"
         return {"account":"NT AUTHORITY\\LocalService","database_role":"pgvn_service","real_svn_commit":True,
-            "server_startup_exit_classes":[2,3,4,5],"service_binary_checkout_delta_update":True,
+            "server_startup_exit_classes":[2,4,5],"service_binary_checkout_delta_update":True,
             "peer_stays_available":True,"hook_cancel_seconds":cancelled_seconds,"hook_descendants_killed":True,
             "idle_svn_sessions":16,"drain_seconds":drain_seconds,"stop_checkpoints":observed,
             "same_port_restart_cycles":3,"final_idle_stop_seconds":final_stop_seconds,"full_verify":True,"active_transactions":0}

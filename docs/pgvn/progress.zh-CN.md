@@ -1,6 +1,6 @@
 # PgVN 实施进展
 
-目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2、M3，接下来实施 M4 内置监控；尚不能替代 Polarion 的 SVN 后端。
+目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2、M3、M4，M5 Apache DAV 待推进；尚不能替代 Polarion 的 SVN 后端。
 
 ## M0：完成
 
@@ -45,6 +45,16 @@ pgvnadmin 已实现数据库引导/迁移摘要检查、角色授权、仓库管
 
 LocalService 完成二进制 checkout/delta update；停止期间取消 hooks、保持另一节点可用。16 个空闲 SVN 会话约 12.14 秒排空，同端口连续三轮重启通过；临时服务与 URL ACL 已清理。双节点测试为同机独立进程，不据此声明跨主机网络分区或 PostgreSQL 自动选主已验证。
 
-控制 schema 当前为 4。服务配置、账号/密钥、hooks 和部署命令见 [M3 服务指南](M3-serve.zh-CN.md)，最终证据见 [M3 记录](evidence/m3.json)。`pgvnserve.exe` SHA-256 为 `625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce`。监控仍为 bootstrap，ready=503；完整中文页面、只读令牌接入、后台采样和真实 readiness 在 M4 交付，Apache DAV 与 Polarion 应用验收仍未完成。
+M3 验收时控制 schema 为 4。服务配置、账号/密钥、hooks 和部署命令见 [M3 服务指南](M3-serve.zh-CN.md)，最终证据见 [M3 记录](evidence/m3.json)。`pgvnserve.exe` SHA-256 为 `625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce`。监控仍为 bootstrap，ready=503；完整中文页面、只读令牌接入、后台采样和真实 readiness 在 M4 交付，Apache DAV 与 Polarion 应用验收仍未完成。
 
-后续里程碑以 [推进计划](../plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的出口为准。没有完成的能力不能沿用旧 PgFS 的测试成绩标为完成。
+## M4：完成
+
+交付内嵌中文概览、节点、仓库搜索/分页/详情、数据库和请求错误页面，同源只读 API、受限只读采样连接、版本/路由/写主就绪校验、Windows 进程资源、有界趋势和事件、Prometheus。令牌只在页面内存，撤销清空详情；正常停止、失联、数据库未知和过期状态分别处理。正式配置见 [M4 指南](M4-monitor.zh-CN.md)，证据见 [M4 记录](evidence/m4.json)。
+
+固定 Release 门禁 `m4-a9f0cf1bddb0` 八组脚本和 15 项真实浏览器检查通过。M0–M3 七组回归重新通过，包括原版 SVN/SVNKit、双进程共享库、授权、hooks、原子提交与服务排空。独立 TCP 账本精确对应实际协议字节；真实 PostgreSQL COMMIT 应答丢失后只发布一个 revision，新发布与回执确认分开计数。打开写流、连接租约及 SQL 结果分类平衡。
+
+1000 个合成仓库的分页与采样通过，额外私有内存 7.43 MiB。采样 SQL 超时、遥测发布容量不足不改变真实提交结果。冷启动恢复、网络黑洞、双慢响应、正常停止状态和低权限 URL 重启通过。构建前后核对源码、页面、主产物与运行依赖摘要；临时服务、URL ACL、浏览器 fixture 已清理。
+
+短时 CLI 负载测量保留全部关闭/开启/关闭轮次，尚不能宣称 M6 的吞吐/P95 预算达标。Apache DAV、多节点 HTTP 状态与工作进程遥测为 M5；完整性能/故障域验证为 M6；干净机器安装包和 Polarion 隔离应用验收为 M7。当前仍不具备生产替换 Polarion 后端的结论。
+
+后续里程碑以 [推进计划](../plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的出口为准。

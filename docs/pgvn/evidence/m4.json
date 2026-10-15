@@ -1,0 +1,371 @@
+{
+  "milestone": "M4",
+  "status": "PASS",
+  "milestone_complete": true,
+  "test_id": "m4-a9f0cf1bddb0",
+  "created_at": "2026-10-15T09:12:53.144738+00:00",
+  "configuration": "Release",
+  "git_base_commit": "063fdab33f8c70756d6a182f217e3439cdf5ea7d",
+  "scope": "Native Windows read-only embedded monitor with SVN telemetry; Apache aggregation is M5, formal mixed-load performance budgets are M6.",
+  "compiler": "clang version 23.1.3 (https://github.com/llvm/llvm-project.git 0d261d1ca552c95a8f007e061c787ac7132fbcbc)\nTarget: x86_64-w64-windows-gnu\nThread model: posix\nInstalledDir: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin\nConfiguration file: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg",
+  "compiler_sha256": "ee85bef2c733e24a26c22be3df94bd631cf9528a048fce91241c182a936737fe",
+  "capabilities": {
+    "repository_by_id": true,
+    "svn_protocol": true,
+    "dav_protocol": false,
+    "monitor": "full"
+  },
+  "source_hashes": {
+    "web/pgvn-monitor/index.html": "af7e08e1c3e2f2e696aaf2ce018aeb27a08aad9279c3d510ca91d7b122618c43",
+    "web/pgvn-monitor/monitor.css": "46d4afe36f579da45c4915a48ab115a181f4572eb3ea5ec38bd87d2fb5e5eb61",
+    "web/pgvn-monitor/monitor.js": "5510554ea80010e2b79ab2eda038e9df4937055b3b762ad07b875def959a5099",
+    "src/libsvn_fs_pg/pgfs.c": "ed2d38a0ea94048763a0a8320f4cc3ea7964b61f91a60a23c26f63210e194114",
+    "src/libsvn_fs_pg/pgfs_admin.inc": "14464d25a56fbfd72f148c6a2d0260bd970c5ac88d7c9b3a522c7afebd840211",
+    "src/libsvn_fs_pg/pgfs_history.inc": "32f36f894cb00dc73b94a20484c8ab7782fc3c746ef79fa681d1662d88407ddd",
+    "src/libsvn_fs_pg/pgfs_hotcopy.inc": "d05fdd8fbb4d86e974473fb7ee8f92f8a9a63bf1167d065347e97c6701cf54da",
+    "src/libsvn_fs_pg/pgfs_locks.inc": "d507f8405e87d62ae1e6e50f61342df32abddb3e9bd31721249309e58ac8180d",
+    "src/libsvn_fs_pg/pgfs_mergeinfo.inc": "979289539a4a85c220311f4bdf9efd645377cdd3a51459d3d3950fe5a4ae2768",
+    "src/libsvn_fs_pg/pgfs_native.h": "e95a9b00dbca23deaf3d965d36238838ac05627fabb08345658c006609c4b63f",
+    "src/libsvn_fs_pg/pgfs_native.inc": "f38b7e93f5d4d75950451d0f1c60da88155870fcd1288bfd1311f217438837cc",
+    "src/libsvn_fs_pg/pgfs_receipts.inc": "db6303a7c0a2331124baae01f347b62aa5fd7e15883c0617713cc5c615e7d447",
+    "src/libsvn_fs_pg/pgfs_streams.inc": "2b576a0afa00a758b392d8b3523da3ba6340732fc2a5f663dd4130ebfa5d9e50",
+    "src/libsvn_fs_pg/pgfs_transactions.inc": "100d4f7f9264a90c42ae0435d6166a828f5543820806675769a90a1f8184fa22",
+    "src/libsvn_fs_pg/pgfs_tree.inc": "5907737576e2e95e60a61a2bfcb1710384dcca70368728214f8db77ed2483666",
+    "src/pgvn/admin/admin.h": "b07548ba2298b19bb1e618ce267971040b4153696ef6ff43488e54db56acd030",
+    "src/pgvn/admin/commands.c": "58de58a42ebf38a15a373c44c3ed3e8bb37a5fb65f5d0a0914d83f1764c1729a",
+    "src/pgvn/admin/common.c": "f4b75d87a86e03cb54e81e81d675a55d1c4651bc81f943ecba9f22d46cc8075b",
+    "src/pgvn/admin/credentials.c": "f736c0f3da5d145bfa6e67c3e915fd7ab90188df22e878163c176a27ec978fa4",
+    "src/pgvn/admin/db.c": "8f41a03ee3fa94b3d6a4b948bd66b100a4383cacf1ce711234a7f60323d8fcf2",
+    "src/pgvn/admin/history.c": "cfa00962a2edc3a10df7ddc73049108ff47aaba3797753939676528ef46c270d",
+    "src/pgvn/admin/main.c": "9e0151835ca54a7cbeb312d8b5ab1d7d2e962398a56019469f07a139858cac2b",
+    "src/pgvn/admin/maintenance.c": "7e8e7fd80ef2a555700682f4f72af2d4c7a7b0fb00079923a3bbeb1f0bdcb41e",
+    "src/pgvn/admin/policy.c": "9e11953bff66a0b156461d8b03b85a247723e91e98715d1d5ec3e71571f2ca90",
+    "src/pgvn/admin/repositories.c": "0c66c39884020833053be9a9ff66804ef3295776a51301ab59726f3c920e3b74",
+    "src/pgvn/admin/tokens.c": "35b1a36937417050a2edc41dc20b2f3e99fd4ae033b186678d71c10751d84bec",
+    "src/pgvn/core/build_info.c": "e14829dc50ea242db0ef9efe0b7c150674a1e768361a91cc8b6aa1ae7815d20e",
+    "src/pgvn/core/catalog.c": "1a21680e348a791465da8de539771f9858dffde702fd857e5113ecb6ef488c8c",
+    "src/pgvn/core/context.c": "38cdffb170424b6a5e85dd14569027f8bf31d3a73ca2c3c5ddc0384318901fba",
+    "src/pgvn/core/credentials.c": "49163a28a3913291bff6782b5f3dfa59cc159e4df17b71be69633b6757ea5b00",
+    "src/pgvn/core/credentials.h": "d884a5b3e3e170fc128196c3c5775ee39028dcbc4c7c669a5a379d8890ffa921",
+    "src/pgvn/core/errors.c": "e14743423a3f54bf574447f763c568cd05279a9c37be70a27ad7f5f1b6b4f030",
+    "src/pgvn/core/hooks_win.c": "27a5bddb3b0c6b86c06852cef34a15df2dfc9697b8c20ac83882c65ecc1acdaf",
+    "src/pgvn/core/internal.h": "488c443a1824cf6e9499113a73a0e6876e6775067347ccd001002be20783f3fb",
+    "src/pgvn/core/management.c": "9251fd05647d6786072235d8c3ff9166dee7606cdc1ca6b1f46115eab4f6054c",
+    "src/pgvn/core/pgvn.h": "189a35497ac2cc2ceaccbe2166f61df929917d079a5e8bb73f42f53ac253b85b",
+    "src/pgvn/core/policy.c": "523ca50c1d8c569b6c5772224b35831b4c80bf1f625412f8394d5e5ac4263844",
+    "src/pgvn/core/policy_protocol.c": "21e9bdae6f0bdeacc06b40a67e93829c2ffe0f618720324d9685e3766f10d5fc",
+    "src/pgvn/core/repository.c": "c6c98964283922332e8417f348ffa1eed180ac1c4b2e5f9a31e480be39508fba",
+    "src/pgvn/core/telemetry.c": "9915cfd24ee8626b7e1352e04a915332a38b552516e0aef4d47cdf5b7d82cebb",
+    "src/pgvn/core/telemetry.h": "72a63ddba6e78b7175d9e07d69c5560358db1efacc664b177c5ca1371cfcd7bb",
+    "src/pgvn/dav/bootstrap.c": "8c48ae7cddeebaf58f6492a3e5640daa55945ae36c342f05a656c2ad9145a687",
+    "src/pgvn/monitor/data.c": "aad546638bde97f719859f26b7a02962c74cf580e897cf76d369798035ff4276",
+    "src/pgvn/monitor/data.h": "7effca227a8c01841dc2e0514bcdb431a6e8c816dc72a8229c1c73aa4f46691a",
+    "src/pgvn/monitor/http_win.c": "8da23ccd0cd9efd3208e45a1e2251d87c196f745442ff1f225a09adde1782ba3",
+    "src/pgvn/monitor/http_win.h": "f35bdb1ff55e71e0a317536b1a70058a2ae8b5b1f687d145836d2d2915d5800e",
+    "src/pgvn/serve/listener.c": "6b977c095203537fa96cd1aa76e89ba85587c7ec5333d86b0bb0dc82d49153db",
+    "src/pgvn/serve/listener.h": "d00081b8e81ed07f7c7ee2b74df80c9fea11c170085cf20e0111b746a2210d3f",
+    "src/pgvn/serve/main.c": "77c8bce6d254e83567e3ebbcdc4bea203019f93d25737f9bf29905250f1cf3ac",
+    "src/pgvn/serve/pgvn_protocol.h": "0aa951be3ba059ef5883b3a32c5e64266af477d7866a18a3a8bcebb5a8623f88",
+    "src/pgvn/serve/protocol.c": "f5222bb5c0066cca7f08cf163908419743002f62739ec2605c19d0bdb8d92601",
+    "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+    "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+    "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+    "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+    "sql/pgvn/001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+    "sql/pgvn/002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+    "sql/pgvn/003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+    "sql/pgvn/004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945",
+    "sql/pgvn/005_monitor.sql": "37cdce515bcf8508ef8f4f2b1b2fc18c5c347040975f14523067b7cf103a6cbd",
+    "scripts/pgvn/build.py": "3ccf7a1668a3c263da6b64a71ae0020481bc353f2a6b59db2b8604eecc28c628",
+    "scripts/pgvn/embed_migrations.py": "3a75f79535375c713823780f273304d4ccc2e5a756e8f0e2e49592ddb807934c",
+    "scripts/pgvn/embed_web.py": "5ef5b4ab9a41b01bd763b010b551bdfdf80c9fbb9ed4f4e85dfac9f54aa4a13e",
+    "scripts/pgvn/prepare_protocol.py": "c68ac78dde493c5786d9c0e42c481562bc9b71d7f6d9fe71ab1658246c076c13",
+    "scripts/pgvn/prepare_upstream.py": "cd446406843023c4a8906676d38607a4384b58cccc949d9a94f3529b36e863b8",
+    "tests/pgvn/core_probe.c": "5be57e42cd264d1a70b1b62416fa4035e3b71abd6f3abf4095b39bdbe26e944e",
+    "tests/pgvn/fixture.py": "ad7e1c9efce4446363f3d875d5430c2cd44b13fe819fe21565fdfdbda2b8036c",
+    "tests/pgvn/hook_probe.c": "0e63bc5362c80a3712eceac9feb0c6a0e63190ed80a263f905e0e49c42df2c2e",
+    "tests/pgvn/monitor_browser_fixture.py": "6c139acf0e433cf229c01595b94288490bb567670c09b38e9b1ba3e0632ac535",
+    "tests/pgvn/monitor_probe.c": "1a454c7765fdbec53922d489d27d02609290323457f95ff8bd037f617baae41c",
+    "tests/pgvn/run_gates.py": "c3e65cf79185b26cb3d5327a4d0559a4aa2201ba3e0b2a3c2a80d2e92432c154",
+    "tests/pgvn/svnkit_client.py": "1bfe716de8a125ff7088499afc6bfe81887369f38f8d84a0b36269bad4bfefd4",
+    "tests/pgvn/SvnKitProbe.java": "e68e11e35a415353e6caf18b1bfcd28423fb0d3c646aa75169ba664d7a329cb0",
+    "tests/pgvn/tcp_proxy.py": "0c70c80b258b54ee0bbe357204e57d7cd379a064f4f698dc7c5dfccd8c09e803",
+    "tests/pgvn/test_m0.py": "0d4b4d1d844d96444c28b82d53422f690f85cedfba7b68c4683eab67ced63471",
+    "tests/pgvn/test_m1.py": "d2469969a684e03d1b3bc46da94827bbe2220b54f4ca10456b95b047a4e43bcc",
+    "tests/pgvn/test_m2.py": "0c1e4430d8cc78b99f10637983c9e5ce26bfced6611de95a982fe1d07eee61a7",
+    "tests/pgvn/test_m3.py": "6701f31f22d8447ce6365e287dce1942004b75c1f10605db446019998c5cd432",
+    "tests/pgvn/test_m3_credentials.py": "b8c3b8288ca77e90b420aaea1ffc6b84ff894589210883280b5c7dfb245848ec",
+    "tests/pgvn/test_m3_hooks.py": "7d5fbe73f6a9bdb31a28f2d85621a11082d8cba14278e2c0f03bd5f3ff3c863e",
+    "tests/pgvn/test_m3_protocol_smoke.py": "84d59f4053a06e952ab9e413484e49d076140699aaa59d297ac2ba586b969bcc",
+    "tests/pgvn/test_m3_service.py": "9126541ce21830f31c370d8f343ef552d34b097d570bf5d1303606ad9f2b7dac",
+    "tests/pgvn/test_m4.py": "64685d6311284790d914b9f181164a852b4774687f701f335e0c4786245c861c",
+    "tests/pgvn/test_m4_api.py": "0a400e7168c5c207ffd28ee8226698341d0f50dea0c2b917fe2f0d7d441d29fb",
+    "tests/pgvn/test_m4_ledger.py": "b8b87bbde436e19742259c725d3a0deb25c438028d354564502fb3cc31fba458",
+    "tests/pgvn/test_m4_network.py": "9156a40387182ba112a9e71e2ab311ea5a286418ba6ed5a1d6daae6b97a60686",
+    "tests/pgvn/test_m4_receipt_fault.py": "c70a5c69250e348815ecbd6d79a91e67386c5e3142142a72a066e8cdf81ee948",
+    "tests/pgvn/test_m4_resources.py": "4764d7606ae69d649fd3e556f4799ae566c3237658ee1a72f054954236e127ca",
+    "tests/pgvn/test_m4_smoke.py": "ec463f3c7a6ced6e8a3bd15780b8ab156f6316e667c6feafc3475737196300b4",
+    "tests/pgvn/test_m4_startup.py": "64e0fcd726f2bd08d08b639cb8889f5f6a6016acc7f1dd479c2f473895ea4f8d",
+    "tests/pgvn/win_process.py": "0d9e8460991c1ae0a5f0d2121c6d4c1a4757f8061131517092ddba98d0158f28"
+  },
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "f709702754af8c5bf685b7c3196e29d2e395bac53660aea190551e74050cd598",
+    "runtime/pgvn/bin/pgvnadmin.exe": "85faf41fb5c480139451ad6525e3457f7c1a6e973b459f767c4d0524927a3bcd",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "fe2c7f67fbb6c09441b5f29a2de7b7e4b670f07771b85559236b5810b3fc7a10",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "f8d5dc4798bd705388544c39916a7583c858be0e3a1e7d8ae811480e875ce94f"
+  },
+  "build_manifest_sha256": "24651d6662c6b317cef878db43ef21ed89c1c1ce7cbac54ccd67b92f9015afe6",
+  "records": [
+    {
+      "name": "M0-M3 regressions",
+      "status": "PASS",
+      "test_id": "m3-cfe9e0bcb1ef",
+      "elapsed_seconds": 246.31200000000536,
+      "report_sha256": "db380298126c2511c4811bd8c8c197ba641ec19ba76194bec75967db6eaee2ad"
+    },
+    {
+      "name": "authentication, snapshots and recovery",
+      "status": "PASS",
+      "test_id": "m4-smoke-d7b1042ef246",
+      "elapsed_seconds": 33.96899999999732,
+      "report_sha256": "ccedd16caf458fe48d81ff6bfb836a871c522916e1439b7e69ec9f2e63471860"
+    },
+    {
+      "name": "API and independent wire accounting",
+      "status": "PASS",
+      "test_id": "m4-api-07e839b0aea5",
+      "elapsed_seconds": 35.03100000000268,
+      "report_sha256": "bc0ce861d241c8eaefdc23d5b72ae98ceac9536d2a8e845da69c16ffc1e13a0a"
+    },
+    {
+      "name": "cold PostgreSQL startup and recovery",
+      "status": "PASS",
+      "test_id": "m4-startup-1f9388690deb",
+      "elapsed_seconds": 8.452999999994063,
+      "report_sha256": "d95287436f3555e9eac695e84e513d542ba2d3baf11c21d7d995e97cc07ce980"
+    },
+    {
+      "name": "LocalService TCP blackhole and slow HTTP shutdown",
+      "status": "PASS",
+      "test_id": "m4-network-9875bb253456",
+      "elapsed_seconds": 22.125,
+      "report_sha256": "55ad90c0dde7d510539598665887a3a89bd2c59d65d847c8bf56a36cea5ef842"
+    },
+    {
+      "name": "publication, receipts and writer lifecycles",
+      "status": "PASS",
+      "test_id": "m4-ledger-4c3d98c21dac",
+      "elapsed_seconds": 3.0780000000086147,
+      "report_sha256": "c3bf696056a56589ed828223f88bd3b0fd6c64ca5e2cbd6572713cdd37da57ed"
+    },
+    {
+      "name": "lost PostgreSQL COMMIT acknowledgement",
+      "status": "PASS",
+      "test_id": "m4-receipt-fault-ac8ed3e7b872",
+      "elapsed_seconds": 2.9539999999979045,
+      "report_sha256": "68203a5009cefe4660d62e657ba2c149710a50363b0898578844170c00b7f4c6"
+    },
+    {
+      "name": "capacity, isolation and measured overhead",
+      "status": "PASS",
+      "test_id": "m4-resources-a6489795e84f",
+      "elapsed_seconds": 54.546000000002095,
+      "report_sha256": "39f625b650ae3d37f451cc428b904c62eb6196a8a1f77db15feffebe3ff0b0bb"
+    }
+  ],
+  "prior_milestones": [
+    {
+      "name": "M0 regression",
+      "status": "PASS",
+      "test_id": "m0-841482911ea6"
+    },
+    {
+      "name": "M1 regression",
+      "status": "PASS",
+      "test_id": "m1-079c7f7b0877"
+    },
+    {
+      "name": "M2 regression",
+      "status": "PASS",
+      "test_id": "m2-7bc19750da59"
+    },
+    {
+      "name": "encrypted credentials and rotation",
+      "status": "PASS",
+      "test_id": "m3-credentials-7c7f8a345c94"
+    },
+    {
+      "name": "SVN and SVNKit protocol",
+      "status": "PASS",
+      "test_id": "m3-protocol-smoke-8e0841858471"
+    },
+    {
+      "name": "external hooks and lost reply",
+      "status": "PASS",
+      "test_id": "m3-hooks-5337e6250fa7"
+    },
+    {
+      "name": "LocalService business drain",
+      "status": "PASS",
+      "test_id": "m3-service-5be51e37e58a"
+    }
+  ],
+  "browser": {
+    "test_id": "m4-browser-229c41a08d5a",
+    "status": "PASS",
+    "component": "M4 real browser acceptance",
+    "milestone_complete": false,
+    "created_at": "2026-10-15T09:06:06.287312+00:00",
+    "pgvnserve_sha256": "f709702754af8c5bf685b7c3196e29d2e395bac53660aea190551e74050cd598",
+    "assets": {
+      "index.html": "af7e08e1c3e2f2e696aaf2ce018aeb27a08aad9279c3d510ca91d7b122618c43",
+      "monitor.css": "46d4afe36f579da45c4915a48ab115a181f4572eb3ea5ec38bd87d2fb5e5eb61",
+      "monitor.js": "5510554ea80010e2b79ab2eda038e9df4937055b3b762ad07b875def959a5099"
+    },
+    "checks": {
+      "authentication": true,
+      "all_views": true,
+      "repository_pagination": true,
+      "repository_search": true,
+      "repository_detail": true,
+      "text_only_hostile_name": true,
+      "keyboard_focus_and_refresh": true,
+      "configurable_refresh": true,
+      "narrow_layout": true,
+      "paused_refresh": true,
+      "stale_database_and_unknown_nodes": true,
+      "lost_peer_and_recovery": true,
+      "token_revocation_clears_data": true,
+      "reload_requires_token": true,
+      "no_persistent_token": true
+    },
+    "fixture_stopped": true,
+    "fixture_database": "pgvn_m3c_9dd2becdff67",
+    "fixture_session": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m3-credentials-9dd2becdff67\\browser-session.json",
+    "observations": {
+      "desktop": {
+        "viewport_width": 1440,
+        "viewport_height": 960
+      },
+      "narrow": {
+        "viewport_width": 375,
+        "viewport_height": 812,
+        "client_width": 360,
+        "scroll_width": 360
+      },
+      "repository_page_rows": [
+        50,
+        3
+      ],
+      "repository_detail": {
+        "head": 1,
+        "active_transactions": 1,
+        "svn_locks": 1,
+        "recent_revisions": [
+          1,
+          0
+        ],
+        "correlated_error": true
+      },
+      "keyboard_focus": {
+        "after_detail_navigation": "main",
+        "after_manual_refresh": "refresh",
+        "skip_link_retained_view": true
+      },
+      "peer_restart": {
+        "new_instance_id": true,
+        "old_instance_lost": true,
+        "two_ready_one_lost": true
+      },
+      "database_outage": {
+        "observed_sample_age_seconds": 31.8,
+        "unknown_node_rows": 3,
+        "values_unknown": true,
+        "recovered": true
+      },
+      "revocation": {
+        "content_hidden": true,
+        "content_children": 0,
+        "content_tables": 0,
+        "focus": "token"
+      },
+      "token_storage_validation": "Source contains no persistent storage or cookie APIs; reload requires authentication. Browser read-only DOM does not expose storage objects.",
+      "screenshots": "Visually inspected desktop and narrow screenshots through the in-app browser; no image file export."
+    }
+  },
+  "capacity_and_overhead": {
+    "synthetic_repositories": 1000,
+    "total_repositories": 1001,
+    "paged_distinct_items": 1000,
+    "nodes_capped": 1000,
+    "private_memory_before": {
+      "cpu_seconds": 0.03125,
+      "working_set_bytes": 16330752,
+      "private_bytes": 3911680
+    },
+    "private_memory_after": {
+      "cpu_seconds": 0.046875,
+      "working_set_bytes": 23597056,
+      "private_bytes": 11702272
+    },
+    "extra_private_bytes": 7790592,
+    "extra_memory_below_64MiB": true,
+    "bounded_24h_cleanup": true,
+    "token_capacity_fails_closed_and_recovers": true,
+    "main_loop_stall_and_recovery": true,
+    "sampler_statement_timeout": {
+      "failure_observed_seconds": 5.01600000000326,
+      "live_during_sql_timeout": true,
+      "business_commit_during_sql_timeout": true,
+      "sampler_recovered": true
+    },
+    "telemetry_capacity_preserves_svn_publication": true,
+    "dropped_batches": 1,
+    "characterization_rounds": [
+      {
+        "monitor_enabled": false,
+        "clients": 8,
+        "operations": 64,
+        "elapsed_seconds": 2.4773734000045806,
+        "throughput_per_second": 25.83381253705302,
+        "p95_ms": 349.29969999939203,
+        "cpu_seconds": 0.125,
+        "working_set_bytes": 15814656,
+        "private_bytes": 3899392
+      },
+      {
+        "monitor_enabled": true,
+        "clients": 8,
+        "operations": 64,
+        "elapsed_seconds": 2.4371291999996174,
+        "throughput_per_second": 26.260405070034878,
+        "p95_ms": 345.037000006414,
+        "cpu_seconds": 0.203125,
+        "working_set_bytes": 16842752,
+        "private_bytes": 4988928
+      },
+      {
+        "monitor_enabled": false,
+        "clients": 8,
+        "operations": 64,
+        "elapsed_seconds": 2.4843305999966105,
+        "throughput_per_second": 25.76146669049897,
+        "p95_ms": 374.31879999348894,
+        "cpu_seconds": 0.203125,
+        "working_set_bytes": 15716352,
+        "private_bytes": 3784704
+      }
+    ],
+    "performance_scope": "Short CLI read workload; formal mixed-load budgets are measured in M6.",
+    "full_verify": true
+  },
+  "performance_budget_status": "Formal mixed-load throughput and latency budgets remain unverified until M6; short CLI rounds are diagnostic.",
+  "short_cli_throughput_loss_percent": -1.7938286726502106,
+  "short_cli_p95_growth_percent": -4.635660915300388,
+  "limits": [
+    "Apache DAV and per-worker telemetry are M5.",
+    "Formal mixed-load performance and fault-domain HA validation are M6.",
+    "Clean-machine packaging and isolated Polarion application acceptance are M7.",
+    "Browser screenshots were visually inspected; no exported image file."
+  ]
+}

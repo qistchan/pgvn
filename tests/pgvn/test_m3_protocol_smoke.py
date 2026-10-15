@@ -47,7 +47,7 @@ class Node:
         self.monitor_port = port()
         self.config = WORK / (name + ".ini")
         self.config.write_text("[pgvn]\nconnection = " + setup.dsn("pgvn_service") +
-            f"\ncredential-key-file = {key.as_posix()}\nidentity-domain = pg vn test" +
+            f"\nmonitor-connection = {setup.dsn('pgvn_monitor')}\ncredential-key-file = {key.as_posix()}\nidentity-domain = pg vn test" +
             f"\nlisten-host = 127.0.0.1\nlisten-port = {self.svn_port}\n", encoding="utf-8")
         self.process = None
         self.log = None
@@ -147,9 +147,16 @@ def checks():
         # Terminate only connections to this test's database. No installed
         # service or other test DB is stopped. Both control sessions reconnect.
         setup.fixture.assert_ours()
-        setup.sql("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name='pgvn' "
-            f"AND datname='{setup.DATABASE}' AND usename='pgvn_service' AND pid<>pg_backend_pid()")
-        svnkit.expect_database_failure()
+        # M4 detects an already-arrived idle disconnect before sending SQL.
+        # Refuse new connections as well, so error mapping remains a real,
+        # deterministic outage check rather than requiring a recovery to fail.
+        setup.fixture.sql(f"ALTER DATABASE {setup.DATABASE} ALLOW_CONNECTIONS false",database="postgres")
+        try:
+            setup.fixture.sql("SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE application_name IN ('pgvn','pgvn-monitor') "
+                f"AND datname='{setup.DATABASE}' AND usename='pgvn_service'",database="postgres")
+            svnkit.expect_database_failure()
+        finally:
+            setup.fixture.sql(f"ALTER DATABASE {setup.DATABASE} ALLOW_CONNECTIONS true",database="postgres")
         recovery_attempts = []
         for url in (first, second):
             for attempt in range(1, 5):

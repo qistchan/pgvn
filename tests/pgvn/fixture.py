@@ -19,8 +19,8 @@ class Fixture:
         config = config or ROOT / "config/build.local.json"
         self.pg = Path(json.loads(Path(config).read_text(encoding="utf-8"))["postgres"])
 
-    def run(self, args, expected=0, timeout=45):
-        result = subprocess.run([str(a) for a in args], cwd=ROOT, capture_output=True,
+    def run(self, args, expected=0, timeout=45, input=None):
+        result = subprocess.run([str(a) for a in args], cwd=ROOT, capture_output=True, input=input,
                                 text=True, encoding="utf-8", errors="replace",
                                 creationflags=subprocess.CREATE_NO_WINDOW, timeout=timeout)
         if result.returncode != expected:
@@ -29,7 +29,7 @@ class Fixture:
 
     def sql(self, statement, database=DATABASE, role="pgvn_owner"):
         return self.run([self.pg / "bin/psql.exe", "-X", "-w", "-A", "-t", "-h", "127.0.0.1",
-                         "-p", PORT, "-U", role, "-d", database, "--set=ON_ERROR_STOP=1", "-c", statement])
+                         "-p", PORT, "-U", role, "-d", database, "--set=ON_ERROR_STOP=1", "-f", "-"], input=statement)
 
     def dsn(self, role="pgvn_service"):
         return f"host=127.0.0.1 port={PORT} dbname={DATABASE} user={role} sslmode=disable"

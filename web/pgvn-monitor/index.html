@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PgVN · 服务监控</title>
+  <link rel="stylesheet" href="/monitor/monitor.css">
+  <script src="/monitor/monitor.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <aside class="sidebar">
+    <a class="brand" href="#overview"><span class="brand-mark" aria-hidden="true">P</span><span>PgVN<small>仓库服务监控</small></span></a>
+    <p class="nav-label">运行状态</p>
+    <nav aria-label="监控导航">
+      <a href="#overview" data-view="overview"><span aria-hidden="true">◈</span>概览</a>
+      <a href="#nodes" data-view="nodes"><span aria-hidden="true">◇</span>节点</a>
+      <a href="#repositories" data-view="repositories"><span aria-hidden="true">▤</span>仓库</a>
+      <a href="#database" data-view="database"><span aria-hidden="true">▥</span>数据库</a>
+      <a href="#requests" data-view="requests"><span aria-hidden="true">≋</span>请求与错误</a>
+    </nav>
+    <div class="sidebar-foot"><span class="dot" aria-hidden="true"></span>只读控制台<p>运行状态 · 采样趋势 · 健康检查</p></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><span class="breadcrumb">服务监控 <span aria-hidden="true">/</span> <strong id="breadcrumb">概览</strong></span>
+      <div class="actions"><label class="sr-only" for="refresh-interval">刷新周期</label><select id="refresh-interval" aria-label="刷新周期"><option value="5">每 5 秒</option><option value="10">每 10 秒</option><option value="30">每 30 秒</option><option value="60">每 60 秒</option></select><button id="pause" type="button" aria-pressed="false">暂停刷新</button><button id="refresh" type="button">刷新</button><button id="logout" type="button" hidden>断开</button></div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="page-heading"><div><p class="eyebrow">PGVN / OPERATIONS</p><h1 id="page-title">服务概览</h1><p id="subtitle">连接监控，查看节点与仓库的运行状态。</p></div><span class="badge neutral" id="readiness">等待连接</span></div>
+      <div class="connection-status" role="status" aria-live="polite" aria-atomic="true" id="connection-status">正在检查本机服务。</div>
+      <section id="login" class="panel login-panel" aria-labelledby="login-title">
+        <div class="login-copy"><span class="section-label">安全访问</span><h2 id="login-title">连接到监控</h2><p>使用管理员签发的只读令牌查看运行详情。</p><p class="muted">令牌仅保留在当前标签页，刷新页面后需要重新连接。</p></div>
+        <form id="token-form"><label for="token">监控令牌</label><input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="pgvn_…" required aria-describedby="token-help token-error"><p id="token-help" class="field-hint">粘贴令牌即可连接，无需数据库账号。</p><p id="token-error" class="error-text" hidden></p><button class="primary" type="submit">连接监控</button></form>
+      </section>
+      <form id="search-form" class="search-bar" hidden><label for="repository-search">搜索仓库</label><input id="repository-search" maxlength="64" placeholder="名称、ID 或 UUID"><button type="submit">搜索</button><button type="button" id="clear-search">清空</button></form>
+      <div id="content" hidden></div>
+      <footer class="page-footer"><span>PgVN · 原生仓库服务</span><span id="sample-meta">尚未取得状态样本</span></footer>
+    </main>
+  </div>
+</body>
+</html>

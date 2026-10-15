@@ -71,17 +71,21 @@ def prepare_protocol(source, destination, specification):
     start = text.index("static const svn_ra_svn__cmd_entry_t main_commands[] = {")
     end = text.index("\n};", start) + 3
     table = text[start:end]
-    handlers = re.findall(r'\{\s*"[^"]+",\s*(\w+)', table)
+    commands = re.findall(r'\{\s*"([^"]+)",\s*(\w+)', table)
+    handlers = [handler for name, handler in commands]
     assert len(handlers) == 32 and len(set(handlers)) == len(handlers)
     wrappers = []
-    for handler in handlers:
+    for name, handler in commands:
         wrappers.append(f"""static svn_error_t *pgvn_cmd_{handler}(svn_ra_svn_conn_t *conn,
     apr_pool_t *pool, svn_ra_svn__list_t *params, void *baton)
 {{
   server_baton_t *b = baton;
+  apr_time_t started = pgvn_command_start();
   svn_error_t *err = pgvn_svn_command(b->repository, b->client_info->user, pool);
-  if (err) return svn_error_create(SVN_ERR_RA_SVN_CMD_ERR, err, NULL);
-  return {handler}(conn, pool, params, baton);
+  if (err) err = svn_error_create(SVN_ERR_RA_SVN_CMD_ERR, err, NULL);
+  else err = {handler}(conn, pool, params, baton);
+  pgvn_command_finish("{name}", started, err);
+  return err;
 }}
 """)
         table = re.sub(r'(\{\s*"[^"]+",\s*)' + handler + r'\b', r'\1pgvn_cmd_' + handler, table)
@@ -108,6 +112,8 @@ def prepare_protocol(source, destination, specification):
     replace("libsvn_ra_svn/cram.c", '"Password incorrect"', '"Authentication failed"')
     replace("libsvn_ra_svn/marshal.c", "return conn->block_handler ? 0 : -1;", "return conn->block_handler ? 0 : 30 * APR_USEC_PER_SEC;")
     replace("libsvn_ra_svn/marshal.c", '#include "ra_svn.h"', '#include "ra_svn.h"\n#include "pgvn_protocol.h"')
+    replace("libsvn_ra_svn/marshal.c", "  char buffer[128];\n  SVN_ERR(writebuf_write_literal(conn, pool, \"( failure ( \"));",
+        "  char buffer[128];\n  pgvn_command_failure(err);\n  SVN_ERR(writebuf_write_literal(conn, pool, \"( failure ( \"));")
     replace("libsvn_ra_svn/marshal.c", "(apr_uint64_t) err->apr_err,", "(apr_uint64_t) pgvn_svn_wire_error(err->apr_err),")
     replace("libsvn_ra_svn/streams.c", '#include "ra_svn.h"', '#include "ra_svn.h"\n#include "pgvn_protocol.h"')
     replace("libsvn_ra_svn/streams.c", "  apr_socket_t *sock;\n  apr_pool_t *pool;",

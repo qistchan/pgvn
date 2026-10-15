@@ -70,6 +70,7 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
     }
     for (int i = 0; i < count; ++i) types[i] = formats && formats[i] ? 17 : 25;
     apr_time_t started = data->observer.query ? apr_time_now() : 0;
+    if(data->observer.query_started) data->observer.query_started(data->observer.baton);
     *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, 0);
     free(types);
     svn_error_t *error = NULL;

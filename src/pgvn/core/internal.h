@@ -4,6 +4,7 @@
 #include <apr_thread_mutex.h>
 #include <libpq-fe.h>
 #include "pgvn.h"
+#include "telemetry.h"
 
 struct pgvn_context {
     const char *connection_string;

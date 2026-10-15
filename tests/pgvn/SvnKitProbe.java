@@ -39,7 +39,7 @@ public final class SvnKitProbe {
             if (args[0].equals("expect-database-failure")) {
                 try {
                     a.getLatestRevision();
-                    throw new AssertionError("Expected the disconnected database session to fail once");
+                    throw new AssertionError("Expected the unavailable database to return a known SVN error");
                 } catch (SVNException error) {
                     SVNErrorMessage message = error.getErrorMessage();
                     while (message != null && message.getErrorCode() != SVNErrorCode.FS_GENERAL) message = message.getChildErrorMessage();

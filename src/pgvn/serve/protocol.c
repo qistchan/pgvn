@@ -47,6 +47,7 @@ static svn_error_t *socket_io(apr_socket_t *socket,apr_pool_t *pool,char *buffer
             if(error) { *length=0; return error; }
             continue;
         }
+        if(!status || (APR_STATUS_IS_EOF(status) && !writing)) pgvn_telemetry_io(writing ? 0 : *length,writing ? *length : 0);
         if(status && !(APR_STATUS_IS_EOF(status) && !writing))
             return svn_error_wrap_apr(status,writing ? "Can't write to connection" : "Can't read from connection");
         return SVN_NO_ERROR;
@@ -136,6 +137,7 @@ svn_error_t *pgvn_svn_authenticated(repository_t *repository,const char *user,ap
 
 svn_error_t *pgvn_svn_command(repository_t *repository,const char *user,apr_pool_t *pool)
 {
+    pgvn_command_repository(repository->pgvn->repository_id);
     SVN_ERR(pgvn_policy_revalidate(repository->pgvn->policy,repository->pgvn_context,pool));
     if(user) return pgvn_credential_check(repository->pgvn_context,repository->pgvn_domain,
         user,repository->pgvn->credential_generation,pool);

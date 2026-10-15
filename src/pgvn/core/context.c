@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include "internal.h"
+#include "telemetry.h"
 #include <apr_strings.h>
 #include <apr_uuid.h>
 
 void pgvn_metric_query(void *baton,const char *state,apr_interval_time_t elapsed)
 {
     pgvn_context *context=baton;
+    pgvn_telemetry_query(state,elapsed);
     InterlockedIncrement64(&context->sql_calls);
     if(strcmp(state,"00000")) InterlockedIncrement64(&context->sql_errors);
     InterlockedAdd64(&context->sql_microseconds,elapsed);
@@ -16,6 +18,7 @@ void pgvn_metric_closed(void *baton)
 {
     pgvn_context *context=baton;
     InterlockedDecrement(&context->leases);
+    pgvn_telemetry_connection(-1,0,0);
 }
 
 svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connection,
@@ -25,6 +28,7 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
     Oid types[32];
     if(count<0 || count>32) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN parameter limit exceeded");
     for(int i=0;i<count;++i) types[i]=25;
+    pgvn_telemetry_query_start();
     *result=PQexecParams(connection,sql,count,types,values,NULL,NULL,0);
     if(!*result || (PQresultStatus(*result)!=PGRES_COMMAND_OK && PQresultStatus(*result)!=PGRES_TUPLES_OK)) {
         const char *state=*result ? PQresultErrorField(*result,PG_DIAG_SQLSTATE) : NULL;
@@ -50,7 +54,9 @@ svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
 {
     if(context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new database connections are disabled");
+    pgvn_telemetry_connection(1,0,0);
     if(InterlockedIncrement(&context->leases)>32) {
+        pgvn_telemetry_connection(0,1,0);
         pgvn_metric_closed(context);
         return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgVN connection limit reached");
     }
@@ -61,6 +67,7 @@ svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
     const char *values[]={context->connection_string,timeout,options,"pgvn",NULL};
     *connection=PQconnectdbParams(keywords,values,1);
     if(!*connection || PQstatus(*connection)!=CONNECTION_OK) {
+        pgvn_telemetry_connection(0,0,1);
         if(*connection) PQfinish(*connection);
         *connection=NULL;
         pgvn_metric_closed(context);
@@ -93,7 +100,10 @@ static svn_error_t *ensure_control_connection(pgvn_context *context)
 {
     if(!context->control_transaction && context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new control requests are disabled");
-    if(context->control && PQstatus(context->control)==CONNECTION_OK) return SVN_NO_ERROR;
+    /* Detect an idle socket's already-received disconnect before sending the
+     * next command. This consumes input only; it never retries a SQL command. */
+    if(context->control && PQstatus(context->control)==CONNECTION_OK &&
+       PQconsumeInput(context->control) && PQstatus(context->control)==CONNECTION_OK) return SVN_NO_ERROR;
     if(context->control_transaction)
         return svn_error_create(PGVN_ERR_DATABASE,NULL,"PgVN control transaction lost its connection");
     if(context->control) { PQfinish(context->control); context->control=NULL; pgvn_metric_closed(context); }
@@ -111,7 +121,9 @@ static svn_error_t *ensure_control_connection(pgvn_context *context)
 svn_error_t *pgvn_control_query(PGresult **result,pgvn_context *context,
     const char *sql,int count,const char *const *values)
 {
+    pgvn_telemetry_waiter(1);
     apr_status_t status=apr_thread_mutex_lock(context->control_mutex);
+    pgvn_telemetry_waiter(-1);
     if(status) return svn_error_wrap_apr(status,"PgVN control lock failed");
     *result=NULL;
     svn_error_t *error=ensure_control_connection(context);
@@ -122,7 +134,9 @@ svn_error_t *pgvn_control_query(PGresult **result,pgvn_context *context,
 
 svn_error_t *pgvn_control_begin(pgvn_context *context)
 {
+    pgvn_telemetry_waiter(1);
     apr_status_t status=apr_thread_mutex_lock(context->control_mutex);
+    pgvn_telemetry_waiter(-1);
     if(status) return svn_error_wrap_apr(status,"PgVN control lock failed");
     PGresult *result=NULL;
     svn_error_t *error=context->control_transaction ?
@@ -170,7 +184,7 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
 
 int pgvn_catalog_version(const char *versions)
 {
-    const char *known[]={"1","1,2","1,2,3","1,2,3,4"};
+    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5"};
     _Static_assert(sizeof(known)/sizeof(*known)==PGVN_CATALOG_VERSION,"Update the supported catalog version list");
     for(int i=0;versions && i<PGVN_CATALOG_VERSION;++i) if(!strcmp(versions,known[i])) return i+1;
     return 0;

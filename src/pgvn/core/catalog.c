@@ -75,7 +75,11 @@ static const char *new_uuid(apr_pool_t *pool)
 static svn_error_t *create_body(pgvn_context *context,const char *id,const char *uuid,
     const char *name,const char *route,apr_pool_t *pool)
 {
-    SVN_ERR(pgfs_native_create_records(context->control,id,uuid,new_uuid(pool),svn_time_to_cstring(apr_time_now(),pool)));
+    apr_time_t started=apr_time_now();
+    pgvn_telemetry_query_start();
+    svn_error_t *error=pgfs_native_create_records(context->control,id,uuid,new_uuid(pool),svn_time_to_cstring(apr_time_now(),pool));
+    pgvn_metric_query(context,error ? "XX000" : "00000",apr_time_now()-started);
+    SVN_ERR(error);
     const char *values[]={id,name,route};
     PGresult *result;
     SVN_ERR(pgvn_exec(&result,context,context->control,

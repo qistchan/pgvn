@@ -10,6 +10,7 @@
 #include "svn_dirent_uri.h"
 #include "pgvn_protocol.h"
 #include "logger.h"
+#include "telemetry.h"
 
 #define PGVN_SVN_CONNECTIONS 16
 typedef struct pgvn_client_slot {
@@ -47,6 +48,7 @@ static DWORD WINAPI client_main(void *baton)
     slot->socket=NULL;
     LeaveCriticalSection(&listener->mutex);
     svn_pool_destroy(pool);
+    pgvn_telemetry_session(-1);
     return 0;
 }
 
@@ -85,12 +87,13 @@ static DWORD WINAPI accept_main(void *baton)
         }
         if(available && WaitForSingleObject(listener->stop,0)==WAIT_TIMEOUT) {
             available->owner=listener; available->socket=socket; available->pool=pool;
+            pgvn_telemetry_session(1);
             available->thread=CreateThread(NULL,0,client_main,available,0,NULL);
             if(available->thread) pool=NULL;
-            else available->socket=NULL;
+            else { available->socket=NULL; pgvn_telemetry_session(-1); }
         }
         LeaveCriticalSection(&listener->mutex);
-        if(pool) svn_pool_destroy(pool);
+        if(pool) { pgvn_telemetry_session(0); svn_pool_destroy(pool); }
     }
     return 0;
 }
@@ -132,9 +135,9 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     pgvn_context_options options={dsn,3,5000};
     SVN_ERR(pgvn_context_create(&listener->context,&options,pool));
     PGresult *result;
-    SVN_ERR(pgvn_control_query(&result,listener->context,"SELECT max(version)=4 FROM pgvn.schema_versions",0,NULL));
+    SVN_ERR(pgvn_control_query(&result,listener->context,"SELECT max(version)=5 FROM pgvn.schema_versions",0,NULL));
     svn_boolean_t current=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
-    if(!current) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN SVN service requires catalog schema 4; run db migrate");
+    if(!current) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN SVN service requires catalog schema 5; run db migrate");
     listener->context->minimum_catalog_version=PGVN_CATALOG_VERSION;
     svn_config_get(config,&listener->context->hook_root,"pgvn","hook-root",NULL);
     SVN_ERR(svn_dirent_get_absolute(&listener->context->configuration_path,configuration,pool));

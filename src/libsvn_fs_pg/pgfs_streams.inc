@@ -146,6 +146,7 @@ static svn_error_t *pgfs_release_writer(pgfs_writer_t *writer)
     if(apr_hash_get(data->active_writers,writer->txn_name,APR_HASH_KEY_STRING)==writer)
         apr_hash_set(data->active_writers,writer->txn_name,APR_HASH_KEY_STRING,NULL);
     writer->leased=FALSE;
+    if(data->observer.writer_changed) data->observer.writer_changed(data->observer.baton,-1);
     svn_error_t *error=SVN_NO_ERROR;
     if(data->connection && PQstatus(data->connection)==CONNECTION_OK) {
         const char *values[]={data->repository_id,writer->txn_name};
@@ -294,6 +295,7 @@ static svn_error_t *pgfs_apply_text_body(pgfs_writer_t *writer)
     svn_boolean_t acquired=PQgetvalue(result,0,0)[0]=='t'; PQclear(result);
     if(!acquired) return svn_error_create(SVN_ERR_FS_REP_BEING_WRITTEN,NULL,"A text representation is already being written in this transaction");
     writer->leased=TRUE;
+    if(data->observer.writer_changed) data->observer.writer_changed(data->observer.baton,1);
     apr_hash_set(data->active_writers,apr_pstrdup(writer->fs->pool,writer->txn_name),APR_HASH_KEY_STRING,writer);
     /* Holding the lease proves any unfinished old representation came from
        a departed connection. Its partial bytes must never become visible. */

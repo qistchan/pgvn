@@ -6,6 +6,7 @@
 #include <io.h>
 #include "internal.h"
 #include "credentials.h"
+#include "telemetry.h"
 #include "svn_checksum.h"
 #include <apr_general.h>
 #include <apr_strings.h>
@@ -186,6 +187,50 @@ static svn_error_t *run(int argc,const char **argv,apr_pool_t *pool)
     svn_fs_access_t *access;
     SVN_ERR(svn_fs_create_access(&access,argv[3],pool));
     SVN_ERR(svn_fs_set_access(fs,access));
+    if(!strcmp(op,"writer-ledger") && argc==4) {
+        pgvn_process_metrics before,opened,closed,aborted; pgvn_process_snapshot(&before);
+        svn_revnum_t head; svn_fs_txn_t *transaction;
+        SVN_ERR(svn_fs_youngest_rev(&head,fs,pool));
+        SVN_ERR(svn_fs_begin_txn2(&transaction,fs,head,0,pool));
+        svn_fs_root_t *root; SVN_ERR(svn_fs_txn_root(&root,transaction,pool));
+        SVN_ERR(svn_fs_make_file(root,"/writer-metrics",pool));
+        svn_stream_t *stream; SVN_ERR(svn_fs_apply_text(&stream,root,"/writer-metrics",NULL,pool));
+        apr_size_t length=7; SVN_ERR(svn_stream_write(stream,"metrics",&length));
+        pgvn_process_snapshot(&opened);
+        SVN_ERR(svn_stream_close(stream)); pgvn_process_snapshot(&closed);
+        SVN_ERR(svn_fs_abort_txn(transaction,pool)); pgvn_process_snapshot(&aborted);
+        printf("{\"writers_before\":%ld,\"writers_open\":%ld,\"writers_closed\":%ld,\"writers_aborted\":%ld,"
+            "\"connections_before\":%ld,\"connections_open\":%ld,\"connections_closed\":%ld,\"sql_active\":%ld}\n",
+            (long)before.writers_active,(long)opened.writers_active,(long)closed.writers_active,(long)aborted.writers_active,
+            (long)before.connections_active,(long)opened.connections_active,(long)closed.connections_active,(long)aborted.sql_active);
+        return SVN_NO_ERROR;
+    }
+    if(!strcmp(op,"publication-ledger") && argc==4) {
+        pgvn_process_metrics before,after; pgvn_process_snapshot(&before);
+        svn_revnum_t head,first,again,receipt; svn_fs_txn_t *transaction;
+        SVN_ERR(svn_fs_youngest_rev(&head,fs,pool));
+        apr_hash_t *properties=apr_hash_make(pool);
+        apr_hash_set(properties,SVN_PROP_REVISION_AUTHOR,APR_HASH_KEY_STRING,svn_string_create(argv[3],pool));
+        SVN_ERR(svn_repos_fs_begin_txn_for_commit2(&transaction,repos,head,properties,pool));
+        const char *id; SVN_ERR(svn_fs_txn_name(&id,transaction,pool));
+        svn_fs_root_t *root; SVN_ERR(svn_fs_txn_root(&root,transaction,pool));
+        SVN_ERR(svn_fs_make_dir(root,"/ledger",pool));
+        const char *conflict=NULL;
+        SVN_ERR(svn_fs_commit_txn(&conflict,&first,transaction,pool));
+        SVN_ERR(svn_fs_commit_txn(&conflict,&again,transaction,pool));
+        SVN_ERR(pgvn_transaction_receipt(&receipt,repository,id,argv[3],pool));
+        SVN_ERR(svn_fs_youngest_rev(&head,fs,pool));
+        pgvn_process_snapshot(&after);
+        LONG64 results=0;
+        for(int i=0;i<PGVN_SQL_CLASS_COUNT;++i) results+=after.sql_classes[i]-before.sql_classes[i];
+        printf("{\"first\":%ld,\"repeat\":%ld,\"receipt\":%ld,\"head\":%ld,\"published_delta\":%lld,\"receipt_delta\":%lld,"
+            "\"sql_calls_delta\":%lld,\"sql_results_delta\":%lld,\"sql_errors_delta\":%lld,\"sql_class_08_delta\":%lld,\"sql_active\":%ld,\"writers_active\":%ld}\n",
+            first,again,receipt,head,(long long)(after.published_revisions-before.published_revisions),
+            (long long)(after.receipt_confirmations-before.receipt_confirmations),
+            (long long)(after.sql_calls-before.sql_calls),(long long)results,(long long)(after.sql_errors-before.sql_errors),
+            (long long)(after.sql_classes[1]-before.sql_classes[1]),(long)after.sql_active,(long)after.writers_active);
+        return SVN_NO_ERROR;
+    }
     if(!strcmp(op,"receipt") && argc==5) {
         svn_revnum_t revision;
         SVN_ERR(pgvn_transaction_receipt(&revision,repository,argv[4],argv[3],pool));

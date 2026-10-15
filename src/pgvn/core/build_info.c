@@ -9,7 +9,7 @@ int pgvn_build_json(char *buffer, size_t size)
         "{\"product\":\"PgVN\",\"version\":\"%s\",\"milestone\":\"%s\","
         "\"svn_base\":\"%s\",\"apr_runtime\":\"%s\",\"libpq_version\":%d,"
         "\"ready\":false,\"capabilities\":{\"repository_by_id\":true,"
-        "\"svn_protocol\":true,\"dav_protocol\":false,\"monitor\":\"bootstrap\"}}\n",
+        "\"svn_protocol\":true,\"dav_protocol\":false,\"monitor\":\"full\"}}\n",
         PGVN_VERSION, PGVN_MILESTONE, PGVN_SVN_BASE,
         apr_version_string(), PQlibVersion());
 }
