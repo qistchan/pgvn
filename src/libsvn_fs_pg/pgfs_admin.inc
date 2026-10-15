@@ -68,11 +68,10 @@ static svn_error_t *pgfs_verify_root(svn_fs_root_t *root,apr_pool_t *pool)
     return pgfs_verify_node(root,node,"/",apr_hash_make(pool),!root->is_txn_root,NULL,NULL,pool);
 }
 
-static svn_error_t *pgfs_verify_fs(svn_fs_t *fs,const char *path,svn_revnum_t start,svn_revnum_t end,
+static svn_error_t *pgfs_verify_bound(svn_fs_t *fs,svn_revnum_t start,svn_revnum_t end,
     svn_fs_progress_notify_func_t notify,void *notify_baton,svn_cancel_func_t cancel,void *cancel_baton,
-    svn_mutex__t *common_pool_lock,apr_pool_t *pool,apr_pool_t *common_pool)
+    apr_pool_t *pool)
 {
-    SVN_ERR(pgfs_open(fs,path,common_pool_lock,pool,common_pool));
     svn_revnum_t head; SVN_ERR(pgfs_youngest(&head,fs,pool));
     if(!SVN_IS_VALID_REVNUM(start)) start=0;
     if(!SVN_IS_VALID_REVNUM(end)) end=head;
@@ -94,6 +93,14 @@ static svn_error_t *pgfs_verify_fs(svn_fs_t *fs,const char *path,svn_revnum_t st
     }
     svn_pool_destroy(iter);
     return SVN_NO_ERROR;
+}
+
+static svn_error_t *pgfs_verify_fs(svn_fs_t *fs,const char *path,svn_revnum_t start,svn_revnum_t end,
+    svn_fs_progress_notify_func_t notify,void *notify_baton,svn_cancel_func_t cancel,void *cancel_baton,
+    svn_mutex__t *common_pool_lock,apr_pool_t *pool,apr_pool_t *common_pool)
+{
+    SVN_ERR(pgfs_open(fs,path,common_pool_lock,pool,common_pool));
+    return pgfs_verify_bound(fs,start,end,notify,notify_baton,cancel,cancel_baton,pool);
 }
 
 static svn_error_t *pgfs_freeze(svn_fs_t *fs,svn_fs_freeze_func_t callback,void *baton,apr_pool_t *pool)

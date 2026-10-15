@@ -1,6 +1,6 @@
 # PgVN 实施进展
 
-目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1，下一阶段为 M2；尚不能替代 Polarion 的 SVN 后端。
+目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2，下一阶段为 M3；尚不能替代 Polarion 的 SVN 后端。
 
 ## M0：完成
 
@@ -29,8 +29,16 @@ Release 的七组 M1 门禁通过，包含八进程并发创建、2 MiB 以上�
 
 实施细节及限制见 [M1 公共核心](M1-core.zh-CN.md)，证据见 [M1 记录](evidence/m1.json)。M1 尚未开放 SVN/DAV 网络服务，也未提供完整的正式管理 CLI。
 
-## M2：下一阶段
+## M2：完成
 
-实现 pgvnadmin 数据库引导/迁移检查、仓库注册、标准 dump/load、verify/look、维护和配置管理；完成热复制与删除的控制数据生命周期验收，再提交 M2。
+pgvnadmin 已实现数据库引导/迁移摘要检查、角色授权、仓库管理与既有 ID 注册、标准 dump/load、范围 verify、look 历史/属性/事务查询、pack/recover/freeze、完整与增量 hotcopy、排空清除、版本化授权配置、只读监控令牌和脱敏诊断。
+
+最终 Release 的八组 M2 门禁通过，包含非超级用户数据库所有者的四进程初始化、未知版本/篡改摘要拒绝、五个修订与 FSFS 的完整快照和变更路径对照、二进制及属性、增量/文件/标准流、UUID 与 hooks、热复制冲突回滚、freeze 及子进程树超时清理、句柄排空和便携目录运行。M1 七组及 17 个传统 PgFS 用例、M0 五组也在该构建重新通过。
+
+新增控制 schema 为版本 2，迁移及摘要编译进管理工具。M2 的令牌管理为 M4 接入准备，只读认证与中文业务监控页面尚未开放。当前命令和语义见 [M2 管理指南](M2-admin.zh-CN.md)，实际证据见 [M2 记录](evidence/m2.json)。
+
+## M3：下一阶段
+
+从固定源代码重编译 svnserve 与私有 RA SVN 依赖，将仓库定位和配置入口切换到公共核心，完成认证、授权、hooks、Windows 服务排空与两个节点的 svn 协议验收，再提交 M3。
 
 后续里程碑以 [推进计划](../plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的出口为准。没有完成的能力不能沿用旧 PgFS 的测试成绩标为完成。

@@ -31,7 +31,11 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
         if(!state) state="08006";
         pgvn_metric_query(context,state,apr_time_now()-start);
         apr_status_t code=!strcmp(state,"23505") ? SVN_ERR_FS_ALREADY_EXISTS :
-            !strcmp(state,"40001") ? SVN_ERR_FS_TXN_OUT_OF_DATE : SVN_ERR_FS_GENERAL;
+            !strcmp(state,"40001") || !strcmp(state,"40P01") || !strcmp(state,"55P03") ? SVN_ERR_FS_TXN_OUT_OF_DATE :
+            !strcmp(state,"22P02") ? SVN_ERR_INCORRECT_PARAMS :
+            !strcmp(state,"42501") ? SVN_ERR_AUTHZ_UNWRITABLE :
+            !strcmp(state,"42P01") || !strcmp(state,"3F000") ? PGVN_ERR_SCHEMA :
+            !strncmp(state,"08",2) ? PGVN_ERR_DATABASE : SVN_ERR_FS_GENERAL;
         svn_error_t *error=svn_error_createf(code,NULL,"PgVN database operation failed (SQLSTATE %s)",state);
         if(*result) PQclear(*result);
         *result=NULL;
@@ -57,7 +61,7 @@ svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
         if(*connection) PQfinish(*connection);
         *connection=NULL;
         pgvn_metric_closed(context);
-        return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgVN database connection unavailable");
+        return svn_error_create(PGVN_ERR_DATABASE,NULL,"PgVN database connection unavailable");
     }
     if(PQsetClientEncoding(*connection,"UTF8")) {
         PQfinish(*connection); *connection=NULL; pgvn_metric_closed(context);
@@ -73,6 +77,13 @@ static apr_status_t cleanup_context(void *baton)
         PQfinish(context->control); context->control=NULL; pgvn_metric_closed(context);
     }
     return APR_SUCCESS;
+}
+
+const char *pgvn_new_uuid(apr_pool_t *pool)
+{
+    apr_uuid_t uuid; char buffer[APR_UUID_FORMATTED_LENGTH+1];
+    apr_uuid_get(&uuid); apr_uuid_format(buffer,&uuid);
+    return apr_pstrdup(pool,buffer);
 }
 
 svn_error_t *pgvn_control_query(PGresult **result,pgvn_context *context,
@@ -105,7 +116,7 @@ svn_error_t *pgvn_control_end(pgvn_context *context,svn_error_t *error)
     return svn_error_compose_create(error,end);
 }
 
-svn_error_t *pgvn_context_create(pgvn_context **output,const pgvn_context_options *options,apr_pool_t *pool)
+svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options *options,apr_pool_t *pool)
 {
     *output=NULL;
     if(!options || !options->connection_string || !*options->connection_string)
@@ -122,15 +133,6 @@ svn_error_t *pgvn_context_create(pgvn_context **output,const pgvn_context_option
     if(status) return svn_error_wrap_apr(status,"PgVN control mutex initialization failed");
     SVN_ERR(pgvn_connect(&context->control,context));
     apr_pool_cleanup_register(pool,context,cleanup_context,apr_pool_cleanup_null);
-    PGresult *result;
-    SVN_ERR(pgvn_control_query(&result,context,
-        "SELECT (SELECT max(version) FROM pgfs.schema_versions),"
-        "(SELECT max(version) FROM pgvn.schema_versions),pg_is_in_recovery()",0,NULL));
-    svn_boolean_t compatible=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"4")
-        && !strcmp(PQgetvalue(result,0,1),"1") && !strcmp(PQgetvalue(result,0,2),"f");
-    PQclear(result);
-    if(!compatible) return svn_error_create(SVN_ERR_FS_UNSUPPORTED_FORMAT,NULL,"PgVN requires pgfs schema 4, pgvn schema 1 and a writable database");
-    context->schema_checked_at=apr_time_now();
     apr_uuid_t uuid; char buffer[APR_UUID_FORMATTED_LENGTH+1];
     apr_uuid_get(&uuid); apr_uuid_format(buffer,&uuid);
     context->instance_id=apr_pstrdup(pool,buffer);
@@ -138,6 +140,43 @@ svn_error_t *pgvn_context_create(pgvn_context **output,const pgvn_context_option
     return SVN_NO_ERROR;
 }
 
+svn_error_t *pgvn_database_validate(pgvn_context *context)
+{
+    PGresult *result;
+    SVN_ERR(pgvn_control_query(&result,context,
+        "SELECT (SELECT string_agg(version::text,',' ORDER BY version) FROM pgfs.schema_versions),"
+        "(SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions),pg_is_in_recovery()",0,NULL));
+    svn_boolean_t compatible=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4")
+        && (!strcmp(PQgetvalue(result,0,1),"1") || !strcmp(PQgetvalue(result,0,1),"1,2"))
+        && !strcmp(PQgetvalue(result,0,2),"f");
+    PQclear(result);
+    if(!compatible) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN requires pgfs schema 1-4, pgvn schema 1-2 and a writable database");
+    context->schema_checked_at=apr_time_now();
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_context_create(pgvn_context **output,const pgvn_context_options *options,apr_pool_t *pool)
+{
+    *output=NULL;
+    pgvn_context *context;
+    SVN_ERR(pgvn_database_open(&context,options,pool));
+    SVN_ERR(pgvn_database_validate(context));
+    *output=context;
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_require_admin(pgvn_context *context)
+{
+    PGresult *result;
+    SVN_ERR(pgvn_control_query(&result,context,
+        "SELECT has_table_privilege(current_user,'pgvn.configurations','INSERT') AND "
+        "has_table_privilege(current_user,'pgvn.repositories','UPDATE') AND "
+        "has_table_privilege(current_user,'pgvn.repositories','DELETE')",0,NULL));
+    svn_boolean_t allowed=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t");
+    PQclear(result);
+    if(!allowed) return svn_error_create(SVN_ERR_AUTHZ_UNWRITABLE,NULL,"PgVN administration privileges are required");
+    return SVN_NO_ERROR;
+}
 svn_error_t *pgvn_status_snapshot(pgvn_status **output,pgvn_context *context,apr_pool_t *pool)
 {
     pgvn_status *snapshot=apr_pcalloc(pool,sizeof(*snapshot));

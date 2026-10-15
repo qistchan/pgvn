@@ -2,22 +2,90 @@
   "base_sha256": {
     "repos.h": "63baf8d544df2ecbf9764f80d5bc72febbee5ce3afa52762da7e7fc9523ca57e",
     "repos.c": "d5b563ff1363880fcc9a795a2fa8a3fe03633f6424afa51f0ed7a6dfe70dd8a4",
-    "hooks.c": "96392d3013a7f6bb467f00eecac900e54a3d6c9e2280672eb6dd0f9b97ac3495"
+    "hooks.c": "96392d3013a7f6bb467f00eecac900e54a3d6c9e2280672eb6dd0f9b97ac3495",
+    "dump.c": "10e31e13700f3a74a40e6eedda89dcf479295daaf8bdc22a7cde90eb401cde6b"
   },
   "replacements": [
-    {"file": "repos.h", "old": "  apr_pool_t *pool;\n};", "new": "  apr_pool_t *pool;\n\n  /* PgVN private, in-process repository context. NULL for directory mode. */\n  void *pgvn_baton;\n};"},
-    {"file": "hooks.c", "old": "#include \"repos.h\"", "new": "#include \"repos.h\"\n#include \"internal.h\""},
-    {"file": "repos.c", "old": "  if (hooks_env_path == NULL)\n", "new": "  if (repos->pgvn_baton)\n    {\n      if (hooks_env_path != NULL)\n        return svn_error_create(SVN_ERR_UNSUPPORTED_FEATURE, NULL,\n                                \"PgVN hooks use versioned database policy\");\n      repos->hooks_env_path = NULL;\n      return SVN_NO_ERROR;\n    }\n  if (hooks_env_path == NULL)\n"}
+    {
+      "file": "repos.h",
+      "old": "  apr_pool_t *pool;\n};",
+      "new": "  apr_pool_t *pool;\n\n  /* PgVN private, in-process repository context. NULL for directory mode. */\n  void *pgvn_baton;\n};"
+    },
+    {
+      "file": "hooks.c",
+      "old": "#include \"repos.h\"",
+      "new": "#include \"repos.h\"\n#include \"internal.h\""
+    },
+    {
+      "file": "repos.c",
+      "old": "  if (hooks_env_path == NULL)\n",
+      "new": "  if (repos->pgvn_baton)\n    {\n      if (hooks_env_path != NULL)\n        return svn_error_create(SVN_ERR_UNSUPPORTED_FEATURE, NULL,\n                                \"PgVN hooks use versioned database policy\");\n      repos->hooks_env_path = NULL;\n      return SVN_NO_ERROR;\n    }\n  if (hooks_env_path == NULL)\n"
+    },
+    {
+      "file": "dump.c",
+      "old": "#include \"private/svn_fspath.h\"",
+      "new": "#include \"private/svn_fspath.h\"\n#include \"repos.h\"\n#include \"pgfs_native.h\""
+    },
+    {
+      "file": "dump.c",
+      "old": "  err = svn_fs_verify(svn_fs_path(fs, pool), svn_fs_config(fs, pool),\n                      start_rev, end_rev,\n                      verify_notify, verify_notify_baton,\n                      cancel_func, cancel_baton, pool);",
+      "new": "  if (repos->pgvn_baton)\n    err = pgfs_native_verify(fs, start_rev, end_rev,\n                              verify_notify, verify_notify_baton,\n                              cancel_func, cancel_baton, pool);\n  else\n    err = svn_fs_verify(svn_fs_path(fs, pool), svn_fs_config(fs, pool),\n                        start_rev, end_rev,\n                        verify_notify, verify_notify_baton,\n                        cancel_func, cancel_baton, pool);"
+    }
   ],
   "hook_dispatch": {
-    "start_commit": ["start-commit", "user", "txn_name", "SVN_INVALID_REVNUM"],
-    "pre_commit": ["pre-commit", "NULL", "txn_name", "SVN_INVALID_REVNUM"],
-    "post_commit": ["post-commit", "NULL", "txn_name", "rev"],
-    "pre_revprop_change": ["pre-revprop-change", "author", "NULL", "rev"],
-    "post_revprop_change": ["post-revprop-change", "author", "NULL", "rev"],
-    "pre_lock": ["pre-lock", "username", "NULL", "SVN_INVALID_REVNUM"],
-    "post_lock": ["post-lock", "username", "NULL", "SVN_INVALID_REVNUM"],
-    "pre_unlock": ["pre-unlock", "username", "NULL", "SVN_INVALID_REVNUM"],
-    "post_unlock": ["post-unlock", "username", "NULL", "SVN_INVALID_REVNUM"]
+    "start_commit": [
+      "start-commit",
+      "user",
+      "txn_name",
+      "SVN_INVALID_REVNUM"
+    ],
+    "pre_commit": [
+      "pre-commit",
+      "NULL",
+      "txn_name",
+      "SVN_INVALID_REVNUM"
+    ],
+    "post_commit": [
+      "post-commit",
+      "NULL",
+      "txn_name",
+      "rev"
+    ],
+    "pre_revprop_change": [
+      "pre-revprop-change",
+      "author",
+      "NULL",
+      "rev"
+    ],
+    "post_revprop_change": [
+      "post-revprop-change",
+      "author",
+      "NULL",
+      "rev"
+    ],
+    "pre_lock": [
+      "pre-lock",
+      "username",
+      "NULL",
+      "SVN_INVALID_REVNUM"
+    ],
+    "post_lock": [
+      "post-lock",
+      "username",
+      "NULL",
+      "SVN_INVALID_REVNUM"
+    ],
+    "pre_unlock": [
+      "pre-unlock",
+      "username",
+      "NULL",
+      "SVN_INVALID_REVNUM"
+    ],
+    "post_unlock": [
+      "post-unlock",
+      "username",
+      "NULL",
+      "SVN_INVALID_REVNUM"
+    ]
   }
 }

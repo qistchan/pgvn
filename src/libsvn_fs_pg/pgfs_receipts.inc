@@ -15,6 +15,15 @@ static svn_boolean_t pgfs_resolve_commit_receipt(svn_revnum_t *revision,svn_fs_t
         PGresult *result=PQexec(probe,"SET statement_timeout='5s'");
         svn_boolean_t ready=result && PQresultStatus(result)==PGRES_COMMAND_OK;
         if(result) PQclear(result);
+        if(ready && !data->directory_adapter) {
+            const char *parameters[]={data->repository_id};
+            result=PQexecParams(probe,data->exclusive_lease
+                ? "SELECT pg_try_advisory_lock(hashtextextended('pgvn-repo:'||$1,0))"
+                : "SELECT pg_try_advisory_lock_shared(hashtextextended('pgvn-repo:'||$1,0))",
+                1,NULL,parameters,NULL,NULL,0);
+            ready=result && PQresultStatus(result)==PGRES_TUPLES_OK && PQntuples(result)==1 && PQgetvalue(result,0,0)[0]=='t';
+            if(result) PQclear(result);
+        }
         if(ready) {
             const char *parameters[]={data->repository_id,txn->id};
             /* FOR UPDATE waits for a still-finishing original COMMIT and then
@@ -29,9 +38,9 @@ static svn_boolean_t pgfs_resolve_commit_receipt(svn_revnum_t *revision,svn_fs_t
             }
             if(result) PQclear(result);
         }
-        result=PQexec(probe,"RESET statement_timeout");
+        result=PQexec(probe,data->directory_adapter ? "RESET statement_timeout" : "SET statement_timeout='5s'");
         if(result) PQclear(result);
-        if(PQstatus(probe)==CONNECTION_OK) {
+        if(ready && PQstatus(probe)==CONNECTION_OK) {
             PQfinish(data->connection); data->connection=probe; probe=NULL;
         }
     }

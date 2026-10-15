@@ -86,6 +86,11 @@ static svn_error_t *run(int argc,const char **argv,apr_pool_t *pool)
         printf(",\"head\":%ld,\"config_files\":%d}\n",head,files->nelts);
         return SVN_NO_ERROR;
     }
+    if(!strcmp(op,"hold-open")) {
+        puts("READY"); fflush(stdout);
+        if(getchar()==EOF) return svn_error_create(SVN_ERR_CANCELLED,NULL,"Probe input closed");
+        return SVN_NO_ERROR;
+    }
     if(!strcmp(op,"metrics")) {
         pgvn_metrics before,after,closed,snapshot1,snapshot2;
         pgvn_metrics_snapshot(&before,context);

@@ -101,7 +101,8 @@ GRANT SELECT ON pgvn.repositories,pgvn.configurations,pgvn.routes,pgvn.schema_ve
 GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint) TO pgvn_service,pgvn_admin;
 GRANT SELECT ON pgfs.repositories,pgvn.repositories,pgvn.routes,pgvn.schema_versions TO pgvn_monitor;""")
         return {"data_directory": str(DATA), "port": PORT, "database": DATABASE,
-                "pgfs_schema": 4, "pgvn_schema": 1, "roles": ["pgvn_admin", "pgvn_service", "pgvn_monitor"]}
+                "pgfs_schema": 4, "pgvn_schema": int(self.sql("SELECT max(version) FROM pgvn.schema_versions")),
+                "roles": ["pgvn_admin", "pgvn_service", "pgvn_monitor"]}
 
     def stop(self):
         self.assert_ours()

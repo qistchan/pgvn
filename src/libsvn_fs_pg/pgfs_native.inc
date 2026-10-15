@@ -32,7 +32,11 @@ svn_error_t *pgfs_native_bind(svn_fs_t *fs,PGconn *connection,const char *dsn,
     fs_library_vtable_t *unused;
     const svn_version_t version={1,14,5,""};
     SVN_ERR(svn_fs_pg__init(&version,&unused,pool));
-    return pgfs_load_metadata(fs,id);
+    SVN_ERR(pgfs_load_metadata(fs,id));
+    const char *values[]={id};
+    /* Session lease: purge/incremental replacement must prove no other
+     * process still owns a database FS handle before deleting its rows. */
+    return pgfs_command(fs,"SELECT pg_advisory_lock_shared(hashtextextended('pgvn-repo:'||$1,0))",1,values);
 }
 
 svn_error_t *pgfs_native_pack(svn_fs_t *fs,apr_pool_t *pool)
@@ -62,4 +66,45 @@ svn_error_t *pgfs_native_hotcopy(svn_fs_t *source,svn_fs_t *target,
         return svn_error_create(SVN_ERR_FS_ALREADY_EXISTS,NULL,"Hotcopy source and destination must differ");
     SVN_ERR(pgfs_unit_begin(source));
     return pgfs_unit_end(source,pgfs_hotcopy_body(source,target,fresh,NULL,NULL,pool));
+}
+
+svn_error_t *pgfs_native_atomic(svn_fs_t *fs,pgfs_native_atomic_callback callback,void *baton,apr_pool_t *pool)
+{
+    SVN_ERR(pgfs_unit_begin(fs));
+    return pgfs_unit_end(fs,callback(((pgfs_data_t *)fs->fsap_data)->connection,baton,pool));
+}
+
+svn_error_t *pgfs_native_delete_rows(svn_fs_t *fs,apr_pool_t *pool)
+{
+    return pgfs_delete_fs_body(fs,pool);
+}
+
+svn_error_t *pgfs_native_exclusive(svn_fs_t *fs,apr_pool_t *pool)
+{
+    pgfs_data_t *data=fs->fsap_data;
+    const char *values[]={data->repository_id}; PGresult *result;
+    SVN_ERR(pgfs_query(&result,fs,"SELECT pg_try_advisory_lock(hashtextextended('pgvn-repo:'||$1,0))",1,values));
+    svn_boolean_t locked=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+    if(!locked) return svn_error_create(SVN_ERR_FS_TXN_OUT_OF_DATE,NULL,"Repository still has open handles");
+    data->exclusive_lease=TRUE;
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgfs_native_hotcopy_rows(svn_fs_t *source,const char *destination,
+    svn_boolean_t fresh,apr_pool_t *pool)
+{
+    pgfs_data_t data;
+    svn_fs_t target;
+    memset(&data,0,sizeof(data)); memset(&target,0,sizeof(target));
+    data.repository_id=destination;
+    target.fsap_data=&data;
+    target.uuid=source->uuid;
+    return pgfs_hotcopy_body(source,&target,fresh,NULL,NULL,pool);
+}
+
+svn_error_t *pgfs_native_verify(svn_fs_t *fs,svn_revnum_t start,svn_revnum_t end,
+    svn_fs_progress_notify_func_t notify,void *notify_baton,
+    svn_cancel_func_t cancel,void *cancel_baton,apr_pool_t *pool)
+{
+    return pgfs_verify_bound(fs,start,end,notify,notify_baton,cancel,cancel_baton,pool);
 }

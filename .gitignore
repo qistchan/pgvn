@@ -5,5 +5,7 @@
 /toolchains/
 /vendor/
 /config/*.local.json
+/config/*.local.ini
+/config/*.key
 __pycache__/
 *.pyc

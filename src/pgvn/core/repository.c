@@ -15,13 +15,15 @@ static void close_observer(void *baton)
 }
 
 static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *context,
-    const char *id,apr_pool_t *pool)
+    const char *id,svn_boolean_t administrative,apr_pool_t *pool)
 {
     *output=NULL;
     pgvn_repository *repository=apr_pcalloc(pool,sizeof(*repository));
     repository->context=context;
     repository->repository_id=apr_pstrdup(pool,id);
-    SVN_ERR(pgvn_policy_acquire(&repository->policy,context,id,0,pool));
+    repository->administrative=administrative;
+    if(administrative) SVN_ERR(pgvn_require_admin(context));
+    SVN_ERR(pgvn_policy_acquire_internal(&repository->policy,context,id,0,administrative,pool));
     /* The pinned public constructor is deprecated but supplies the complete
      * loader-owned layout. No path dispatch or filesystem operation occurs. */
 #pragma clang diagnostic push
@@ -30,8 +32,9 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
 #pragma clang diagnostic pop
     PGconn *connection;
     SVN_ERR(pgvn_connect(&connection,context));
-    pgfs_observer observer={query_observer,close_observer,pgvn_guard_publish,repository};
+    pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository};
     SVN_ERR(pgfs_native_bind(repository->fs,connection,context->connection_string,id,&observer,pool));
+    if(!administrative) SVN_ERR(pgvn_policy_revalidate(repository->policy,context,pool));
     *output=repository;
     return SVN_NO_ERROR;
 }
@@ -40,17 +43,17 @@ svn_error_t *pgvn_fs_bind(svn_fs_t **fs,pgvn_context *context,const char *id,apr
 {
     pgvn_repository *repository;
     *fs=NULL;
-    SVN_ERR(bind_repository(&repository,context,id,pool));
+    SVN_ERR(bind_repository(&repository,context,id,FALSE,pool));
     *fs=repository->fs;
     return SVN_NO_ERROR;
 }
 
-svn_error_t *pgvn_repos_open(pgvn_repository **output,pgvn_context *context,
-    const char *id,apr_pool_t *pool)
+static svn_error_t *repos_open(pgvn_repository **output,pgvn_context *context,
+    const char *id,svn_boolean_t administrative,apr_pool_t *pool)
 {
     *output=NULL;
     pgvn_repository *repository;
-    SVN_ERR(bind_repository(&repository,context,id,pool));
+    SVN_ERR(bind_repository(&repository,context,id,administrative,pool));
     svn_repos_t *repos=apr_pcalloc(pool,sizeof(*repos));
     repos->fs=repository->fs;
     repos->path=apr_pstrcat(pool,"pgvn:",id,NULL);
@@ -66,6 +69,17 @@ svn_error_t *pgvn_repos_open(pgvn_repository **output,pgvn_context *context,
     return SVN_NO_ERROR;
 }
 
+svn_error_t *pgvn_repos_open(pgvn_repository **output,pgvn_context *context,
+    const char *id,apr_pool_t *pool)
+{
+    return repos_open(output,context,id,FALSE,pool);
+}
+
+svn_error_t *pgvn_repos_open_admin(pgvn_repository **output,pgvn_context *context,
+    const char *id,apr_pool_t *pool)
+{
+    return repos_open(output,context,id,TRUE,pool);
+}
 svn_repos_t *pgvn_repo_svn(pgvn_repository *repository)
 {
     return repository->svn;

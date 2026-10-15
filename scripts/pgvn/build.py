@@ -16,6 +16,7 @@ import shutil
 import struct
 import subprocess
 from prepare_upstream import prepare
+from embed_migrations import embed
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build/pgvn"
@@ -138,6 +139,7 @@ def main():
     legacy.ROOT, legacy.BUILD, legacy.SVN = ROOT, BUILD, svn
     legacy.TOOLS, legacy.RUNTIME, legacy.SVN_BIN = tools, RUNTIME / "legacy/bin", svn_bin
     legacy.generate_stubs()
+    embed(ROOT,BUILD / "generated/pgvn_migrations.h")
     includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/monitor",
                 ROOT / "src/libsvn_fs_pg", repository_source,
                 svn / "include", svn / "libsvn_fs", apr, apu, pg / "include", apache / "include"]
@@ -167,7 +169,7 @@ def main():
     run([compiler, *options, "-municode", ROOT / "src/pgvn/serve/main.c",
          ROOT / "src/pgvn/monitor/http_win.c", *core_links, "-lhttpapi", "-ladvapi32",
          "-Wl,--no-insert-timestamp", "-o", products[0]])
-    run([compiler, *options, ROOT / "src/pgvn/admin/main.c", *core_links,
+    run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
          "-Wl,--no-insert-timestamp", "-o", products[1]])
     for product, define in ((products[2], []), (products[3], ["-DPGVN_AUTHZ_BOOTSTRAP"])):
         run([compiler, *options, "-shared", *define, ROOT / "src/pgvn/dav/bootstrap.c",
@@ -207,7 +209,7 @@ def main():
             "pe": run([tools / "llvm-readobj.exe", "--file-headers", "--coff-imports", "--coff-exports", product])}
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "milestone": "M1", "configuration": args.configuration,
+        "milestone": re.search(r'#define PGVN_MILESTONE "([^"]+)"', (ROOT / "src/pgvn/core/pgvn.h").read_text()).group(1), "configuration": args.configuration,
         "capabilities": {"repository_by_id": True, "svn_protocol": False, "dav_protocol": False, "monitor": "bootstrap"},
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
@@ -217,11 +219,14 @@ def main():
                              "applied_sha256": digest(BUILD / "upstream/applied-repos.patch"), "outputs": patched},
         "sources": {**{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
                     **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
-                    **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()}},
+                    **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()},
+                    **{"tests/pgvn/" + k: v for k, v in inventory(ROOT / "tests/pgvn", {".py", ".c", ".inc"}).items()}},
         "upstream": {"subversion": inventory(paths["subversion"], {".c", ".h", ".inc", ".hw"}),
                      "apr": inventory(apr), "apu": inventory(apu), "apache_include": inventory(apache / "include")},
         "sdk_binaries": {str(d): digest(d) for d in dlls + [pg / "lib/libpq.lib", pg / "bin/libpq.dll"]},
         "products": binary_evidence,
+        "git_base_commit": run(["git", "rev-parse", "HEAD"]).strip(),
+        "git_worktree_dirty": bool(run(["git", "status", "--porcelain"]).strip()),
         "runtime_dependencies": {"bin/" + k: v for k, v in inventory(RUNTIME / "bin").items()},
         "private_api_audit": {
             "ra_svn_exported": sorted(e for e in exports["libsvn_ra-1.dll"] if e.startswith("svn_ra_svn")),
@@ -233,6 +238,12 @@ def main():
     }
     manifest_path = ARTIFACTS / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    build_id = hashlib.sha256(json.dumps({key: manifest[key] for key in (
+        "sources", "upstream_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
+        sort_keys=True).encode()).hexdigest()[:16]
+    archive = ARTIFACTS / (manifest["milestone"] + "-" + build_id + ".json")
+    if not archive.exists():
+        shutil.copy2(manifest_path, archive)
     print(json.dumps({"manifest": str(manifest_path), "configuration": args.configuration,
                       "products": [str(p) for p in products], "private_api_audit": manifest["private_api_audit"]}))
 

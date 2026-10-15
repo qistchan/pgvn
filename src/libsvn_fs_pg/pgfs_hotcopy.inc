@@ -20,7 +20,7 @@ static svn_error_t *pgfs_hotcopy_body(svn_fs_t *source,svn_fs_t *target,svn_bool
         "AND (sr.rev IS NULL OR dr.origin_txn_id IS DISTINCT FROM sr.origin_txn_id)) "
         "FROM pgfs.repositories s JOIN pgfs.repositories d ON d.repository_id=$2::uuid WHERE s.repository_id=$1::uuid",2,v));
     svn_boolean_t compatible=PQntuples(result)==1 && PQgetvalue(result,0,0)[0]=='t'; PQclear(result);
-    if(!compatible) return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"Incremental hotcopy destination has diverged or belongs to another source");
+    if(!compatible) return svn_error_create(SVN_ERR_FS_TXN_OUT_OF_DATE,NULL,"Incremental hotcopy destination has diverged or belongs to another source");
     const char *kinds[]={"node","content","properties","directory"};
     const char *tables[]={"node_revisions","contents","property_sets","directories"};
     const char *keys[]={"node_revision_id","content_id","properties_id","directory_id"};

@@ -12,14 +12,15 @@ static svn_error_t *parse_authz(svn_authz_t **authz,const char *text,const char 
         return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN authz text exceeds supported limits");
     svn_stream_t *rules=svn_stream_from_string(svn_string_create(text,pool),pool);
     svn_stream_t *group_stream=groups ? svn_stream_from_string(svn_string_create(groups,pool),pool) : NULL;
-    return svn_repos_authz_parse2(authz,rules,group_stream,NULL,NULL,pool,pool);
+    svn_error_t *error=svn_repos_authz_parse2(authz,rules,group_stream,NULL,NULL,pool,pool);
+    return error ? svn_error_create(SVN_ERR_AUTHZ_INVALID_CONFIG,error,"Invalid authorization rules") : SVN_NO_ERROR;
 }
 
-svn_error_t *pgvn_policy_acquire(pgvn_policy **output,pgvn_context *context,
-    const char *id,apr_int64_t generation,apr_pool_t *pool)
+svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **output,pgvn_context *context,
+    const char *id,apr_int64_t generation,svn_boolean_t allow_disabled,apr_pool_t *pool)
 {
     *output=NULL;
-    const char *values[]={id,apr_psprintf(pool,"%" APR_INT64_T_FMT,generation)};
+    const char *values[]={id,apr_psprintf(pool,"%" APR_INT64_T_FMT,generation),allow_disabled ? "true" : "false"};
     PGresult *result;
     SVN_ERR(pgvn_control_query(&result,context,
         "SELECT r.canonical_name,r.generation,c.authz_text,c.groups_text,"
@@ -27,7 +28,7 @@ svn_error_t *pgvn_policy_acquire(pgvn_policy **output,pgvn_context *context,
         "c.hooks->>'pre-revprop-change',c.hooks->>'post-revprop-change',"
         "c.hooks->>'pre-lock',c.hooks->>'post-lock',c.hooks->>'pre-unlock',c.hooks->>'post-unlock' "
         "FROM pgvn.repositories r JOIN pgvn.configurations c ON c.repository_id=r.repository_id AND c.generation=r.generation "
-        "WHERE r.repository_id=$1::uuid AND r.enabled AND ($2::bigint=0 OR r.generation=$2::bigint)",2,values));
+        "WHERE r.repository_id=$1::uuid AND (r.enabled OR $3::boolean) AND ($2::bigint=0 OR r.generation=$2::bigint)",3,values));
     if(PQntuples(result)!=1) {
         PQclear(result);
         return svn_error_create(SVN_ERR_FS_NOT_FOUND,NULL,"PgVN repository or configuration is unavailable");
@@ -44,6 +45,12 @@ svn_error_t *pgvn_policy_acquire(pgvn_policy **output,pgvn_context *context,
     SVN_ERR(parse_authz(&policy->authz,text,groups,pool));
     *output=policy;
     return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_policy_acquire(pgvn_policy **output,pgvn_context *context,
+    const char *id,apr_int64_t generation,apr_pool_t *pool)
+{
+    return pgvn_policy_acquire_internal(output,context,id,generation,FALSE,pool);
 }
 
 svn_error_t *pgvn_policy_check(svn_boolean_t *allowed,const pgvn_policy *policy,
@@ -127,7 +134,7 @@ svn_error_t *pgvn_repos_hook(void *baton,const char *event,const char *user,
     int code=-1;
     for(int i=0;i<9;++i) if(!strcmp(events[i],event)) code=i;
     if(code<0) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Unknown PgVN hook event");
-    if(code==0 || code==1 || code==3 || code==5 || code==7)
+    if(!repository->administrative && (code==0 || code==1 || code==3 || code==5 || code==7))
         SVN_ERR(pgvn_policy_revalidate(repository->policy,repository->context,pool));
     pgvn_hook_context context={repository->repository_id,user,txn,rev,(pgvn_hook_event)code};
     return pgvn_hook_dispatch(repository->policy,&context,pool);

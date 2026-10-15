@@ -34,8 +34,14 @@ struct pgvn_repository {
     pgvn_policy *policy;
     svn_fs_t *fs;
     svn_repos_t *svn;
+    svn_boolean_t administrative;
 };
 
+svn_error_t *pgvn_database_open(pgvn_context **context,const pgvn_context_options *options,apr_pool_t *pool);
+svn_error_t *pgvn_database_validate(pgvn_context *context);
+svn_error_t *pgvn_require_admin(pgvn_context *context);
+svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **policy,pgvn_context *context,
+    const char *repository_id,apr_int64_t generation,svn_boolean_t allow_disabled,apr_pool_t *pool);
 svn_error_t *pgvn_exec(PGresult **result, pgvn_context *context, PGconn *connection,
                        const char *sql, int count, const char *const *values);
 svn_error_t *pgvn_connect(PGconn **connection, pgvn_context *context);
@@ -50,4 +56,6 @@ svn_error_t *pgvn_repos_hook(void *repository, const char *event, const char *us
 svn_error_t *pgvn_guard_publish(void *baton, PGconn *connection,
                               const char *txn, apr_pool_t *pool);
 svn_error_t *pgvn_validate_path(const char *path);
+svn_error_t *pgvn_validate_name(const char *name);
+const char *pgvn_new_uuid(apr_pool_t *pool);
 #endif

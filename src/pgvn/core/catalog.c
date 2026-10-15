@@ -90,16 +90,22 @@ static svn_error_t *create_body(pgvn_context *context,const char *id,const char 
     return SVN_NO_ERROR;
 }
 
-svn_error_t *pgvn_repo_create(pgvn_binding **output,pgvn_context *context,
-    const char *name,const char *route,const char *public_uuid,apr_pool_t *pool)
+svn_error_t *pgvn_validate_name(const char *name)
 {
-    *output=NULL;
-    SVN_ERR(pgvn_validate_path(route));
     if(!name || !*name || strlen(name)>256 || !svn_utf__is_valid(name,strlen(name))
        || strchr(name,'/') || strchr(name,'\\') || !strcmp(name,".") || !strcmp(name,".."))
         return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgVN repository name");
     for(const unsigned char *p=(const unsigned char *)name;*p;++p)
         if(*p<32 || *p==127) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgVN repository name");
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_repo_create(pgvn_binding **output,pgvn_context *context,
+    const char *name,const char *route,const char *public_uuid,apr_pool_t *pool)
+{
+    *output=NULL;
+    SVN_ERR(pgvn_validate_path(route));
+    SVN_ERR(pgvn_validate_name(name));
     apr_uuid_t parsed;
     if(public_uuid && apr_uuid_parse(&parsed,public_uuid)!=APR_SUCCESS)
         return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"SVN UUID is invalid");

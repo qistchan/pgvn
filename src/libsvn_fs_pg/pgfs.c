@@ -28,6 +28,7 @@ typedef struct pgfs_data_t {
     const char *connection_string;
     apr_hash_t *active_writers;
     svn_boolean_t directory_adapter;
+    svn_boolean_t exclusive_lease;
     pgfs_observer observer;
 } pgfs_data_t;
 

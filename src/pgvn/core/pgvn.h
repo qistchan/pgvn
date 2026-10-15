@@ -8,7 +8,7 @@
 #include "svn_repos.h"
 
 #define PGVN_VERSION "0.1.0-dev"
-#define PGVN_MILESTONE "M1"
+#define PGVN_MILESTONE "M2"
 #define PGVN_SVN_BASE "1.14.5"
 #define PGVN_MONITOR_QUEUE_LIMIT 64
 #define PGVN_MONITOR_HEADER_LIMIT 32768
@@ -19,6 +19,8 @@
 #define PGVN_MONITOR_PAGE_MAX 200
 #define PGVN_MONITOR_TREND_SECONDS 900
 #define PGVN_MONITOR_EVENT_LIMIT 200
+#define PGVN_ERR_DATABASE (APR_OS_START_USERERR + 1000000)
+#define PGVN_ERR_SCHEMA (APR_OS_START_USERERR + 1000001)
 
 /* Stable process exit classes. SVN error codes retain their protocol meaning. */
 typedef enum pgvn_exit_code {
@@ -85,6 +87,18 @@ svn_error_t *pgvn_catalog_resolve(pgvn_binding **binding, pgvn_context *context,
                                 const char *url_path, apr_pool_t *pool);
 svn_error_t *pgvn_repos_open(pgvn_repository **repository, pgvn_context *context,
                            const char *repository_id, apr_pool_t *pool);
+svn_error_t *pgvn_repos_open_admin(pgvn_repository **repository,pgvn_context *context,
+                                 const char *repository_id,apr_pool_t *pool);
+svn_error_t *pgvn_repository_lookup(pgvn_binding **binding,pgvn_context *context,
+                                  const char *selector,apr_pool_t *pool);
+svn_error_t *pgvn_repo_register(pgvn_binding **binding,pgvn_context *context,
+                              const char *repository_id,const char *name,const char *route,apr_pool_t *pool);
+svn_error_t *pgvn_repo_set_enabled(pgvn_context *context,const char *repository_id,
+                                 svn_boolean_t enabled,apr_pool_t *pool);
+svn_error_t *pgvn_repo_purge(pgvn_context *context,const char *repository_id,apr_pool_t *pool);
+svn_error_t *pgvn_repo_hotcopy(pgvn_binding **binding,pgvn_context *context,
+                             const char *source_id,const char *destination_name,
+                             const char *route,const char *incremental_id,apr_pool_t *pool);
 svn_repos_t *pgvn_repo_svn(pgvn_repository *repository);
 svn_error_t *pgvn_transaction_receipt(svn_revnum_t *revision,pgvn_repository *repository,
                                     const char *transaction_id,const char *username,apr_pool_t *pool);
