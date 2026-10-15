@@ -1,0 +1,100 @@
+#include <string.h>
+#include "internal.h"
+#include <apr_strings.h>
+#include "repos.h"
+#include "pgfs_native.h"
+
+static void query_observer(void *baton,const char *state,apr_interval_time_t elapsed)
+{
+    pgvn_metric_query(((pgvn_repository *)baton)->context,state,elapsed);
+}
+
+static void close_observer(void *baton)
+{
+    pgvn_metric_closed(((pgvn_repository *)baton)->context);
+}
+
+static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *context,
+    const char *id,apr_pool_t *pool)
+{
+    *output=NULL;
+    pgvn_repository *repository=apr_pcalloc(pool,sizeof(*repository));
+    repository->context=context;
+    repository->repository_id=apr_pstrdup(pool,id);
+    SVN_ERR(pgvn_policy_acquire(&repository->policy,context,id,0,pool));
+    /* The pinned public constructor is deprecated but supplies the complete
+     * loader-owned layout. No path dispatch or filesystem operation occurs. */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    repository->fs=svn_fs_new(NULL,pool);
+#pragma clang diagnostic pop
+    PGconn *connection;
+    SVN_ERR(pgvn_connect(&connection,context));
+    pgfs_observer observer={query_observer,close_observer,pgvn_guard_publish,repository};
+    SVN_ERR(pgfs_native_bind(repository->fs,connection,context->connection_string,id,&observer,pool));
+    *output=repository;
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_fs_bind(svn_fs_t **fs,pgvn_context *context,const char *id,apr_pool_t *pool)
+{
+    pgvn_repository *repository;
+    *fs=NULL;
+    SVN_ERR(bind_repository(&repository,context,id,pool));
+    *fs=repository->fs;
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_repos_open(pgvn_repository **output,pgvn_context *context,
+    const char *id,apr_pool_t *pool)
+{
+    *output=NULL;
+    pgvn_repository *repository;
+    SVN_ERR(bind_repository(&repository,context,id,pool));
+    svn_repos_t *repos=apr_pcalloc(pool,sizeof(*repos));
+    repos->fs=repository->fs;
+    repos->path=apr_pstrcat(pool,"pgvn:",id,NULL);
+    repos->format=SVN_REPOS__FORMAT_NUMBER;
+    repos->fs_type="pg";
+    repos->repository_capabilities=apr_hash_make(pool);
+    repos->pool=pool;
+    repos->pgvn_baton=repository;
+    /* conf/hooks/locks/db and hooks_env stay NULL. Patched hook dispatch and
+     * explicit unsupported path APIs prevent treating identity as a directory. */
+    repository->svn=repos;
+    *output=repository;
+    return SVN_NO_ERROR;
+}
+
+svn_repos_t *pgvn_repo_svn(pgvn_repository *repository)
+{
+    return repository->svn;
+}
+
+static svn_error_t *receipt_body(svn_revnum_t *revision,pgvn_repository *repository,
+    const char *txn,const char *username,apr_pool_t *pool)
+{
+    const char *values[]={repository->repository_id,txn};
+    PGresult *result;
+    SVN_ERR(pgvn_exec(&result,repository->context,repository->context->control,
+        "SELECT t.state,t.committed_rev,convert_from(p.value,'UTF8') "
+        "FROM pgfs.transactions t LEFT JOIN pgfs.transaction_properties p "
+        "ON p.repository_id=t.repository_id AND p.txn_id=t.txn_id AND p.name='svn:author' "
+        "WHERE t.repository_id=$1::uuid AND t.txn_id=$2 FOR UPDATE OF t",2,values));
+    if(PQntuples(result)!=1 || PQgetisnull(result,0,2) || !username || strcmp(username,PQgetvalue(result,0,2))) {
+        PQclear(result);
+        return svn_error_create(SVN_ERR_AUTHZ_UNREADABLE,NULL,"PgVN transaction receipt is unavailable to this identity");
+    }
+    if(!strcmp(PQgetvalue(result,0,0),"committed") && !PQgetisnull(result,0,1))
+        *revision=(svn_revnum_t)apr_atoi64(PQgetvalue(result,0,1));
+    PQclear(result);
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_transaction_receipt(svn_revnum_t *revision,pgvn_repository *repository,
+    const char *txn,const char *username,apr_pool_t *pool)
+{
+    *revision=SVN_INVALID_REVNUM;
+    SVN_ERR(pgvn_control_begin(repository->context));
+    return pgvn_control_end(repository->context,receipt_body(revision,repository,txn,username,pool));
+}

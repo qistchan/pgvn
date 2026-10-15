@@ -258,6 +258,8 @@ static svn_error_t *pgfs_commit_body(const char **conflict,svn_revnum_t *new_rev
     txn->base_rev=(svn_revnum_t)apr_atoi64(PQgetvalue(result,0,0));
     apr_int64_t target=apr_atoi64(PQgetvalue(result,0,1)); PQclear(result);
     if(!active) return svn_error_create(SVN_ERR_FS_NO_SUCH_TRANSACTION,NULL,"Transaction has been aborted");
+    if(data->observer.before_publish)
+        SVN_ERR(data->observer.before_publish(data->observer.baton,data->connection,txn->id,pool));
     if(apr_hash_get(data->active_writers,txn->id,APR_HASH_KEY_STRING))
         return svn_error_create(SVN_ERR_FS_REP_BEING_WRITTEN,NULL,"A PgFS file text stream is still open");
     SVN_ERR(pgfs_query(&result,txn->fs,

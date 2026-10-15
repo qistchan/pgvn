@@ -13,7 +13,7 @@ int main(int argc, char **argv)
         apr_terminate();
         return 0;
     }
-    fputs("M0 bootstrap: use pgvnadmin --version or diagnose. Repository commands follow in M1/M2.\n", stderr);
+    fputs("Bootstrap: use pgvnadmin --version or diagnose. Repository commands follow in M2.\n", stderr);
     apr_terminate();
     return 2;
 }

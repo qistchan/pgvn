@@ -111,10 +111,11 @@ def build_identity():
     diagnoses = {}
     for product in ("pgvnserve", "pgvnadmin"):
         diagnosis = json.loads(command([RUNTIME / "bin" / (product + ".exe"), "--version"]))
-        assert diagnosis["milestone"] == "M0" and diagnosis["svn_base"] == "1.14.5"
+        assert diagnosis["milestone"] == manifest["milestone"] and diagnosis["svn_base"] == "1.14.5"
         assert diagnosis["apr_runtime"] == "1.7.6" and diagnosis["libpq_version"] == 180006
         assert diagnosis["ready"] is False
         assert diagnosis["capabilities"]["svn_protocol"] is False
+        assert diagnosis["capabilities"]["repository_by_id"] == manifest["capabilities"]["repository_by_id"]
         diagnoses[product] = diagnosis
     assert "1.14.5" in command([RUNTIME / "bin/svn.exe", "--version", "--quiet"])
     assert "Apache/2.4.68" in command([RUNTIME / "apache/bin/httpd.exe", "-v"])
@@ -210,7 +211,7 @@ AcceptFilter http none
                     time.sleep(0.1)
                 assert json.loads(body)["capabilities"]["dav_protocol"] is False
                 status, _, body = request(port, "/authz-bootstrap")
-                assert status == 200 and json.loads(body)["milestone"] == "M0"
+                assert status == 200 and json.loads(body)["product"] == "PgVN"
             finally:
                 stop_process(process)
     return {"syntax": syntax.strip(), "loaded_modules": modules.strip(),

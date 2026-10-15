@@ -19,6 +19,7 @@
 #include "svn_time.h"
 #include "svn_version.h"
 #include "fs-loader.h"
+#include "pgfs_native.h"
 
 typedef struct pgfs_data_t {
     PGconn *connection;
@@ -26,6 +27,8 @@ typedef struct pgfs_data_t {
     const char *repository_id;
     const char *connection_string;
     apr_hash_t *active_writers;
+    svn_boolean_t directory_adapter;
+    pgfs_observer observer;
 } pgfs_data_t;
 
 typedef struct pgfs_root_data_t {
@@ -43,7 +46,10 @@ static svn_error_t *pgfs_unsupported(const char *operation)
 static apr_status_t pgfs_cleanup(void *baton)
 {
     pgfs_data_t *data = baton;
-    if (data->connection) { PQfinish(data->connection); data->connection = NULL; }
+    if (data->connection) {
+        PQfinish(data->connection); data->connection = NULL;
+        if (data->observer.closed) data->observer.closed(data->observer.baton);
+    }
     return APR_SUCCESS;
 }
 
@@ -62,18 +68,23 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
         return svn_error_create(SVN_ERR_FS_GENERAL, NULL, "PgFS parameter allocation failed");
     }
     for (int i = 0; i < count; ++i) types[i] = formats && formats[i] ? 17 : 25;
+    apr_time_t started = data->observer.query ? apr_time_now() : 0;
     *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, 0);
     free(types);
     svn_error_t *error = NULL;
+    char sqlstate[6] = "00000";
     if (!*result || (PQresultStatus(*result) != PGRES_TUPLES_OK &&
                     PQresultStatus(*result) != PGRES_COMMAND_OK)) {
-        error = svn_error_createf(SVN_ERR_FS_GENERAL, NULL, "PgFS SQL operation failed: %s",
-                                 *result ? PQresultErrorMessage(*result)
-                                         : PQerrorMessage(data->connection));
+        const char *state = *result ? PQresultErrorField(*result, PG_DIAG_SQLSTATE) : NULL;
+        memcpy(sqlstate, state && strlen(state) == 5 ? state : "08006", 5);
+        error = svn_error_createf(SVN_ERR_FS_GENERAL, NULL,
+                                  "PgFS database operation failed (SQLSTATE %s)", sqlstate);
         if (*result) PQclear(*result);
         *result = NULL;
     }
     status = apr_thread_mutex_unlock(data->mutex);
+    if (data->observer.query)
+        data->observer.query(data->observer.baton, sqlstate, apr_time_now() - started);
     if (status && !error) error = svn_error_wrap_apr(status, "PgFS connection unlock failed");
     return error;
 }
@@ -84,8 +95,9 @@ static svn_error_t *pgfs_query(PGresult **result, svn_fs_t *fs, const char *sql,
     return pgfs_query_full(result, fs, sql, count, values, NULL, NULL);
 }
 
-static svn_error_t *pgfs_connect(svn_fs_t *fs, const char *path, const char *dsn,
-                                const char *repository_id)
+static svn_error_t *pgfs_attach(svn_fs_t *fs, const char *path, const char *dsn,
+                               const char *repository_id, PGconn *connection,
+                               const pgfs_observer *observer)
 {
     pgfs_data_t *data = apr_pcalloc(fs->pool, sizeof(*data));
     fs->path = apr_pstrdup(fs->pool, path);
@@ -93,16 +105,23 @@ static svn_error_t *pgfs_connect(svn_fs_t *fs, const char *path, const char *dsn
     fs->vtable = &pgfs_fs_vtable;
     data->repository_id = apr_pstrdup(fs->pool, repository_id);
     data->connection_string = apr_pstrdup(fs->pool, dsn);
+    data->directory_adapter = TRUE;
+    if (observer) data->observer = *observer;
     data->active_writers = apr_hash_make(fs->pool);
+    data->connection = connection;
+    apr_pool_cleanup_register(fs->pool, data, pgfs_cleanup, apr_pool_cleanup_null);
     apr_status_t status = apr_thread_mutex_create(&data->mutex,
                                                  APR_THREAD_MUTEX_NESTED, fs->pool);
     if (status) return svn_error_wrap_apr(status, "PgFS mutex creation failed");
-    data->connection = PQconnectdb(dsn);
-    apr_pool_cleanup_register(fs->pool, data, pgfs_cleanup, apr_pool_cleanup_null);
-    if (PQstatus(data->connection) != CONNECTION_OK)
-        return svn_error_createf(SVN_ERR_FS_GENERAL, NULL, "PgFS connection failed: %s",
-                                 PQerrorMessage(data->connection));
+    if (!data->connection || PQstatus(data->connection) != CONNECTION_OK)
+        return svn_error_create(SVN_ERR_FS_GENERAL, NULL, "PgFS database connection failed");
     return SVN_NO_ERROR;
+}
+
+static svn_error_t *pgfs_connect(svn_fs_t *fs, const char *path, const char *dsn,
+                                const char *repository_id)
+{
+    return pgfs_attach(fs, path, dsn, repository_id, PQconnectdb(dsn), NULL);
 }
 
 static const char *pgfs_uuid(apr_pool_t *pool)
@@ -126,25 +145,31 @@ static svn_error_t *pgfs_create(svn_fs_t *fs, const char *path,
     const char *instance_id = pgfs_uuid(fs->pool);
     SVN_ERR(pgfs_connect(fs, path, dsn, repository_id));
     fs->uuid = repository_id;
-    const char *values[] = {repository_id, instance_id,
-                           svn_time_to_cstring(apr_time_now(), scratch_pool)};
-    PGresult *result;
-    /* One SQL statement atomically creates repository, root and revision zero. */
-    SVN_ERR(pgfs_query(&result, fs,
-        "WITH repo AS (INSERT INTO pgfs.repositories(repository_id,svn_uuid,instance_id,format_version) "
-        "VALUES($1::uuid,$1::uuid,$2::uuid,1) RETURNING repository_id), "
-        "node AS (INSERT INTO pgfs.node_revisions(repository_id,node_id,kind,created_rev,created_path) "
-        "SELECT repository_id,0,'dir',0,'/' FROM repo RETURNING repository_id,node_revision_id), "
-        "rev AS (INSERT INTO pgfs.revisions(repository_id,rev,root_node_revision_id) "
-        "SELECT repository_id,0,node_revision_id FROM node RETURNING repository_id,rev) "
-        "INSERT INTO pgfs.revision_properties(repository_id,rev,name,value) "
-        "SELECT repository_id,rev,'svn:date',convert_to($3,'UTF8') FROM rev",
-        3, values));
-    PQclear(result);
+    SVN_ERR(pgfs_native_create_records(((pgfs_data_t *)fs->fsap_data)->connection,
+        repository_id, repository_id, instance_id, svn_time_to_cstring(apr_time_now(), scratch_pool)));
     const char *config = apr_psprintf(scratch_pool,
         "[pgfs]\nrepository = %s\nconnection = %s\n", repository_id, dsn);
     SVN_ERR(svn_io_file_create(svn_dirent_join(path, "pgfs.conf", scratch_pool),
                                config, scratch_pool));
+    return SVN_NO_ERROR;
+}
+
+static svn_error_t *pgfs_load_metadata(svn_fs_t *fs, const char *repository_id)
+{
+    const char *values[] = {repository_id};
+    PGresult *result;
+    SVN_ERR(pgfs_query(&result, fs,
+        "SELECT svn_uuid::text,format_version FROM pgfs.repositories WHERE repository_id=$1::uuid",
+        1, values));
+    if (PQntuples(result) != 1) {
+        PQclear(result);
+        return svn_error_create(SVN_ERR_FS_CORRUPT, NULL, "PgFS repository record does not exist");
+    }
+    fs->uuid = apr_pstrdup(fs->pool, PQgetvalue(result, 0, 0));
+    int format = atoi(PQgetvalue(result, 0, 1));
+    PQclear(result);
+    if (format != 1) return svn_error_create(SVN_ERR_FS_UNSUPPORTED_FORMAT, NULL,
+                                            "Unsupported PgFS storage format");
     return SVN_NO_ERROR;
 }
 
@@ -161,21 +186,7 @@ static svn_error_t *pgfs_open(svn_fs_t *fs, const char *path,
     if (!dsn || !repository_id)
         return svn_error_create(SVN_ERR_FS_CORRUPT, NULL, "PgFS repository configuration is incomplete");
     SVN_ERR(pgfs_connect(fs, path, dsn, repository_id));
-    const char *values[] = {repository_id};
-    PGresult *result;
-    SVN_ERR(pgfs_query(&result, fs,
-        "SELECT svn_uuid::text,format_version FROM pgfs.repositories WHERE repository_id=$1::uuid",
-        1, values));
-    if (PQntuples(result) != 1) {
-        PQclear(result);
-        return svn_error_create(SVN_ERR_FS_CORRUPT, NULL, "PgFS repository record does not exist");
-    }
-    fs->uuid = apr_pstrdup(fs->pool, PQgetvalue(result, 0, 0));
-    int format = atoi(PQgetvalue(result, 0, 1));
-    PQclear(result);
-    if (format != 1) return svn_error_create(SVN_ERR_FS_UNSUPPORTED_FORMAT, NULL,
-                                            "Unsupported PgFS storage format");
-    return SVN_NO_ERROR;
+    return pgfs_load_metadata(fs, repository_id);
 }
 
 static svn_error_t *pgfs_youngest(svn_revnum_t *rev, svn_fs_t *fs, apr_pool_t *pool)
@@ -315,7 +326,8 @@ static svn_error_t *pgfs_config_files(apr_array_header_t **files, svn_fs_t *fs,
                                      apr_pool_t *result_pool, apr_pool_t *scratch_pool)
 {
     *files = apr_array_make(result_pool, 1, sizeof(const char *));
-    APR_ARRAY_PUSH(*files, const char *) = svn_dirent_join(fs->path, "pgfs.conf", result_pool);
+    if (((pgfs_data_t *)fs->fsap_data)->directory_adapter)
+        APR_ARRAY_PUSH(*files, const char *) = svn_dirent_join(fs->path, "pgfs.conf", result_pool);
     return SVN_NO_ERROR;
 }
 
@@ -346,13 +358,10 @@ static const char *pgfs_description(void)
     return "PostgreSQL filesystem provider (PgFS), storage format 1.";
 }
 
-__declspec(dllexport) svn_error_t *svn_fs_pg__init(const svn_version_t *loader_version,
-                                                 fs_library_vtable_t **vtable,
-                                                 apr_pool_t *common_pool)
+static INIT_ONCE pgfs_vtables_once = INIT_ONCE_STATIC_INIT;
+
+static BOOL CALLBACK pgfs_initialize_vtables(PINIT_ONCE once, PVOID parameter, PVOID *context)
 {
-    if (loader_version->major != 1 || loader_version->minor != 14 || loader_version->patch != 5)
-        return svn_error_create(SVN_ERR_VERSION_MISMATCH, NULL,
-                                "PgFS was built for Subversion 1.14.5");
     pgfs_initialize_fs_library_stubs();
     pgfs_initialize_fs_stubs();
     pgfs_initialize_txn_stubs();
@@ -438,6 +447,22 @@ __declspec(dllexport) svn_error_t *svn_fs_pg__init(const svn_version_t *loader_v
     pgfs_fs_library_vtable.ioctl = pgfs_library_ioctl;
     pgfs_fs_library_vtable.hotcopy = pgfs_hotcopy;
     pgfs_fs_library_vtable.delete_fs = pgfs_delete_fs;
+    return TRUE;
+}
+
+#ifndef PGVN_STATIC
+__declspec(dllexport)
+#endif
+svn_error_t *svn_fs_pg__init(const svn_version_t *loader_version,
+                            fs_library_vtable_t **vtable, apr_pool_t *common_pool)
+{
+    if (loader_version->major != 1 || loader_version->minor != 14 || loader_version->patch != 5)
+        return svn_error_create(SVN_ERR_VERSION_MISMATCH, NULL,
+                                "PgFS was built for Subversion 1.14.5");
+    if (!InitOnceExecuteOnce(&pgfs_vtables_once, pgfs_initialize_vtables, NULL, NULL))
+        return svn_error_wrap_apr(GetLastError(), "PgFS vtable initialization failed");
     *vtable = &pgfs_fs_library_vtable;
     return SVN_NO_ERROR;
 }
+
+#include "pgfs_native.inc"

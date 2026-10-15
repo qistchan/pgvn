@@ -8,12 +8,14 @@ import argparse
 import ctypes
 import datetime as dt
 import hashlib
+import importlib.util
 import json
 import os
 import re
 import shutil
 import struct
 import subprocess
+from prepare_upstream import prepare
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build/pgvn"
@@ -35,6 +37,10 @@ def run(args):
     result = subprocess.run([str(a) for a in args], cwd=ROOT, capture_output=True,
                             text=True, encoding="utf-8", errors="replace",
                             creationflags=subprocess.CREATE_NO_WINDOW, timeout=180)
+    ARTIFACTS.mkdir(parents=True, exist_ok=True)
+    with (ARTIFACTS / "commands.jsonl").open("a", encoding="utf-8") as log:
+        log.write(json.dumps({"args": [str(a) for a in args], "exit_code": result.returncode,
+                              "stdout": result.stdout, "stderr": result.stderr}) + "\n")
     if result.returncode:
         raise RuntimeError(f"Command failed ({result.returncode}): {args}\n"
                            f"{result.stdout}\n{result.stderr}")
@@ -116,25 +122,46 @@ def main():
     libraries, exports = {}, {}
     dlls = [svn_bin / name for name in ("libapr-1.dll", "libaprutil-1.dll",
             "libsvn_subr-1.dll", "libsvn_delta-1.dll", "libsvn_fs-1.dll", "libsvn_repos-1.dll",
-            "libsvn_ra-1.dll")] + [apache / "bin/libhttpd.dll"]
+            "libsvn_ra-1.dll", "libsvn_diff-1.dll", "libsvn_fs_util-1.dll")] + [apache / "bin/libhttpd.dll"]
     for dll in dlls:
         libraries[dll.name], exports[dll.name] = import_library(tools, dll)
     # The two hosts must use the same APR data ABI during this pinned M0 build.
     for name in ("libapr-1.dll", "libaprutil-1.dll"):
         if digest(svn_bin / name) != digest(apache / "bin" / name):
             raise RuntimeError(f"SVN and Apache have different {name}; separate ABI builds are required")
+    repository_source = BUILD / "upstream/libsvn_repos"
+    patched = prepare(svn / "libsvn_repos", repository_source,
+                      ROOT / "patches/pgvn/subversion-1.14.5/repos.json")
+    legacy_spec = importlib.util.spec_from_file_location("pgfs_legacy_build", ROOT / "scripts/build.py")
+    legacy = importlib.util.module_from_spec(legacy_spec)
+    legacy_spec.loader.exec_module(legacy)
+    legacy.ROOT, legacy.BUILD, legacy.SVN = ROOT, BUILD, svn
+    legacy.TOOLS, legacy.RUNTIME, legacy.SVN_BIN = tools, RUNTIME / "legacy/bin", svn_bin
+    legacy.generate_stubs()
     includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/monitor",
+                ROOT / "src/libsvn_fs_pg", repository_source,
                 svn / "include", svn / "libsvn_fs", apr, apu, pg / "include", apache / "include"]
     options = ["-std=c17", "-O0", "-g"] if args.configuration == "Debug" else ["-std=c17", "-O2", "-DNDEBUG"]
     options += ["-DWIN32", "-D_M_X64", "-D_WIN32_WINNT=0x0601", "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter"]
     for path in includes:
         options += ["-I", path]
     compiler = tools / "clang.exe"
-    core = BUILD / "objects/build_info.o"
-    run([compiler, *options, "-c", ROOT / "src/pgvn/core/build_info.c", "-o", core])
+    objects = []
+    for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c"]:
+        output = BUILD / "objects" / ("core-" + source.stem + ".o")
+        run([compiler, *options, "-DPGVN_STATIC", "-c", source, "-o", output])
+        objects.append(output)
+    for source in sorted(repository_source.glob("*.c")):
+        output = BUILD / "objects" / ("repos-" + source.stem + ".o")
+        run([compiler, *[o for o in options if o != "-Werror"], "-Wno-deprecated-declarations", "-Wno-missing-field-initializers",
+             "-c", source, "-o", output])
+        objects.append(output)
     static_core = BUILD / "libpgvn_core.a"
-    run([tools / "llvm-ar.exe", "rcs", static_core, core])
-    core_links = [static_core, libraries["libapr-1.dll"], pg / "lib/libpq.lib"]
+    if static_core.exists():
+        static_core.unlink()
+    run([tools / "llvm-ar.exe", "rcs", static_core, *objects])
+    core_links = [static_core, *[libraries[name] for name in ("libsvn_fs-1.dll", "libsvn_fs_util-1.dll",
+        "libsvn_diff-1.dll", "libsvn_delta-1.dll", "libsvn_subr-1.dll", "libaprutil-1.dll", "libapr-1.dll")], pg / "lib/libpq.lib"]
     products = [RUNTIME / "bin/pgvnserve.exe", RUNTIME / "bin/pgvnadmin.exe",
                 RUNTIME / "apache/modules/mod_dav_pgvn.so", RUNTIME / "apache/modules/mod_authz_pgvn.so"]
     run([compiler, *options, "-municode", ROOT / "src/pgvn/serve/main.c",
@@ -145,6 +172,10 @@ def main():
     for product, define in ((products[2], []), (products[3], ["-DPGVN_AUTHZ_BOOTSTRAP"])):
         run([compiler, *options, "-shared", *define, ROOT / "src/pgvn/dav/bootstrap.c",
              *core_links, libraries["libhttpd.dll"], "-Wl,--no-insert-timestamp", "-o", product])
+    probe = ROOT / "tests/pgvn/core_probe.c"
+    if probe.exists():
+        run([compiler, *options, "-municode", probe, *core_links, "-Wl,--no-insert-timestamp",
+             "-o", RUNTIME / "bin/core_probe.exe"])
     # Copy runtime dependencies into the isolated output; input installations are read-only.
     for source, target in ((svn_bin, RUNTIME / "bin"), (apache / "bin", RUNTIME / "apache/bin")):
         for item in source.iterdir():
@@ -155,6 +186,20 @@ def main():
     # Core Windows MPM is built into this distribution. Other test modules are copied explicitly.
     for name in ("mod_authz_core.so",):
         shutil.copy2(apache / "modules" / name, RUNTIME / "apache/modules" / name)
+    legacy.RUNTIME.mkdir(parents=True, exist_ok=True)
+    for item in (RUNTIME / "bin").glob("*"):
+        if item.suffix.lower() in (".dll", ".exe") and not item.name.startswith(("pgvn", "core_probe")):
+            shutil.copy2(item, legacy.RUNTIME / item.name)
+    plugin_imports = [libraries[name] for name in ("libapr-1.dll", "libaprutil-1.dll", "libsvn_subr-1.dll", "libsvn_delta-1.dll")]
+    run([compiler, *options, "-shared", ROOT / "src/libsvn_fs_pg/pgfs.c", *plugin_imports,
+         pg / "lib/libpq.lib", "-Wl,--no-insert-timestamp", "-o", legacy.RUNTIME / "libsvn_fs_pg-1.dll"])
+    legacy.build_dynamic_loader(includes, plugin_imports + [libraries["libsvn_fs_util-1.dll"]])
+    legacy_fs, _ = import_library(tools, legacy.RUNTIME / "libsvn_fs-1.dll")
+    run([compiler, *options, ROOT / "tests/fs_probe.c", *plugin_imports, legacy_fs,
+         "-Wl,--no-insert-timestamp", "-o", legacy.RUNTIME / "fs_probe.exe"])
+    run([compiler, *[o for o in options if o != "-Werror"], "-Wno-deprecated-declarations",
+         svn / "tests/cmdline/lock-helper.c", *plugin_imports, legacy_fs, libraries["libsvn_repos-1.dll"],
+         "-Wl,--no-insert-timestamp", "-o", legacy.RUNTIME / "lock-helper.exe"])
     binary_evidence = {}
     for product in products:
         binary_evidence[product.relative_to(ROOT).as_posix()] = {
@@ -162,12 +207,14 @@ def main():
             "pe": run([tools / "llvm-readobj.exe", "--file-headers", "--coff-imports", "--coff-exports", product])}
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "milestone": "M0", "configuration": args.configuration,
-        "capabilities": {"repository_by_id": False, "svn_protocol": False, "dav_protocol": False, "monitor": "bootstrap"},
+        "milestone": "M1", "configuration": args.configuration,
+        "capabilities": {"repository_by_id": True, "svn_protocol": False, "dav_protocol": False, "monitor": "bootstrap"},
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
         "inputs": {k: str(v) for k, v in paths.items()},
         "windows_ctype_array_abi": array_abi,
+        "upstream_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/repos.json"),
+                             "applied_sha256": digest(BUILD / "upstream/applied-repos.patch"), "outputs": patched},
         "sources": {**{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
                     **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
                     **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()}},

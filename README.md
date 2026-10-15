@@ -2,7 +2,7 @@
 
 基于 PostgreSQL 的专用 SVN 服务端。目标是按数据库 ID 管理仓库，服务节点不保留每库目录。
 
-当前正在实施 [PgVN 计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md)。M0 构建骨架包含 `pgvnserve.exe`、`pgvnadmin.exe`、`mod_dav_pgvn.so` 和配套 `mod_authz_pgvn.so`；真实仓库服务、管理功能和中文监控网页依次在 M1–M5 实施。请以 [进展与验证](docs/pgvn/progress.zh-CN.md) 判断可用范围。
+当前已完成 M0 构建/服务验证和 M1 无目录公共核心，包含 `pgvnserve.exe`、`pgvnadmin.exe`、`mod_dav_pgvn.so` 和配套 `mod_authz_pgvn.so` 的构建骨架。正式管理功能、SVN/DAV 网络服务和中文监控网页继续按 [PgVN 计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的 M2–M5 实施。请以 [进展与验证](docs/pgvn/progress.zh-CN.md) 判断可用范围。
 
 ## Windows 开发构建
 
@@ -10,11 +10,12 @@
 
 1. 复制 `config/build.example.json` 为 `config/build.local.json`，填入实际 SDK 路径；本地配置不提交。
 2. 执行 `python scripts/pgvn/build.py --config config/build.local.json --configuration Release`。
-3. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0`。门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
+3. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
+4. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
 
 产物在 `runtime/pgvn`，构建清单在 `artifacts/pgvn/build/manifest.json`，测试原始结果在 `artifacts/pgvn/tests`。开发生成物不提交；每个里程碑提交代码与可审阅的证据摘要。
 
-M0 可执行 `runtime/pgvn/bin/pgvnserve.exe --version`、`pgvnadmin.exe diagnose`，或前台运行 `pgvnserve.exe --monitor-url http://127.0.0.1:14691/`。前台 Ctrl+C 停止。监听需要管理员权限或预先授予服务账户该 URL 的访问权限；部署要求见 [M0 契约](docs/pgvn/M0-contracts.zh-CN.md)。`/health/live` 返回 200，`/health/ready` 在 M0 固定为 503。
+当前可执行 `runtime/pgvn/bin/pgvnserve.exe --version`、`pgvnadmin.exe diagnose`，或前台运行 `pgvnserve.exe --monitor-url http://127.0.0.1:14691/`。前台 Ctrl+C 停止。监听需要管理员权限或预先授予服务账户该 URL 的访问权限；部署要求见 [M0 契约](docs/pgvn/M0-contracts.zh-CN.md)。`/health/live` 返回 200，网络服务尚未就绪时 `/health/ready` 为 503。
 
 ## 代码与历史基线
 

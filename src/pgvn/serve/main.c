@@ -84,13 +84,13 @@ int wmain(int argc, wchar_t **argv)
             service_name = argv[++i];
         } else {
             fputs("Usage: pgvnserve --version | --monitor-url http://127.0.0.1:PORT/ [--service --service-name NAME]\n"
-                  "M0 bootstrap: SVN repository service is not implemented yet.\n", stderr);
+                  "Bootstrap: SVN repository protocol follows in M3.\n", stderr);
             apr_terminate();
             return 2;
         }
     }
     if (!monitor_url || !pgvn_monitor_url_valid(monitor_url)) {
-        fputs("M0 requires an explicit loopback monitor URL with a port from 1024 to 65535.\n", stderr);
+        fputs("An explicit loopback monitor URL with a port from 1024 to 65535 is required.\n", stderr);
         apr_terminate();
         return 2;
     }
