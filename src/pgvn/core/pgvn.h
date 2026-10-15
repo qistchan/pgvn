@@ -8,8 +8,9 @@
 #include "svn_repos.h"
 
 #define PGVN_VERSION "0.1.0-dev"
-#define PGVN_MILESTONE "M2"
+#define PGVN_MILESTONE "M3"
 #define PGVN_SVN_BASE "1.14.5"
+#define PGVN_CATALOG_VERSION 4
 #define PGVN_MONITOR_QUEUE_LIMIT 64
 #define PGVN_MONITOR_HEADER_LIMIT 32768
 #define PGVN_MONITOR_WORKERS 2
@@ -53,6 +54,16 @@ typedef struct pgvn_hook_context {
     const char *transaction_id;
     svn_revnum_t revision;
     pgvn_hook_event event;
+    const char *path;
+    const char *property_name;
+    const svn_string_t *property_value;
+    const char *lock_token;
+    const char *lock_comment;
+    const char **lock_token_result;
+    const apr_array_header_t *paths;
+    const apr_array_header_t *capabilities;
+    char action;
+    svn_boolean_t force;
 } pgvn_hook_context;
 
 typedef enum pgvn_freshness {
@@ -78,6 +89,7 @@ typedef struct pgvn_binding {
     const char *svn_uuid;
     const char *canonical_name;
     const char *in_repository_path;
+    const char *route_prefix;
     long long configuration_version;
 } pgvn_binding;
 
@@ -119,6 +131,9 @@ svn_error_t *pgvn_policy_publish(pgvn_context *context,const char *repository_id
                                apr_int64_t expected_generation,const char *authz,
                                const char *groups,const char *hooks_json,
                                const char *published_by,apr_pool_t *pool);
+svn_error_t *pgvn_policy_publish_settings(pgvn_context *context,const char *repository_id,
+    apr_int64_t expected_generation,const char *authz,const char *groups,const char *hooks_json,
+    const char *settings_json,const char *published_by,apr_pool_t *pool);
 svn_error_t *pgvn_hook_dispatch(const pgvn_policy *policy,
                               const pgvn_hook_context *event, apr_pool_t *pool);
 svn_error_t *pgvn_status_snapshot(pgvn_status **snapshot, pgvn_context *context,
@@ -127,5 +142,6 @@ void pgvn_metrics_snapshot(pgvn_metrics *snapshot,pgvn_context *context);
 
 /* No credentials, repository names or local paths are exposed in build info. */
 int pgvn_build_json(char *buffer, size_t size);
+pgvn_exit_code pgvn_error_exit_code(const svn_error_t *error);
 
 #endif

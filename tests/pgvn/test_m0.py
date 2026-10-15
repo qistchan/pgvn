@@ -114,7 +114,7 @@ def build_identity():
         assert diagnosis["milestone"] == manifest["milestone"] and diagnosis["svn_base"] == "1.14.5"
         assert diagnosis["apr_runtime"] == "1.7.6" and diagnosis["libpq_version"] == 180006
         assert diagnosis["ready"] is False
-        assert diagnosis["capabilities"]["svn_protocol"] is False
+        assert diagnosis["capabilities"]["svn_protocol"]==manifest["capabilities"]["svn_protocol"]
         assert diagnosis["capabilities"]["repository_by_id"] == manifest["capabilities"]["repository_by_id"]
         diagnoses[product] = diagnosis
     assert "1.14.5" in command([RUNTIME / "bin/svn.exe", "--version", "--quiet"])
@@ -346,7 +346,7 @@ def main():
     passed = len(records) == 5 and all(r["status"] == "PASS" for r in records)
     report = {"test_id": TEST_ID, "milestone": "M0", "started_at": started_at,
               "status": "PASS" if passed else "FAIL", "records": records,
-              "work_directory": str(WORK), "limits": "Build/bootstrap only; no SVN/DAV repository protocol yet."}
+              "work_directory": str(WORK), "limits": "M0 checks build/bootstrap only; repository protocols are covered by their own milestone gates."}
     text = json.dumps(report, indent=2) + "\n"
     (RESULTS / (TEST_ID + ".json")).write_text(text, encoding="utf-8")
     (RESULTS / "m0-latest.json").write_text(text, encoding="utf-8")

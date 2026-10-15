@@ -1,0 +1,791 @@
+{
+  "milestone": "M3",
+  "status": "PASS",
+  "milestone_complete": true,
+  "configuration": "Release",
+  "git_base_commit": "34bc93b6a65723da36cf605939efb5efabba97e9",
+  "scope": "Pinned native Windows SVN 1.14.5 / SVNKit 1.10.1 protocol and two-process shared PostgreSQL; DAV, full monitor UI and Polarion application acceptance are M4-M7.",
+  "compiler": "clang version 23.1.3 (https://github.com/llvm/llvm-project.git 0d261d1ca552c95a8f007e061c787ac7132fbcbc)\nTarget: x86_64-w64-windows-gnu\nThread model: posix\nInstalledDir: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin\nConfiguration file: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg",
+  "compiler_sha256": "ee85bef2c733e24a26c22be3df94bd631cf9528a048fce91241c182a936737fe",
+  "capabilities": {
+    "repository_by_id": true,
+    "svn_protocol": true,
+    "dav_protocol": false,
+    "monitor": "bootstrap"
+  },
+  "source_hashes": {
+    "src/libsvn_fs_pg/pgfs.c": "8f271c9f0b979ca202708f4ee618df52b4aa2ece5f46c5bcd5c7b5a65a16c75e",
+    "src/libsvn_fs_pg/pgfs_admin.inc": "14464d25a56fbfd72f148c6a2d0260bd970c5ac88d7c9b3a522c7afebd840211",
+    "src/libsvn_fs_pg/pgfs_history.inc": "32f36f894cb00dc73b94a20484c8ab7782fc3c746ef79fa681d1662d88407ddd",
+    "src/libsvn_fs_pg/pgfs_hotcopy.inc": "d05fdd8fbb4d86e974473fb7ee8f92f8a9a63bf1167d065347e97c6701cf54da",
+    "src/libsvn_fs_pg/pgfs_locks.inc": "d507f8405e87d62ae1e6e50f61342df32abddb3e9bd31721249309e58ac8180d",
+    "src/libsvn_fs_pg/pgfs_mergeinfo.inc": "979289539a4a85c220311f4bdf9efd645377cdd3a51459d3d3950fe5a4ae2768",
+    "src/libsvn_fs_pg/pgfs_native.h": "9e35e4b7777c4e476c640831c6113116ec30552ca1e2da3ec2a9ee83187f612e",
+    "src/libsvn_fs_pg/pgfs_native.inc": "f38b7e93f5d4d75950451d0f1c60da88155870fcd1288bfd1311f217438837cc",
+    "src/libsvn_fs_pg/pgfs_receipts.inc": "5af60b87d1c6be7b3105a225ee912b03b1e3b00ee32d5857e808930b5d98a735",
+    "src/libsvn_fs_pg/pgfs_streams.inc": "b1373a7aee3b6e60de3358d064fd57a74c564487cf40a10fdcbbff92048380b7",
+    "src/libsvn_fs_pg/pgfs_transactions.inc": "d2757fc536f45f343d5c6105601b87466cddf9af8b68b51bc6a84c590b85866c",
+    "src/libsvn_fs_pg/pgfs_tree.inc": "5907737576e2e95e60a61a2bfcb1710384dcca70368728214f8db77ed2483666",
+    "src/pgvn/admin/admin.h": "b07548ba2298b19bb1e618ce267971040b4153696ef6ff43488e54db56acd030",
+    "src/pgvn/admin/commands.c": "58de58a42ebf38a15a373c44c3ed3e8bb37a5fb65f5d0a0914d83f1764c1729a",
+    "src/pgvn/admin/common.c": "f4b75d87a86e03cb54e81e81d675a55d1c4651bc81f943ecba9f22d46cc8075b",
+    "src/pgvn/admin/credentials.c": "f736c0f3da5d145bfa6e67c3e915fd7ab90188df22e878163c176a27ec978fa4",
+    "src/pgvn/admin/db.c": "d3430b9eb7d20be316e128e284380dfd37da4d3a56c9a9cef45bee52594ecbaa",
+    "src/pgvn/admin/history.c": "cfa00962a2edc3a10df7ddc73049108ff47aaba3797753939676528ef46c270d",
+    "src/pgvn/admin/main.c": "9e0151835ca54a7cbeb312d8b5ab1d7d2e962398a56019469f07a139858cac2b",
+    "src/pgvn/admin/maintenance.c": "7e8e7fd80ef2a555700682f4f72af2d4c7a7b0fb00079923a3bbeb1f0bdcb41e",
+    "src/pgvn/admin/policy.c": "9e11953bff66a0b156461d8b03b85a247723e91e98715d1d5ec3e71571f2ca90",
+    "src/pgvn/admin/repositories.c": "0c66c39884020833053be9a9ff66804ef3295776a51301ab59726f3c920e3b74",
+    "src/pgvn/admin/tokens.c": "35b1a36937417050a2edc41dc20b2f3e99fd4ae033b186678d71c10751d84bec",
+    "src/pgvn/core/build_info.c": "3ef84d86db6b9a769a4e00804efd95a3e4cbaa5874b63e3f2dd262efa4b4c68e",
+    "src/pgvn/core/catalog.c": "0cbed662d0401c0afd929c05110e539da865cbf32d1e2b798a4512017128ca42",
+    "src/pgvn/core/context.c": "2e745fd67c3dcbad2f6c44e5951da2241680b2a34d3af5a0f24637adafffd2bd",
+    "src/pgvn/core/credentials.c": "49163a28a3913291bff6782b5f3dfa59cc159e4df17b71be69633b6757ea5b00",
+    "src/pgvn/core/credentials.h": "d884a5b3e3e170fc128196c3c5775ee39028dcbc4c7c669a5a379d8890ffa921",
+    "src/pgvn/core/errors.c": "e14743423a3f54bf574447f763c568cd05279a9c37be70a27ad7f5f1b6b4f030",
+    "src/pgvn/core/hooks_win.c": "27a5bddb3b0c6b86c06852cef34a15df2dfc9697b8c20ac83882c65ecc1acdaf",
+    "src/pgvn/core/internal.h": "41e8e10da54bbc521d44c1301e652e95231169134d65103eac9806db033d60ce",
+    "src/pgvn/core/management.c": "9251fd05647d6786072235d8c3ff9166dee7606cdc1ca6b1f46115eab4f6054c",
+    "src/pgvn/core/pgvn.h": "d41b931a4045d047133640a5520e26f616ccdd901ef6231a16dc4d4bdd982cba",
+    "src/pgvn/core/policy.c": "523ca50c1d8c569b6c5772224b35831b4c80bf1f625412f8394d5e5ac4263844",
+    "src/pgvn/core/policy_protocol.c": "21e9bdae6f0bdeacc06b40a67e93829c2ffe0f618720324d9685e3766f10d5fc",
+    "src/pgvn/core/repository.c": "24b3f714c178fdddff146bd83001de2b6f29c5ac362ca60e72994ef39a8debbe",
+    "src/pgvn/dav/bootstrap.c": "8c48ae7cddeebaf58f6492a3e5640daa55945ae36c342f05a656c2ad9145a687",
+    "src/pgvn/monitor/http_win.c": "7543be43ff1ff6d0fe7acdefa04ac9c7a6ad5eded5edabf8e0e85e5bb78cee74",
+    "src/pgvn/monitor/http_win.h": "a4dd7fb74d03df9e6e2f84a71fde4b9d308da6693af116aa2174fd60ed597ccf",
+    "src/pgvn/serve/listener.c": "1d77d59bd064394410eae2a62c056f3dc3ab8106197e9ea7350caf977aed9fe2",
+    "src/pgvn/serve/listener.h": "d00081b8e81ed07f7c7ee2b74df80c9fea11c170085cf20e0111b746a2210d3f",
+    "src/pgvn/serve/main.c": "f4a32fbde46fd0942a9521698c46ff60c2799e742d80da0618a7e332dafb9cf3",
+    "src/pgvn/serve/pgvn_protocol.h": "11f64c6acfd23067dc54cfcde69648bda180be9358c7c9e5aa40bb6774fade1f",
+    "src/pgvn/serve/protocol.c": "ed2759deb1228bd6ad88a06226130fcf52bfaf6122a8178f573560c3089173e3",
+    "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+    "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+    "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+    "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+    "sql/pgvn/001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+    "sql/pgvn/002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+    "sql/pgvn/003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+    "sql/pgvn/004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945",
+    "scripts/pgvn/build.py": "418387abfdc43ecc55af5d8e35f388b6ad8843990b5a663132ecb445a53723b0",
+    "scripts/pgvn/embed_migrations.py": "e74a42aa885d480bad9a35ad48702f907abe34f6df9b0dedcaa4d81dc26655a5",
+    "scripts/pgvn/prepare_protocol.py": "cb44248442a375621dab53816cebc890eb1a1d278435274f75acc33997389882",
+    "scripts/pgvn/prepare_upstream.py": "cd446406843023c4a8906676d38607a4384b58cccc949d9a94f3529b36e863b8",
+    "tests/pgvn/core_probe.c": "2e01431634dc7a107b281197e218b3c5a10f35b46b19dda7eceed2a246c80f45",
+    "tests/pgvn/fixture.py": "e8bcb40b4c06b55be8b963d368ad603ff84331b23e582566ecefcea959bc90e2",
+    "tests/pgvn/hook_probe.c": "0e63bc5362c80a3712eceac9feb0c6a0e63190ed80a263f905e0e49c42df2c2e",
+    "tests/pgvn/run_gates.py": "c3e65cf79185b26cb3d5327a4d0559a4aa2201ba3e0b2a3c2a80d2e92432c154",
+    "tests/pgvn/svnkit_client.py": "1bfe716de8a125ff7088499afc6bfe81887369f38f8d84a0b36269bad4bfefd4",
+    "tests/pgvn/SvnKitProbe.java": "58c00904cda4de9e197d8de1ab57e1bd2ca0d84340ebc6f9c77e39b4ebba365d",
+    "tests/pgvn/test_m0.py": "c226433d3a5e4957212aefc210d2f6b3a55ef5407583128c722e80a8dd255b1b",
+    "tests/pgvn/test_m1.py": "d2469969a684e03d1b3bc46da94827bbe2220b54f4ca10456b95b047a4e43bcc",
+    "tests/pgvn/test_m2.py": "ebbf5eb8b468aa0b328d44fd1d2645ea1c98f4c358471b5d473ec1587fbce9b6",
+    "tests/pgvn/test_m3.py": "6ae4a5c6b2043ea5f739f8ed740f96a931654f572b876a33c54c9d75b2568f79",
+    "tests/pgvn/test_m3_credentials.py": "2c142b94da817e9eaa26e86418ee10811e22735dc299e3cffa7b445785cecc11",
+    "tests/pgvn/test_m3_hooks.py": "7d5fbe73f6a9bdb31a28f2d85621a11082d8cba14278e2c0f03bd5f3ff3c863e",
+    "tests/pgvn/test_m3_protocol_smoke.py": "c8a4ca12f88a25f955ae8d71e1a6a4a39c78c62f2e4288912834cb2b11413d64",
+    "tests/pgvn/test_m3_service.py": "73c1c353e4e693f6c9cde5851522b2170d60160b3402fd904ec455a986f3a1da"
+  },
+  "upstream_patches": {
+    "specification_sha256": "6fede702f44e8a652379f5322bb53625d4251392a2a7edcadf83952ed1a9dad1",
+    "applied_sha256": "ac20e8fa25c4da2003d97055b49de1099d2717000a219d3bf66c2df4105efc16",
+    "outputs": {
+      "repos.h": "4366086bbba30d0414d6ea5cb5803426e295439d5b138d79c64e1577fd5e9285",
+      "repos.c": "d26850b6e2fbc1ca904d7177a1544ee0b42091e499205f1e67002fdd6d0ebab2",
+      "hooks.c": "e3f47aeaf2bf73026f2f38d20deea78ce21f1c3bedfe5bf70ccb2713ea0609be",
+      "dump.c": "060aabcc5cfd6d988f6556628f8206c4520911244210430aafcac070e5ab25ed"
+    }
+  },
+  "protocol_patches": {
+    "specification_sha256": "17cfd5f40c3576be8d6993bcb235790d31a5bcd2ba8a22fe1546cf42f8957af7",
+    "applied_sha256": "0e818eec253afc738a71aa2a46cf4d8643f1a9f85fa51b04dca824b6ff0bcdcb",
+    "outputs": {
+      "svnserve/serve.c": "8dad08880d9f01c91396b9f2f8760d4e2d48571735185340b0c8ab780f5b0c2d",
+      "svnserve/server.h": "c273263074bae9a43b92ff4b96efb7ef4587e8cc99afa18d91308f12172ac2ec",
+      "libsvn_ra_svn/cram.c": "a71c7ddab13ca650150589a13fb3cc865a56dc7aedc227b0d4f15477e2b61180",
+      "libsvn_ra_svn/marshal.c": "ad5dbb098236325190fb4b445b7df63e255b08300886094c39037c446c824e92",
+      "libsvn_ra_svn/streams.c": "b40cab24bc7be4fb1db09932a11f1d2bca2f5fc4a78b9bb03a3e5267b616ab18"
+    }
+  },
+  "schema": {
+    "pgfs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "pgvn": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "migration_sha256": {
+      "001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+      "002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+      "003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+      "004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945"
+    }
+  },
+  "product_sha256": {
+    "runtime/pgvn/bin/pgvnserve.exe": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce",
+    "runtime/pgvn/bin/pgvnadmin.exe": "ca7d0c9127facd5e5ba635790123a66b9178bd2633788bec3096d7910cb99340",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "7dd03a3ce3ee33c2189a7cacad0e3332cdbe9bf0e3e7d76f3a56d05855610c9b",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "ee4444702a699db9bdd3d848d91f0f5bb44622f0fbd144103cb1c89e201756b9"
+  },
+  "full_manifest_sha256": "5b6eb6cf71a592f95a8bdddcc332f617647e5052b9022e5bd44939325ade41df",
+  "full_gate_report_sha256": "f158796b0d347a3fcbba108a53f208c8b890c5fdae198098c211e0e71f6b905c",
+  "full_gate_report": {
+    "test_id": "m3-765f12d53a15",
+    "milestone": "M3",
+    "status": "PASS",
+    "milestone_complete": true,
+    "created_at": "2026-10-15T06:44:54.817798+00:00",
+    "elapsed_seconds": 243.82800000000861,
+    "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m3-765f12d53a15",
+    "records": [
+      {
+        "name": "M0 regression",
+        "status": "PASS",
+        "test_id": "m0-9faa192c1b2c",
+        "elapsed_seconds": 27.21799999999348,
+        "report_sha256": "e0005f1a800756c85cbbbd81579dea92082e7231bb0726f69f5baae0ad66294d",
+        "report": {
+          "test_id": "m0-9faa192c1b2c",
+          "milestone": "M0",
+          "started_at": "2026-10-15T06:40:51.157753+00:00",
+          "status": "PASS",
+          "records": [
+            {
+              "name": "native_build_identity",
+              "status": "PASS",
+              "details": {
+                "configuration": "Release",
+                "products": {
+                  "pgvnserve": {
+                    "product": "PgVN",
+                    "version": "0.1.0-dev",
+                    "milestone": "M3",
+                    "svn_base": "1.14.5",
+                    "apr_runtime": "1.7.6",
+                    "libpq_version": 180006,
+                    "ready": false,
+                    "capabilities": {
+                      "repository_by_id": true,
+                      "svn_protocol": true,
+                      "dav_protocol": false,
+                      "monitor": "bootstrap"
+                    }
+                  },
+                  "pgvnadmin": {
+                    "product": "PgVN",
+                    "version": "0.1.0-dev",
+                    "milestone": "M3",
+                    "svn_base": "1.14.5",
+                    "apr_runtime": "1.7.6",
+                    "libpq_version": 180006,
+                    "ready": false,
+                    "capabilities": {
+                      "repository_by_id": true,
+                      "svn_protocol": true,
+                      "dav_protocol": false,
+                      "monitor": "bootstrap"
+                    }
+                  }
+                },
+                "hashes": {
+                  "runtime/pgvn/bin/pgvnserve.exe": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce",
+                  "runtime/pgvn/bin/pgvnadmin.exe": "ca7d0c9127facd5e5ba635790123a66b9178bd2633788bec3096d7910cb99340",
+                  "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "7dd03a3ce3ee33c2189a7cacad0e3332cdbe9bf0e3e7d76f3a56d05855610c9b",
+                  "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "ee4444702a699db9bdd3d848d91f0f5bb44622f0fbd144103cb1c89e201756b9"
+                }
+              },
+              "elapsed_seconds": 0.8589999999967404
+            },
+            {
+              "name": "invalid_options",
+              "status": "PASS",
+              "details": {
+                "invalid_urls_rejected": 7,
+                "unknown_commands_rejected": true
+              },
+              "elapsed_seconds": 0.3129999999946449
+            },
+            {
+              "name": "console_http",
+              "status": "PASS",
+              "details": {
+                "probes": "live200/ready503/unknown404/write405/body413",
+                "restart": true,
+                "requests": 128,
+                "clients": 16,
+                "elapsed_seconds": 0.046000000002095476
+              },
+              "elapsed_seconds": 1.1090000000112923
+            },
+            {
+              "name": "apache_module_load",
+              "status": "PASS",
+              "details": {
+                "syntax": "Syntax OK",
+                "loaded_modules": "Loaded Modules:\n core_module (static)\n win32_module (static)\n mpm_winnt_module (static)\n http_module (static)\n so_module (static)\n authz_core_module (shared)\n dav_pgvn_module (shared)\n authz_pgvn_module (shared)",
+                "request_cycles": 2,
+                "unload": "isolated Apache process exit"
+              },
+              "elapsed_seconds": 1.875
+            },
+            {
+              "name": "low_privilege_http_service",
+              "status": "PASS",
+              "details": {
+                "account": "NT AUTHORITY\\LocalService",
+                "concurrency_0": {
+                  "requests": 128,
+                  "clients": 16,
+                  "elapsed_seconds": 0.046999999991385266
+                },
+                "header_timeout_seconds_0": 12.14100000000326,
+                "stop_seconds_0": 0.046999999991385266,
+                "concurrency_1": {
+                  "requests": 128,
+                  "clients": 16,
+                  "elapsed_seconds": 0.04700000000593718
+                },
+                "header_timeout_seconds_1": 9.625,
+                "stop_seconds_1": 0.046999999991385266,
+                "restart_cycles": 2,
+                "first_header_timeout": "HTTP.sys global timer; unchanged by PgVN",
+                "cleanup": [
+                  "temporary_service_deleted",
+                  "temporary_urlacl_deleted"
+                ]
+              },
+              "elapsed_seconds": 22.890999999988708
+            }
+          ],
+          "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m0-9faa192c1b2c",
+          "limits": "M0 checks build/bootstrap only; repository protocols are covered by their own milestone gates."
+        }
+      },
+      {
+        "name": "M1 regression",
+        "status": "PASS",
+        "test_id": "m1-268049fb99bf",
+        "elapsed_seconds": 61.92200000000594,
+        "report_sha256": "574e5f271857d23efc70299fa5d782766cfa4e743adedeeb02b6e9b7e9445b2a",
+        "report": {
+          "test_id": "m1-268049fb99bf",
+          "milestone": "M1",
+          "created_at": "2026-10-15T06:42:20.125876+00:00",
+          "status": "PASS",
+          "fixture": {
+            "data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+            "port": 16432,
+            "database": "pgvn_poc",
+            "pgfs_schema": 4,
+            "pgvn_schema": 2,
+            "roles": [
+              "pgvn_admin",
+              "pgvn_service",
+              "pgvn_monitor"
+            ]
+          },
+          "records": [
+            {
+              "name": "creation_and_routing",
+              "status": "PASS",
+              "details": {
+                "storage_id_distinct_from_uuid": true,
+                "config_files": 0,
+                "longest_segment_routing": true,
+                "disabled_route_does_not_fall_through": true,
+                "case_and_unicode_forms_distinct": true
+              },
+              "elapsed_seconds": 1.875
+            },
+            {
+              "name": "atomic_creation",
+              "status": "PASS",
+              "details": {
+                "concurrent_creators": 8,
+                "successful_creators": 1,
+                "orphan_storage_rows": 0,
+                "service_control_write_denied": true
+              },
+              "elapsed_seconds": 0.8600000000005821
+            },
+            {
+              "name": "trees_and_binary",
+              "status": "PASS",
+              "details": {
+                "binary_bytes": 2097413,
+                "verified_revisions": 3,
+                "copy_history": true,
+                "commit_receipt_retry": true,
+                "pack_recover_snapshot_unchanged": true
+              },
+              "elapsed_seconds": 3.5929999999934807
+            },
+            {
+              "name": "authorization_and_hooks",
+              "status": "PASS",
+              "details": {
+                "default_deny": true,
+                "username_path_access": true,
+                "stale_inflight_commit_rejected": true,
+                "pre_hook_blocks_publication": true,
+                "post_hook_failure_preserves_revision": true,
+                "invalid_authz_and_generation_conflict_atomic": true
+              },
+              "elapsed_seconds": 4.469000000011874
+            },
+            {
+              "name": "writer_leases_and_metrics",
+              "status": "PASS",
+              "details": {
+                "cross_process_writer_exclusion": true,
+                "open_stream_commit_rejected": true,
+                "disconnect_releases_session_lock": true,
+                "metrics": {
+                  "sql_delta": 20,
+                  "errors": 0,
+                  "open": 2,
+                  "closed": 1,
+                  "snapshot_sql": 0,
+                  "ready": false
+                },
+                "connection_capacity": {
+                  "opened_fs": 31,
+                  "connections_at_limit": 32,
+                  "connections_after_close": 1
+                }
+              },
+              "elapsed_seconds": 3.875
+            },
+            {
+              "name": "legacy_adapter_regression",
+              "status": "PASS",
+              "details": {
+                "tests": 17,
+                "failures": 0,
+                "errors": 0,
+                "excluded": [
+                  {
+                    "test": "test_p0.NativeLoaderTests.test_06_database_restart_preserves_revision_and_binary_properties",
+                    "reason": "Original fixture hardcodes port15432/data path; equivalent PgVN restart gate below uses verified16432 directory."
+                  }
+                ],
+                "assertions": "Original test assertions unchanged; fixture paths/DSN adapted."
+              },
+              "elapsed_seconds": 40.405999999988126
+            },
+            {
+              "name": "restart_and_pathlessness",
+              "status": "PASS",
+              "details": {
+                "database_restart_preserves_binary_history": true,
+                "fsync": "on",
+                "full_page_writes": "on",
+                "pathless_working_directory_empty": true
+              },
+              "elapsed_seconds": 5.532000000006519
+            }
+          ],
+          "core_probe_sha256": "e59eaf09e89fe995ec750d621fa3d9fb96b2bf43a9d25c17d9645119e0f1bcf8",
+          "legacy_module_sha256": "06dff90899e06a75232fe3acf64e9ab5b6dffb250b7acee612a05be074f7adaf"
+        }
+      },
+      {
+        "name": "M2 regression",
+        "status": "PASS",
+        "test_id": "m2-091aa0be323a",
+        "elapsed_seconds": 41.17200000000594,
+        "report_sha256": "a3f15bcb4e7f6a4b4b8c2442b292065154b208e5830ecba0d41e35969833b3a9",
+        "report": {
+          "test_id": "m2-091aa0be323a",
+          "milestone": "M2",
+          "created_at": "2026-10-15T06:43:01.310627+00:00",
+          "status": "PASS",
+          "database": "pgvn_m2_091aa0be323a",
+          "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m2-091aa0be323a",
+          "pgvnadmin_sha256": "ca7d0c9127facd5e5ba635790123a66b9178bd2633788bec3096d7910cb99340",
+          "records": [
+            {
+              "name": "migration_and_privileges",
+              "status": "PASS",
+              "details": {
+                "database": "pgvn_m2_091aa0be323a",
+                "concurrent_initializers": 4,
+                "idempotent_migrate": true,
+                "checksum_tampering_rejected": true,
+                "future_schema_refused_before_migration": true,
+                "schema": {
+                  "pgfs": 4,
+                  "pgvn": 4,
+                  "checksums": "match"
+                },
+                "migration_owner_superuser": false,
+                "service_admin_denied": true
+              },
+              "elapsed_seconds": 2.8910000000032596
+            },
+            {
+              "name": "cli_contract_and_catalog",
+              "status": "PASS",
+              "details": {
+                "unicode_names_and_config": true,
+                "selectors_and_pagination": true,
+                "exit_classes_verified": [
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ],
+                "dsn_redaction": true,
+                "disable_invalidates_generation": true
+              },
+              "elapsed_seconds": 4.5
+            },
+            {
+              "name": "history_roundtrip",
+              "status": "PASS",
+              "details": {
+                "revisions_compared": 5,
+                "snapshot_tree_changed_copy_history_match_fsfs": true,
+                "binary_bytes": 1048748,
+                "binary_empty_properties": true,
+                "standard_dump_roundtrip": true,
+                "file_and_stdio_streams": true,
+                "existing_dump_file_not_overwritten": true,
+                "force_and_ignore_uuid": true,
+                "optional_load_hooks": true
+              },
+              "elapsed_seconds": 13.10899999999674
+            },
+            {
+              "name": "incremental_and_registration",
+              "status": "PASS",
+              "details": {
+                "incremental_import_export": true,
+                "existing_storage_id_preserved": true,
+                "existing_public_uuid_preserved": true,
+                "registered_history_verified": 5
+              },
+              "elapsed_seconds": 3.172000000005937
+            },
+            {
+              "name": "policies_and_tokens",
+              "status": "PASS",
+              "details": {
+                "versioned_authz_groups": true,
+                "stale_generation_rejected": true,
+                "token_entropy_bits": 256,
+                "token_sha256_only_in_database": true,
+                "token_expiry_and_revoke": true,
+                "no_token_in_list_or_evidence": true
+              },
+              "elapsed_seconds": 1.875
+            },
+            {
+              "name": "hotcopy_and_maintenance",
+              "status": "PASS",
+              "details": {
+                "full_and_incremental_hotcopy": true,
+                "independent_id_preserved_uuid": true,
+                "divergence_rejected_without_changes": true,
+                "route_conflict_rolls_back_storage": true,
+                "pack_recover_preserve_snapshot": true
+              },
+              "elapsed_seconds": 5.2810000000026776
+            },
+            {
+              "name": "freeze_and_lifecycle",
+              "status": "PASS",
+              "details": {
+                "freeze_blocks_commit_until_child_exits": true,
+                "child_argument_quoting": true,
+                "timeout_kills_child_tree": true,
+                "purge_requires_disable_and_drained_handles": true,
+                "purge_clears_catalog_and_storage": true,
+                "pathless_working_directory_empty": true
+              },
+              "elapsed_seconds": 6.187999999994645
+            },
+            {
+              "name": "portable_binary",
+              "status": "PASS",
+              "details": {
+                "standalone_binary_and_dll_directory": true,
+                "runtime_python_node_not_required": true
+              },
+              "elapsed_seconds": 2.9530000000086147
+            }
+          ],
+          "scope": "Native admin/core gates; transport protocols and full monitor UI are subsequent milestones."
+        }
+      },
+      {
+        "name": "encrypted credentials and rotation",
+        "status": "PASS",
+        "test_id": "m3-credentials-b9457282d240",
+        "elapsed_seconds": 10.077999999994063,
+        "report_sha256": "5322bd03688c68554ebd6f2ea38e3eb5074a9be56658745d8e236e248e0d6cdb",
+        "report": {
+          "status": "PASS",
+          "details": {
+            "schema": 4,
+            "non_superuser_migration": true,
+            "native_encrypt_decrypt": true,
+            "unicode_password_and_identity": true,
+            "key_overwrite_refused": true,
+            "wrong_key_tag_and_identity_rejected": true,
+            "broad_acl_rejected": true,
+            "no_plaintext_password_in_database_or_command_line": true,
+            "least_privilege_grants": true,
+            "invalid_password_rollback": true,
+            "revocation_and_generation": true,
+            "publication_row_lock_blocks_revocation_seconds": 2.5160000000032596,
+            "disabled_account_rekey_preserves_state": true,
+            "dual_key_read_and_old_key_removal": true,
+            "concurrent_rekey_single_winner": true,
+            "case_and_unicode_identities_distinct": true,
+            "pathless_working_directory_empty": true
+          },
+          "test_id": "m3-credentials-b9457282d240",
+          "component": "M3 credentials",
+          "milestone_complete": false,
+          "created_at": "2026-10-15T06:43:11.380746+00:00",
+          "database": "pgvn_m3c_b9457282d240",
+          "elapsed_seconds": 9.937999999994645,
+          "pgvnadmin_sha256": "ca7d0c9127facd5e5ba635790123a66b9178bd2633788bec3096d7910cb99340"
+        }
+      },
+      {
+        "name": "SVN and SVNKit protocol",
+        "status": "PASS",
+        "test_id": "m3-protocol-smoke-7b775aef7ca8",
+        "elapsed_seconds": 58.20299999999406,
+        "report_sha256": "7e63d5497794d3ab80416316ed08d869130153551cbf6e7cfd035863b4294c56",
+        "report": {
+          "status": "PASS",
+          "details": {
+            "two_process_nodes": true,
+            "original_svn_and_svnmucc": true,
+            "database_routes_and_uuid": true,
+            "cram_md5_success_and_failure": true,
+            "path_authz_and_read_only_user": true,
+            "binary_roundtrip_and_working_copy_update": true,
+            "cross_node_lock_conflict_and_unlock": true,
+            "node_loss_and_restart": true,
+            "explicit_hook_required_for_revprops": true,
+            "cross_node_revprops": true,
+            "control_connection_recovery_attempts": [
+              1,
+              2
+            ],
+            "database_error_uses_svnkit_known_code": true,
+            "svnkit": {
+              "source_sha256": "58c00904cda4de9e197d8de1ab57e1bd2ca0d84340ebc6f9c77e39b4ebba365d",
+              "dependencies": {
+                "org.tmatesoft.svnkit_1.10.1.r10777.jar": "ff0a5039b2c09cbf1b5f67f6b73e9f9f0dae435a423845d220f0a65e98d11fce",
+                "com.trilead.ssh2_1.0.0.build222_185.jar": "ad3b7defdd2ae44b1c5e9c7fefdb8d5bed5fcd66ac9f0daf5ca761fbd4e0a6dc",
+                "org.tmatesoft.sqljet_1.1.12.r1336.jar": "c61e0ccf8de9b4b4b22e4eabbd5abe0072477a27481258299ea198b9fbdbddd0",
+                "antlr-runtime_3.5.3.jar": "cc7b201b7c9528e9919e8ab73f3eb00441a2fed63a8c1a9922a4008e4b7c70c4",
+                "com.jcraft.jsch_0.1.51.jar": "328b43e0d5100c230e0f515ec413b056b81462ae327722798e314662903a179d"
+              }
+            },
+            "svnkit_binary_commit_revprops": true,
+            "svnkit_persistent_session_config_and_credential_revocation": true,
+            "svnkit_inflight_commit_revocation": true,
+            "rolling_deployment_key_rotation": true,
+            "previous_key_removed_after_rekey": true,
+            "versioned_identity_domain_and_access_levels": true,
+            "explicit_anonymous_policy": true,
+            "process_read_only_overrides_repository": true,
+            "command_byte_limits_and_explicit_unlimited": true,
+            "large_blob_bytes": 68157441,
+            "direct_protocol_nul_rejected_and_percent_decoded_once": true,
+            "idle_timeout_seconds": 30.281000000002678,
+            "parallel_reads": 24,
+            "credential_revocation_visible_on_both_nodes": true,
+            "full_verify": true,
+            "youngest": 4,
+            "pathless_working_directory_empty": true
+          },
+          "test_id": "m3-protocol-smoke-7b775aef7ca8",
+          "component": "M3 protocol smoke",
+          "milestone_complete": false,
+          "database": "pgvn_m3c_7b775aef7ca8",
+          "created_at": "2026-10-15T06:44:09.592285+00:00",
+          "elapsed_seconds": 58.046999999991385,
+          "pgvnserve_sha256": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce"
+        }
+      },
+      {
+        "name": "external hooks and lost reply",
+        "status": "PASS",
+        "test_id": "m3-hooks-9551c15c08db",
+        "elapsed_seconds": 21.860000000000582,
+        "report_sha256": "87bcff3bd6b9a8beb5429755ccca4bf94d8117da739699651a8e7460e1925f36",
+        "report": {
+          "status": "PASS",
+          "details": {
+            "all_nine_events": true,
+            "json_env_argv_quoting": true,
+            "binary_empty_null_revprop_values": true,
+            "custom_pre_lock_token": true,
+            "invalid_policy_atomic_rejection": true,
+            "pre_rejection_preserves_head": true,
+            "post_failure_preserves_published_revision": true,
+            "bounded_output_draining": true,
+            "timeout_seconds": 2.2030000000086147,
+            "timeout_kills_descendants": true,
+            "inflight_revprop_and_lock_revocation": true,
+            "inflight_commit_policy_revocation": true,
+            "lost_reply_published_revision": 3,
+            "cross_node_receipt_and_history_agree": true,
+            "receipt_user_isolation": true,
+            "node_loss_kills_owned_hook": true,
+            "service_role_look_history_and_active_transaction": true,
+            "disabled_look_requires_admin": true,
+            "full_verify": true,
+            "active_transactions": 0,
+            "repository_directories": 0
+          },
+          "test_id": "m3-hooks-9551c15c08db",
+          "component": "M3 external hooks",
+          "milestone_complete": false,
+          "database": "pgvn_m3c_9551c15c08db",
+          "created_at": "2026-10-15T06:44:31.443247+00:00",
+          "elapsed_seconds": 21.609000000011292,
+          "pgvnserve_sha256": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce",
+          "hook_probe_sha256": "a7f40469db7848c72c8ce40e60f3088fd198bae396bce1166b4ed89964f3f755"
+        }
+      },
+      {
+        "name": "LocalService business drain",
+        "status": "PASS",
+        "test_id": "m3-service-863c7fcf075b",
+        "elapsed_seconds": 23.343000000008033,
+        "report_sha256": "bbe88f2a97fd136cb4c13fbc6a34825715995312f98b472b62bbc30ffbbcee07",
+        "report": {
+          "status": "PASS",
+          "details": {
+            "account": "NT AUTHORITY\\LocalService",
+            "database_role": "pgvn_service",
+            "real_svn_commit": true,
+            "server_startup_exit_classes": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "service_binary_checkout_delta_update": true,
+            "peer_stays_available": true,
+            "hook_cancel_seconds": 0.9529999999940628,
+            "hook_descendants_killed": true,
+            "idle_svn_sessions": 16,
+            "drain_seconds": 12.140999999988708,
+            "stop_checkpoints": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              3,
+              3,
+              3,
+              3,
+              3,
+              4,
+              4,
+              4,
+              4,
+              4,
+              5,
+              5,
+              5,
+              5,
+              5,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              7,
+              7,
+              7,
+              7,
+              7,
+              8,
+              8,
+              8,
+              8,
+              8,
+              9,
+              9,
+              9,
+              9,
+              9,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              11,
+              11,
+              11,
+              11,
+              11,
+              12,
+              12,
+              12,
+              12,
+              12
+            ],
+            "same_port_restart_cycles": 3,
+            "final_idle_stop_seconds": 0.9689999999973224,
+            "full_verify": true,
+            "active_transactions": 0
+          },
+          "test_id": "m3-service-863c7fcf075b",
+          "component": "M3 business Windows service",
+          "milestone_complete": false,
+          "database": "pgvn_m3c_863c7fcf075b",
+          "created_at": "2026-10-15T06:44:54.795640+00:00",
+          "elapsed_seconds": 23.171000000002095,
+          "pgvnserve_sha256": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce",
+          "cleanup": [
+            "temporary_service_deleted",
+            "temporary_urlacl_deleted"
+          ]
+        }
+      }
+    ],
+    "error": null,
+    "build_manifest_sha256": "5b6eb6cf71a592f95a8bdddcc332f617647e5052b9022e5bd44939325ade41df",
+    "products": {
+      "runtime/pgvn/bin/pgvnserve.exe": "625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce",
+      "runtime/pgvn/bin/pgvnadmin.exe": "ca7d0c9127facd5e5ba635790123a66b9178bd2633788bec3096d7910cb99340",
+      "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "7dd03a3ce3ee33c2189a7cacad0e3332cdbe9bf0e3e7d76f3a56d05855610c9b",
+      "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "ee4444702a699db9bdd3d848d91f0f5bb44622f0fbd144103cb1c89e201756b9"
+    },
+    "scope": "Pinned native Windows SVN 1.14.5 / SVNKit 1.10.1 protocol and two-process shared PostgreSQL; DAV, full monitor UI and Polarion application acceptance are M4-M7."
+  },
+  "limitations": [
+    "Two nodes are independent processes on one Windows host; no cross-host network partition or PostgreSQL automatic failover claim.",
+    "Bootstrap monitor only: live=200 and ready=503; Chinese UI, token-authenticated API and sampler are M4.",
+    "Apache DAV protocol, broader upstream regression, production performance, fresh-machine packaging and isolated Polarion application acceptance remain M5-M7.",
+    "External hooks use the documented JSON/stdin contract; scripts requiring a local repository path need adaptation.",
+    "CRAM-MD5 has no transport encryption; remote access requires the protected tunnel described in the M0 contract."
+  ]
+}

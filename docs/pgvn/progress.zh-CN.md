@@ -1,6 +1,6 @@
 # PgVN 实施进展
 
-目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2，下一阶段为 M3；尚不能替代 Polarion 的 SVN 后端。
+目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2、M3，接下来实施 M4 内置监控；尚不能替代 Polarion 的 SVN 后端。
 
 ## M0：完成
 
@@ -37,8 +37,14 @@ pgvnadmin 已实现数据库引导/迁移摘要检查、角色授权、仓库管
 
 新增控制 schema 为版本 2，迁移及摘要编译进管理工具。M2 的令牌管理为 M4 接入准备，只读认证与中文业务监控页面尚未开放。当前命令和语义见 [M2 管理指南](M2-admin.zh-CN.md)，实际证据见 [M2 记录](evidence/m2.json)。
 
-## M3：下一阶段
+## M3：完成
 
-从固定源代码重编译 svnserve 与私有 RA SVN 依赖，将仓库定位和配置入口切换到公共核心，完成认证、授权、hooks、Windows 服务排空与两个节点的 svn 协议验收，再提交 M3。
+已交付从固定上游源码构建的原生 svn 协议服务：数据库 ID 路由、CRAM-MD5、AES-256-GCM 密文账号、双密钥滚动轮换、版本化访问设置、标准路径授权、九种外部 hooks，以及修订发布、修订属性和锁操作在同一 SQL 事务中的撤权复核。程序不需要每库目录，支持控制台和 LocalService 服务。
+
+最终 Release 的七组完整门禁通过（`m3-765f12d53a15`），同一构建前后核对源码和四个主产物摘要。包括 M0–M2 回归、凭据、标准 SVN/SVNmucc 与 SVNKit 1.10.1、hooks、真实低权限服务；覆盖双节点共享历史/锁/修订属性、在途撤权、滚动轮换、68,157,441 字节文件、URL 单次解码、30 秒空闲超时、数据库连接恢复、进程失联后从另一节点确认提交、外部程序超时及子进程树清理。
+
+LocalService 完成二进制 checkout/delta update；停止期间取消 hooks、保持另一节点可用。16 个空闲 SVN 会话约 12.14 秒排空，同端口连续三轮重启通过；临时服务与 URL ACL 已清理。双节点测试为同机独立进程，不据此声明跨主机网络分区或 PostgreSQL 自动选主已验证。
+
+控制 schema 当前为 4。服务配置、账号/密钥、hooks 和部署命令见 [M3 服务指南](M3-serve.zh-CN.md)，最终证据见 [M3 记录](evidence/m3.json)。`pgvnserve.exe` SHA-256 为 `625cf5cd170092b578be4ac7c825a0d803453e4c24346e65821af9e5394646ce`。监控仍为 bootstrap，ready=503；完整中文页面、只读令牌接入、后台采样和真实 readiness 在 M4 交付，Apache DAV 与 Polarion 应用验收仍未完成。
 
 后续里程碑以 [推进计划](../plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的出口为准。没有完成的能力不能沿用旧 PgFS 的测试成绩标为完成。

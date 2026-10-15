@@ -363,6 +363,9 @@ static svn_error_t *pgfs_change_rev_prop_body(svn_fs_t *fs,svn_revnum_t rev,cons
         "WHERE repository_id=$1::uuid FOR UPDATE",1,v));
     PQclear(result);
 
+    if(data->observer.before_mutation)
+        SVN_ERR(data->observer.before_mutation(data->observer.baton,data->connection,NULL,pool));
+
     SVN_ERR(pgfs_query(&result,fs,"SELECT 1 FROM pgfs.revisions "
         "WHERE repository_id=$1::uuid AND rev=$2::bigint FOR UPDATE",2,v));
     svn_boolean_t exists=PQntuples(result)==1; PQclear(result);

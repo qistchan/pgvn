@@ -41,7 +41,7 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
     PGresult *result;
     SVN_ERR(pgvn_control_query(&result,context,"SELECT max(version) FROM pgvn.schema_versions",0,NULL));
     int catalog=atoi(PQgetvalue(result,0,0)); PQclear(result);
-    if(latest && catalog!=2) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Run pgvnadmin db migrate to install catalog schema 2");
+    if(latest && catalog!=PGVN_CATALOG_VERSION) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Run pgvnadmin db migrate to install the latest catalog schema");
     SVN_ERR(pgvn_control_query(&result,context,"SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.storage_migrations",0,NULL));
     svn_boolean_t ledger=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4"); PQclear(result);
     if(!ledger) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Storage migration ledger is incomplete or contains an unsupported version");
@@ -53,10 +53,21 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
         "'pgvn.repositories','pgvn.routes','pgvn.configurations']) AS q(name) WHERE to_regclass(name) IS NULL",0,NULL));
     svn_boolean_t tables=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"0"); PQclear(result);
     if(!tables) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"A required PgVN table is missing");
-    if(catalog==2) {
+    if(catalog>=2) {
         svn_boolean_t present;
         SVN_ERR(exists(&present,context,"pgvn.monitor_tokens"));
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 2 is missing its monitor token table");
+    }
+    if(catalog>=3) {
+        svn_boolean_t present;
+        SVN_ERR(exists(&present,context,"pgvn.credentials"));
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 3 is missing its credential table");
+    }
+    if(catalog>=4) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regprocedure('pgvn.valid_hooks(jsonb)') IS NOT NULL "
+            "AND to_regprocedure('pgvn.valid_settings(jsonb)') IS NOT NULL",0,NULL));
+        svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 4 is missing protocol validators");
     }
     for(apr_size_t i=0;i<sizeof(pgvn_migrations)/sizeof(pgvn_migrations[0]);++i) {
         const admin_migration *migration=&pgvn_migrations[i];
@@ -90,7 +101,7 @@ static svn_error_t *migrate_body(pgvn_context *context,apr_pool_t *pool)
     SVN_ERR(exists(&catalog_exists,context,"pgvn.schema_versions"));
     if(catalog_exists) {
         SVN_ERR(pgvn_exec(&result,context,context->control,"SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions",0,NULL));
-        svn_boolean_t supported=!strcmp(PQgetvalue(result,0,0),"1") || !strcmp(PQgetvalue(result,0,0),"1,2"); PQclear(result);
+        svn_boolean_t supported=pgvn_catalog_version(PQgetvalue(result,0,0))>0; PQclear(result);
         if(!supported) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Unsupported or incomplete PgVN catalog schema versions");
         SVN_ERR(pgvn_exec(&result,context,context->control,"SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.storage_migrations",0,NULL));
         supported=!strcmp(PQgetvalue(result,0,0),"1,2,3,4"); PQclear(result);
@@ -153,13 +164,13 @@ static svn_error_t *grant_role(admin_command *command,const char *role,int kind)
         "GRANT USAGE ON SCHEMA pgfs,pgvn TO %s;"
         "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA pgfs,pgvn TO %s;"
         "GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA pgfs TO %s;"
-        "GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint) TO %s;",identifier,identifier,identifier,identifier);
+        "GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint),pgvn.guard_credential(text,text,bigint) TO %s;",identifier,identifier,identifier,identifier);
     else if(kind==1) sql=apr_psprintf(command->pool,
         "GRANT USAGE ON SCHEMA pgfs,pgvn TO %s;"
         "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA pgfs TO %s;"
         "GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA pgfs TO %s;"
-        "GRANT SELECT ON pgvn.repositories,pgvn.routes,pgvn.configurations,pgvn.schema_versions,pgvn.storage_migrations TO %s;"
-        "GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint) TO %s;",identifier,identifier,identifier,identifier,identifier);
+        "GRANT SELECT ON pgvn.repositories,pgvn.routes,pgvn.configurations,pgvn.schema_versions,pgvn.storage_migrations,pgvn.credentials TO %s;"
+        "GRANT EXECUTE ON FUNCTION pgvn.guard_repository(uuid,bigint),pgvn.guard_credential(text,text,bigint) TO %s;",identifier,identifier,identifier,identifier,identifier);
     else sql=apr_psprintf(command->pool,
         "GRANT USAGE ON SCHEMA pgfs,pgvn TO %s;"
         "GRANT SELECT ON pgfs.repositories,pgvn.repositories,pgvn.routes,pgvn.schema_versions TO %s;",identifier,identifier);
@@ -185,5 +196,5 @@ svn_error_t *admin_db(admin_command *command)
     }
     return admin_emit_query(command,
         "SELECT json_build_object('ok',true,'database',current_database(),'server_version_num',current_setting('server_version_num')::integer,"
-        "'schema',json_build_object('pgfs',4,'pgvn',2,'checksums','match'))",0,NULL);
+        "'schema',json_build_object('pgfs',4,'pgvn',4,'checksums','match'))",0,NULL);
 }

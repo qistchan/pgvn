@@ -32,6 +32,15 @@
       "new": "  if (repos->pgvn_baton)\n    err = pgfs_native_verify(fs, start_rev, end_rev,\n                              verify_notify, verify_notify_baton,\n                              cancel_func, cancel_baton, pool);\n  else\n    err = svn_fs_verify(svn_fs_path(fs, pool), svn_fs_config(fs, pool),\n                        start_rev, end_rev,\n                        verify_notify, verify_notify_baton,\n                        cancel_func, cancel_baton, pool);"
     }
   ],
+  "hook_details": {
+    "start_commit": {"capabilities":"capabilities"},
+    "pre_revprop_change": {"property_name":"name","property_value":"new_value","action":"action"},
+    "post_revprop_change": {"property_name":"name","property_value":"old_value","action":"action"},
+    "pre_lock": {"path":"path","lock_comment":"comment","force":"steal_lock","lock_token_result":"token"},
+    "post_lock": {"paths":"paths"},
+    "pre_unlock": {"path":"path","lock_token":"token","force":"break_lock"},
+    "post_unlock": {"paths":"paths"}
+  },
   "hook_dispatch": {
     "start_commit": [
       "start-commit",

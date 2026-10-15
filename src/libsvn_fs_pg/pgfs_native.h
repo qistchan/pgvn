@@ -11,6 +11,8 @@ typedef struct pgfs_observer {
     svn_error_t *(*before_publish)(void *baton, PGconn *connection,
                                   const char *transaction_id, apr_pool_t *pool);
     void *baton;
+    svn_error_t *(*before_mutation)(void *baton, PGconn *connection,
+                                   const char *path, apr_pool_t *pool);
 } pgfs_observer;
 
 svn_error_t *pgfs_native_bind(svn_fs_t *fs, PGconn *connection,

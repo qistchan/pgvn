@@ -98,6 +98,9 @@ static svn_error_t *pgfs_lock_one(svn_lock_t **lock,svn_fs_t *fs,const char *pat
 {
     svn_revnum_t head; SVN_ERR(pgfs_lock_repository(&head,fs,pool));
     svn_fs_root_t *root; SVN_ERR(pgfs_revision_root(&root,fs,head,pool));
+    pgfs_data_t *data=fs->fsap_data;
+    if(data->observer.before_mutation)
+        SVN_ERR(data->observer.before_mutation(data->observer.baton,data->connection,path,pool));
     pgfs_node_t *node; SVN_ERR(pgfs_lookup(&node,root,path,TRUE,pool));
     if(!node) return svn_error_createf(SVN_IS_VALID_REVNUM(target->current_rev) ? SVN_ERR_FS_OUT_OF_DATE : SVN_ERR_FS_NOT_FOUND,NULL,"Path '%s' doesn't exist in HEAD revision",path);
     if(node->kind!=svn_node_file) return svn_error_create(SVN_ERR_FS_NOT_FILE,NULL,path);
@@ -109,7 +112,6 @@ static svn_error_t *pgfs_lock_one(svn_lock_t **lock,svn_fs_t *fs,const char *pat
     if(existing && !steal) return svn_error_createf(SVN_ERR_FS_PATH_ALREADY_LOCKED,NULL,"Path '%s' is already locked by user '%s' in filesystem '%s'",path,existing->owner,fs->path);
     const char *token=target->token;
     if(!token) SVN_ERR(pgfs_generate_token(&token,fs,pool));
-    pgfs_data_t *data=fs->fsap_data;
     const char *v[]={data->repository_id,path,token,fs->access_ctx->username,comment,
         dav ? "true" : "false",pgfs_number(apr_time_now(),pool),pgfs_number(expiration,pool)};
     PGresult *result;
@@ -155,6 +157,9 @@ static svn_error_t *pgfs_unlock_one(svn_fs_t *fs,const char *path,const char *to
 {
     svn_revnum_t head; SVN_ERR(pgfs_lock_repository(&head,fs,pool));
     const char *v[]={((pgfs_data_t *)fs->fsap_data)->repository_id,path};
+    pgfs_data_t *data=fs->fsap_data;
+    if(data->observer.before_mutation)
+        SVN_ERR(data->observer.before_mutation(data->observer.baton,data->connection,path,pool));
     PGresult *result;
     SVN_ERR(pgfs_query(&result,fs,"SELECT " PGFS_LOCK_COLUMNS " FROM pgfs.locks WHERE repository_id=$1::uuid AND path=$2",2,v));
     svn_lock_t *lock=PQntuples(result) ? pgfs_lock_value(result,0,pool) : NULL; PQclear(result);

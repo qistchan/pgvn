@@ -35,7 +35,8 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
             !strcmp(state,"22P02") ? SVN_ERR_INCORRECT_PARAMS :
             !strcmp(state,"42501") ? SVN_ERR_AUTHZ_UNWRITABLE :
             !strcmp(state,"42P01") || !strcmp(state,"3F000") ? PGVN_ERR_SCHEMA :
-            !strncmp(state,"08",2) ? PGVN_ERR_DATABASE : SVN_ERR_FS_GENERAL;
+            !strncmp(state,"08",2) || !strcmp(state,"57P01") || !strcmp(state,"57P02") || !strcmp(state,"57P03")
+                ? PGVN_ERR_DATABASE : SVN_ERR_FS_GENERAL;
         svn_error_t *error=svn_error_createf(code,NULL,"PgVN database operation failed (SQLSTATE %s)",state);
         if(*result) PQclear(*result);
         *result=NULL;
@@ -47,6 +48,8 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
 
 svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
 {
+    if(context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
+        return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new database connections are disabled");
     if(InterlockedIncrement(&context->leases)>32) {
         pgvn_metric_closed(context);
         return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgVN connection limit reached");
@@ -86,12 +89,33 @@ const char *pgvn_new_uuid(apr_pool_t *pool)
     return apr_pstrdup(pool,buffer);
 }
 
+static svn_error_t *ensure_control_connection(pgvn_context *context)
+{
+    if(!context->control_transaction && context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
+        return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new control requests are disabled");
+    if(context->control && PQstatus(context->control)==CONNECTION_OK) return SVN_NO_ERROR;
+    if(context->control_transaction)
+        return svn_error_create(PGVN_ERR_DATABASE,NULL,"PgVN control transaction lost its connection");
+    if(context->control) { PQfinish(context->control); context->control=NULL; pgvn_metric_closed(context); }
+    SVN_ERR(pgvn_connect(&context->control,context));
+    /* Reconnect only between requests, never inside an administrative SQL
+     * transaction. A previously validated service must recheck its new host. */
+    if(context->schema_checked_at) {
+        svn_error_t *error=pgvn_database_validate(context);
+        if(error) { PQfinish(context->control); context->control=NULL; pgvn_metric_closed(context); }
+        return error;
+    }
+    return SVN_NO_ERROR;
+}
+
 svn_error_t *pgvn_control_query(PGresult **result,pgvn_context *context,
     const char *sql,int count,const char *const *values)
 {
     apr_status_t status=apr_thread_mutex_lock(context->control_mutex);
     if(status) return svn_error_wrap_apr(status,"PgVN control lock failed");
-    svn_error_t *error=pgvn_exec(result,context,context->control,sql,count,values);
+    *result=NULL;
+    svn_error_t *error=ensure_control_connection(context);
+    if(!error) error=pgvn_exec(result,context,context->control,sql,count,values);
     apr_thread_mutex_unlock(context->control_mutex);
     return error;
 }
@@ -100,8 +124,11 @@ svn_error_t *pgvn_control_begin(pgvn_context *context)
 {
     apr_status_t status=apr_thread_mutex_lock(context->control_mutex);
     if(status) return svn_error_wrap_apr(status,"PgVN control lock failed");
-    PGresult *result;
-    svn_error_t *error=pgvn_exec(&result,context,context->control,"BEGIN",0,NULL);
+    PGresult *result=NULL;
+    svn_error_t *error=context->control_transaction ?
+        svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Nested PgVN control transactions are not supported") : ensure_control_connection(context);
+    if(!error) error=pgvn_exec(&result,context,context->control,"BEGIN",0,NULL);
+    if(!error) context->control_transaction=TRUE;
     if(result) PQclear(result);
     if(error) apr_thread_mutex_unlock(context->control_mutex);
     return error;
@@ -111,6 +138,7 @@ svn_error_t *pgvn_control_end(pgvn_context *context,svn_error_t *error)
 {
     PGresult *result;
     svn_error_t *end=pgvn_exec(&result,context,context->control,error ? "ROLLBACK" : "COMMIT",0,NULL);
+    context->control_transaction=FALSE;
     if(result) PQclear(result);
     apr_thread_mutex_unlock(context->control_mutex);
     return svn_error_compose_create(error,end);
@@ -140,17 +168,27 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
     return SVN_NO_ERROR;
 }
 
+int pgvn_catalog_version(const char *versions)
+{
+    const char *known[]={"1","1,2","1,2,3","1,2,3,4"};
+    _Static_assert(sizeof(known)/sizeof(*known)==PGVN_CATALOG_VERSION,"Update the supported catalog version list");
+    for(int i=0;versions && i<PGVN_CATALOG_VERSION;++i) if(!strcmp(versions,known[i])) return i+1;
+    return 0;
+}
+
 svn_error_t *pgvn_database_validate(pgvn_context *context)
 {
     PGresult *result;
     SVN_ERR(pgvn_control_query(&result,context,
         "SELECT (SELECT string_agg(version::text,',' ORDER BY version) FROM pgfs.schema_versions),"
         "(SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions),pg_is_in_recovery()",0,NULL));
+    int catalog=PQntuples(result)==1 ? pgvn_catalog_version(PQgetvalue(result,0,1)) : 0;
     svn_boolean_t compatible=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4")
-        && (!strcmp(PQgetvalue(result,0,1),"1") || !strcmp(PQgetvalue(result,0,1),"1,2"))
+        && catalog>0 && catalog>=context->minimum_catalog_version
         && !strcmp(PQgetvalue(result,0,2),"f");
     PQclear(result);
-    if(!compatible) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN requires pgfs schema 1-4, pgvn schema 1-2 and a writable database");
+    if(!compatible) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN requires pgfs schema 1-4, supported pgvn schema and a writable database");
+    context->catalog_version=catalog;
     context->schema_checked_at=apr_time_now();
     return SVN_NO_ERROR;
 }

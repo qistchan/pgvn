@@ -16,6 +16,7 @@ import shutil
 import struct
 import subprocess
 from prepare_upstream import prepare
+from prepare_protocol import prepare_protocol
 from embed_migrations import embed
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -133,6 +134,8 @@ def main():
     repository_source = BUILD / "upstream/libsvn_repos"
     patched = prepare(svn / "libsvn_repos", repository_source,
                       ROOT / "patches/pgvn/subversion-1.14.5/repos.json")
+    protocol_patched = prepare_protocol(svn,BUILD / "upstream",
+                      ROOT / "patches/pgvn/subversion-1.14.5/protocol.json")
     legacy_spec = importlib.util.spec_from_file_location("pgfs_legacy_build", ROOT / "scripts/build.py")
     legacy = importlib.util.module_from_spec(legacy_spec)
     legacy_spec.loader.exec_module(legacy)
@@ -141,6 +144,7 @@ def main():
     legacy.generate_stubs()
     embed(ROOT,BUILD / "generated/pgvn_migrations.h")
     includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/monitor",
+                ROOT / "src/pgvn/serve", BUILD / "upstream/svnserve",
                 ROOT / "src/libsvn_fs_pg", repository_source,
                 svn / "include", svn / "libsvn_fs", apr, apu, pg / "include", apache / "include"]
     options = ["-std=c17", "-O0", "-g"] if args.configuration == "Debug" else ["-std=c17", "-O2", "-DNDEBUG"]
@@ -163,11 +167,20 @@ def main():
         static_core.unlink()
     run([tools / "llvm-ar.exe", "rcs", static_core, *objects])
     core_links = [static_core, *[libraries[name] for name in ("libsvn_fs-1.dll", "libsvn_fs_util-1.dll",
-        "libsvn_diff-1.dll", "libsvn_delta-1.dll", "libsvn_subr-1.dll", "libaprutil-1.dll", "libapr-1.dll")], pg / "lib/libpq.lib"]
+        "libsvn_diff-1.dll", "libsvn_delta-1.dll", "libsvn_subr-1.dll", "libaprutil-1.dll", "libapr-1.dll")], pg / "lib/libpq.lib", "-lbcrypt", "-ladvapi32"]
     products = [RUNTIME / "bin/pgvnserve.exe", RUNTIME / "bin/pgvnadmin.exe",
                 RUNTIME / "apache/modules/mod_dav_pgvn.so", RUNTIME / "apache/modules/mod_authz_pgvn.so"]
-    run([compiler, *options, "-municode", ROOT / "src/pgvn/serve/main.c",
-         ROOT / "src/pgvn/monitor/http_win.c", *core_links, "-lhttpapi", "-ladvapi32",
+    protocol_objects = []
+    protocol_sources = [BUILD / "upstream/svnserve" / name for name in ("serve.c", "logger.c", "log-escape.c")]
+    protocol_sources += [BUILD / "upstream/libsvn_ra_svn" / name for name in
+                         ("marshal.c", "streams.c", "editorp.c", "cram.c", "deprecated.c")]
+    for source in protocol_sources:
+        output = BUILD / "objects" / ("protocol-" + source.stem + ".o")
+        run([compiler, *[o for o in options if o != "-Werror"], "-Wno-deprecated-declarations", "-Wno-missing-field-initializers",
+             "-c", source, "-o", output])
+        protocol_objects.append(output)
+    run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/serve").glob("*.c")),
+         ROOT / "src/pgvn/monitor/http_win.c", *protocol_objects, *core_links, "-lhttpapi", "-ladvapi32",
          "-Wl,--no-insert-timestamp", "-o", products[0]])
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
          "-Wl,--no-insert-timestamp", "-o", products[1]])
@@ -178,6 +191,9 @@ def main():
     if probe.exists():
         run([compiler, *options, "-municode", probe, *core_links, "-Wl,--no-insert-timestamp",
              "-o", RUNTIME / "bin/core_probe.exe"])
+    hook_probe = ROOT / "tests/pgvn/hook_probe.c"
+    if hook_probe.exists():
+        run([compiler, *options, "-municode", hook_probe, "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/hook_probe.exe"])
     # Copy runtime dependencies into the isolated output; input installations are read-only.
     for source, target in ((svn_bin, RUNTIME / "bin"), (apache / "bin", RUNTIME / "apache/bin")):
         for item in source.iterdir():
@@ -210,17 +226,19 @@ def main():
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "milestone": re.search(r'#define PGVN_MILESTONE "([^"]+)"', (ROOT / "src/pgvn/core/pgvn.h").read_text()).group(1), "configuration": args.configuration,
-        "capabilities": {"repository_by_id": True, "svn_protocol": False, "dav_protocol": False, "monitor": "bootstrap"},
+        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": False, "monitor": "bootstrap"},
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
         "inputs": {k: str(v) for k, v in paths.items()},
         "windows_ctype_array_abi": array_abi,
         "upstream_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/repos.json"),
                              "applied_sha256": digest(BUILD / "upstream/applied-repos.patch"), "outputs": patched},
+        "protocol_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/protocol.json"),
+                             "applied_sha256": digest(BUILD / "upstream/applied-protocol.patch"), "outputs": protocol_patched},
         "sources": {**{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
                     **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
                     **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()},
-                    **{"tests/pgvn/" + k: v for k, v in inventory(ROOT / "tests/pgvn", {".py", ".c", ".inc"}).items()}},
+                    **{"tests/pgvn/" + k: v for k, v in inventory(ROOT / "tests/pgvn", {".py", ".c", ".inc", ".java"}).items()}},
         "upstream": {"subversion": inventory(paths["subversion"], {".c", ".h", ".inc", ".hw"}),
                      "apr": inventory(apr), "apu": inventory(apu), "apache_include": inventory(apache / "include")},
         "sdk_binaries": {str(d): digest(d) for d in dlls + [pg / "lib/libpq.lib", pg / "bin/libpq.dll"]},
@@ -239,7 +257,7 @@ def main():
     manifest_path = ARTIFACTS / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     build_id = hashlib.sha256(json.dumps({key: manifest[key] for key in (
-        "sources", "upstream_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
+        "sources", "upstream_patches", "protocol_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
         sort_keys=True).encode()).hexdigest()[:16]
     archive = ARTIFACTS / (manifest["milestone"] + "-" + build_id + ".json")
     if not archive.exists():

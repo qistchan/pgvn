@@ -27,10 +27,13 @@ static const command_definition commands[]={
     {"maintenance","freeze",3,3,O(TIMEOUT)},
     {"maintenance","hotcopy",4,4,O(INCREMENTAL)|O(ROUTE)},
     {"maintenance","purge",3,3,O(CONFIRM_ID)},{"maintenance","abort-txn",4,4,0},
-    {"config","show",3,3,0},{"config","publish",3,3,O(GENERATION)|O(AUTHZ)|O(GROUPS)|O(HOOKS)},
+    {"config","show",3,3,0},{"config","publish",3,3,O(GENERATION)|O(AUTHZ)|O(GROUPS)|O(HOOKS)|O(SETTINGS)},
     {"authz","validate",2,2,O(AUTHZ)|O(GROUPS)}, {"authz","check",6,6,0},
     {"monitor-token","create",2,2,O(LABEL)|O(EXPIRES)}, {"monitor-token","list",2,2,0},
     {"monitor-token","revoke",3,3,0}, {"monitor-token","expire",3,3,O(EXPIRES)},
+    {"key","create",4,4,0}, {"user","set",4,4,O(KEY_FILE)},
+    {"user","rekey",4,4,O(KEY_FILE)|O(OLD_KEY_FILE)},
+    {"user","list",2,3,0}, {"user","disable",4,4,0},
     {"diagnose",NULL,1,1,0}
 };
 
@@ -73,5 +76,6 @@ svn_error_t *admin_dispatch(admin_command *command)
     if(!strcmp(group,"config") || !strcmp(group,"authz")) return admin_policy(command);
     if(!strcmp(group,"maintenance")) return admin_maintenance(command);
     if(!strcmp(group,"monitor-token")) return admin_tokens(command);
+    if(!strcmp(group,"key") || !strcmp(group,"user")) return admin_credentials(command);
     return admin_diagnose(command);
 }

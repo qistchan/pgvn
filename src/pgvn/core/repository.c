@@ -32,7 +32,8 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
 #pragma clang diagnostic pop
     PGconn *connection;
     SVN_ERR(pgvn_connect(&connection,context));
-    pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository};
+    pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository,
+        administrative ? NULL : pgvn_guard_mutation};
     SVN_ERR(pgfs_native_bind(repository->fs,connection,context->connection_string,id,&observer,pool));
     if(!administrative) SVN_ERR(pgvn_policy_revalidate(repository->policy,context,pool));
     *output=repository;

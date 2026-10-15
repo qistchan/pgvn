@@ -29,7 +29,7 @@ svn_error_t *admin_policy(admin_command *command)
         return SVN_NO_ERROR;
     }
     if(!strcmp(op,"publish")) {
-        const char *rules,*groups=NULL,*hooks="{}";
+        const char *rules,*groups=NULL,*hooks="{}",*settings=NULL;
         apr_int64_t generation;
         SVN_ERR(admin_number(&generation,command->values[OPT_GENERATION],1,APR_INT64_MAX-1));
         const char *snapshot_values[]={binding->repository_id,apr_psprintf(command->pool,"%" APR_INT64_T_FMT,generation)};
@@ -45,7 +45,8 @@ svn_error_t *admin_policy(admin_command *command)
         SVN_ERR(admin_read_text(&rules,command->values[OPT_AUTHZ],command->pool));
         if(command->values[OPT_GROUPS]) SVN_ERR(admin_read_text(&groups,command->values[OPT_GROUPS],command->pool));
         if(command->values[OPT_HOOKS]) SVN_ERR(admin_read_text(&hooks,command->values[OPT_HOOKS],command->pool));
-        SVN_ERR(pgvn_policy_publish(command->context,binding->repository_id,generation,rules,groups,hooks,"pgvnadmin",command->pool));
+        if(command->values[OPT_SETTINGS]) SVN_ERR(admin_read_text(&settings,command->values[OPT_SETTINGS],command->pool));
+        SVN_ERR(pgvn_policy_publish_settings(command->context,binding->repository_id,generation,rules,groups,hooks,settings,"pgvnadmin",command->pool));
     }
     const char *values[]={binding->repository_id};
     return admin_emit_query(command,

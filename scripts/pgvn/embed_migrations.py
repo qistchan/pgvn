@@ -3,7 +3,7 @@ import hashlib
 import json
 
 STORAGE = ("001_initial.sql", "002_version_tree.sql", "003_locks.sql", "004_hotcopy.sql")
-CATALOG = ("001_catalog.sql", "002_admin.sql")
+CATALOG = ("001_catalog.sql", "002_admin.sql", "003_credentials.sql", "004_protocol.sql")
 
 
 def embed(root, output):

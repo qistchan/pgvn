@@ -1,0 +1,439 @@
+{
+  "milestone": "M3-dev",
+  "milestone_complete": false,
+  "status": "component_checks_passed",
+  "git_base_commit": "34bc93b6a65723da36cf605939efb5efabba97e9",
+  "build_manifest_sha256": "36775de0858489f0c1d908b619fd1ae09d93d60b0e88e8ea9c37b41165283f8d",
+  "compiled_source_files_checked": 62,
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "183c0a3039d2d9f651d39aa080abbfa15aaab4dee7ca369f875885406d3e127e",
+    "runtime/pgvn/bin/pgvnadmin.exe": "ec943973120ad15a7fc5ef6d413298bdcf2647e3b53f890563a9a7698826ff78",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "65789dd06a660539b2764d81a021e9c3432d0d7e3e23faa8253ad504ce3c5cb5",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "9d02d43972f8c76e4e5ead044657ec3955fcc61711b795f13a6439b29d8ecf77"
+  },
+  "component_tests": {
+    "m3-credentials": {
+      "status": "PASS",
+      "details": {
+        "schema": 3,
+        "non_superuser_migration": true,
+        "native_encrypt_decrypt": true,
+        "unicode_password_and_identity": true,
+        "key_overwrite_refused": true,
+        "wrong_key_tag_and_identity_rejected": true,
+        "broad_acl_rejected": true,
+        "no_plaintext_password_in_database_or_command_line": true,
+        "least_privilege_grants": true,
+        "invalid_password_rollback": true,
+        "revocation_and_generation": true,
+        "publication_row_lock_blocks_revocation_seconds": 2.5160000000032596,
+        "pathless_working_directory_empty": true
+      },
+      "test_id": "m3-credentials-d3a6171efd8f",
+      "component": "M3 credentials",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T05:34:03.009787+00:00",
+      "database": "pgvn_m3c_d3a6171efd8f",
+      "elapsed_seconds": 9.078999999997905,
+      "pgvnadmin_sha256": "ec943973120ad15a7fc5ef6d413298bdcf2647e3b53f890563a9a7698826ff78"
+    },
+    "m3-protocol-smoke": {
+      "status": "PASS",
+      "details": {
+        "two_process_nodes": true,
+        "original_svn_and_svnmucc": true,
+        "database_routes_and_uuid": true,
+        "cram_md5_success_and_failure": true,
+        "path_authz_and_read_only_user": true,
+        "binary_roundtrip_and_working_copy_update": true,
+        "cross_node_lock_conflict_and_unlock": true,
+        "node_loss_and_restart": true,
+        "explicit_hook_required_for_revprops": true,
+        "cross_node_revprops": true,
+        "control_connection_recovery_attempts": [
+          2,
+          2
+        ],
+        "svnkit": {
+          "source_sha256": "67674ab224dff203d2ef0faccc0a7a331158522f5bdd0d29e58d62e19833f181",
+          "dependencies": {
+            "org.tmatesoft.svnkit_1.10.1.r10777.jar": "ff0a5039b2c09cbf1b5f67f6b73e9f9f0dae435a423845d220f0a65e98d11fce",
+            "com.trilead.ssh2_1.0.0.build222_185.jar": "ad3b7defdd2ae44b1c5e9c7fefdb8d5bed5fcd66ac9f0daf5ca761fbd4e0a6dc",
+            "org.tmatesoft.sqljet_1.1.12.r1336.jar": "c61e0ccf8de9b4b4b22e4eabbd5abe0072477a27481258299ea198b9fbdbddd0",
+            "antlr-runtime_3.5.3.jar": "cc7b201b7c9528e9919e8ab73f3eb00441a2fed63a8c1a9922a4008e4b7c70c4",
+            "com.jcraft.jsch_0.1.51.jar": "328b43e0d5100c230e0f515ec413b056b81462ae327722798e314662903a179d"
+          }
+        },
+        "svnkit_binary_commit_revprops": true,
+        "svnkit_persistent_session_config_and_credential_revocation": true,
+        "svnkit_inflight_commit_revocation": true,
+        "parallel_reads": 24,
+        "credential_revocation_visible_on_both_nodes": true,
+        "full_verify": true,
+        "youngest": 4,
+        "pathless_working_directory_empty": true
+      },
+      "test_id": "m3-protocol-smoke-2f0ada87e7e3",
+      "component": "M3 protocol smoke",
+      "milestone_complete": false,
+      "database": "pgvn_m3c_2f0ada87e7e3",
+      "created_at": "2026-10-15T05:28:07.441047+00:00",
+      "elapsed_seconds": 14.531000000002678,
+      "pgvnserve_sha256": "183c0a3039d2d9f651d39aa080abbfa15aaab4dee7ca369f875885406d3e127e"
+    }
+  },
+  "regressions": {
+    "m0": {
+      "test_id": "m0-fcc862c19889",
+      "status": "PASS",
+      "groups": 5,
+      "records": [
+        {
+          "name": "native_build_identity",
+          "status": "PASS",
+          "details": {
+            "configuration": "Release",
+            "products": {
+              "pgvnserve": {
+                "product": "PgVN",
+                "version": "0.1.0-dev",
+                "milestone": "M3-dev",
+                "svn_base": "1.14.5",
+                "apr_runtime": "1.7.6",
+                "libpq_version": 180006,
+                "ready": false,
+                "capabilities": {
+                  "repository_by_id": true,
+                  "svn_protocol": false,
+                  "dav_protocol": false,
+                  "monitor": "bootstrap"
+                }
+              },
+              "pgvnadmin": {
+                "product": "PgVN",
+                "version": "0.1.0-dev",
+                "milestone": "M3-dev",
+                "svn_base": "1.14.5",
+                "apr_runtime": "1.7.6",
+                "libpq_version": 180006,
+                "ready": false,
+                "capabilities": {
+                  "repository_by_id": true,
+                  "svn_protocol": false,
+                  "dav_protocol": false,
+                  "monitor": "bootstrap"
+                }
+              }
+            },
+            "hashes": {
+              "runtime/pgvn/bin/pgvnserve.exe": "183c0a3039d2d9f651d39aa080abbfa15aaab4dee7ca369f875885406d3e127e",
+              "runtime/pgvn/bin/pgvnadmin.exe": "ec943973120ad15a7fc5ef6d413298bdcf2647e3b53f890563a9a7698826ff78",
+              "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "65789dd06a660539b2764d81a021e9c3432d0d7e3e23faa8253ad504ce3c5cb5",
+              "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "9d02d43972f8c76e4e5ead044657ec3955fcc61711b795f13a6439b29d8ecf77"
+            }
+          },
+          "elapsed_seconds": 0.5630000000091968
+        },
+        {
+          "name": "invalid_options",
+          "status": "PASS",
+          "details": {
+            "invalid_urls_rejected": 7,
+            "unknown_commands_rejected": true
+          },
+          "elapsed_seconds": 0.6089999999967404
+        },
+        {
+          "name": "console_http",
+          "status": "PASS",
+          "details": {
+            "probes": "live200/ready503/unknown404/write405/body413",
+            "restart": true,
+            "requests": 128,
+            "clients": 16,
+            "elapsed_seconds": 0.06300000000919681
+          },
+          "elapsed_seconds": 1.1560000000026776
+        },
+        {
+          "name": "apache_module_load",
+          "status": "PASS",
+          "details": {
+            "syntax": "Syntax OK",
+            "loaded_modules": "Loaded Modules:\n core_module (static)\n win32_module (static)\n mpm_winnt_module (static)\n http_module (static)\n so_module (static)\n authz_core_module (shared)\n dav_pgvn_module (shared)\n authz_pgvn_module (shared)",
+            "request_cycles": 2,
+            "unload": "isolated Apache process exit"
+          },
+          "elapsed_seconds": 2.0939999999973224
+        },
+        {
+          "name": "low_privilege_http_service",
+          "status": "PASS",
+          "details": {
+            "account": "NT AUTHORITY\\LocalService",
+            "concurrency_0": {
+              "requests": 128,
+              "clients": 16,
+              "elapsed_seconds": 0.030999999988125637
+            },
+            "header_timeout_seconds_0": 11.969000000011874,
+            "stop_seconds_0": 0.046999999991385266,
+            "concurrency_1": {
+              "requests": 128,
+              "clients": 16,
+              "elapsed_seconds": 0.030999999988125637
+            },
+            "header_timeout_seconds_1": 9.735000000000582,
+            "stop_seconds_1": 0.04700000000593718,
+            "restart_cycles": 2,
+            "first_header_timeout": "HTTP.sys global timer; unchanged by PgVN",
+            "cleanup": [
+              "temporary_service_deleted",
+              "temporary_urlacl_deleted"
+            ]
+          },
+          "elapsed_seconds": 22.656000000002678
+        }
+      ]
+    },
+    "m1": {
+      "test_id": "m1-850d4f4486ff",
+      "status": "PASS",
+      "groups": 7,
+      "records": [
+        {
+          "name": "creation_and_routing",
+          "status": "PASS",
+          "details": {
+            "storage_id_distinct_from_uuid": true,
+            "config_files": 0,
+            "longest_segment_routing": true,
+            "disabled_route_does_not_fall_through": true,
+            "case_and_unicode_forms_distinct": true
+          },
+          "elapsed_seconds": 2.327999999994063
+        },
+        {
+          "name": "atomic_creation",
+          "status": "PASS",
+          "details": {
+            "concurrent_creators": 8,
+            "successful_creators": 1,
+            "orphan_storage_rows": 0,
+            "service_control_write_denied": true
+          },
+          "elapsed_seconds": 0.9379999999946449
+        },
+        {
+          "name": "trees_and_binary",
+          "status": "PASS",
+          "details": {
+            "binary_bytes": 2097413,
+            "verified_revisions": 3,
+            "copy_history": true,
+            "commit_receipt_retry": true,
+            "pack_recover_snapshot_unchanged": true
+          },
+          "elapsed_seconds": 3.7340000000112923
+        },
+        {
+          "name": "authorization_and_hooks",
+          "status": "PASS",
+          "details": {
+            "default_deny": true,
+            "username_path_access": true,
+            "stale_inflight_commit_rejected": true,
+            "pre_hook_blocks_publication": true,
+            "post_hook_failure_preserves_revision": true,
+            "invalid_authz_and_generation_conflict_atomic": true
+          },
+          "elapsed_seconds": 5.125
+        },
+        {
+          "name": "writer_leases_and_metrics",
+          "status": "PASS",
+          "details": {
+            "cross_process_writer_exclusion": true,
+            "open_stream_commit_rejected": true,
+            "disconnect_releases_session_lock": true,
+            "metrics": {
+              "sql_delta": 20,
+              "errors": 0,
+              "open": 2,
+              "closed": 1,
+              "snapshot_sql": 0,
+              "ready": false
+            },
+            "connection_capacity": {
+              "opened_fs": 31,
+              "connections_at_limit": 32,
+              "connections_after_close": 1
+            }
+          },
+          "elapsed_seconds": 4.5
+        },
+        {
+          "name": "legacy_adapter_regression",
+          "status": "PASS",
+          "details": {
+            "tests": 17,
+            "failures": 0,
+            "errors": 0,
+            "excluded": [
+              {
+                "test": "test_p0.NativeLoaderTests.test_06_database_restart_preserves_revision_and_binary_properties",
+                "reason": "Original fixture hardcodes port15432/data path; equivalent PgVN restart gate below uses verified16432 directory."
+              }
+            ],
+            "assertions": "Original test assertions unchanged; fixture paths/DSN adapted."
+          },
+          "elapsed_seconds": 49.780999999988126
+        },
+        {
+          "name": "restart_and_pathlessness",
+          "status": "PASS",
+          "details": {
+            "database_restart_preserves_binary_history": true,
+            "fsync": "on",
+            "full_page_writes": "on",
+            "pathless_working_directory_empty": true
+          },
+          "elapsed_seconds": 6.188000000009197
+        }
+      ]
+    },
+    "m2": {
+      "test_id": "m2-18d72a011f87",
+      "status": "PASS",
+      "groups": 8,
+      "records": [
+        {
+          "name": "migration_and_privileges",
+          "status": "PASS",
+          "details": {
+            "database": "pgvn_m2_18d72a011f87",
+            "concurrent_initializers": 4,
+            "idempotent_migrate": true,
+            "checksum_tampering_rejected": true,
+            "future_schema_refused_before_migration": true,
+            "schema": {
+              "pgfs": 4,
+              "pgvn": 3,
+              "checksums": "match"
+            },
+            "migration_owner_superuser": false,
+            "service_admin_denied": true
+          },
+          "elapsed_seconds": 3.625
+        },
+        {
+          "name": "cli_contract_and_catalog",
+          "status": "PASS",
+          "details": {
+            "unicode_names_and_config": true,
+            "selectors_and_pagination": true,
+            "exit_classes_verified": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "dsn_redaction": true,
+            "disable_invalidates_generation": true
+          },
+          "elapsed_seconds": 4.532000000006519
+        },
+        {
+          "name": "history_roundtrip",
+          "status": "PASS",
+          "details": {
+            "revisions_compared": 5,
+            "snapshot_tree_changed_copy_history_match_fsfs": true,
+            "binary_bytes": 1048748,
+            "binary_empty_properties": true,
+            "standard_dump_roundtrip": true,
+            "file_and_stdio_streams": true,
+            "existing_dump_file_not_overwritten": true,
+            "force_and_ignore_uuid": true,
+            "optional_load_hooks": true
+          },
+          "elapsed_seconds": 14.75
+        },
+        {
+          "name": "incremental_and_registration",
+          "status": "PASS",
+          "details": {
+            "incremental_import_export": true,
+            "existing_storage_id_preserved": true,
+            "existing_public_uuid_preserved": true,
+            "registered_history_verified": 5
+          },
+          "elapsed_seconds": 3.2810000000026776
+        },
+        {
+          "name": "policies_and_tokens",
+          "status": "PASS",
+          "details": {
+            "versioned_authz_groups": true,
+            "stale_generation_rejected": true,
+            "token_entropy_bits": 256,
+            "token_sha256_only_in_database": true,
+            "token_expiry_and_revoke": true,
+            "no_token_in_list_or_evidence": true
+          },
+          "elapsed_seconds": 1.9529999999940628
+        },
+        {
+          "name": "hotcopy_and_maintenance",
+          "status": "PASS",
+          "details": {
+            "full_and_incremental_hotcopy": true,
+            "independent_id_preserved_uuid": true,
+            "divergence_rejected_without_changes": true,
+            "route_conflict_rolls_back_storage": true,
+            "pack_recover_preserve_snapshot": true
+          },
+          "elapsed_seconds": 5.7810000000026776
+        },
+        {
+          "name": "freeze_and_lifecycle",
+          "status": "PASS",
+          "details": {
+            "freeze_blocks_commit_until_child_exits": true,
+            "child_argument_quoting": true,
+            "timeout_kills_child_tree": true,
+            "purge_requires_disable_and_drained_handles": true,
+            "purge_clears_catalog_and_storage": true,
+            "pathless_working_directory_empty": true
+          },
+          "elapsed_seconds": 6.6560000000026776
+        },
+        {
+          "name": "portable_binary",
+          "status": "PASS",
+          "details": {
+            "standalone_binary_and_dll_directory": true,
+            "runtime_python_node_not_required": true
+          },
+          "elapsed_seconds": 0.7039999999979045
+        }
+      ]
+    }
+  },
+  "post_rejected_commit_transaction_states": {
+    "aborted": 1,
+    "committed": 4
+  },
+  "remaining": [
+    "external_hooks_and_process_tree_cleanup",
+    "credential_rotation_and_access_settings",
+    "business_scm_drain",
+    "broader_protocol_and_lost_response_acceptance",
+    "complete_m3_gate_and_commit"
+  ],
+  "scope": "Two native Windows processes on one machine and dedicated PostgreSQL test databases; not cross-host HA or Polarion application acceptance.",
+  "superseded_by": "m3.json",
+  "historical_note": "Partial development component evidence only; final M3 acceptance is m3.json."
+}

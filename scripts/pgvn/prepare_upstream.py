@@ -28,9 +28,12 @@ def prepare(source, destination, specification):
     for name, (event, user, txn, rev) in spec["hook_dispatch"].items():
         pattern = r"(svn_repos__hooks_" + name + r"\([^;{}]*\)\s*\{\n)"
         body = "  if (repos->pgvn_baton)\n    {\n"
+        body += "      pgvn_hook_context details = {0};\n"
+        for field, expression in spec.get("hook_details", {}).get(name, {}).items():
+            body += f"      details.{field} = {expression};\n"
         if name == "pre_lock":
             body += '      if (token) *token = "";\n'
-        body += f'      return pgvn_repos_hook(repos->pgvn_baton, "{event}", {user}, {txn}, {rev}, pool);\n    }}\n'
+        body += f'      return pgvn_repos_hook_context(repos->pgvn_baton, "{event}", {user}, {txn}, {rev}, &details, pool);\n    }}\n'
         changed["hooks.c"], count = re.subn(pattern, lambda m: m[1] + body, changed["hooks.c"])
         if count != 1:
             raise RuntimeError(f"Hook patch anchor is not unique: {name}")

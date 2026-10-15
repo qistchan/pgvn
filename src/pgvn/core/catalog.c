@@ -57,6 +57,7 @@ svn_error_t *pgvn_catalog_resolve(pgvn_binding **output,pgvn_context *context,
     }
     pgvn_binding *binding=binding_from_result(result,pool);
     const char *prefix=PQgetvalue(result,0,4);
+    binding->route_prefix=apr_pstrdup(pool,prefix);
     const char *inside=!strcmp(prefix,"/") ? path : path+strlen(prefix);
     binding->in_repository_path=apr_pstrdup(pool,*inside ? inside : "/");
     PQclear(result);

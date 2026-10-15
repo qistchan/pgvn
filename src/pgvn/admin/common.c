@@ -17,7 +17,8 @@ static const option_definition definitions[]={
     {"--label",OPT_LABEL,1},{"--expires-in",OPT_EXPIRES,1},{"--timeout",OPT_TIMEOUT,1},
     {"--admin-role",OPT_ADMIN_ROLE,1},{"--service-role",OPT_SERVICE_ROLE,1},{"--monitor-role",OPT_MONITOR_ROLE,1},
     {"--limit",OPT_LIMIT,1},{"--offset",OPT_OFFSET,1},{"--verbose",OPT_VERBOSE,0},
-    {"--help",OPT_HELP,0},{"-h",OPT_HELP,0},{"--version",OPT_VERSION,0}
+    {"--help",OPT_HELP,0},{"-h",OPT_HELP,0},{"--version",OPT_VERSION,0},{"--key-file",OPT_KEY_FILE,1},
+    {"--old-key-file",OPT_OLD_KEY_FILE,1},{"--settings",OPT_SETTINGS,1}
 };
 
 svn_error_t *admin_usage(const char *message)
@@ -137,6 +138,7 @@ svn_error_t *admin_open(pgvn_repository **repository,admin_command *command,cons
 {
     pgvn_binding *binding;
     SVN_ERR(pgvn_repository_lookup(&binding,command->context,selector,command->pool));
+    if(command->read_only_client) return pgvn_repos_open(repository,command->context,binding->repository_id,command->pool);
     return pgvn_repos_open_admin(repository,command->context,binding->repository_id,command->pool);
 }
 
@@ -162,16 +164,7 @@ svn_error_t *admin_revision_range(svn_revnum_t *start,svn_revnum_t *end,
 
 int admin_error(svn_error_t *error,svn_boolean_t json)
 {
-    int code=PGVN_EXIT_FAILURE;
-    for(svn_error_t *item=error;item;item=item->child) {
-        apr_status_t n=item->apr_err;
-        if(n==PGVN_ERR_DATABASE) { code=PGVN_EXIT_DATABASE; break; }
-        if(n==PGVN_ERR_SCHEMA || n==SVN_ERR_FS_UNSUPPORTED_FORMAT || n==SVN_ERR_VERSION_MISMATCH) code=PGVN_EXIT_SCHEMA;
-        else if(n==SVN_ERR_CL_ARG_PARSING_ERROR || n==SVN_ERR_INCORRECT_PARAMS || n==SVN_ERR_REPOS_BAD_ARGS || n==SVN_ERR_FS_PATH_SYNTAX || n==SVN_ERR_AUTHZ_INVALID_CONFIG) code=PGVN_EXIT_USAGE;
-        else if(n==SVN_ERR_AUTHZ_UNREADABLE || n==SVN_ERR_AUTHZ_UNWRITABLE) code=PGVN_EXIT_DENIED;
-        else if(n==SVN_ERR_FS_NOT_FOUND || n==SVN_ERR_FS_NO_SUCH_REVISION || n==SVN_ERR_FS_NO_SUCH_TRANSACTION || APR_STATUS_IS_ENOENT(n)) code=PGVN_EXIT_NOT_FOUND;
-        else if(n==SVN_ERR_FS_ALREADY_EXISTS || n==SVN_ERR_FS_TXN_OUT_OF_DATE || n==SVN_ERR_FS_CONFLICT || n==SVN_ERR_FS_REP_BEING_WRITTEN || APR_STATUS_IS_EEXIST(n)) code=PGVN_EXIT_CONFLICT;
-    }
+    int code=pgvn_error_exit_code(error);
     static const char *classes[]={"ok","operation_failed","invalid_arguments","database_unavailable","schema_incompatible","access_denied","not_found","conflict"};
     if(json) {
         fputs("{\"ok\":false,\"error\":{\"code\":",stderr); admin_json_cstr(stderr,classes[code]);
@@ -201,11 +194,16 @@ void admin_help(void)
          "  maintenance hotcopy SOURCE DESTINATION [--route /PREFIX] [--incremental]\n"
          "  maintenance purge SELECTOR --confirm-id STORAGE_ID\n"
          "  maintenance abort-txn SELECTOR TXN\n"
-         "  config show SELECTOR | config publish SELECTOR --expected-generation N --authz FILE [--groups FILE] [--hooks FILE]\n"
+         "  config show SELECTOR | config publish SELECTOR --expected-generation N --authz FILE [--groups FILE] [--hooks FILE] [--settings FILE]\n"
          "  authz validate --authz FILE [--groups FILE] | authz check SELECTOR USER PATH read|write\n"
          "  monitor-token create --label LABEL [--expires-in SECONDS]\n"
          "  monitor-token list | monitor-token revoke ID | monitor-token expire ID --expires-in SECONDS\n"
+         "  key create FILE KEY_ID             Create an ACL-protected deployment key (offline)\n"
+         "  user set DOMAIN USER [--key-file FILE]  Password from redirected stdin\n"
+         "  user rekey DOMAIN USER [--key-file NEW] [--old-key-file OLD]\n"
+         "  user list [DOMAIN] | user disable DOMAIN USER\n"
          "  diagnose | --version | --help\n"
          "SELECTOR accepts name:NAME, id:UUID, or an unambiguous name/ID.\n"
+         "Look accepts the trusted service DB role for enabled repositories; other administration requires admin privileges.\n"
          "Exit codes: 0 success, 1 failure, 2 usage, 3 database, 4 schema, 5 denied, 6 missing, 7 conflict.");
 }

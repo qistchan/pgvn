@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <io.h>
 #include "internal.h"
+#include "credentials.h"
+#include "svn_checksum.h"
 #include <apr_general.h>
 #include <apr_strings.h>
 #include "svn_io.h"
@@ -41,6 +43,24 @@ static svn_error_t *run(int argc,const char **argv,apr_pool_t *pool)
     pgvn_context *context;
     SVN_ERR(pgvn_context_create(&context,&options,pool));
     const char *op=argv[1];
+    if(!strcmp(op,"credential-digest") && (argc==5 || argc==6)) {
+        pgvn_credential_key *key; const char *password; apr_int64_t generation;
+        SVN_ERR(pgvn_keyring_load(&key,argv[2],argc==6 ? argv[5] : NULL,pool));
+        SVN_ERR(pgvn_credential_get(&password,&generation,context,key,argv[3],argv[4],pool));
+        if(!password) return svn_error_create(SVN_ERR_AUTHN_FAILED,NULL,"Credential is unavailable");
+        svn_checksum_t *checksum;
+        SVN_ERR(svn_checksum(&checksum,svn_checksum_sha1,password,strlen(password),pool));
+        printf("{\"generation\":%" APR_INT64_T_FMT ",\"sha1\":\"%s\"}\n",generation,svn_checksum_to_cstring(checksum,pool));
+        return SVN_NO_ERROR;
+    }
+    if(!strcmp(op,"credential-guard") && argc==6) {
+        apr_int64_t pause=apr_atoi64(argv[5]);
+        if(pause<0 || pause>30000) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid probe hold interval");
+        SVN_ERR(pgvn_control_begin(context));
+        svn_error_t *error=pgvn_credential_guard(context,context->control,argv[2],argv[3],apr_atoi64(argv[4]),pool);
+        if(!error) { puts("locked"); fflush(stdout); Sleep((DWORD)pause); }
+        return pgvn_control_end(context,error);
+    }
     if(!strcmp(op,"create") && argc>=4) {
         pgvn_binding *binding;
         SVN_ERR(pgvn_repo_create(&binding,context,argv[2],argv[3],argc>4 ? argv[4] : NULL,pool));

@@ -1,0 +1,9 @@
+{
+  "base_sha256": {
+    "svnserve/serve.c": "acb1cac75ea86ba71da9a308124761f1f7e375a774860ce96f9513c55c89cc18",
+    "svnserve/server.h": "2dd496fff5a8c8e717634dd772ac3a2941c01b9bcb36821786e0c537c9b9264c",
+    "libsvn_ra_svn/cram.c": "64e6271eacf19286413612dfc480f88304c3eaf6d897439d849b42c116e8a4b8",
+    "libsvn_ra_svn/marshal.c": "908ccdd914cae15b159885a80bd745174a60521bdf090c8a8e2a63a5e26fd8ff",
+    "libsvn_ra_svn/streams.c": "f66eeaefe75ed6e50b25be7f7e556099ac9efcda11c46d010e1c056c17c5ebcd"
+  }
+}
