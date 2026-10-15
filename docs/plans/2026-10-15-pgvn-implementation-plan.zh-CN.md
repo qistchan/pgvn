@@ -317,7 +317,7 @@ M0–M4 的首个可用版本约 29–45 人日；完整本轮约 55–84 人日
 - [ ] PGVN-701 生成可校验的离线运行包、依赖清单、Windows 服务与 HTTP URL 权限安装脚本。
 - [ ] PGVN-702 在干净 Windows 机器完成部署、重启和恢复；执行隔离 Polarion 应用演练并形成切换条件。
 
-当前组件进展：固定 638 个修订的历史对照与跨所有者逻辑备份恢复已通过，见 [M6 记录](../pgvn/M6-validation.zh-CN.md)。PGVN-701 已生成开发快照，并完成中文、emoji 和组合字符安装路径、中文账号配合标准 svn 的本机服务、双协议与备份恢复检查，见 [部署记录](../pgvn/M7-package-local.zh-CN.md) 和 [UTF-8 记录](../pgvn/Windows-UTF8.zh-CN.md)；正式包仍等待 M6 完整验收。固定 SDK svnmucc 的中文账号差异仍保留，当前新构建的网页窄屏复验待补。上述任务未据组件结果提前勾选完成。
+当前组件进展：固定 638 个修订的历史对照与跨所有者逻辑备份恢复已通过，见 [M6 记录](../pgvn/M6-validation.zh-CN.md)。PGVN-701 已生成开发快照，并完成中文、emoji 和组合字符安装路径、中文账号配合标准 svn 的本机服务、双协议与备份恢复检查，见 [部署记录](../pgvn/M7-package-local.zh-CN.md) 和 [UTF-8 记录](../pgvn/Windows-UTF8.zh-CN.md)；正式包仍等待 M6 完整验收。固定 SDK svnmucc 的中文账号差异仍保留，当前新构建的网页窄屏复验待补。新增原生上游 C 入口完成 PgVN 87 PASS/4 SKIP 与 FSFS 对照，11 项架构边界逐项记录，见 [原生验证](../pgvn/M6-native.zh-CN.md)；PGVN-601 的完整上游网络协议入口仍待完成。上述任务未据组件结果提前勾选完成。
 
 ## 8 测试与测量方案
 

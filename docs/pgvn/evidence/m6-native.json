@@ -1,0 +1,568 @@
+{
+  "status": "NATIVE_COMPONENT_PASS_SERVER_FUNCTIONAL_PASS",
+  "milestone_complete": false,
+  "created_at": "2026-10-15T17:49:25.573336+00:00",
+  "build_manifest_sha256": "f1e446a0ce2026dd94c55a538610cb73a354f4711b3fe2ab87d8447392bfc2af",
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "5d2088f4814f393b2c2b30c4c94c64774f4dee17c19bcaccce48f6ebbd2dc532",
+    "runtime/pgvn/bin/pgvnadmin.exe": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "core_archive_sha256": "1900ca936f2746b3f89c38c25178ab11e3b8dd48fbcd3e33895805f170dd77b3",
+  "counts_by_backend": {
+    "pg": {
+      "PASS": 87,
+      "SKIP": 4
+    },
+    "fsfs": {
+      "PASS": 101,
+      "SKIP": 1
+    },
+    "directory-fsfs": {
+      "PASS": 31,
+      "SKIP": 1
+    }
+  },
+  "native": {
+    "report_sha256": "845a2b53d9480cfc405c2cfd33a3952dbf4e33ec092030dbccd2d8e86ba67682",
+    "report": {
+      "test_id": "m6-native-5471419ca0e7",
+      "component": "M6 native upstream FS/repos",
+      "status": "PASS",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T17:37:35.280705+00:00",
+      "elapsed_seconds": 110.828,
+      "records": [
+        {
+          "suite": "fs",
+          "backend": "pg",
+          "status": "PASS",
+          "exit_code": 0,
+          "selection": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            39,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            66,
+            68,
+            69
+          ],
+          "counts": {
+            "PASS": 62,
+            "SKIP": 3
+          },
+          "elapsed_seconds": 44.125,
+          "upstream_case_count": 70,
+          "exclusions": {
+            "38": {
+              "name": "delete_fs",
+              "reason": "Asserts a physical fs path exists before svn_fs_delete_fs. PgVN IDs have no local directory; native purge uses pgvnadmin and is separately tested."
+            },
+            "40": {
+              "name": "test_fs_info_format",
+              "reason": "For every non-FSFS/FSX backend asserts legacy BDB format 3 and SVN 1.5. PgVN storage format 1 and modern repository format are separately checked."
+            },
+            "65": {
+              "name": "commit_with_locked_rep_cache",
+              "reason": "Opens and locks the FSFS/FSX SQLite rep-cache.db, which does not exist in PostgreSQL storage."
+            },
+            "67": {
+              "name": "test_rep_sharing_strict_content_check",
+              "reason": "Overwrites FSFS/FSX representation files and SQLite rep-cache to inject a SHA1 collision; these are not PostgreSQL storage structures."
+            },
+            "70": {
+              "name": "test_unrecognized_ioctl",
+              "reason": "The final subcase calls svn_fs_ioctl with NULL FS and type pg, requiring a globally registered legacy loader module. PgVN binds its FS directly by ID."
+            }
+          },
+          "test_binary_sha256": "5d74b2d072b274204c846281f9af088e7c5481473538866aaa84a1c015c855bc",
+          "test_source_sha256": "e97c73aea6626d3d4c18eac373eaf5389fab04198b5edb8626c9c67915410c6f",
+          "log": "runtime/pgvn/tests/m6-native-5471419ca0e7/pg-fs/upstream.log",
+          "log_sha256": "b21634af27568b08b02bdeb3667a069f5b00c2ef3d3d239a2ee83c288123e219",
+          "fixture_ledger_sha256": "606e20d77f085fe57d8ad10bfae3e1ac9d359cead35efc90eefa994234730626",
+          "fixture_operations": {
+            "create": 61,
+            "open": 1
+          },
+          "no_local_repository_aliases": true,
+          "unexpected_verdicts": [],
+          "untraced_repository_shells": []
+        },
+        {
+          "suite": "repos",
+          "backend": "pg",
+          "status": "PASS",
+          "exit_code": 0,
+          "selection": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            23,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "counts": {
+            "PASS": 25,
+            "SKIP": 1
+          },
+          "elapsed_seconds": 29.328,
+          "upstream_case_count": 32,
+          "exclusions": {
+            "8": {
+              "name": "in_repo_authz",
+              "reason": "Constructs file:// URLs from svn_repos_path and reads in-repository authz through local repository discovery. PgVN uses ID objects and network protocols."
+            },
+            "9": {
+              "name": "in_repo_groups_authz",
+              "reason": "Constructs file:// URLs for in-repository authz/groups. Local file-RA discovery is outside the directory-free provider."
+            },
+            "19": {
+              "name": "test_delete_repos",
+              "reason": "Asserts a physical repository directory exists before svn_repos_delete; PgVN has no such directory and uses its purge API."
+            },
+            "21": {
+              "name": "test_repos_info",
+              "reason": "Treats every non-FSX backend as pre-SVN-1.4 capable and requests legacy physical format 3. PgVN modern format/capabilities are separately checked."
+            },
+            "22": {
+              "name": "test_config_pool",
+              "reason": "Loads repository config through a file:// URL and filesystem repository pool; PgVN configuration is versioned in PostgreSQL."
+            },
+            "24": {
+              "name": "deprecated_access_context_api",
+              "reason": "Creates an on-disk pre-commit hook using a legacy path getter. PgVN path getters return NULL; versioned hooks and deprecated lock-token access commit are separately tested."
+            }
+          },
+          "test_binary_sha256": "cb63f747cabe594acca35584da2416e1f44cbc874af5490318827e5b6c1042b8",
+          "test_source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292",
+          "log": "runtime/pgvn/tests/m6-native-5471419ca0e7/pg-repos/upstream.log",
+          "log_sha256": "478c97a8a7e1773c829ab89a2c9b154cc25672c93d47a1578dfe32ef11a21ff7",
+          "fixture_ledger_sha256": "35f2d780573db81116979ce7ce91c7d5d1ad4ba36ed3c5eb8ddb9b9c3470fc60",
+          "fixture_operations": {
+            "create": 18,
+            "open": 2
+          },
+          "no_local_repository_aliases": true,
+          "unexpected_verdicts": [],
+          "untraced_repository_shells": []
+        },
+        {
+          "suite": "fs",
+          "backend": "fsfs",
+          "status": "PASS",
+          "exit_code": 0,
+          "selection": "all upstream cases",
+          "counts": {
+            "PASS": 70
+          },
+          "elapsed_seconds": 24.844,
+          "upstream_case_count": 70,
+          "exclusions": {},
+          "test_binary_sha256": "0e8b29a378fe29384107ab4dcaa632208fa457ad42ee8e443620c858feb64a8a",
+          "test_source_sha256": "e97c73aea6626d3d4c18eac373eaf5389fab04198b5edb8626c9c67915410c6f",
+          "log": "runtime/pgvn/tests/m6-native-5471419ca0e7/fsfs-fs/upstream.log",
+          "log_sha256": "60e850cc4af154c9a8e277df5d98806ee9d3c3539f4072ea481ddea492840c55",
+          "fixture_ledger_sha256": null,
+          "fixture_operations": {},
+          "no_local_repository_aliases": false,
+          "unexpected_verdicts": [],
+          "untraced_repository_shells": []
+        },
+        {
+          "suite": "repos",
+          "backend": "fsfs",
+          "status": "PASS",
+          "exit_code": 0,
+          "selection": "all upstream cases",
+          "counts": {
+            "PASS": 31,
+            "SKIP": 1
+          },
+          "elapsed_seconds": 4.828,
+          "upstream_case_count": 32,
+          "exclusions": {},
+          "test_binary_sha256": "a6371608d29e7e2ffce7a55bf4ef541af37c3443a779f316366538293354169b",
+          "test_source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292",
+          "log": "runtime/pgvn/tests/m6-native-5471419ca0e7/fsfs-repos/upstream.log",
+          "log_sha256": "ab8b56c1ac129483afdc1a76361b5df9572c2f4c2e7393d6427b0916a7606c05",
+          "fixture_ledger_sha256": null,
+          "fixture_operations": {},
+          "no_local_repository_aliases": false,
+          "unexpected_verdicts": [],
+          "untraced_repository_shells": []
+        },
+        {
+          "suite": "repos",
+          "backend": "directory-fsfs",
+          "status": "PASS",
+          "exit_code": 0,
+          "selection": "all upstream cases",
+          "counts": {
+            "PASS": 31,
+            "SKIP": 1
+          },
+          "elapsed_seconds": 5.078,
+          "upstream_case_count": 32,
+          "exclusions": {},
+          "test_binary_sha256": "9074c09ef221d5e158535fa0df758d5065af5d703e185f8fe621670323bc1e64",
+          "test_source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292",
+          "log": "runtime/pgvn/tests/m6-native-5471419ca0e7/directory-fsfs-repos/upstream.log",
+          "log_sha256": "9b95444cd65b64d267385e412fbecc316e9bd70ee4a278cfc2c8f5e21e9ab57d",
+          "fixture_ledger_sha256": null,
+          "fixture_operations": {},
+          "no_local_repository_aliases": false,
+          "unexpected_verdicts": [],
+          "untraced_repository_shells": []
+        }
+      ],
+      "details": {
+        "database": "pgvn_m6_native_5471419ca0e7",
+        "owner": "pgvn_native_owner_5471419ca0e7",
+        "native_manifest_sha256": "1216fa2219c464527f28d54e128491ff7bf1feeaa1c93d0df18f2d7bafc8f4d7",
+        "build_manifest_sha256": "f1e446a0ce2026dd94c55a538610cb73a354f4711b3fe2ab87d8447392bfc2af",
+        "core_archive_sha256": "1900ca936f2746b3f89c38c25178ab11e3b8dd48fbcd3e33895805f170dd77b3",
+        "source_scope": "Upstream test case sources unchanged and test assertions enabled. The copied support file renames four constructor definitions only; all helper calls bind to PgVN constructors. Path reopen calls are fixture-routed. Native bindings use administrative context; network policy is separately tested.",
+        "native_test_selection_complete": true,
+        "applicable_profile": true,
+        "path_probe": {
+          "result": {
+            "null_path_accessors": 16,
+            "storage_format": 1,
+            "repository_format": 5,
+            "mergeinfo": true,
+            "native_ioctl_contract": true,
+            "deprecated_access_commit": 1
+          },
+          "test_binary_sha256": "251d960e0d910be3f7825f65f4b691cace5b30cb257376d61bd0232e9a5981c2",
+          "source_sha256": "368b69d284b457341f0acc92e55a1a99ff556991b2c4dd898c0332536c155eab",
+          "fixture_ledger_sha256": "2b49406d9aa4377ca76d4ef64687114b0fb462a224cdaa987448dc56b43150e0",
+          "no_local_repository_alias": true
+        },
+        "full_native_upstream_compatibility": false
+      },
+      "error": null,
+      "test_source_sha256": "2c885b7b793156e7187b7e33e543018f1323a5d00fa13475405a20b580c6af12",
+      "scope": "Native C API component only. PgVN construction uses the production static core and administrative ID bindings. Stock FSFS is an independent control. No directory-format/protocol/performance/HA/Polarion completion is inferred."
+    }
+  },
+  "build": {
+    "native_manifest_sha256": "1216fa2219c464527f28d54e128491ff7bf1feeaa1c93d0df18f2d7bafc8f4d7",
+    "case_sources": {
+      "svn_test_main.c": "acd5ef017c237c85a6713d4f4c0b4e998904adba1a7d810d5988d6df4225e9d5",
+      "svn_test_fs.c": "e91a66c95b74ab9be603914df8b17c5d08fc334da160c7ee8a7953f49030dcbd",
+      "svn_test.h": "fb0fc8b3954bb61b295ca69bade9d31563fa663ae5b2a3bd002af26c0c7ab7e3",
+      "svn_test_fs.h": "db28178fdb46c93e6c312df6be9d829480853655f184cab0e91398280726f42d",
+      "libsvn_fs/fs-test.c": "e97c73aea6626d3d4c18eac373eaf5389fab04198b5edb8626c9c67915410c6f",
+      "libsvn_repos/repos-test.c": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292",
+      "libsvn_repos/dir-delta-editor.c": "d17cc2974e3c7a7bc9eebe4bc760fa20bf56a331e11964babd5926737cb010ab"
+    },
+    "fixture_sources": {
+      "tests/pgvn/upstream_native_fixture.c": "53d0f9cfc87b6bfd85c2a02161cad256b7ed9f382976f61bbfeda3297f897b71",
+      "tests/pgvn/upstream_native_redirect.inc": "26957dfe8bdeffffa8cf2985f4d1c6f2969964e506218775b89aa3274dd0d2da"
+    },
+    "support_fixture": {
+      "generated_sha256": "f6939a461c80e2eedcb7fe9a6919a8a01c4e789cd9feecc2056e48a6e681bdf8",
+      "definition_renames": {
+        "\nsvn_test__create_fs(": "\npgvn_unused_svn_test__create_fs(",
+        "\nsvn_test__create_fs2(": "\npgvn_unused_svn_test__create_fs2(",
+        "\nsvn_test__create_repos(": "\npgvn_unused_svn_test__create_repos(",
+        "\nsvn_test__create_repos2(": "\npgvn_unused_svn_test__create_repos2("
+      },
+      "assertions_unchanged": true
+    },
+    "test_products": {
+      "fs": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\pgvn-fs-test.exe",
+        "sha256": "5d74b2d072b274204c846281f9af088e7c5481473538866aaa84a1c015c855bc",
+        "source_sha256": "e97c73aea6626d3d4c18eac373eaf5389fab04198b5edb8626c9c67915410c6f"
+      },
+      "repos": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\pgvn-repos-test.exe",
+        "sha256": "cb63f747cabe594acca35584da2416e1f44cbc874af5490318827e5b6c1042b8",
+        "source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292"
+      },
+      "fsfs-fs": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\fsfs-fs-test.exe",
+        "sha256": "0e8b29a378fe29384107ab4dcaa632208fa457ad42ee8e443620c858feb64a8a",
+        "source_sha256": "e97c73aea6626d3d4c18eac373eaf5389fab04198b5edb8626c9c67915410c6f"
+      },
+      "fsfs-repos": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\fsfs-repos-test.exe",
+        "sha256": "a6371608d29e7e2ffce7a55bf4ef541af37c3443a779f316366538293354169b",
+        "source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292"
+      },
+      "path-probe": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\pgvn-native-path-probe.exe",
+        "sha256": "251d960e0d910be3f7825f65f4b691cace5b30cb257376d61bd0232e9a5981c2",
+        "source_sha256": "368b69d284b457341f0acc92e55a1a99ff556991b2c4dd898c0332536c155eab"
+      },
+      "directory-fsfs-repos": {
+        "path": "runtime\\pgvn\\native-tests\\bin\\directory-fsfs-repos-test.exe",
+        "sha256": "9074c09ef221d5e158535fa0df758d5065af5d703e185f8fe621670323bc1e64",
+        "source_sha256": "40e945d3228d791cfdebd3977dd1b8914d21f51f84f008b9ba32ec30ba76e292"
+      }
+    },
+    "private_dlls_verified": 45,
+    "link_inputs": {
+      "build\\pgvn\\libpgvn_core.a": "1900ca936f2746b3f89c38c25178ab11e3b8dd48fbcd3e33895805f170dd77b3",
+      "build\\pgvn\\imports\\libsvn_fs-1.a": "cdc9170f59c90cc171674f8ee4755fd10741533ada43ce6f71fcd8571b5d325d",
+      "build\\pgvn\\imports\\libsvn_fs_util-1.a": "76999ad54479059de8e742ba807dfdcf9fda6cc59bb9996de48d9cc5def080a7",
+      "build\\pgvn\\imports\\libsvn_diff-1.a": "bba26dcfed8cbf06c7a028dae7dd8c67cc430aec9480a7351c7967c7e57352cc",
+      "build\\pgvn\\imports\\libsvn_delta-1.a": "91c5d88376892436a30ff743d34a45a9042318c06069d7798b06de8c71729452",
+      "build\\pgvn\\imports\\libsvn_subr-1.a": "61f6c521874a661979ad2fdf1a09ffa58072430c37060d31abb5082b7d588280",
+      "build\\pgvn\\imports\\libaprutil-1.a": "33201c3c28a50006d5029bf5e4ea14f48c6005f10002cc199753017eecbe7783",
+      "build\\pgvn\\imports\\libapr-1.a": "61f0e78f49f305c01c33fc957114c5e2d2476204d0b7ec883d056c1c0aeca073",
+      "C:\\Program Files\\PostgreSQL\\18\\lib\\libpq.lib": "f6f23d90a6b66115e2e50e24708b0f3dba8225f9eeada4659060ffabbc5333e0",
+      "build\\pgvn\\objects\\pgvn-utf8.o": "35ec5706b26d731b9437bd38af2e9cdcdf36c0c26f2a145708931ceca5677c7e"
+    },
+    "all_frozen_subversion_source_files_verified_after_run": 906,
+    "original_sdk_binary_hashes_verified_after_run": 13
+  },
+  "identity_guard": {
+    "status": "PASS",
+    "component": "M6 native test identity rejection",
+    "rejected_test_id": "m6-native-dd1ee4d1dc54",
+    "rejected_report_sha256": "b13294c421a0aa8d2893c70f26ab15a40d100bac4b2b902202209bbaf5b5a427",
+    "native_manifest_sha256": "1216fa2219c464527f28d54e128491ff7bf1feeaa1c93d0df18f2d7bafc8f4d7",
+    "private_dll_sha256_before_and_restored": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+    "tamper_refused_before_database_creation": true,
+    "private_dll_restored_byte_identically": true,
+    "sdk_sources_modified": false
+  },
+  "preserved_failures": [
+    {
+      "test_id": "m6-native-4c7e784da87d",
+      "report_sha256": "6b00a46a3552032ccdf9a163528a6aa36620654b429d8d2a9198854fdc61a909",
+      "interpretation": "Initial raw all-case run: 86 PgVN PASS, 12 FAIL, 4 upstream SKIP; stock FSFS 101 PASS/1 SKIP. Found an over-broad fixture macro rename and a real NULL path getter crash. Remaining directory/format/file-RA/global-loader cases are explicitly classified."
+    },
+    {
+      "test_id": "m6-native-98af1d306639",
+      "report_sha256": "c7e2acb35c586c1398498766b275f02f04e093d24a3a0667786d1d1f6163a841",
+      "interpretation": "Targeted post-fix raw cases 17 and 24: file revisions passed, disk-hook setup returned a path error without a crash; the stock control passed both. Independent native probe passed deprecated access-context commit without a disk hook."
+    }
+  ],
+  "server_regressions": {
+    "test_id": "m6-native-regression-e6764e87da23",
+    "functional_status": "PASS",
+    "composite_status": "PARTIAL",
+    "report_sha256": "f16db15c558cfb440d5027e3041a99c90d9306d3c9029c41f9f9346e048ef339",
+    "elapsed_seconds": 553.547,
+    "records": [
+      {
+        "name": "M0-M3 regressions",
+        "status": "PASS",
+        "test_id": "m3-da9e4f89433a",
+        "elapsed_seconds": 233.438,
+        "report_sha256": "4497ad96292b1708671120e19aac39f42f5faf76151a03deb6ecf260110edcba"
+      },
+      {
+        "name": "authentication, snapshots and recovery",
+        "status": "PASS",
+        "test_id": "m4-smoke-2791bc8428fc",
+        "elapsed_seconds": 34.609,
+        "report_sha256": "670bf07872b2e805fea778612942a8bdb1bb71ac077b47d4c70e58a31f6d5654"
+      },
+      {
+        "name": "API and independent wire accounting",
+        "status": "PASS",
+        "test_id": "m4-api-cb3a1c58735a",
+        "elapsed_seconds": 34.828,
+        "report_sha256": "c7fa67b8ed4b0ce994534cc16753b73a5c95e6972b5d97350e7d5b3541118e24"
+      },
+      {
+        "name": "cold PostgreSQL startup and recovery",
+        "status": "PASS",
+        "test_id": "m4-startup-bda344049a7d",
+        "elapsed_seconds": 8.516,
+        "report_sha256": "674f86f5cb02e6894e50d2b76317e6277d479c9c915fb8d3c76d007e6cc23a36"
+      },
+      {
+        "name": "LocalService TCP blackhole and slow HTTP shutdown",
+        "status": "PASS",
+        "test_id": "m4-network-a5c4a3e643a3",
+        "elapsed_seconds": 22.25,
+        "report_sha256": "7116640d3afbbf3410de89e3a49ac39a06ab780439ef47469f29c0b184378ec4"
+      },
+      {
+        "name": "publication, receipts and writer lifecycles",
+        "status": "PASS",
+        "test_id": "m4-ledger-98c6a5c45391",
+        "elapsed_seconds": 3.156,
+        "report_sha256": "a9061b23efc58c59b8db6259852d8f4e8745fdb90f75c952c0a7daa3192db6e7"
+      },
+      {
+        "name": "lost PostgreSQL COMMIT acknowledgement",
+        "status": "PASS",
+        "test_id": "m4-receipt-fault-0d8bdbd3b14b",
+        "elapsed_seconds": 3.078,
+        "report_sha256": "f84c605c210048e047f6f86e6d8e13aabc8ed9a822dd0aa60aac6e702268a933"
+      },
+      {
+        "name": "capacity, isolation and measured overhead",
+        "status": "PASS",
+        "test_id": "m4-resources-af1689e71028",
+        "elapsed_seconds": 55.047,
+        "report_sha256": "37fbf574ebab0ebce76a19dcd04f0aec4474a6feca8167f87f61bf5e5aac1151"
+      },
+      {
+        "name": "native creation atomicity",
+        "status": "PASS",
+        "test_id": "m5-creation-30140b2adcf5",
+        "elapsed_seconds": 7.422,
+        "report_sha256": "11f4bb447af7b562439a282cbdee6b9148bd5da273405f16cbbeee5e795573a3"
+      },
+      {
+        "name": "registry lifecycle and admin recovery",
+        "status": "PASS",
+        "test_id": "m5-registry-273f3407b723",
+        "elapsed_seconds": 13.593,
+        "report_sha256": "f0e8d09d0a8fe414b286627921032b32a6181c8529c88746cd2972daeb89c94c"
+      },
+      {
+        "name": "actual M4 schema upgrade",
+        "status": "PASS",
+        "test_id": "m5-upgrade-915b78816d26",
+        "elapsed_seconds": 6.891,
+        "report_sha256": "5305c923ee46ca2931be0d06779a433bee4fcafd587a175c0d369958e572677a"
+      },
+      {
+        "name": "HTTP v1/v2 and Unicode author",
+        "status": "PASS",
+        "test_id": "m5-http-51afd2e40557",
+        "elapsed_seconds": 16.969,
+        "report_sha256": "8cdc1a31d4687629427fce6b81e9805909fb2fba517721a5b708ae252e953e9d"
+      },
+      {
+        "name": "HTTP/HTTPS round robin and SVNKit",
+        "status": "PASS",
+        "test_id": "m5-balancer-e74ad0b7447f",
+        "elapsed_seconds": 35.515,
+        "report_sha256": "9d105dfa3f43e51e8ee981122a974f61f3a8df38fa48a9f215e45416df501198"
+      },
+      {
+        "name": "path and historical authorization",
+        "status": "PASS",
+        "test_id": "m5-authz-6b81aefad25c",
+        "elapsed_seconds": 13.563,
+        "report_sha256": "bb4f2c886ab256526760114ca78764cf7533a0c33d7ad7789904814febf35559"
+      },
+      {
+        "name": "upstream Unicode client limitation baseline",
+        "status": "PASS",
+        "test_id": "m5-unicode-baseline-0f0b4496d915",
+        "elapsed_seconds": 12.359,
+        "report_sha256": "491a4f3136606842d6fbad95b281382eb77c4450d5054d4c2065219fb978f49c"
+      },
+      {
+        "name": "independent Apache telemetry ledger",
+        "status": "PASS",
+        "test_id": "m5-telemetry-1c1757c05fff",
+        "elapsed_seconds": 36.25,
+        "report_sha256": "df8c9dbcbfe59ceb8503b47c1004faf3c225ddeb170306323e5de8d18e8de52d"
+      },
+      {
+        "name": "LocalService worker lifecycle",
+        "status": "PASS",
+        "test_id": "m5-dav-service-ed4c5ef4a23b",
+        "elapsed_seconds": 12.422,
+        "report_sha256": "482e91f7057458f70ee31d82689193e964c844c68ab4160c3ef28d2ebb212b08"
+      },
+      {
+        "name": "Windows UTF-8 integration",
+        "status": "PASS",
+        "test_id": "m6-windows-utf8-818e0891aa61",
+        "elapsed_seconds": 3.281,
+        "report_sha256": "ce4a3eb3926785b56cf65a9bca62daa00868fcb9240c63b8fbdc700876ede7f8"
+      }
+    ],
+    "scope": "Every individual M0-M5 server-side functional suite and Windows encoding integration, frozen before/after. The composite M4/M5 browser gates are not overridden and have not passed on the new native binaries. No full M6, performance, cross-host HA or Polarion acceptance is claimed."
+  },
+  "current_build_browser_pass": false,
+  "current_build_deployment_archive_validated": false,
+  "remaining": [
+    "Complete upstream network-protocol fixture and suites (PGVN-601 remains incomplete).",
+    "Fresh history/backup evidence on final milestone products, fault ledger/failure domains, representative performance and monitoring budgets.",
+    "Fresh browser checks, final package validation and clean Windows/whole reboot/cross-host/Polarion application acceptance."
+  ],
+  "scope_note": "Native administrative FS/repos semantics only. No network-policy, performance, complete M6 or Polarion conclusion is inferred. Previous history/backup/ZIP/browser evidence remains pinned to its original build."
+}

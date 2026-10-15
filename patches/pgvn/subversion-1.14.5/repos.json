@@ -41,6 +41,86 @@
       "file": "authz.c",
       "old": "  while (path[0] == '/')\n    ++path;     /* Don't update PATH_LEN as we won't need it anymore. */\n",
       "new": "  while (path[0] == '/')\n    ++path;     /* Don't update PATH_LEN as we won't need it anymore. */\n\n  /* The normalized root has no next segment. Preserve the root subtree\n     rights instead of treating the empty string as a missing child. */\n  if (!*path)\n    return recursive\n      ? ((state->rights.min_rights & required) == required)\n      : ((state->rights.access.rights & required) == required);\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_db_env(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_db_env(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_conf_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_conf_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_svnserve_conf(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_svnserve_conf(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_lock_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_lock_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_db_lockfile(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_db_lockfile(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_db_logs_lockfile(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_db_logs_lockfile(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_hook_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_hook_dir(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_start_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_start_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_pre_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_pre_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_pre_lock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_pre_lock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_pre_unlock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_pre_unlock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_post_lock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_post_lock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_post_unlock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_post_unlock_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_post_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_post_commit_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_pre_revprop_change_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_pre_revprop_change_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
+    },
+    {
+      "file": "repos.c",
+      "old": "const char *\nsvn_repos_post_revprop_change_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n",
+      "new": "const char *\nsvn_repos_post_revprop_change_hook(svn_repos_t *repos, apr_pool_t *pool)\n{\n  /* An ID-backed repository has no local configuration, locks or hooks. */\n  if (repos->pgvn_baton)\n    return NULL;\n"
     }
   ],
   "hook_details": {

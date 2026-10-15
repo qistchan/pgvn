@@ -15,9 +15,10 @@
 1. 复制 `config/build.example.json` 为 `config/build.local.json`，填入实际 SDK 路径；本地配置不提交。
 2. 执行 `python scripts/pgvn/fetch_httpd.py`，准备校验和锁定的 Apache 2.4.68 宿主源码。默认放在忽略的 `vendor/httpd-2.4.68`；离线构建可预先复制这五个文件，并在本地构建配置中用 `apache_source` 指向该目录。构建器不会隐式联网。
 3. 执行 `python scripts/pgvn/build.py --config config/build.local.json --configuration Release`，同时构建 `pgvnhttpd.exe`；原 SDK 签名程序保持原字节。
-4. 配置测试 JDK/SVNKit，运行 `python tests/pgvn/monitor_browser_fixture.py --dav` 完成真实浏览器验收并保存摘要绑定的 M4/M5 记录，再执行 `python tests/pgvn/run_gates.py --milestone M5`；它串行包含 M0–M4 和 DAV 专项，使用专用 16432 实例。详见 M4/M5 指南。
-5. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
-6. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
+4. 执行 `python scripts/pgvn/build_native_tests.py`，再运行 `python tests/pgvn/test_m6_native.py --applicable`，检查按 ID 绑定的上游原生用例及两种 FSFS 对照。断言、架构边界和原始失败见 [M6 原生入口](docs/pgvn/M6-native.zh-CN.md)。
+5. 配置测试 JDK/SVNKit，运行 `python tests/pgvn/monitor_browser_fixture.py --dav` 完成真实浏览器验收并保存摘要绑定的 M4/M5 记录，再执行 `python tests/pgvn/run_gates.py --milestone M5`；它串行包含 M0–M4 和 DAV 专项，使用专用 16432 实例。详见 M4/M5 指南。
+6. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
+7. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
 
 产物在 `runtime/pgvn`，构建清单在 `artifacts/pgvn/build/manifest.json`，测试原始结果在 `artifacts/pgvn/tests`。开发生成物不提交；每个里程碑提交代码与可审阅的证据摘要。
 

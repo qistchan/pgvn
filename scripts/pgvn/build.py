@@ -292,6 +292,7 @@ def main():
                      "apr": inventory(apr), "apu": inventory(apu), "apache_include": inventory(apache / "include")},
         "sdk_binaries": {str(d): digest(d) for d in dlls + [pg / "lib/libpq.lib", pg / "bin/libpq.dll"]},
         "products": binary_evidence,
+        "core_archive_sha256":digest(static_core),
         "apache_host":host_metadata,
         "git_base_commit": run(["git", "rev-parse", "HEAD"]).strip(),
         "git_worktree_dirty": bool(run(["git", "status", "--porcelain"]).strip()),
