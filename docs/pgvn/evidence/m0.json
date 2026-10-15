@@ -1,0 +1,173 @@
+{
+  "milestone": "M0",
+  "status": "PASS",
+  "configuration": "Release",
+  "scope": "Native bootstrap and interface/build validation; SVN/DAV repository capabilities are not implemented.",
+  "source_repository": "C:/Project/PgVN/pgvn",
+  "pgfs_source_origin": {
+    "repository": "C:/Project/PgFS",
+    "baseline_commit": "d43e529",
+    "module_sha256": "a06a79ba5efb9cf9bace026fdda1dfe820e3df13f23ae1f3f08403a2b121bb5c",
+    "evidence_applies_to": "Historical PgFS build only; not PgVN protocol coverage",
+    "import_note": "Normalized redundant blank lines at EOF in scripts/build.py, sql/001_initial.sql and tests/test_p0.py; storage C source bytes preserved."
+  },
+  "compiler": "clang version 23.1.3 (https://github.com/llvm/llvm-project.git 0d261d1ca552c95a8f007e061c787ac7132fbcbc)\nTarget: x86_64-w64-windows-gnu\nThread model: posix\nInstalledDir: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin\nConfiguration file: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg",
+  "compiler_sha256": "ee85bef2c733e24a26c22be3df94bd631cf9528a048fce91241c182a936737fe",
+  "source_hashes": {
+    "src/libsvn_fs_pg/pgfs.c": "4e1d0f1148f91038046132b3b081a4d200b56062b33994ff5c81439d1579604e",
+    "src/libsvn_fs_pg/pgfs_admin.inc": "4b0dcd2041467b265c714e252cec6ad6494445265f00df26184aab9247d912f4",
+    "src/libsvn_fs_pg/pgfs_history.inc": "32f36f894cb00dc73b94a20484c8ab7782fc3c746ef79fa681d1662d88407ddd",
+    "src/libsvn_fs_pg/pgfs_hotcopy.inc": "4f93a3918a7fd864b9ac970cd3b6213495eb5e2d9c30c611e576fc984f24118c",
+    "src/libsvn_fs_pg/pgfs_locks.inc": "2cc27c9c1ccc5554955ca181020662088eb439b8f3e4dc61a342c5c086dd0d0e",
+    "src/libsvn_fs_pg/pgfs_mergeinfo.inc": "979289539a4a85c220311f4bdf9efd645377cdd3a51459d3d3950fe5a4ae2768",
+    "src/libsvn_fs_pg/pgfs_receipts.inc": "4642ecfb45630d8dc4ebc70b4d67f828e3d383a66d1238f1ab7c482c62bf0085",
+    "src/libsvn_fs_pg/pgfs_streams.inc": "b1373a7aee3b6e60de3358d064fd57a74c564487cf40a10fdcbbff92048380b7",
+    "src/libsvn_fs_pg/pgfs_transactions.inc": "996cb68cadcd8fc9101bad226f5091ec1ebd2f6b663b34887effef8250bc31b6",
+    "src/libsvn_fs_pg/pgfs_tree.inc": "5907737576e2e95e60a61a2bfcb1710384dcca70368728214f8db77ed2483666",
+    "src/pgvn/admin/main.c": "c5597968eb932b8883f6c493686aea4d634c2c5f9b1a1e6a2f5b77a494c1ad37",
+    "src/pgvn/core/build_info.c": "855eaef2c9b06b6ddb55727aa39513130553b27d9a833d80183284e3a817c89e",
+    "src/pgvn/core/pgvn.h": "cb073c5ca86ea30bf4289cfdf90238be9e7c2cb8b1d7457a7de682610d24f354",
+    "src/pgvn/dav/bootstrap.c": "8c48ae7cddeebaf58f6492a3e5640daa55945ae36c342f05a656c2ad9145a687",
+    "src/pgvn/monitor/http_win.c": "7543be43ff1ff6d0fe7acdefa04ac9c7a6ad5eded5edabf8e0e85e5bb78cee74",
+    "src/pgvn/monitor/http_win.h": "a4dd7fb74d03df9e6e2f84a71fde4b9d308da6693af116aa2174fd60ed597ccf",
+    "src/pgvn/serve/main.c": "c9587d0bd78ca003e312bd34625d8a9160f509b5146bb15f9b1c8fa5f08b6cb5",
+    "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+    "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+    "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+    "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+    "scripts/pgvn/build.py": "7504131fa84815c8a99519878317f59a0ebe75e26c4217433f403acb8f7f9975"
+  },
+  "product_sha256": {
+    "runtime/pgvn/bin/pgvnserve.exe": "a88f0d4ca9e8cde7daca8680afd40fa66a2270c41139ef3eb0a7709b9532fe5d",
+    "runtime/pgvn/bin/pgvnadmin.exe": "11fa0eb73a036f94286d6303fee254e6c1ab2650b6e0e74fd2d23e10b9127c6e",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "278492f2b111111aabe82c72aa496598a7cb3822e4b915e1dec94fa6c441d523",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "70e00d5ae5f9177c38f848e9a876155da1ec32996e7082d4290588eff3d1940e"
+  },
+  "rebuild_same_inputs_same_paths": true,
+  "private_api_audit": {
+    "ra_svn_exported": [
+      "svn_ra_svn_init"
+    ],
+    "ra_svn_requires_source_build": true,
+    "fs_private_new_exported": true,
+    "repository_private_constructor_exported": false,
+    "data_imports_marked": true
+  },
+  "full_manifest_sha256": "a5025867f30fc9088d7ab5f6bc71a456bbcefaa94585fcb4012a2b373bbd7d01",
+  "test_report": {
+    "test_id": "m0-719b6fbceb94",
+    "milestone": "M0",
+    "started_at": "2026-10-15T03:41:22.682711+00:00",
+    "status": "PASS",
+    "records": [
+      {
+        "name": "native_build_identity",
+        "status": "PASS",
+        "details": {
+          "configuration": "Release",
+          "products": {
+            "pgvnserve": {
+              "product": "PgVN",
+              "version": "0.1.0-dev",
+              "milestone": "M0",
+              "svn_base": "1.14.5",
+              "apr_runtime": "1.7.6",
+              "libpq_version": 180006,
+              "ready": false,
+              "capabilities": {
+                "repository_by_id": false,
+                "svn_protocol": false,
+                "dav_protocol": false,
+                "monitor": "bootstrap"
+              }
+            },
+            "pgvnadmin": {
+              "product": "PgVN",
+              "version": "0.1.0-dev",
+              "milestone": "M0",
+              "svn_base": "1.14.5",
+              "apr_runtime": "1.7.6",
+              "libpq_version": 180006,
+              "ready": false,
+              "capabilities": {
+                "repository_by_id": false,
+                "svn_protocol": false,
+                "dav_protocol": false,
+                "monitor": "bootstrap"
+              }
+            }
+          },
+          "hashes": {
+            "runtime/pgvn/bin/pgvnserve.exe": "a88f0d4ca9e8cde7daca8680afd40fa66a2270c41139ef3eb0a7709b9532fe5d",
+            "runtime/pgvn/bin/pgvnadmin.exe": "11fa0eb73a036f94286d6303fee254e6c1ab2650b6e0e74fd2d23e10b9127c6e",
+            "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "278492f2b111111aabe82c72aa496598a7cb3822e4b915e1dec94fa6c441d523",
+            "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "70e00d5ae5f9177c38f848e9a876155da1ec32996e7082d4290588eff3d1940e"
+          }
+        },
+        "elapsed_seconds": 0.8600000000005821
+      },
+      {
+        "name": "invalid_options",
+        "status": "PASS",
+        "details": {
+          "invalid_urls_rejected": 7,
+          "unknown_commands_rejected": true
+        },
+        "elapsed_seconds": 0.3119999999908032
+      },
+      {
+        "name": "console_http",
+        "status": "PASS",
+        "details": {
+          "probes": "live200/ready503/unknown404/write405/body413",
+          "restart": true,
+          "requests": 128,
+          "clients": 16,
+          "elapsed_seconds": 0.046999999991385266
+        },
+        "elapsed_seconds": 1.1570000000065193
+      },
+      {
+        "name": "apache_module_load",
+        "status": "PASS",
+        "details": {
+          "syntax": "Syntax OK",
+          "loaded_modules": "Loaded Modules:\n core_module (static)\n win32_module (static)\n mpm_winnt_module (static)\n http_module (static)\n so_module (static)\n authz_core_module (shared)\n dav_pgvn_module (shared)\n authz_pgvn_module (shared)",
+          "request_cycles": 2,
+          "unload": "isolated Apache process exit"
+        },
+        "elapsed_seconds": 2.0929999999934807
+      },
+      {
+        "name": "low_privilege_http_service",
+        "status": "PASS",
+        "details": {
+          "account": "NT AUTHORITY\\LocalService",
+          "concurrency_0": {
+            "requests": 128,
+            "clients": 16,
+            "elapsed_seconds": 0.04700000000593718
+          },
+          "header_timeout_seconds_0": 6.98399999999674,
+          "stop_seconds_0": 0.0629999999946449,
+          "concurrency_1": {
+            "requests": 128,
+            "clients": 16,
+            "elapsed_seconds": 0.031000000002677552
+          },
+          "header_timeout_seconds_1": 9.610000000000582,
+          "stop_seconds_1": 0.062000000005355105,
+          "restart_cycles": 2,
+          "first_header_timeout": "HTTP.sys global timer; unchanged by PgVN",
+          "cleanup": [
+            "temporary_service_deleted",
+            "temporary_urlacl_deleted"
+          ]
+        },
+        "elapsed_seconds": 17.594000000011874
+      }
+    ],
+    "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m0-719b6fbceb94",
+    "limits": "Build/bootstrap only; no SVN/DAV repository protocol yet."
+  }
+}

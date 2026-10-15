@@ -1,0 +1,9 @@
+{
+  "toolchain": "C:/SDK/llvm-mingw-20261006-ucrt-x86_64/bin",
+  "subversion": "C:/SDK/subversion-1.14.5",
+  "apr_include": "C:/SDK/apr-1.7.6/include",
+  "apu_include": "C:/SDK/apr-util-1.6.3/include",
+  "svn_bin": "C:/SDK/svn-1.14.5/bin",
+  "apache": "C:/SDK/Apache24",
+  "postgres": "C:/Program Files/PostgreSQL/18"
+}

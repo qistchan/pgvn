@@ -1,0 +1,9 @@
+/.gitnexus/
+/artifacts/
+/build/
+/runtime/
+/toolchains/
+/vendor/
+/config/*.local.json
+__pycache__/
+*.pyc

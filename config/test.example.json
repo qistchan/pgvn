@@ -1,0 +1,19 @@
+{
+  "postgres_host": "127.0.0.1",
+  "postgres_port": 16432,
+  "postgres_database": "pgvn_poc",
+  "postgres_data_relative": "runtime/pgvn/pg-primary",
+  "svn_port": 14690,
+  "monitor_port": 14691,
+  "apache_port": 14980,
+  "repository_directories": false,
+  "connect_timeout_seconds": 3,
+  "statement_timeout_ms": 5000,
+  "monitor_sample_seconds": 5,
+  "monitor_max_age_seconds": 15,
+  "monitor_page_default": 50,
+  "monitor_page_max": 200,
+  "monitor_trend_seconds": 900,
+  "monitor_event_limit": 200,
+  "monitor_retention_hours": 24
+}
