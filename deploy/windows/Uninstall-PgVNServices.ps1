@@ -10,7 +10,7 @@ Assert-PgVNServiceOwner $record.ServiceName $record.ServerImage
 if ($record.DavInstalled) { Assert-PgVNServiceOwner $record.DavServiceName $record.DavImage }
 if ($record.DavInstalled -and (Get-PgVNServiceImage $record.DavServiceName)) {
     Stop-PgVNOwnedService $record.DavServiceName $record.DavImage
-    [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'apache/bin/httpd.exe') -Arguments @('-k','uninstall','-n',$record.DavServiceName))
+    [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'apache/bin/pgvnhttpd.exe') -Arguments @('-k','uninstall','-n',$record.DavServiceName))
 }
 if (Get-PgVNServiceImage $record.ServiceName) {
     Stop-PgVNOwnedService $record.ServiceName $record.ServerImage

@@ -71,6 +71,10 @@ static svn_error_t *run(admin_command *command)
 
 int wmain(int argc,wchar_t **wide)
 {
+    if(GetACP()!=CP_UTF8) {
+        fputs("PgVN requires a UTF-8 process code page (Windows 10 1903 or later).\n",stderr);
+        return PGVN_EXIT_USAGE;
+    }
     _setmode(_fileno(stdin),_O_BINARY); _setmode(_fileno(stdout),_O_BINARY);
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOGPFAULTERRORBOX);
     if(apr_initialize()!=APR_SUCCESS) return PGVN_EXIT_FAILURE;

@@ -57,6 +57,8 @@ def main():
             until(lambda:len(__import__('test_m4_smoke').request(a,'/api/monitor/v1/nodes',issued['token'])[0]['items'])==3)
             state.update(dav_pid=dav.process.pid,dav_node_id='dav-browser-dav',
                 dav_modules={name:hashlib.sha256((dav_test.APACHE/'modules'/name).read_bytes()).hexdigest() for name in ('mod_dav_pgvn.so','mod_authz_pgvn.so')})
+            state['dav_host_sha256']=hashlib.sha256(dav.executable.read_bytes()).hexdigest()
+            state['dav_host_runtime']=json.loads(dav_test.run(dav.executable,'--pgvn-runtime'))
         state.update(pid=a.process.pid,peer_pid=b.process.pid,sequence=0,action="started",status="running")
         (setup.WORK/"browser-session.json").write_text(json.dumps(state),encoding="utf-8")
         print(json.dumps(dict(state,token=issued["token"])),flush=True)

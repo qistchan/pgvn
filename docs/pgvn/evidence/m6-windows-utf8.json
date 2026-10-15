@@ -1,0 +1,407 @@
+{
+  "status": "ENCODING_AND_FUNCTIONAL_PASS_UI_PARTIAL",
+  "milestone_complete": false,
+  "created_at": "2026-10-15T16:59:07.940198+00:00",
+  "build_manifest_sha256": "b411fcdcc4f9c05efebb5d80236e88d216766453c9cd17a2d64f2d2709e0d35f",
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "0609cea73d96a10b7b8b96e3bb7316bd7e54b8f8278ba773eb9f6df37989bb16",
+    "runtime/pgvn/bin/pgvnadmin.exe": "ad2b81cff3b01f73beab6c63aedc6b49ec4453f1164e4ad213bb86bb35d3108a",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0a1eed3729b03eeda950af9393d61ae63db9a2e301d82890bc5e61640c8b1926",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "apache_host": {
+    "version": "2.4.68",
+    "source_lock_sha256": "c0b0c7911266c19a0f0ee0e12f60cd0c5b0030b29fca4afabc1aa1b87b4fe9df",
+    "sources": {
+      "server/main.c": "391347ee3279a1a9523290838fedb7793f7c226df3bdd572db112536ac9fd71a",
+      "CMakeLists.txt": "44711c0ae8e0eb19a6a203ae4582201eeee8c9bf821e595249bd3e4e0aba7f70",
+      "LICENSE": "47b8c2b6c3309282a99d4a3001575c790fead690cc14734628c4667d2bbffc43",
+      "NOTICE": "e13ed577b7fb9084118758837ff30d14824ff7efab958000295067428712149c",
+      "include/ap_release.h": "b751fec258be00af1553e33d334b69c3f04d4bdcb8c6be083cea3db6e04c5ffd"
+    },
+    "product": "runtime/pgvn/apache/bin/pgvnhttpd.exe",
+    "runtime": {
+      "product": "PgVNHTTPD",
+      "apache_base": "2.4.68",
+      "process_code_page": 65001
+    },
+    "process_manifest_sha256": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55",
+    "sdk_host_sha256": "b85df9a28ddf0625d04402a8dad333f7770934f32c117b276e78c9424809fb11",
+    "sdk_core_sha256": "ef92c6e04dc0e938a16a939a4c71241f6e6901db22e553bee74ab3f5146106be"
+  },
+  "encoding": {
+    "report_sha256": "b2acdf7903482e8ace7aa72c9d969f0139601fefc6f6aa40d84c5e082a903584",
+    "report": {
+      "test_id": "m6-windows-utf8-2624373c20ee",
+      "component": "M6 Windows process encoding integration",
+      "status": "PASS",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T16:58:29.501225+00:00",
+      "elapsed_seconds": 3.062000000005355,
+      "details": {
+        "build_manifest_sha256": "b411fcdcc4f9c05efebb5d80236e88d216766453c9cd17a2d64f2d2709e0d35f",
+        "legacy_control": {
+          "system_process_code_page": 936,
+          "observed": true,
+          "observations": [
+            {
+              "phase": "before_apr",
+              "acp": 936,
+              "wide_read": 1,
+              "getenv_utf8": 0,
+              "getenv_acp": 1,
+              "ucrt_getenv_utf8": 0,
+              "ucrt_getenv_acp": 1,
+              "fopen_getenv": 1,
+              "fopen_utf8": 0,
+              "fopen_acp": 1,
+              "pq_ok": 1,
+              "pq_service_file_error": 0,
+              "pq_service_missing": 0,
+              "pq_password_error": 0
+            },
+            {
+              "phase": "apr_app_initialize",
+              "acp": 936,
+              "wide_read": 1,
+              "getenv_utf8": 1,
+              "getenv_acp": 0,
+              "ucrt_getenv_utf8": 1,
+              "ucrt_getenv_acp": 0,
+              "fopen_getenv": 0,
+              "fopen_utf8": 0,
+              "fopen_acp": 1,
+              "pq_ok": 0,
+              "pq_service_file_error": 1,
+              "pq_service_missing": 0,
+              "pq_password_error": 0
+            }
+          ]
+        },
+        "utf8_observations": [
+          {
+            "phase": "before_apr",
+            "acp": 65001,
+            "wide_read": 1,
+            "getenv_utf8": 1,
+            "getenv_acp": 1,
+            "ucrt_getenv_utf8": 1,
+            "ucrt_getenv_acp": 1,
+            "fopen_getenv": 1,
+            "fopen_utf8": 1,
+            "fopen_acp": 1,
+            "pq_ok": 1,
+            "pq_service_file_error": 0,
+            "pq_service_missing": 0,
+            "pq_password_error": 0
+          },
+          {
+            "phase": "apr_app_initialize",
+            "acp": 65001,
+            "wide_read": 1,
+            "getenv_utf8": 1,
+            "getenv_acp": 1,
+            "ucrt_getenv_utf8": 1,
+            "ucrt_getenv_acp": 1,
+            "fopen_getenv": 1,
+            "fopen_utf8": 1,
+            "fopen_acp": 1,
+            "pq_ok": 1,
+            "pq_service_file_error": 0,
+            "pq_service_missing": 0,
+            "pq_password_error": 0
+          }
+        ],
+        "signed_sdk_refused_unchanged": true,
+        "unsigned_pg_source_sha256": "9414dac0554065aa6edf739d7126b6e6e6d6fc3b56b9706b72cee47cee45b22c",
+        "unsigned_pg_source_unchanged": true,
+        "transform": {
+          "before_sha256": "9414dac0554065aa6edf739d7126b6e6e6d6fc3b56b9706b72cee47cee45b22c",
+          "after_sha256": "c0d7653c11a2994ce0fc73de8759a838686386a3a584c1ef4d6e637f88c2e5cd",
+          "changed": true,
+          "manifest_sha256": {
+            "0": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55"
+          },
+          "non_resource_bytes_unchanged": true,
+          "program_code_data_rvas_unchanged": true,
+          "moved_discardable_sections": {
+            ".reloc": {
+              "before_rva": 647168,
+              "after_rva": 651264
+            }
+          }
+        },
+        "unsigned_transform_reproducible_and_idempotent": true,
+        "imports_unchanged": true,
+        "unicode_supplementary_service_and_output_paths": true,
+        "schema_dump_sha256": "bead06a99d5f3c0f98ca9192c2d60b3d9cfddd37f15d2a2de036a4a5856ea011",
+        "schema_dump_bytes": 29545,
+        "backup_role_superuser": false,
+        "probe_source_sha256": "10dbcff3b6e7e9b472d742d28531872f9ad024e3b4373ee79d8d3c6ce3c5d71c",
+        "test_source_sha256": "523af412fdf74ad62ebafdc1b69cd26baa585f3eda7f18d51ffe77cb47f140a4"
+      },
+      "error": null,
+      "scope": "Dedicated local PostgreSQL/APR and native Unicode-file integration. Full services and package restore are separate M7 checks."
+    }
+  },
+  "functional_regression": {
+    "test_id": "m6-windows-regression-22b21cbe1d62",
+    "status": "PASS",
+    "composite_status": "PARTIAL",
+    "report_sha256": "6d2e3da701f6e462f67f59465e290763e7e2a377a595e018ad85257101e76b55",
+    "elapsed_seconds": 112.187,
+    "records": [
+      {
+        "name": "M0-M3 regressions",
+        "status": "PASS",
+        "test_id": "m3-0507fbacaff0",
+        "elapsed_seconds": 233.594,
+        "report_sha256": "79ea767a692865edaaa0679ad0b289038de5b4e5529b866af05759f39a6e1625",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "authentication, snapshots and recovery",
+        "status": "PASS",
+        "test_id": "m4-smoke-4488222db1dd",
+        "elapsed_seconds": 33.891,
+        "report_sha256": "f61d74b5fa20fe9787f4a9a16c76f67a962f5313d424e41e30a007dd7e15416f",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "API and independent wire accounting",
+        "status": "PASS",
+        "test_id": "m4-api-f7185d9738fa",
+        "elapsed_seconds": 35.14,
+        "report_sha256": "2c88b45a6f9fd2f5d22135b0372de845ea8378b6fa5ba2ac39c0d2356e32153b",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "cold PostgreSQL startup and recovery",
+        "status": "PASS",
+        "test_id": "m4-startup-16aef8d6d240",
+        "elapsed_seconds": 14.438,
+        "report_sha256": "ba0d188361ec1286c14c3acbc7db88dcd835cfe065beb6ca76eb92e3bbdf7b27",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "LocalService TCP blackhole and slow HTTP shutdown",
+        "status": "PASS",
+        "test_id": "m4-network-660db1a5eb88",
+        "elapsed_seconds": 22.453,
+        "report_sha256": "7b05a15b788566a4ac7253f9acc3604711bc1a943018633c81082b35a33f2913",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "publication, receipts and writer lifecycles",
+        "status": "PASS",
+        "test_id": "m4-ledger-61e00a897cc7",
+        "elapsed_seconds": 3.359,
+        "report_sha256": "0c849e82a09a5cc9a40aec2bc978eb072a1988dcbebfcd124a9db9f84c287841",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "lost PostgreSQL COMMIT acknowledgement",
+        "status": "PASS",
+        "test_id": "m4-receipt-fault-fa9c22108b36",
+        "elapsed_seconds": 3.204,
+        "report_sha256": "7b3fa82a17a92a688e599a0d40d260deec72dde28d73c33a72697a02dce29fec",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "capacity, isolation and measured overhead",
+        "status": "PASS",
+        "test_id": "m4-resources-d4e006202db7",
+        "elapsed_seconds": 54.703,
+        "report_sha256": "d3647b3964160a1821c70b9b824f10a8a67b875e6a291abcb01b2b0f761ea8c4",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "native creation atomicity",
+        "status": "PASS",
+        "test_id": "m5-creation-4a4b15a48795",
+        "elapsed_seconds": 7.0,
+        "report_sha256": "75c517342ac15909b085e799083cce3171c36f66b854b44ed6204df788141474",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "registry lifecycle and admin recovery",
+        "status": "PASS",
+        "test_id": "m5-registry-cf1796638435",
+        "elapsed_seconds": 13.453,
+        "report_sha256": "c3c2a4992fff4a38f84cd31713493923eb6452e07ad5099bd6edbd423473bb87",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "actual M4 schema upgrade",
+        "status": "PASS",
+        "test_id": "m5-upgrade-fe705a494137",
+        "elapsed_seconds": 6.859,
+        "report_sha256": "4ba70195ab8c5e731906199a50e35d4fc74b9f4481e7ca9eca1cf80fc0bb9972",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "HTTP v1/v2 and Unicode author",
+        "status": "PASS",
+        "test_id": "m5-http-6893ea172f18",
+        "elapsed_seconds": 16.563,
+        "report_sha256": "a7fdd5b563487da2f2c7a39e6316958ccac4da9cb053a3fd079ff039c63e2d1c",
+        "carried_from": "m6-windows-regression-a3d15973b43d"
+      },
+      {
+        "name": "HTTP/HTTPS round robin and SVNKit",
+        "status": "PASS",
+        "test_id": "m5-balancer-78864dadc33c",
+        "elapsed_seconds": 35.625,
+        "report_sha256": "9db431b101b79b2079eb35ce9f3b9e001b07e6b98de15418e0dc905b8cc4de8b"
+      },
+      {
+        "name": "path and historical authorization",
+        "status": "PASS",
+        "test_id": "m5-authz-2162ab1718dd",
+        "elapsed_seconds": 12.922,
+        "report_sha256": "16e54d7dfd0c3c319cc9b91d5421febc9bb93407eacd828e1d44b9bda011c1b9"
+      },
+      {
+        "name": "upstream Unicode client limitation baseline",
+        "status": "PASS",
+        "test_id": "m5-unicode-baseline-f33b7f41a48d",
+        "elapsed_seconds": 11.75,
+        "report_sha256": "658ad1ed16631b670dc21b1f387d945940a4bf91cbbcd93f6a35efd09a4857d7"
+      },
+      {
+        "name": "independent Apache telemetry ledger",
+        "status": "PASS",
+        "test_id": "m5-telemetry-fd540d41afec",
+        "elapsed_seconds": 35.891,
+        "report_sha256": "7a97c340d83d159843911b0cb183504f72132738bf3bb58640beb288fe9f78de"
+      },
+      {
+        "name": "LocalService worker lifecycle",
+        "status": "PASS",
+        "test_id": "m5-dav-service-94e554d18baf",
+        "elapsed_seconds": 12.468,
+        "report_sha256": "526760e2af1ab262df0cd277692bf1eb6ef03d49aa0f822d11e41b22eb53bdd0"
+      },
+      {
+        "name": "Windows Unicode environment and PG client provenance",
+        "status": "PASS",
+        "test_id": "m6-windows-utf8-2624373c20ee",
+        "elapsed_seconds": 3.219,
+        "report_sha256": "b2acdf7903482e8ace7aa72c9d969f0139601fefc6f6aa40d84c5e082a903584"
+      }
+    ],
+    "scope": "All M0-M3 suites plus every individual M4/M5 functional suite and the Windows UTF-8 environment suite. When resume is present, twelve successful groups are retained from the exact unchanged native products/runtime; the sole intervening source change is an Apache test-fixture class default. The composite M4/M5 browser gates were not passed: two narrow-layout checks are pending because viewport override had no effect. No milestone completion or full M5 PASS is asserted.",
+    "resume": {
+      "test_id": "m6-windows-regression-a3d15973b43d",
+      "report_sha256": "d829f87b5b4a2a4c4aaedf5ae61504b1a2f96d5f630c9cacc21110f7037e99ef",
+      "prior_manifest_sha256": "581dab31a865b0cf9dca8b063037abca9e36b6344983858d7acb747b7439f050",
+      "native_products_and_runtime_dependencies_unchanged": true,
+      "only_source_change": "Apache test fixture class default executable; initialized instances used by previous passed cases are unchanged. Failed Balancer and all remaining suites rerun."
+    },
+    "verified_groups_elapsed_seconds": 556.532
+  },
+  "browser": {
+    "report_sha256": "ea700bab6a893e62446afe8e05e12a9ce0b0e5a2b9e79d49920a0b09c6ed5c1e",
+    "report": {
+      "pgvnserve_sha256": "0609cea73d96a10b7b8b96e3bb7316bd7e54b8f8278ba773eb9f6df37989bb16",
+      "assets": {
+        "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+        "monitor.css": "9c3c44871c16447a56c7250b00b180ddc74eda097d8b213d2430e85ee6977824",
+        "monitor.js": "68bf584c9094fa6dc4353fa7d5d907cc864937946e62353502bee22b3b8e4825"
+      },
+      "dav_host_sha256": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+      "dav_host_runtime": {
+        "product": "PgVNHTTPD",
+        "apache_base": "2.4.68",
+        "process_code_page": 65001
+      },
+      "test_id": "m6-windows-browser-32f82f79ce89-b411fcdc",
+      "status": "PARTIAL",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T16:38:53.989Z",
+      "fixture_stopped": true,
+      "fixture_session": "runtime\\pgvn\\tests\\m3-credentials-32f82f79ce89\\browser-session.json",
+      "fixture_session_sha256": "475c4956bf5d26f7b20bb57c94b98f42bdc1750583c673695ebef06f8fc273b8",
+      "checks": {
+        "authentication": true,
+        "all_views": true,
+        "repository_pagination": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "text_only_hostile_name": true,
+        "keyboard_focus_and_refresh": true,
+        "configurable_refresh": true,
+        "narrow_layout": false,
+        "paused_refresh": true,
+        "stale_database_and_unknown_nodes": true,
+        "lost_peer_and_recovery": true,
+        "token_revocation_clears_data": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "refresh_retains_open_and_focus": true,
+        "lost_worker_and_new_instance": true,
+        "narrow_details_layout": false
+      },
+      "modules": {
+        "mod_dav_pgvn.so": "0a1eed3729b03eeda950af9393d61ae63db9a2e301d82890bc5e61640c8b1926",
+        "mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5"
+      },
+      "observations": "artifacts\\pgvn\\tests\\m6-windows-browser-observations-32f82f79ce89.json",
+      "observations_sha256": "786268c20542ee0b0181c43c1a38eb3b8752b0b3d701408588f9b6f6c7f8f0d5",
+      "screenshots": {
+        "dark": {
+          "path": "docs/pgvn/images/monitor-windows-utf8-dark.jpg",
+          "sha256": "9028a9921af8531b17e12557963bf752bc345b2b371f4e0420e1ed63d51b9023",
+          "bytes": 61945
+        },
+        "light": {
+          "path": "docs/pgvn/images/monitor-windows-utf8-light.jpg",
+          "sha256": "4d3081e5b0e9fa0524d22530e8a49ff14192658ddacb5a6f5fcf6bea0db2405f",
+          "bytes": 78026
+        }
+      },
+      "pending": [
+        "narrow_layout",
+        "narrow_details_layout"
+      ],
+      "limitations": [
+        "Documented browser viewport.set(375,812) had no effect; actual innerWidth remained 1280 in both tabs. No fresh narrow-layout PASS is asserted."
+      ],
+      "source_inventory_note": "After browser checks, package documentation path rewriting and an Apache test-fixture class default changed; every native product and web resource is byte-identical to the tested build. No new browser run or narrow-layout PASS is asserted.",
+      "tested_build_manifest_sha256": "1bfd87a4db7253480e63829a69865e1ecb71a90c7d471cc27b92c421fffc40a0",
+      "build_manifest_sha256": "b411fcdcc4f9c05efebb5d80236e88d216766453c9cd17a2d64f2d2709e0d35f"
+    }
+  },
+  "preserved_failures": [
+    {
+      "test_id": "m6-windows-regression-6c3289522fac",
+      "report_sha256": "684ce118627ca0a8b508956c73e061c22f9c3df726911455634337133930f962",
+      "classification": "First batch stopped because the JDK environment variables were absent; M0-M2 and credentials had passed. The fixed installed JDK/SVNKit paths were then supplied and the complete functional batch rerun."
+    },
+    {
+      "test_id": "m6-windows-regression-a3d15973b43d",
+      "report_sha256": "d829f87b5b4a2a4c4aaedf5ae61504b1a2f96d5f630c9cacc21110f7037e99ef",
+      "classification": "Twelve groups passed before Balancer, which does not call the parent constructor, exposed a missing executable attribute in the new test fixture. A one-line class default fixed the fixture. The verified unchanged native products/runtime allowed retaining those twelve groups; the failed suite and all remaining suites were rerun."
+    },
+    {
+      "test_id": "m7-package-8b07efa46607",
+      "report_sha256": "c3441095d9d2e2fe0c693b2e477acdb96cc7c966ce542c50d4a3caa062149175",
+      "classification": "Old deployment archive reproduced the Unicode-path DAV/libpq failure before the dedicated UTF-8 host fix."
+    },
+    {
+      "test_id": "m7-package-84bb4090e8c9",
+      "report_sha256": "6d8446b0ebfa8b59452eebda3458c0aafc310e493f1b90e692b16246e0689494",
+      "classification": "A real Unicode-user commit succeeded, but the test used native-console propget text as a byte oracle. Canonical admin Base64 and standard XML confirmed UTF-8 author storage; the test now checks both explicitly."
+    }
+  ],
+  "remaining": [
+    "Two fresh narrow-layout browser checks; the current viewport API had no effect. Prior unchanged-asset UI evidence remains bound to its original build.",
+    "Complete M6 upstream protocol entry, fault ledger/failure domains, and representative performance budgets.",
+    "Clean Windows install, whole-machine restart, cross-host failover and isolated Polarion application acceptance."
+  ],
+  "historical_evidence_note": "The previously committed 638-revision corpus and complete backup ledgers belong to their earlier frozen build. No full-history verification on these new native products is claimed."
+}

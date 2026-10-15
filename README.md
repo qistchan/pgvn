@@ -6,17 +6,18 @@
 
 监控页面已更新明暗主题、集中健康摘要、趋势图表和移动布局；实测范围、截图及高对比度待验收项见 [监控改版记录](docs/pgvn/M4-monitor.zh-CN.md#监控页面改版)。
 
-原生 Windows 离线包、独立数据库、LocalService 安装及备份恢复步骤见 [新机部署指南](deploy/windows/README.zh-CN.md)。开发快照及本机验收范围见 [M7 部署记录](docs/pgvn/M7-package-local.zh-CN.md)，固定历史和状态恢复进展见 [M6 组件验证](docs/pgvn/M6-validation.zh-CN.md)。
+原生 Windows 离线包、独立数据库、LocalService 安装及备份恢复步骤见 [新机部署指南](deploy/windows/README.zh-CN.md)。中文及 emoji 安装路径、专用 Apache 宿主和客户端边界见 [Windows UTF-8 记录](docs/pgvn/Windows-UTF8.zh-CN.md)。开发快照及本机验收范围见 [M7 部署记录](docs/pgvn/M7-package-local.zh-CN.md)，固定历史和状态恢复进展见 [M6 组件验证](docs/pgvn/M6-validation.zh-CN.md)。
 
 ## Windows 开发构建
 
-准备固定 SVN 1.14.5、APR 1.7.6、APR-util 1.6.3 源码/头文件、匹配的 Windows x64 DLL、Apache 2.4.68 SDK、PostgreSQL 18.6 SDK 和 LLVM-MinGW。源码/SDK 可放在任意只读目录，不修改原安装。构建需要 Python 3，运行时无需 Python 或 Node.js。
+准备固定 SVN 1.14.5、APR 1.7.6、APR-util 1.6.3 源码/头文件、匹配的 Windows x64 DLL、Apache 2.4.68 SDK、PostgreSQL 18.6 SDK 和 LLVM-MinGW。源码/SDK 可放在任意只读目录，不修改原安装。构建需要 Python 3，运行时无需 Python 或 Node.js。PgVN 自有进程声明 UTF-8 代码页并在入口校验，目标系统需支持 Windows 10 1903 起的进程 UTF-8 清单机制；安装前以包内烟测结果为准。
 
 1. 复制 `config/build.example.json` 为 `config/build.local.json`，填入实际 SDK 路径；本地配置不提交。
-2. 执行 `python scripts/pgvn/build.py --config config/build.local.json --configuration Release`。
-3. 配置测试 JDK/SVNKit，运行 `python tests/pgvn/monitor_browser_fixture.py --dav` 完成真实浏览器验收并保存摘要绑定的 M4/M5 记录，再执行 `python tests/pgvn/run_gates.py --milestone M5`；它串行包含 M0–M4 和 DAV 专项，使用专用 16432 实例。详见 M4/M5 指南。
-4. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
-5. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
+2. 执行 `python scripts/pgvn/fetch_httpd.py`，准备校验和锁定的 Apache 2.4.68 宿主源码。默认放在忽略的 `vendor/httpd-2.4.68`；离线构建可预先复制这五个文件，并在本地构建配置中用 `apache_source` 指向该目录。构建器不会隐式联网。
+3. 执行 `python scripts/pgvn/build.py --config config/build.local.json --configuration Release`，同时构建 `pgvnhttpd.exe`；原 SDK 签名程序保持原字节。
+4. 配置测试 JDK/SVNKit，运行 `python tests/pgvn/monitor_browser_fixture.py --dav` 完成真实浏览器验收并保存摘要绑定的 M4/M5 记录，再执行 `python tests/pgvn/run_gates.py --milestone M5`；它串行包含 M0–M4 和 DAV 专项，使用专用 16432 实例。详见 M4/M5 指南。
+5. 执行 `python tests/pgvn/run_gates.py --milestone M1` 验证核心；它使用独立的 16432 测试数据库，包括重启该数据库。
+6. 在管理员开发终端执行 `python tests/pgvn/run_gates.py --milestone M0` 验证服务骨架。该门禁会创建唯一命名的临时 LocalService 服务与回环 URL ACL，并在测试后清理。它不使用已有的 SVN、Apache 或 PostgreSQL 服务。
 
 产物在 `runtime/pgvn`，构建清单在 `artifacts/pgvn/build/manifest.json`，测试原始结果在 `artifacts/pgvn/tests`。开发生成物不提交；每个里程碑提交代码与可审阅的证据摘要。
 

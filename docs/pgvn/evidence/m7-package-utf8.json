@@ -1,0 +1,166 @@
+{
+  "status": "LOCAL_UNICODE_PROFILE_PASS",
+  "milestone_complete": false,
+  "package_id": "c002acc4be0964e4",
+  "archive": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\packages\\PgVN-M5-windows-x64-c002acc4be0964e4.zip",
+  "archive_sha256": "87c66f849d999cd337451c34f7d66d3ab87be625dde781998cfe6ec4c76e99e8",
+  "archive_bytes": 23025807,
+  "package_manifest_sha256": "36e04500ce7767a80639967c75c9df1cd6930187f2579971d761cb0ac0fec43d",
+  "build_manifest_sha256": "b411fcdcc4f9c05efebb5d80236e88d216766453c9cd17a2d64f2d2709e0d35f",
+  "files": 185,
+  "native_images": 95,
+  "validation_status": "development-snapshot",
+  "requirements": [
+    "Windows x64 supporting UTF-8 process manifests (Windows 10 1903+) with HTTP.sys and Windows PowerShell",
+    "Independent PostgreSQL server; PostgreSQL 18.6 tested"
+  ],
+  "profile": {
+    "installation_path": "Spaces, Chinese, supplementary-plane emoji, e-acute and NFD combining characters",
+    "username": "Chinese",
+    "write_client": "Unmodified SDK svn checkout/add/commit; svnmucc Unicode-user limitation remains",
+    "database_authentication": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check"
+  },
+  "local_acceptance": {
+    "report_sha256": "9b96e5ad251106c8969259035690887c304e74d602dc52fbdd176dc66e6c47f2",
+    "report": {
+      "test_id": "m7-package-82867a541e78",
+      "component": "M7 offline Windows package local acceptance",
+      "status": "PASS",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T17:00:34.345946+00:00",
+      "elapsed_seconds": 51.82799999999406,
+      "test_source_sha256": "849e8d0ee96a5d9de2b99b0b5eca61eeb6f2cb5b9272268d6d408c378e5e4be2",
+      "details": {
+        "archive": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\packages\\PgVN-M5-windows-x64-c002acc4be0964e4.zip",
+        "archive_sha256": "87c66f849d999cd337451c34f7d66d3ab87be625dde781998cfe6ec4c76e99e8",
+        "source_database": "pgvn_pkg_82867a541e78",
+        "target_database": "pgvn_pkg_restore_82867a541e78",
+        "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+        "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+        "package_id": "c002acc4be0964e4",
+        "package_status": "development-snapshot",
+        "localservice_svn_dav": true,
+        "unicode_install_path": true,
+        "unicode_username": true,
+        "supplementary_install_path": true,
+        "write_client": "svn",
+        "exact_utf8_revision_author": true,
+        "installer_idempotent": true,
+        "source_head": 1,
+        "payload_sha256": "c9cab251ab92df1ef221fe6344e13df8a3f617783a5f6a016b771a6edfb05081",
+        "public_uuid": "db9741a5-b7ae-c440-8237-fab011cda2f9",
+        "backup_manifest_sha256": "a3bb606fc64256738a2d5cd8322e55997ab2a2e3e7a1964ea671d15d21b5d132",
+        "restored_non_superuser": true,
+        "archive_acl_preserved": true,
+        "monitor_credentials_denied": true,
+        "public_telemetry_execute_denied": true,
+        "restored_binary_content_and_revprop": true,
+        "lock_preserved": true,
+        "monitor_token_preserved": true,
+        "restored_protocol_commit": true,
+        "restored_head": 2,
+        "source_unchanged": true,
+        "protected_key_reconfigured": true,
+        "global_hook_inventory_copied": true,
+        "tamper_rejected": true,
+        "package_files_unchanged": true,
+        "services_uninstalled": true,
+        "url_reservations_removed": true
+      },
+      "error": null,
+      "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-82867a541e78",
+      "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+    }
+  },
+  "reproducibility": {
+    "archive": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\packages\\PgVN-M5-windows-x64-c002acc4be0964e4.zip",
+    "archive_sha256": "87c66f849d999cd337451c34f7d66d3ab87be625dde781998cfe6ec4c76e99e8",
+    "second_archive_sha256": "87c66f849d999cd337451c34f7d66d3ab87be625dde781998cfe6ec4c76e99e8",
+    "archive_bytes": 23025807,
+    "package_file_count": 185,
+    "same_frozen_inputs": true,
+    "byte_identical": true,
+    "scope": "Two independent executions of package.py --development; Windows resource transforms ran on fresh private copies in each execution."
+  },
+  "windows_process_policy": {
+    "manifest_sha256": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55",
+    "resource_writer": {
+      "KernelBase.dll": "5c29b73622ce0976e1ada566f31f2197ba0f8beaea89c3ec033366126172c3d0",
+      "kernel32.dll": "e132eba4166256e2f414b91fe7d5386590bc5ea8626aee5af9c9738383cf2ae1"
+    },
+    "transformer_sha256": "32c54828a50a02ecc9a892b70e33e2c5101dab00dfbddb3859731b12fbc42ae4"
+  },
+  "postgresql_client_transforms": {
+    "tools/postgresql/pg_dump.exe": {
+      "after_sha256": "c0d7653c11a2994ce0fc73de8759a838686386a3a584c1ef4d6e637f88c2e5cd",
+      "before_sha256": "9414dac0554065aa6edf739d7126b6e6e6d6fc3b56b9706b72cee47cee45b22c",
+      "changed": true,
+      "manifest_sha256": {
+        "0": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55"
+      },
+      "moved_discardable_sections": {
+        ".reloc": {
+          "after_rva": 651264,
+          "before_rva": 647168
+        }
+      },
+      "non_resource_bytes_unchanged": true,
+      "program_code_data_rvas_unchanged": true
+    },
+    "tools/postgresql/pg_isready.exe": {
+      "after_sha256": "e5d86e0f04b353003cb12038a29bf2ac076f974f6c3d261b75e1ac7cf7e66baa",
+      "before_sha256": "d6a42587e244014d5dfaad9daa406a221715220a9848a583b78abab14d5f86c4",
+      "changed": true,
+      "manifest_sha256": {
+        "0": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55"
+      },
+      "moved_discardable_sections": {
+        ".reloc": {
+          "after_rva": 106496,
+          "before_rva": 102400
+        }
+      },
+      "non_resource_bytes_unchanged": true,
+      "program_code_data_rvas_unchanged": true
+    },
+    "tools/postgresql/pg_restore.exe": {
+      "after_sha256": "71c3d7e13f3b8ab8355767a288aaa1b29aa820dd6ddd361759b82793d2f38bff",
+      "before_sha256": "94c2b545fb870c08414dcf03cd93723f78662e1d489a0272150b40a0267f0d55",
+      "changed": true,
+      "manifest_sha256": {
+        "0": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55"
+      },
+      "moved_discardable_sections": {
+        ".reloc": {
+          "after_rva": 397312,
+          "before_rva": 393216
+        }
+      },
+      "non_resource_bytes_unchanged": true,
+      "program_code_data_rvas_unchanged": true
+    },
+    "tools/postgresql/psql.exe": {
+      "after_sha256": "52e1de12767d7f648dc7062bf2ad7e1bf6d518351d32e91b21684ac847389523",
+      "before_sha256": "fde952534f520909c02db04675588ecb1da8d618b6e5c93e106f42a752daf720",
+      "changed": true,
+      "manifest_sha256": {
+        "0": "fdda3d3d08ecdb28b0e86cc6017c63e3a902e51b16aed8b26977a087123a7c55"
+      },
+      "moved_discardable_sections": {
+        ".reloc": {
+          "after_rva": 667648,
+          "before_rva": 663552
+        }
+      },
+      "non_resource_bytes_unchanged": true,
+      "program_code_data_rvas_unchanged": true
+    }
+  },
+  "browser_note": "Current binaries have 19 fresh browser checks passed and two narrow-layout checks pending; complete M4/M5 browser gates have not passed on this build.",
+  "pending": [
+    "Complete M6 acceptance including upstream protocol entry, fault ledger/failure domains and representative performance",
+    "Fresh narrow-layout browser verification",
+    "Clean machine install, whole OS reboot, cross-host failover and isolated Polarion application acceptance"
+  ],
+  "prior_archive_note": "m7-package-local.json retains the first ASCII-only archive unchanged. This record is for the exact new archive above; native product hashes changed from the old M6 history/backup baseline."
+}

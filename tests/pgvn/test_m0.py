@@ -114,11 +114,13 @@ def build_identity():
         assert diagnosis["milestone"] == manifest["milestone"] and diagnosis["svn_base"] == "1.14.5"
         assert diagnosis["apr_runtime"] == "1.7.6" and diagnosis["libpq_version"] == 180006
         assert diagnosis["ready"] is False
+        assert diagnosis["process_code_page"] == 65001
         assert diagnosis["capabilities"]["svn_protocol"]==manifest["capabilities"]["svn_protocol"]
         assert diagnosis["capabilities"]["repository_by_id"] == manifest["capabilities"]["repository_by_id"]
         diagnoses[product] = diagnosis
     assert "1.14.5" in command([RUNTIME / "bin/svn.exe", "--version", "--quiet"])
     assert "Apache/2.4.68" in command([RUNTIME / "apache/bin/httpd.exe", "-v"])
+    assert json.loads(command([RUNTIME/'apache/bin/pgvnhttpd.exe','--pgvn-runtime']))['process_code_page']==65001
     assert manifest["private_api_audit"]["ra_svn_exported"] == ["svn_ra_svn_init"]
     return {"configuration": manifest["configuration"], "products": diagnoses,
             "hashes": {k: v["sha256"] for k, v in manifest["products"].items()}}
@@ -190,7 +192,7 @@ DocumentRoot "{document_root.as_posix()}"
 ThreadsPerChild 8
 AcceptFilter http none
 ''', encoding="utf-8")
-    executable = apache / "bin/httpd.exe"
+    executable = apache / "bin/pgvnhttpd.exe"
     syntax = command([executable, "-f", config, "-t"])
     modules = command([executable, "-f", config, "-M"])
     assert "dav_pgvn_module (shared)" in modules and "authz_pgvn_module (shared)" in modules

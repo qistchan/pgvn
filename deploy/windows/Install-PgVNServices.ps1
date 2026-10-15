@@ -39,7 +39,7 @@ if ($previousKey) { Set-PgVNKeyPermissions $previousKey }
 $runtimeEnvironment = Get-PgVNLibpqEnvironment $Root -Runtime
 $sc = Join-Path $env:SystemRoot 'System32/sc.exe'
 $netsh = Join-Path $env:SystemRoot 'System32/netsh.exe'
-$httpd = Join-Path $Root 'apache/bin/httpd.exe'
+$httpd = Join-Path $Root 'apache/bin/pgvnhttpd.exe'
 $serverImage = Join-PgVNWindowsArguments @((Join-Path $Root 'bin/pgvnserve.exe'),'--service','--service-name',$ServiceName,
     '--config',(Join-Path $Root 'config.local/pgvnserve.ini'),'--monitor-url',$settings.MonitorUrl)
 $davImage = Join-PgVNWindowsArguments @($httpd,'-k','runservice','-n',$DavServiceName,'-f',(Join-Path $Root 'config.local/httpd.conf'))

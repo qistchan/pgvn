@@ -122,6 +122,10 @@ int wmain(int argc, wchar_t **argv)
 {
     int service = 0;
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+    if(GetACP()!=CP_UTF8) {
+        fputs("PgVN requires a UTF-8 process code page (Windows 10 1903 or later).\n",stderr);
+        return 2;
+    }
     if (apr_initialize() != APR_SUCCESS) return 1;
     apr_pool_t *arguments=svn_pool_create(NULL);
     for (int i = 1; i < argc; ++i) {

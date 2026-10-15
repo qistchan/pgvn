@@ -26,9 +26,11 @@ try {
     $environment = Get-PgVNLibpqEnvironment $Root
     $server = Invoke-PgVNNative -FilePath (Join-Path $Root 'bin/pgvnserve.exe') -Arguments @('--version') -Environment $environment
     $identity = $server.Output | ConvertFrom-Json
-    if ($identity.milestone -ne $manifest.milestone -or $identity.svn_base -ne '1.14.5') { throw '产物身份与清单不符。' }
+    if ($identity.milestone -ne $manifest.milestone -or $identity.svn_base -ne '1.14.5' -or $identity.process_code_page -ne 65001) { throw '产物身份、UTF-8 代码页与清单不符。' }
     [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'bin/pgvnadmin.exe') -Arguments @('--version'))
-    [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'apache/bin/httpd.exe') -Arguments @('-v'))
+    [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'apache/bin/pgvnhttpd.exe') -Arguments @('-v'))
+    $hostIdentity = (Invoke-PgVNNative -FilePath (Join-Path $Root 'apache/bin/pgvnhttpd.exe') -Arguments @('--pgvn-runtime')).Output | ConvertFrom-Json
+    if ($hostIdentity.product -ne 'PgVNHTTPD' -or $hostIdentity.process_code_page -ne 65001 -or $hostIdentity.apache_base -ne '2.4.68') { throw '专用 HTTP 宿主或 UTF-8 代码页不符合要求。' }
     [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'tools/svn/svn.exe') -Arguments @('--version','--quiet'))
     [void](Invoke-PgVNNative -FilePath (Join-Path $Root 'tools/postgresql/pg_dump.exe') -Arguments @('--version'))
 } finally { $env:PATH = $savedPath }

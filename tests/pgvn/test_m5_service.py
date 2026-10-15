@@ -38,8 +38,8 @@ def checks():
     run('icacls.exe',server.work,'/grant','*S-1-5-19:(OI)(CI)(M)','/T','/Q')
     try:
         assert state()==0,'Unique fixture service unexpectedly exists'
-        run(APACHE/'bin/httpd.exe','-t','-f',server.config)
-        run(APACHE/'bin/httpd.exe','-k','install','-n',NAME,'-f',server.config)
+        run(APACHE/'bin/pgvnhttpd.exe','-t','-f',server.config)
+        run(APACHE/'bin/pgvnhttpd.exe','-k','install','-n',NAME,'-f',server.config)
         installed=True
         sc('config',NAME,'obj=','NT AUTHORITY\LocalService','start=','demand')
         assert 'LocalService' in sc('qc',NAME)
@@ -69,7 +69,7 @@ def checks():
             if state() not in (0,1):
                 result=subprocess.run(['sc.exe','stop',NAME],capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW,timeout=10)
                 until(lambda:state() in (0,1),30)
-            if state()!=0:run(APACHE/'bin/httpd.exe','-k','uninstall','-n',NAME)
+            if state()!=0:run(APACHE/'bin/pgvnhttpd.exe','-k','uninstall','-n',NAME)
             until(lambda:state()==0,10);cleanup=True
         records['unique_service_removed']=cleanup
     return records

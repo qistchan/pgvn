@@ -25,10 +25,10 @@ def checks():
         text=server.config.read_text(encoding='utf-8')
         for index,directive in enumerate(('PgVNPathAuthz Off','AuthzPgVNAuthoritative Off','PgVNPath C:/not-a-repository')):
             invalid=server.work/('invalid-'+str(index)+'.conf');invalid.write_text(text.replace('DAV pgvn\n','DAV pgvn\n'+directive+'\n'),encoding='utf-8')
-            run(APACHE/'bin/httpd.exe','-t','-f',invalid,expected=1)
+            run(APACHE/'bin/pgvnhttpd.exe','-t','-f',invalid,expected=1)
         missing=server.work/'missing-authz.conf'
         missing.write_text(text.replace('LoadModule authz_pgvn_module modules/mod_authz_pgvn.so\n',''),encoding='utf-8')
-        run(APACHE/'bin/httpd.exe','-X','-f',missing,expected=1,timeout=10)
+        run(APACHE/'bin/pgvnhttpd.exe','-X','-f',missing,expected=1,timeout=10)
         server.start();url=server.url('/svn/a');target=server.url('/svn/b');data=setup.WORK/'content.bin';data.write_bytes(b'private\0\xff')
         run(RUNTIME/'bin/svnmucc.exe','--non-interactive','--no-auth-cache','--username','writer','--password',PASSWORD,'-m','seed',
             'mkdir',url+'/public','mkdir',url+'/public/sub','mkdir',url+'/secret','put',data,url+'/public/file.bin','put',data,url+'/secret/hidden.bin')

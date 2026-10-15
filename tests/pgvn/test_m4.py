@@ -43,6 +43,12 @@ def build_identity():
             if path.is_file() and (suffixes is None or path.suffix in suffixes): actual[path.relative_to(ROOT).as_posix()]=digest(path)
     assert actual==manifest["sources"],"Source inventory changed after the frozen Release build"
     for path,expected in manifest["runtime_dependencies"].items(): assert digest(RUNTIME/path)==expected,path
+    host=manifest['apache_host']
+    assert digest(ROOT/'src/pgvn/httpd/source-lock.json')==host['source_lock_sha256']
+    for name,expected in host['sources'].items():assert digest(Path(manifest['inputs']['apache_source'])/name)==expected,name
+    assert host['runtime']['process_code_page']==65001 and host['version']=='2.4.68'
+    assert digest(RUNTIME/'apache/bin/httpd.exe')==host['sdk_host_sha256']
+    assert digest(RUNTIME/'apache/bin/libhttpd.dll')==host['sdk_core_sha256']
     return manifest
 
 

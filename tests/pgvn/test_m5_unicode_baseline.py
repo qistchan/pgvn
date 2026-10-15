@@ -19,7 +19,7 @@ def checks():
     rules=setup.WORK/'authz.conf';rules.write_text('[/]\nwriter = rw\n',encoding='utf-8')
     hooks=setup.WORK/'hooks.json';hooks.write_text('{"pre-revprop-change":"allow"}')
     setup.admin('config','publish',native['id'],'--expected-generation',1,'--authz',rules,'--hooks',hooks)
-    servers=[Apache('unicode-native',v2=False),Apache('unicode-stock',v2=False)]
+    servers=[Apache('unicode-native',v2=False),Apache('unicode-stock',v2=False,executable=APACHE/'bin/httpd.exe')]
     stock=servers[1];modules=stock.work/'modules';modules.mkdir()
     sdk=Path(json.loads((ROOT/'config/build.local.json').read_text())['apache'])
     stock_hashes={}

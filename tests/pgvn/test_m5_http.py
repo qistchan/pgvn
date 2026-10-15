@@ -18,6 +18,7 @@ from fixture import ROOT,RUNTIME
 
 TEST_ID=setup.TEST_ID.replace('m3-credentials','m5-http')
 APACHE=RUNTIME/'apache'
+HTTPD=APACHE/'bin/pgvnhttpd.exe'
 SVN=RUNTIME/'bin/svn.exe'
 PASSWORD=secrets.token_urlsafe(24)
 records={}
@@ -41,8 +42,10 @@ def port():
 
 
 class Apache:
-    def __init__(self,name,v2=True):
+    executable = HTTPD
+    def __init__(self,name,v2=True,executable=None):
         self.work=setup.WORK/name;self.work.mkdir();self.port=port();self.process=None;self.log=None
+        self.executable=Path(executable or HTTPD)
         self.config=self.work/'httpd.conf'
         native=self.work/'pgvn.ini'
         native.write_text('[pgvn]\nconnection = '+setup.dsn('pgvn_service')+'\nnode-id = dav-'+name+'\n',encoding='utf-8')
@@ -64,9 +67,9 @@ class Apache:
         self.config.write_text(text,encoding='utf-8')
 
     def start(self):
-        run(APACHE/'bin/httpd.exe','-t','-f',self.config)
+        run(self.executable,'-t','-f',self.config)
         self.log=(self.work/'launcher.log').open('ab')
-        self.process=subprocess.Popen([str(APACHE/'bin/httpd.exe'),'-X','-f',str(self.config)],cwd=setup.EMPTY,
+        self.process=subprocess.Popen([str(self.executable),'-X','-f',str(self.config)],cwd=setup.EMPTY,
             stdout=self.log,stderr=self.log,creationflags=subprocess.CREATE_NO_WINDOW)
         deadline=time.monotonic()+15
         while time.monotonic()<deadline:

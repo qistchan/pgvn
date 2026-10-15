@@ -47,6 +47,8 @@ def browser(manifest):
     report=json.loads((RESULTS/'m5-browser-latest.json').read_text(encoding='utf-8'))
     assert report['status']=='PASS' and report['fixture_stopped'] is True
     assert report['pgvnserve_sha256']==manifest['products']['runtime/pgvn/bin/pgvnserve.exe']['sha256']
+    assert report['dav_host_sha256']==manifest['products']['runtime/pgvn/apache/bin/pgvnhttpd.exe']['sha256']
+    assert report['dav_host_runtime']['process_code_page']==65001
     for name,expected in report['modules'].items():assert digest(RUNTIME/'apache/modules'/name)==expected,name
     for name,expected in report['assets'].items():assert digest(ROOT/'web/pgvn-monitor'/name)==expected,name
     assert set(report['assets'])=={'index.html','monitor.js','monitor.css'}

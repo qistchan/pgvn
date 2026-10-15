@@ -1,0 +1,30 @@
+{
+  "version": "2.4.68",
+  "files": {
+    "server/main.c": {
+      "url": "https://raw.githubusercontent.com/apache/httpd/2.4.68/server/main.c",
+      "sha256": "391347ee3279a1a9523290838fedb7793f7c226df3bdd572db112536ac9fd71a",
+      "bytes": 29342
+    },
+    "CMakeLists.txt": {
+      "url": "https://raw.githubusercontent.com/apache/httpd/2.4.68/CMakeLists.txt",
+      "sha256": "44711c0ae8e0eb19a6a203ae4582201eeee8c9bf821e595249bd3e4e0aba7f70",
+      "bytes": 48633
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/apache/httpd/2.4.68/LICENSE",
+      "sha256": "47b8c2b6c3309282a99d4a3001575c790fead690cc14734628c4667d2bbffc43",
+      "bytes": 25479
+    },
+    "NOTICE": {
+      "url": "https://raw.githubusercontent.com/apache/httpd/2.4.68/NOTICE",
+      "sha256": "e13ed577b7fb9084118758837ff30d14824ff7efab958000295067428712149c",
+      "bytes": 721
+    },
+    "include/ap_release.h": {
+      "url": "https://raw.githubusercontent.com/apache/httpd/2.4.68/include/ap_release.h",
+      "sha256": "b751fec258be00af1553e33d334b69c3f04d4bdcb8c6be083cea3db6e04c5ffd",
+      "bytes": 3144
+    }
+  }
+}

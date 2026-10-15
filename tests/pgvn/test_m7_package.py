@@ -6,6 +6,7 @@ or Polarion application deployment.
 """
 from pathlib import Path
 import argparse
+import base64
 import ctypes
 import datetime as dt
 import hashlib
@@ -41,9 +42,11 @@ def free_port():
 
 
 class Acceptance:
-    def __init__(self, archive, ascii_paths=False, ascii_user=False):
+    def __init__(self, archive, ascii_paths=False, ascii_user=False, supplementary_paths=False, write_client='svnmucc'):
         self.archive = archive.resolve()
         self.ascii_paths = ascii_paths
+        self.supplementary_paths = supplementary_paths
+        self.write_client = write_client
         self.suffix = TEST_ID.rsplit('-', 1)[1]
         self.source_db = 'pgvn_pkg_' + self.suffix
         self.target_db = 'pgvn_pkg_restore_' + self.suffix
@@ -138,6 +141,7 @@ if ($Mode -eq 'SetUser') {
 
     def extract(self, label, database, owner):
         destination = WORK / (('deployment ' + label + ' space') if self.ascii_paths else ('部署 ' + label + ' space 中文'))
+        if self.supplementary_paths:destination=destination.with_name(destination.name+' 🐘 é e\u0301')
         destination.mkdir()
         with zipfile.ZipFile(self.archive) as archive:
             for name in archive.namelist():
@@ -212,6 +216,17 @@ if ($Mode -eq 'SetUser') {
         return ('svn://127.0.0.1:' + str(settings['SvnPort']) + self.route,
             'http://127.0.0.1:' + str(settings['HttpPort']) + self.route)
 
+    def commit_file(self,root,url,name,data,message):
+        if self.write_client=='svnmucc':
+            self.svn(root,'svnmucc','-m',message,'put',data,url+'/'+name)
+        else:
+            working_copy=WORK/('working-copy-'+uuid.uuid4().hex[:8])
+            self.svn(root,'svn','checkout',url,working_copy)
+            target=working_copy/name
+            target.write_bytes(data.read_bytes())
+            self.svn(root,'svn','add',target)
+            self.svn(root,'svn','commit',working_copy,'-m',message)
+
     def checks(self):
         self.prepare()
         source = self.extract('source', self.source_db, self.owner)
@@ -238,7 +253,13 @@ if ($Mode -eq 'SetUser') {
         payload = bytes(range(256)) * 4097 + b'\x00\xff\r\npackage'
         data = self.private / 'payload.bin'
         data.write_bytes(payload)
-        self.svn(source, 'svnmucc', '-m', 'package r1', 'put', data, svn_url + '/payload.bin')
+        self.commit_file(source,svn_url,'payload.bin',data,'package r1')
+        author=self.admin(source,'look','propget','name:package-demo','svn:author','--revprop','-r','1','--json')
+        assert author['encoding']=='base64' and base64.b64decode(author['value'],validate=True)==self.username.encode('utf-8')
+        # Standard text properties are detranslated to the client's native
+        # encoding by plain propget. XML supplies the explicit UTF-8 oracle.
+        author_xml=ET.fromstring(self.svn(source,'svn','propget','--xml','--revprop','-r','1','svn:author',svn_url))
+        assert author_xml.findtext('.//property')==self.username
         assert self.svn(source, 'svn', 'cat', dav_url + '/payload.bin') == payload
         property_file = self.private / 'revision-property.bin'
         property_file.write_bytes(b'\x00\xffbinary\r\nrevision property')
@@ -247,6 +268,7 @@ if ($Mode -eq 'SetUser') {
         lock = ET.fromstring(self.svn(source, 'svn', 'info', '--xml', svn_url + '/payload.bin')).findtext('.//lock/token')
         assert lock
         self.details.update(localservice_svn_dav=True, unicode_install_path=not self.ascii_paths, unicode_username=not self.username.isascii(),
+            supplementary_install_path=self.supplementary_paths,write_client=self.write_client,exact_utf8_revision_author=True,
             installer_idempotent=True, source_head=1, payload_sha256=sha(data), public_uuid=initial['Protocols'][0]['Uuid'])
         backup = WORK / 'backup-protected'
         self.script(source, 'Backup-PgVN.ps1', {'Destination': str(backup)}, timeout=180)
@@ -279,7 +301,7 @@ if ($Mode -eq 'SetUser') {
             assert json.loads(response.read())
         finally:
             conn.close()
-        self.svn(target, 'svnmucc', '-m', 'package restored r2', 'put', data, target_dav + '/after-restore.bin')
+        self.commit_file(target,target_dav,'after-restore.bin',data,'package restored r2')
         assert self.admin(target, 'look', 'youngest', 'name:package-demo', '--json')['youngest'] == 2
         self.admin(target, 'verify', 'name:package-demo')
         assert self.admin(source, 'look', 'youngest', 'name:package-demo', '--json')['youngest'] == 1
@@ -347,8 +369,12 @@ def main():
     parser.add_argument('--archive', required=True, type=Path)
     parser.add_argument('--ascii-paths', action='store_true', help='Run an explicit ASCII-installation control; retain separate Unicode-path failures')
     parser.add_argument('--ascii-user', action='store_true', help='Run an explicit ASCII-username control; retain separate Unicode-username failures')
+    parser.add_argument('--supplementary-paths',action='store_true',help='Also cover non-BMP and combining characters in installation paths')
+    parser.add_argument('--write-client',choices=('svnmucc','svn'),default='svnmucc',help='Keep the exact client choice visible; stock svnmucc has a separately recorded Unicode-user limitation')
     args = parser.parse_args()
-    test = Acceptance(args.archive, ascii_paths=args.ascii_paths, ascii_user=args.ascii_user)
+    if args.supplementary_paths and args.ascii_paths:parser.error('Supplementary paths and ASCII paths are distinct profiles')
+    test = Acceptance(args.archive, ascii_paths=args.ascii_paths, ascii_user=args.ascii_user,
+        supplementary_paths=args.supplementary_paths,write_client=args.write_client)
     start = time.monotonic()
     error = None
     try:

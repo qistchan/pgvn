@@ -9,11 +9,14 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 from pe_dependencies import closure
+from windows_manifest import embed_utf8
 
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def data_json(value):return (json.dumps(value,indent=2,sort_keys=True,ensure_ascii=False)+'\n').encode('utf-8')
@@ -70,7 +73,7 @@ def main():
     modules=[runtime/n for n in manifest['apache_dependencies'] if n.startswith('apache/modules/')]
     modules += [apache/'modules/mod_dav_pgvn.so',apache/'modules/mod_authz_pgvn.so']
     # APR crypto can be selected by the runtime rather than through a PE import.
-    apache_entries=[apache/'bin'/n for n in ('httpd.exe','htpasswd.exe','openssl.exe')]+modules
+    apache_entries=[apache/'bin'/n for n in ('pgvnhttpd.exe','htpasswd.exe','openssl.exe')]+modules
     if (apache/'bin/apr_crypto_openssl-1.dll').is_file():apache_entries.append(apache/'bin/apr_crypto_openssl-1.dll')
     group('apache',apache_entries,[apache/'bin'],'apache/bin','apache/modules')
     clients=[native/(name+'.exe') for name in ('svn','svnmucc','svnrdump','svnsync','svnversion')]
@@ -78,6 +81,25 @@ def main():
     group('svn-clients',clients,[native],'tools/svn')
     group('postgresql-clients',[pg/'bin'/(n+'.exe') for n in ('psql','pg_dump','pg_restore','pg_isready')],
         [pg/'bin',native],'tools/postgresql')
+
+    # PostgreSQL clients are unsigned. Derive private copies with the same
+    # UTF-8 process policy; signed Apache/SVN SDK images stay byte-for-byte.
+    policy=root/'src/pgvn/windows/utf8.manifest'
+    system=Path(os.environ['SystemRoot'])/'System32'
+    windows_policy={'manifest_sha256':digest(policy),
+        'transformer_sha256':digest(Path(__file__).with_name('windows_manifest.py')),
+        'resource_writer':{n:digest(system/n) for n in ('kernel32.dll','KernelBase.dll')}}
+    transform_base=root/'build/pgvn/package-utf8'
+    transform_base.mkdir(parents=True,exist_ok=True)
+    transform_directory=Path(tempfile.mkdtemp(prefix='run-',dir=transform_base))
+    prepared={};transforms={}
+    for basename,source in groups['postgresql-clients']['files'].items():
+        if source.suffix.lower()!='.exe':continue
+        target=transform_directory/source.name
+        shutil.copyfile(source,target)
+        record=embed_utf8(target,policy)
+        prepared['postgresql-clients/'+basename]=target
+        transforms['tools/postgresql/'+source.name]=record
 
     svn_source=Path(manifest['inputs']['svn_bin']).parent
     apache_source=Path(manifest['inputs']['apache'])
@@ -89,6 +111,9 @@ def main():
         'APR-util-LICENSE.txt':apu/'LICENSE','APR-util-NOTICE.txt':apu/'NOTICE',
         'PostgreSQL-server-license.txt':pg/'server_license.txt',
         'PostgreSQL-client-third-party-licenses.txt':pg/'commandlinetools_3rd_party_licenses.txt'}
+    host_source=Path(manifest['inputs']['apache_source'])
+    licenses['Apache-host-source-LICENSE.txt']=host_source/'LICENSE'
+    licenses['Apache-host-source-NOTICE.txt']=host_source/'NOTICE'
     for path in licenses.values():
         if not path.is_file():raise RuntimeError('Missing vendor license input: '+str(path))
     documentation=sorted((root/'docs/pgvn').glob('*.md'))
@@ -102,7 +127,8 @@ def main():
         'licenses':{n:digest(p) for n,p in licenses.items()},
         'documentation':{p.name:digest(p) for p in documentation},
         'support_files':{p.relative_to(root).as_posix():digest(p) for p in support},
-        'native':{name:{n:digest(p) for n,p in record['files'].items()} for name,record in groups.items()},
+        'native':{name:{n:digest(prepared.get(name+'/'+n,p)) for n,p in record['files'].items()} for name,record in groups.items()},
+        'windows_process_policy':windows_policy,'executable_manifest_transforms':transforms,
         'development':args.development}
     package_id=hashlib.sha256(data_json(input_identity)).hexdigest()[:16]
     stem='PgVN-'+manifest['milestone']+'-windows-x64-'+package_id
@@ -122,31 +148,37 @@ def main():
         targets={}
         for basename,source in record['files'].items():
             folder=record['module_folder'] if source.suffix.lower()=='.so' and record['module_folder'] else record['folder']
-            relative=folder+'/'+source.name;copy(relative,source);targets[basename]=relative
+            relative=folder+'/'+source.name
+            selected=prepared.get(name+'/'+basename)
+            if selected:put(relative,selected.read_bytes(),source)
+            else:copy(relative,source)
+            targets[basename]=relative
         native_audit[name]={'files':targets,**record['audit']}
     for name in required:
         if name.endswith('.ps1'):relative='deploy/windows/'+name
         elif name=='README.zh-CN.md':relative=name
         else:relative='config.templates/'+name
-        copy(relative,templates/name,bom=name.endswith('.ps1'))
+        if name=='README.zh-CN.md':
+            text=(templates/name).read_text(encoding='utf-8').replace('(../../docs/pgvn/','(docs/pgvn/')
+            put(relative,text.encode('utf-8'),templates/name)
+        else:copy(relative,templates/name,bom=name.endswith('.ps1'))
     for name,path in licenses.items():copy('licenses/'+name,path)
     html=(root/'web/pgvn-monitor/index.html').read_text(encoding='utf-8')
     start=html.index('MIT License');end=html.index('-->',start)
     put('licenses/Phosphor-Icons-MIT.txt',html[start:end].strip().encode('utf-8')+b'\n')
     for path in documentation:
         relative='docs/pgvn/'+path.name
-        if path.name=='M7-package-local.zh-CN.md':
-            text=path.read_text(encoding='utf-8').replace('(../../deploy/windows/README.zh-CN.md)','(../../README.zh-CN.md)')
-            text=text.replace('[本机证据](evidence/m7-package-local.json)',
-                '`'+stem+'.validation.json`（随 ZIP 单独提供）')
-            put(relative,text.encode('utf-8'),path)
-        else:copy(relative,path)
+        text=path.read_text(encoding='utf-8').replace('(../../deploy/windows/README.zh-CN.md)','(../../README.zh-CN.md)')
+        text=re.sub(r'\[[^\]]+\]\(evidence/m7-package[^()]*\.json\)',
+            '`'+stem+'.validation.json`（随 ZIP 单独提供）',text)
+        put(relative,text.encode('utf-8'),path)
     for path in sorted((root/'docs/plans').glob('*.md')):copy('docs/plans/'+path.name,path)
     for path in sorted((root/'config').glob('*example*')):
         if path.is_file():copy('config/'+path.name,path)
     for path in sorted((root/'sql').glob('*.sql')):copy('schema-reference/'+path.name,path)
     for path in sorted((root/'sql/pgvn').glob('*.sql')):copy('schema-reference/pgvn/'+path.name,path)
     copy('build-manifest.json',manifest_path)
+    copy('source-reference/httpd-host-lock.json',root/'src/pgvn/httpd/source-lock.json')
     # Archive validation describes this archive's hash and is delivered as a
     # sidecar / source-repository record, avoiding self-referential inputs.
     for path in sorted((root/'docs/pgvn/evidence').glob('*.json')):
@@ -160,15 +192,18 @@ def main():
         'Subversion、Apache、APR/APR-util、PostgreSQL 及其运行依赖的随附许可证保存在 licenses。\n'
         'Phosphor 图标 MIT 声明同时内嵌于监控 HTML。VC 运行库为固定供应商分发中的应用本地依赖。\n'
         '没有将 Windows 系统 DLL、测试探针、旧 svnserve、配置密钥或数据库密码打入包中。\n'
+        'pgvnhttpd 为固定 Apache 入口源码构建，使用未改写的 SDK libhttpd/APR。\n'
+        '四个未签名 PostgreSQL 客户端的私有副本加入 UTF-8 进程清单；来源/前后摘要及资源校验见包清单。\n'
     ).encode('utf-8'))
     package={'format':1,'package_id':package_id,'product':'PgVN','milestone':manifest['milestone'],
         'configuration':'Release','architecture':'x64','created_at':manifest['created_at'],
         'validation_status':'development-snapshot' if args.development else 'M6-accepted-runtime',
         'clean_machine_acceptance':False,'polarion_application_acceptance':False,
-        'requirements':['Windows x64 with HTTP.sys and Windows PowerShell','Independent PostgreSQL server; PostgreSQL 18.6 tested'],
+        'requirements':['Windows x64 supporting UTF-8 process manifests (Windows 10 1903+) with HTTP.sys and Windows PowerShell','Independent PostgreSQL server; PostgreSQL 18.6 tested'],
         'build_manifest_sha256':digest(manifest_path),'git_base_commit':manifest['git_base_commit'],
         'git_worktree_dirty_at_build':manifest['git_worktree_dirty'],
         'inputs':input_identity,'files':files,'provenance':provenance,'native_dependency_audit':native_audit,
+        'windows_process_policy':windows_policy,'executable_manifest_transforms':transforms,
         'acceptance':acceptance}
     encoded=data_json(package);stable_write(destination/'package-manifest.json',encoded)
     checksum=hashlib.sha256(encoded).hexdigest()

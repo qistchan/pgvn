@@ -20,6 +20,7 @@ from prepare_protocol import prepare_protocol
 from prepare_dav import prepare_dav
 from embed_migrations import embed
 from embed_web import embed_web
+from httpd_host import verify_sources,compile_resource,compile_host
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build/pgvn"
@@ -94,6 +95,8 @@ def main():
     tools, svn = paths["toolchain"], paths["subversion"] / "subversion"
     apr, apu = paths["apr_include"], paths["apu_include"]
     svn_bin, apache, pg = paths["svn_bin"], paths["apache"], paths["postgres"]
+    paths['apache_source']=Path(config.get('apache_source',ROOT/'vendor/httpd-2.4.68')).resolve(strict=True)
+    host_metadata=verify_sources(ROOT,paths['apache_source'],apache)
     for path in (BUILD / "generated", BUILD / "imports", BUILD / "objects",
                  RUNTIME / "bin", RUNTIME / "apache/bin", RUNTIME / "apache/modules",
                  RUNTIME / "apache/logs", ARTIFACTS):
@@ -160,6 +163,7 @@ def main():
     for path in includes:
         options += ["-I", path]
     compiler = tools / "clang.exe"
+    utf8_resource=compile_resource(ROOT,BUILD,tools,run)
     objects = []
     for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c"]:
         output = BUILD / "objects" / ("core-" + source.stem + ".o")
@@ -189,9 +193,9 @@ def main():
         protocol_objects.append(output)
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/serve").glob("*.c")),
          *sorted((ROOT / "src/pgvn/monitor").glob("*.c")), BUILD / "generated/pgvn_web.c", *protocol_objects, *core_links, "-lhttpapi", "-lws2_32", "-lpsapi", "-ladvapi32",
-         "-Wl,--no-insert-timestamp", "-o", products[0]])
+         utf8_resource,"-Wl,--no-insert-timestamp", "-o", products[0]])
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
-         "-Wl,--no-insert-timestamp", "-o", products[1]])
+         utf8_resource,"-Wl,--no-insert-timestamp", "-o", products[1]])
     dav_options=[o for o in options if o!='-Werror']
     dav_options[:0]=["-I",dav_source / "include","-I",dav_source / "mod_dav_svn","-I",ROOT / "src/pgvn/dav"]
     dav_options += ["-include",dav_source / "pgvn_dav_namespace.h","-DPGVN_REAL_DAV",
@@ -211,21 +215,21 @@ def main():
     dav_probe = ROOT / "tests/pgvn/dav_state_probe.c"
     if dav_probe.exists():
         run([compiler, *options, "-municode", dav_probe, *core_links, "-Wl,--no-insert-timestamp",
-             "-o", RUNTIME / "bin/dav_state_probe.exe"])
+             utf8_resource,"-o", RUNTIME / "bin/dav_state_probe.exe"])
     registry_probe = ROOT / "tests/pgvn/dav_registry_probe.c"
     if registry_probe.exists():
         run([compiler, *options, "-municode", registry_probe, *core_links, "-Wl,--no-insert-timestamp",
-             "-o", RUNTIME / "bin/dav_registry_probe.exe"])
+             utf8_resource,"-o", RUNTIME / "bin/dav_registry_probe.exe"])
     if probe.exists():
         run([compiler, *options, "-municode", probe, *core_links, "-Wl,--no-insert-timestamp",
-             "-o", RUNTIME / "bin/core_probe.exe"])
+             utf8_resource,"-o", RUNTIME / "bin/core_probe.exe"])
     hook_probe = ROOT / "tests/pgvn/hook_probe.c"
     monitor_probe = ROOT / "tests/pgvn/monitor_probe.c"
     if monitor_probe.exists():
         run([compiler, *options, monitor_probe, ROOT / "src/pgvn/monitor/data.c", BUILD / "generated/pgvn_web.c",
-             *core_links, "-lws2_32", "-lpsapi", "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/monitor_probe.exe"])
+             *core_links,utf8_resource,"-lws2_32", "-lpsapi", "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/monitor_probe.exe"])
     if hook_probe.exists():
-        run([compiler, *options, "-municode", hook_probe, "-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/hook_probe.exe"])
+        run([compiler, *options, "-municode", hook_probe,utf8_resource,"-Wl,--no-insert-timestamp", "-o", RUNTIME / "bin/hook_probe.exe"])
     # Copy runtime dependencies into the isolated output; input installations are read-only.
     for source, target in ((svn_bin, RUNTIME / "bin"), (apache / "bin", RUNTIME / "apache/bin")):
         for item in source.iterdir():
@@ -236,6 +240,15 @@ def main():
     # Core Windows MPM is built into this distribution. Other test modules are copied explicitly.
     for name in APACHE_MODULES:
         shutil.copy2(apache / "modules" / name, RUNTIME / "apache/modules" / name)
+    host=RUNTIME/'apache/bin/pgvnhttpd.exe'
+    compile_host(ROOT,paths['apache_source'],BUILD,tools,options,libraries,utf8_resource,host,run)
+    host_runtime=json.loads(run([host,'--pgvn-runtime']))
+    if host_runtime!={'product':'PgVNHTTPD','apache_base':'2.4.68','process_code_page':65001}:
+        raise RuntimeError('Unexpected source-built HTTP host runtime')
+    host_metadata.update(product=host.relative_to(ROOT).as_posix(),runtime=host_runtime,
+        process_manifest_sha256=digest(ROOT/'src/pgvn/windows/utf8.manifest'),
+        sdk_host_sha256=digest(apache/'bin/httpd.exe'),sdk_core_sha256=digest(apache/'bin/libhttpd.dll'))
+    products.append(host)
     legacy.RUNTIME.mkdir(parents=True, exist_ok=True)
     for item in (RUNTIME / "bin").glob("*"):
         if item.suffix.lower() in (".dll", ".exe") and not item.name.startswith(("pgvn", "core_probe")):
@@ -279,6 +292,7 @@ def main():
                      "apr": inventory(apr), "apu": inventory(apu), "apache_include": inventory(apache / "include")},
         "sdk_binaries": {str(d): digest(d) for d in dlls + [pg / "lib/libpq.lib", pg / "bin/libpq.dll"]},
         "products": binary_evidence,
+        "apache_host":host_metadata,
         "git_base_commit": run(["git", "rev-parse", "HEAD"]).strip(),
         "git_worktree_dirty": bool(run(["git", "status", "--porcelain"]).strip()),
         "runtime_dependencies": {"bin/" + k: v for k, v in inventory(RUNTIME / "bin").items()},

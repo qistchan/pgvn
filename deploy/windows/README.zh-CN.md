@@ -4,7 +4,7 @@
 
 先查看 `package-manifest.json` 的 `validation_status`。`development-snapshot` 表示本机验证中的部署快照；M6 完整回归和代表性性能尚未全部验收。干净 Windows 安装、整机重启、跨主机故障切换及 Polarion 应用演练另行记录，不能从本包存在推导这些项目已通过。
 
-当前通过的本机安装配置使用英文安装路径（允许空格）及英文登录账号。扩展检查已发现中文安装目录的 DAV 数据库连接失败、中文账号的 `svnmucc` 提交断连，均保留失败记录；后者已在未修改的 svnserve + FSFS 上复现（`m6-username-control-fdc46bd10f35`），该客户端/服务组合暂使用英文账号。中文安装目录问题仍待定位；按本文的英文路径和 `alice` 示例部署。中文网页与已验证的仓库内中文路径是不同的验收项。
+本轮已通过带空格、中文、emoji、组合字符的安装目录，以及中文账号配合标准 `svn checkout/add/commit` 的本机双协议和备份恢复检查。Apache 入口改为自编译的 `apache/bin/pgvnhttpd.exe`；PgVN 自有进程和包内 PostgreSQL 客户端使用进程级 UTF-8 清单，无需改变机器的系统区域设置。目标系统需支持 Windows 10 1903 起的进程 UTF-8 机制，安装前运行下述包烟测。固定 SDK 的 `svnmucc` 中文账号提交断连仍是已知差异，已在原版 svnserve + FSFS 上复现；使用该客户端时采用英文账号。详细来源和实测范围见 [UTF-8 记录](../../docs/pgvn/Windows-UTF8.zh-CN.md)。
 
 ## 1. 校验与解压
 
@@ -20,7 +20,7 @@ $root = 'C:\Deploy\PgVN-M5-windows-x64-实际包ID'
 & "$root\deploy\windows\Test-PgVNPackage.ps1"
 ```
 
-脚本逐文件核对摘要、检查 x64 PE，并在 PATH 仅含 Windows System32 的条件下启动主要程序。摘要用于检查完整性，应通过可信渠道取得包和摘要。首次从互联网下载的 ZIP 如受系统阻止，先复核来源，再按组织的脚本执行策略处理文件；不必修改机器的全局执行策略。
+脚本逐文件核对摘要、检查 x64 PE，并在 PATH 仅含 Windows System32 的条件下启动主要程序，同时要求 `pgvnserve` 和 `pgvnhttpd --pgvn-runtime` 实测报告 `process_code_page=65001`。摘要用于检查完整性，应通过可信渠道取得包和摘要。首次从互联网下载的 ZIP 如受系统阻止，先复核来源，再按组织的脚本执行策略处理文件；不必修改机器的全局执行策略。
 
 ## 2. 准备独立 PostgreSQL 数据库
 
