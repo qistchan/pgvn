@@ -4,6 +4,8 @@
 
 当前已完成 M0–M5：无目录公共核心、原生管理工具、svn 协议、HTTP/HTTPS DAV 与配套授权模块，以及内置中文只读监控和 Apache 工作进程汇总。使用说明见 [M2 管理指南](docs/pgvn/M2-admin.zh-CN.md)、[M3 服务指南](docs/pgvn/M3-serve.zh-CN.md)、[M4 监控指南](docs/pgvn/M4-monitor.zh-CN.md) 和 [M5 DAV 指南](docs/pgvn/M5-DAV.zh-CN.md)。当前控制 schema 为 6，旧版程序不能直接用于回退。完整性能/故障验证与部署包按 [PgVN 计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的 M6–M7 推进；全新机器、重启和 Polarion 应用验收保留为待验收项。当前尚不能据此替换 Polarion 生产后端，实际范围以 [进展与验证](docs/pgvn/progress.zh-CN.md) 为准。
 
+监控页面已更新明暗主题、集中健康摘要、趋势图表和移动布局；实测范围、截图及高对比度待验收项见 [监控改版记录](docs/pgvn/M4-monitor.zh-CN.md#监控页面改版)。
+
 ## Windows 开发构建
 
 准备固定 SVN 1.14.5、APR 1.7.6、APR-util 1.6.3 源码/头文件、匹配的 Windows x64 DLL、Apache 2.4.68 SDK、PostgreSQL 18.6 SDK 和 LLVM-MinGW。源码/SDK 可放在任意只读目录，不修改原安装。构建需要 Python 3，运行时无需 Python 或 Node.js。

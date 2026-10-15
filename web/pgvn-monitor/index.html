@@ -3,38 +3,117 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
   <title>PgVN · 服务监控</title>
   <link rel="stylesheet" href="/monitor/monitor.css">
   <script src="/monitor/monitor.js" defer></script>
 </head>
 <body>
+  <!-- Phosphor Icons Regular, https://github.com/phosphor-icons/core
+Pinned upstream commit: 2b75f3ad12b420c9504ef05df8d2564a28f8500e
+MIT License
+
+Copyright (c) 2023 Phosphor Icons
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" hidden><defs>
+<symbol id="i-squares-four" viewBox="0 0 256 256"><path d="M104,40H56A16,16,0,0,0,40,56v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,104,40Zm0,64H56V56h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,64H152V56h48v48Zm-96,32H56a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,104,136Zm0,64H56V152h48v48Zm96-64H152a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V152A16,16,0,0,0,200,136Zm0,64H152V152h48v48Z" /></symbol>
+<symbol id="i-hard-drives" viewBox="0 0 256 256"><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm0,64H48V152H208v48Zm0-160H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,64H48V56H208v48ZM192,80a12,12,0,1,1-12-12A12,12,0,0,1,192,80Zm0,96a12,12,0,1,1-12-12A12,12,0,0,1,192,176Z" /></symbol>
+<symbol id="i-git-branch" viewBox="0 0 256 256"><path d="M232,64a32,32,0,1,0-40,31v17a8,8,0,0,1-8,8H96a23.84,23.84,0,0,0-8,1.38V95a32,32,0,1,0-16,0v66a32,32,0,1,0,16,0V144a8,8,0,0,1,8-8h88a24,24,0,0,0,24-24V95A32.06,32.06,0,0,0,232,64ZM64,64A16,16,0,1,1,80,80,16,16,0,0,1,64,64ZM96,192a16,16,0,1,1-16-16A16,16,0,0,1,96,192ZM200,80a16,16,0,1,1,16-16A16,16,0,0,1,200,80Z" /></symbol>
+<symbol id="i-database" viewBox="0 0 256 256"><path d="M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64ZM69.61,53.08C85.07,44.65,105.81,40,128,40s42.93,4.65,58.39,13.08C200.12,60.57,208,70.38,208,80s-7.88,19.43-21.61,26.92C170.93,115.35,150.19,120,128,120s-42.93-4.65-58.39-13.08C55.88,99.43,48,89.62,48,80S55.88,60.57,69.61,53.08ZM186.39,202.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z" /></symbol>
+<symbol id="i-pulse" viewBox="0 0 256 256"><path d="M240,128a8,8,0,0,1-8,8H204.94l-37.78,75.58A8,8,0,0,1,160,216h-.4a8,8,0,0,1-7.08-5.14L95.35,60.76,63.28,131.31A8,8,0,0,1,56,136H24a8,8,0,0,1,0-16H50.85L88.72,36.69a8,8,0,0,1,14.76.46l57.51,151,31.85-63.71A8,8,0,0,1,200,120h32A8,8,0,0,1,240,128Z" /></symbol>
+<symbol id="i-arrow-clockwise" viewBox="0 0 256 256"><path d="M240,56v48a8,8,0,0,1-8,8H184a8,8,0,0,1,0-16H211.4L184.81,71.64l-.25-.24a80,80,0,1,0-1.67,114.78,8,8,0,0,1,11,11.63A95.44,95.44,0,0,1,128,224h-1.32A96,96,0,1,1,195.75,60L224,85.8V56a8,8,0,1,1,16,0Z" /></symbol>
+<symbol id="i-pause" viewBox="0 0 256 256"><path d="M200,32H160a16,16,0,0,0-16,16V208a16,16,0,0,0,16,16h40a16,16,0,0,0,16-16V48A16,16,0,0,0,200,32Zm0,176H160V48h40ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Zm0,176H56V48H96Z" /></symbol>
+<symbol id="i-play" viewBox="0 0 256 256"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27ZM80,215.94V40l143.83,88Z" /></symbol>
+<symbol id="i-sign-out" viewBox="0 0 256 256"><path d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z" /></symbol>
+<symbol id="i-sun" viewBox="0 0 256 256"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z" /></symbol>
+<symbol id="i-moon" viewBox="0 0 256 256"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z" /></symbol>
+<symbol id="i-magnifying-glass" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" /></symbol>
+<symbol id="i-check-circle" viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" /></symbol>
+<symbol id="i-warning" viewBox="0 0 256 256"><path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z" /></symbol>
+<symbol id="i-x-circle" viewBox="0 0 256 256"><path d="M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" /></symbol>
+<symbol id="i-question" viewBox="0 0 256 256"><path d="M140,180a12,12,0,1,1-12-12A12,12,0,0,1,140,180ZM128,72c-22.06,0-40,16.15-40,36v4a8,8,0,0,0,16,0v-4c0-11,10.77-20,24-20s24,9,24,20-10.77,20-24,20a8,8,0,0,0-8,8v8a8,8,0,0,0,16,0v-.72c18.24-3.35,32-17.9,32-35.28C168,88.15,150.06,72,128,72Zm104,56A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" /></symbol>
+<symbol id="i-wifi-slash" viewBox="0 0 256 256"><path d="M213.92,210.62a8,8,0,1,1-11.84,10.76l-52-57.15a60,60,0,0,0-57.41,7.24,8,8,0,1,1-9.42-12.93A75.43,75.43,0,0,1,128,144c1.28,0,2.55,0,3.82.1L104.9,114.49A108,108,0,0,0,61,135.31,8,8,0,0,1,49.73,134,8,8,0,0,1,51,122.77a124.27,124.27,0,0,1,41.71-21.66L69.37,75.4a155.43,155.43,0,0,0-40.29,24A8,8,0,0,1,18.92,87,171.87,171.87,0,0,1,58,62.86L42.08,45.38A8,8,0,1,1,53.92,34.62ZM128,192a12,12,0,1,0,12,12A12,12,0,0,0,128,192ZM237.08,87A172.3,172.3,0,0,0,106,49.4a8,8,0,1,0,2,15.87A158.33,158.33,0,0,1,128,64a156.25,156.25,0,0,1,98.92,35.37A8,8,0,0,0,237.08,87ZM195,135.31a8,8,0,0,0,11.24-1.3,8,8,0,0,0-1.3-11.24,124.25,124.25,0,0,0-51.73-24.2A8,8,0,1,0,150,114.24,108.12,108.12,0,0,1,195,135.31Z" /></symbol>
+<symbol id="i-stop-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM160,88H96a8,8,0,0,0-8,8v64a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V96A8,8,0,0,0,160,88Zm-8,64H104V104h48Z" /></symbol>
+<symbol id="i-clock" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z" /></symbol>
+<symbol id="i-shield-check" viewBox="0 0 256 256"><path d="M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z" /></symbol>
+<symbol id="i-pencil-simple-line" viewBox="0 0 256 256"><path d="M227.32,73.37,182.63,28.69a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H216a8,8,0,0,0,0-16H115.32l112-112A16,16,0,0,0,227.32,73.37ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.69,147.32,64l24-24L216,84.69Z" /></symbol>
+<symbol id="i-lock-simple" viewBox="0 0 256 256"><path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Z" /></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z" /></symbol>
+<symbol id="i-caret-down" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z" /></symbol>
+<symbol id="i-minus-circle" viewBox="0 0 256 256"><path d="M176,128a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,128Zm56,0A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z" /></symbol>
+<symbol id="i-info" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z" /></symbol>
+<symbol id="i-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z" /></symbol>
+<symbol id="i-arrow-down-right" viewBox="0 0 256 256"><path d="M200,88V192a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h84.69L58.34,69.66A8,8,0,0,1,69.66,58.34L184,172.69V88a8,8,0,0,1,16,0Z" /></symbol>
+</defs></svg>
   <a class="skip" href="#main">跳到主要内容</a>
   <aside class="sidebar">
-    <a class="brand" href="#overview"><span class="brand-mark" aria-hidden="true">P</span><span>PgVN<small>仓库服务监控</small></span></a>
+    <a class="brand" href="#overview" aria-label="PgVN 仓库服务监控">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect class="brand-back" x="3" y="3" width="25" height="25" rx="6"/><rect class="brand-front" x="13" y="13" width="24" height="24" rx="6"/><path d="M20 20h10v10H20z"/></svg>
+      <span class="brand-copy">PgVN<small>仓库服务监控</small></span>
+    </a>
     <p class="nav-label">运行状态</p>
     <nav aria-label="监控导航">
-      <a href="#overview" data-view="overview"><span aria-hidden="true">◈</span>概览</a>
-      <a href="#nodes" data-view="nodes"><span aria-hidden="true">◇</span>节点</a>
-      <a href="#repositories" data-view="repositories"><span aria-hidden="true">▤</span>仓库</a>
-      <a href="#database" data-view="database"><span aria-hidden="true">▥</span>数据库</a>
-      <a href="#requests" data-view="requests"><span aria-hidden="true">≋</span>请求与错误</a>
+      <a href="#overview" data-view="overview" aria-label="概览" data-tip="概览"><svg class="icon" aria-hidden="true"><use href="#i-squares-four"/></svg><span>概览</span></a>
+      <a href="#nodes" data-view="nodes" aria-label="节点" data-tip="节点"><svg class="icon" aria-hidden="true"><use href="#i-hard-drives"/></svg><span>节点</span></a>
+      <a href="#repositories" data-view="repositories" aria-label="仓库" data-tip="仓库"><svg class="icon" aria-hidden="true"><use href="#i-git-branch"/></svg><span>仓库</span></a>
+      <a href="#database" data-view="database" aria-label="数据库" data-tip="数据库"><svg class="icon" aria-hidden="true"><use href="#i-database"/></svg><span>数据库</span></a>
+      <a href="#requests" data-view="requests" aria-label="请求与错误" data-tip="请求与错误"><svg class="icon" aria-hidden="true"><use href="#i-pulse"/></svg><span>请求与错误</span></a>
     </nav>
-    <div class="sidebar-foot"><span class="dot" aria-hidden="true"></span>只读控制台<p>运行状态 · 采样趋势 · 健康检查</p></div>
+    <div class="sidebar-foot"><svg class="icon" aria-hidden="true"><use href="#i-shield-check"/></svg><span>只读控制台</span><p>令牌仅在本标签页内存中</p><span class="session-indicator"><span class="dot" aria-hidden="true"></span><span id="session-label">未连接</span></span></div>
   </aside>
   <div class="workspace">
-    <header class="topbar"><span class="breadcrumb">服务监控 <span aria-hidden="true">/</span> <strong id="breadcrumb">概览</strong></span>
-      <div class="actions"><label class="sr-only" for="refresh-interval">刷新周期</label><select id="refresh-interval" aria-label="刷新周期"><option value="5">每 5 秒</option><option value="10">每 10 秒</option><option value="30">每 30 秒</option><option value="60">每 60 秒</option></select><button id="pause" type="button" aria-pressed="false">暂停刷新</button><button id="refresh" type="button">刷新</button><button id="logout" type="button" hidden>断开</button></div>
+    <header class="topbar">
+      <span class="breadcrumb">服务监控 <span aria-hidden="true">/</span> <strong id="breadcrumb">概览</strong></span>
+      <div class="actions">
+        <span id="freshness" class="freshness neutral"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><span>等待连接</span></span>
+        <label class="sr-only" for="refresh-interval">刷新周期</label>
+        <select id="refresh-interval" aria-label="刷新周期"><option value="5">每 5 秒</option><option value="10">每 10 秒</option><option value="30">每 30 秒</option><option value="60">每 60 秒</option></select>
+        <button id="pause" class="icon-button" type="button" aria-label="暂停刷新" aria-pressed="false" data-tip="暂停刷新"><svg class="icon" aria-hidden="true"><use href="#i-pause"/></svg></button>
+        <button id="refresh" class="icon-button" type="button" aria-label="刷新" data-tip="刷新"><svg class="icon" aria-hidden="true"><use href="#i-arrow-clockwise"/></svg></button>
+        <button id="theme" class="icon-button" type="button" aria-label="切换为暗色主题" aria-pressed="false" data-tip="切换为暗色主题"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg></button>
+        <button id="logout" class="icon-button" type="button" aria-label="断开" data-tip="断开" hidden><svg class="icon" aria-hidden="true"><use href="#i-sign-out"/></svg></button>
+      </div>
+      <div class="refresh-progress" aria-hidden="true"></div>
     </header>
     <main id="main" tabindex="-1">
-      <div class="page-heading"><div><p class="eyebrow">PGVN / OPERATIONS</p><h1 id="page-title">服务概览</h1><p id="subtitle">连接监控，查看节点与仓库的运行状态。</p></div><span class="badge neutral" id="readiness">等待连接</span></div>
+      <div class="page-heading"><p class="eyebrow">PGVN / OPERATIONS</p><h1 id="page-title">服务概览</h1><p id="subtitle">连接监控，查看节点与仓库的运行状态。</p></div>
+      <div class="health-wrap">
+        <ul id="health" class="health is-disconnected" aria-label="服务健康摘要" data-tone="neutral">
+          <li><span class="health-caption">服务入口</span><span class="health-value neutral" id="readiness">等待连接</span></li>
+          <li><span class="health-caption">数据库采样</span><span class="health-value neutral" id="health-sample">未知</span></li>
+          <li><span class="health-caption">写主</span><span class="health-value neutral" id="health-writer">未知</span></li>
+          <li><span class="health-caption">已观测节点</span><span class="health-value neutral" id="health-nodes">未知</span></li>
+          <li><span class="health-caption">数据新鲜度</span><span class="health-value neutral" id="health-age">尚无样本</span></li>
+        </ul>
+        <button id="health-retry" type="button" class="retry-button" hidden>读取失败 · 重试</button>
+      </div>
       <div class="connection-status" role="status" aria-live="polite" aria-atomic="true" id="connection-status">正在检查本机服务。</div>
       <section id="login" class="panel login-panel" aria-labelledby="login-title">
-        <div class="login-copy"><span class="section-label">安全访问</span><h2 id="login-title">连接到监控</h2><p>使用管理员签发的只读令牌查看运行详情。</p><p class="muted">令牌仅保留在当前标签页，刷新页面后需要重新连接。</p></div>
+        <div class="login-copy"><svg class="login-icon icon" aria-hidden="true"><use href="#i-shield-check"/></svg><span class="section-label">安全访问</span><h2 id="login-title">连接到监控</h2><p>使用管理员签发的只读令牌查看运行详情。</p></div>
         <form id="token-form"><label for="token">监控令牌</label><input id="token" name="token" type="password" autocomplete="off" spellcheck="false" placeholder="pgvn_…" required aria-describedby="token-help token-error"><p id="token-help" class="field-hint">粘贴令牌即可连接，无需数据库账号。</p><p id="token-error" class="error-text" hidden></p><button class="primary" type="submit">连接监控</button></form>
+        <div class="login-trust"><span id="local-health">正在检查本机监控</span><span><svg class="icon" aria-hidden="true"><use href="#i-lock-simple"/></svg>令牌仅保留在本标签页，重载后需重新连接</span></div>
       </section>
-      <form id="search-form" class="search-bar" hidden><label for="repository-search">搜索仓库</label><input id="repository-search" maxlength="64" placeholder="名称、ID 或 UUID"><button type="submit">搜索</button><button type="button" id="clear-search">清空</button></form>
+      <form id="search-form" class="search-bar" hidden><label class="sr-only" for="repository-search">搜索仓库</label><svg class="icon" aria-hidden="true"><use href="#i-magnifying-glass"/></svg><input id="repository-search" maxlength="64" placeholder="名称、ID 或 UUID"><button class="primary" type="submit">搜索</button><button type="button" id="clear-search">清空</button></form>
       <div id="content" hidden></div>
-      <footer class="page-footer"><span>PgVN · 原生仓库服务</span><span id="sample-meta">尚未取得状态样本</span></footer>
+      <footer class="page-footer"><span>PgVN · 原生仓库服务</span><span>只读 · 无持久令牌</span><span class="sr-only" id="sample-meta">尚未取得状态样本</span></footer>
     </main>
   </div>
 </body>
