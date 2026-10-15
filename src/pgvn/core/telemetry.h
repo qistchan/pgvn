@@ -44,6 +44,7 @@ void pgvn_telemetry_event(const char *source,const char *code,apr_status_t error
 void pgvn_events_snapshot(pgvn_event_snapshot *result);
 void pgvn_telemetry_enable(int enabled);
 void pgvn_command_repository(const char *repository_id);
+void pgvn_telemetry_scope(const char *request_id);
 void pgvn_telemetry_query_start(void);
 void pgvn_telemetry_connection(int change,int rejected,int failed);
 void pgvn_telemetry_waiter(int change);

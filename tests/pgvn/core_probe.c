@@ -177,7 +177,8 @@ static svn_error_t *run(int argc,const char **argv,apr_pool_t *pool)
     if(!strcmp(op,"policy") && argc==6) {
         svn_boolean_t allowed;
         SVN_ERR(pgvn_policy_check(&allowed,repository->policy,!strcmp(argv[3],"-") ? NULL : argv[3],argv[4],
-            !strcmp(argv[5],"write") ? svn_authz_write : svn_authz_read,pool));
+            ((!strcmp(argv[5],"write") || !strcmp(argv[5],"write-recursive")) ? svn_authz_write : svn_authz_read)
+                | (strstr(argv[5],"recursive") ? svn_authz_recursive : svn_authz_none),pool));
         puts(allowed ? "allowed" : "denied");
         return SVN_NO_ERROR;
     }

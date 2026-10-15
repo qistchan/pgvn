@@ -184,7 +184,7 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
 
 int pgvn_catalog_version(const char *versions)
 {
-    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5"};
+    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5","1,2,3,4,5,6"};
     _Static_assert(sizeof(known)/sizeof(*known)==PGVN_CATALOG_VERSION,"Update the supported catalog version list");
     for(int i=0;versions && i<PGVN_CATALOG_VERSION;++i) if(!strcmp(versions,known[i])) return i+1;
     return 0;
@@ -203,6 +203,12 @@ svn_error_t *pgvn_database_validate(pgvn_context *context)
     PQclear(result);
     if(!compatible) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN requires pgfs schema 1-4, supported pgvn schema and a writable database");
     context->catalog_version=catalog;
+    if(catalog>=6) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regclass('pgvn.dav_transactions') IS NOT NULL "
+            "AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL));
+        int present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN catalog schema 6 is missing DAV state tables");
+    }
     context->schema_checked_at=apr_time_now();
     return SVN_NO_ERROR;
 }

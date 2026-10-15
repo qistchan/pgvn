@@ -1,6 +1,6 @@
 # PgVN 开发推进计划
 
-日期：2026 年 10 月 15 日。状态：实施中，M0、M1、M2、M3、M4 已完成，M5 待推进。
+日期：2026 年 10 月 15 日。状态：实施中，M0、M1、M2、M3、M4 已完成，M5 进行中。
 
 PgVN 在现有 PgFS 存储核心上构建专用 SVN 服务端，交付 `pgvnserve.exe`、`mod_dav_pgvn.so` 和 `pgvnadmin.exe`。`pgvnserve` 内置只读监控网页，随服务启动。仓库按数据库 ID 打开，SVN 服务节点无需创建、复制或备份本地仓库目录。
 
@@ -305,10 +305,10 @@ M0–M4 的首个可用版本约 29–45 人日；完整本轮约 55–84 人日
 
 ### M5 任务
 
-- [ ] PGVN-501 构建独立 DAV provider 和数据库仓库入口，复用 SVN HTTP 协议。
-- [ ] PGVN-502 迁移 activity 与虚拟事务映射，测试创建、读写、提交、取消和清理竞态。
-- [ ] PGVN-503 构建 mod_authz_pgvn，验证路径、复制源、历史、mergeinfo 和继承属性授权。
-- [ ] PGVN-504 完成 HTTP/HTTPS、工作进程心跳和指标汇总，验证每个请求切换节点的提交序列。
+- [x] PGVN-501 构建独立 DAV provider 和数据库仓库入口，复用 SVN HTTP 协议。
+- [x] PGVN-502 迁移 activity 与虚拟事务映射，测试创建、读写、提交、取消和清理竞态。
+- [x] PGVN-503 构建 mod_authz_pgvn，验证路径、复制源、历史、mergeinfo 和继承属性授权。
+- [x] PGVN-504 完成 HTTP/HTTPS、工作进程心跳和指标汇总，验证每个请求切换节点的提交序列。
 
 ### M6 与 M7 任务
 

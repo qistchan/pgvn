@@ -10,6 +10,7 @@ import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.io.*;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 
 /** Real SVNKit protocol client. Password travels on stdin, never argv/logs. */
 public final class SvnKitProbe {
@@ -31,6 +32,7 @@ public final class SvnKitProbe {
 
     public static void main(String[] args) throws Exception {
         SVNRepositoryFactoryImpl.setup();
+        DAVRepositoryFactory.setup();
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
         char[] password = input.readLine().toCharArray();
         SVNRepository a = open(args[1], args[3], password, args[4]);
@@ -56,7 +58,7 @@ public final class SvnKitProbe {
                 if (!Arrays.equals(content.toByteArray(), Files.readAllBytes(Path.of(args[5])))) throw new AssertionError("Binary mismatch");
                 ISVNEditor editor = a.getCommitEditor("SVNKit commit", null);
                 editor.openRoot(before);
-                editor.addDir("java-svnkit", null, -1);
+                editor.addDir(args.length > 6 ? args[6] : "java-svnkit", null, -1);
                 editor.closeDir();
                 editor.closeDir();
                 long revision = editor.closeEdit().getNewRevision();

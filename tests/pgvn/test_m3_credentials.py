@@ -59,7 +59,7 @@ def setup_database():
     fixture.sql(f"CREATE DATABASE {DATABASE} OWNER {OWNER} ENCODING 'UTF8' TEMPLATE template0", database="postgres")
     admin("db", "init", role=OWNER)
     admin("db", "grant", "--admin-role", "pgvn_admin", "--service-role", "pgvn_service", "--monitor-role", "pgvn_monitor", role=OWNER)
-    assert admin("db", "check")["schema"]["pgvn"] == 5
+    assert admin("db", "check")["schema"]["pgvn"] == 6
 
 
 def checks():

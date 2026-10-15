@@ -2,6 +2,7 @@
 #include "internal.h"
 #include "telemetry.h"
 #include <apr_strings.h>
+#include <apr_uuid.h>
 #include "repos.h"
 #include "pgfs_native.h"
 
@@ -27,9 +28,14 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
     const char *id,svn_boolean_t administrative,apr_pool_t *pool)
 {
     *output=NULL;
+    apr_uuid_t parsed; char canonical_id[APR_UUID_FORMATTED_LENGTH+1];
+    if(!id || apr_uuid_parse(&parsed,id)!=APR_SUCCESS)
+        return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgVN repository ID");
+    apr_uuid_format(canonical_id,&parsed);
     pgvn_repository *repository=apr_pcalloc(pool,sizeof(*repository));
     repository->context=context;
-    repository->repository_id=apr_pstrdup(pool,id);
+    repository->repository_id=apr_pstrdup(pool,canonical_id);
+    id=repository->repository_id;
     repository->administrative=administrative;
     if(administrative) SVN_ERR(pgvn_require_admin(context));
     SVN_ERR(pgvn_policy_acquire_internal(&repository->policy,context,id,0,administrative,pool));
@@ -66,7 +72,7 @@ static svn_error_t *repos_open(pgvn_repository **output,pgvn_context *context,
     SVN_ERR(bind_repository(&repository,context,id,administrative,pool));
     svn_repos_t *repos=apr_pcalloc(pool,sizeof(*repos));
     repos->fs=repository->fs;
-    repos->path=apr_pstrcat(pool,"pgvn:",id,NULL);
+    repos->path=apr_pstrcat(pool,"pgvn:",repository->repository_id,NULL);
     repos->format=SVN_REPOS__FORMAT_NUMBER;
     repos->fs_type="pg";
     repos->repository_capabilities=apr_hash_make(pool);

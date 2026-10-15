@@ -8,9 +8,9 @@
 #include "svn_repos.h"
 
 #define PGVN_VERSION "0.1.0-dev"
-#define PGVN_MILESTONE "M4"
+#define PGVN_MILESTONE "M5"
 #define PGVN_SVN_BASE "1.14.5"
-#define PGVN_CATALOG_VERSION 5
+#define PGVN_CATALOG_VERSION 6
 #define PGVN_MONITOR_QUEUE_LIMIT 64
 #define PGVN_MONITOR_HEADER_LIMIT 32768
 #define PGVN_MONITOR_WORKERS 2

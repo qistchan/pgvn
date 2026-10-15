@@ -1,6 +1,6 @@
 # PgVN 实施进展
 
-目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0、M1、M2、M3、M4，M5 Apache DAV 待推进；尚不能替代 Polarion 的 SVN 后端。
+目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0–M5，继续进行 M6 本机验证和 M7 部署包；尚不能替代 Polarion 的生产 SVN 后端。
 
 ## M0：完成
 
@@ -58,3 +58,19 @@ M3 验收时控制 schema 为 4。服务配置、账号/密钥、hooks 和部署
 短时 CLI 负载测量保留全部关闭/开启/关闭轮次，尚不能宣称 M6 的吞吐/P95 预算达标。Apache DAV、多节点 HTTP 状态与工作进程遥测为 M5；完整性能/故障域验证为 M6；干净机器安装包和 Polarion 隔离应用验收为 M7。当前仍不具备生产替换 Polarion 后端的结论。
 
 后续里程碑以 [推进计划](../plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) 的出口为准。
+
+## M5：完成
+
+交付真实 DAV provider、配套数据库授权和控制 schema 6。仓库按 ID 打开，activity/virtual 状态保存在 PostgreSQL；创建、取消、创建者租约、外部 hook 可见性、撤权和失去创建者后的安全恢复均有组件及协议验证。真实 M4 schema 5→6 升级保留身份、完整测试历史、二进制与旧摘要，旧程序拒绝新结构。
+
+固定 Release 门禁 `m5-21229c13cbc1` 的 10 组检查全部通过，耗时 552.593 秒；其中 M0–M4 完整回归为 `m4-ecb6a432ecae`。同一构建前后核对源码、四个主产物、运行库和 Apache 依赖摘要。真实浏览器完成原监控 14 项及 DAV 6 项检查，包括方法计数、错误请求 ID、刷新保留展开/焦点、失联/新实例、窄屏、数据库未知与令牌撤销。临时网页进程、服务和 URL ACL 已清理。
+
+HTTP v1/v2、原版 SVN 中文路径及作者、二进制/属性/复制历史/锁、SVNKit 1.10.1 HTTP 与验证证书的 HTTPS 读写通过。两个独立 Apache 逐请求轮转，创建者进程退出后由另一个继续提交，重复 MERGE 只产生一个修订。路径授权负面检查覆盖递归根目录复制、源/目标策略、历史、继承属性、mergeinfo、keep-alive 和在途撤权。数据库故障返回 503，恢复后能读写。
+
+Apache 实际工作进程独立上报有界心跳、HTTP 方法、SQL、修订/回执和近期错误；计数与访问日志对应。遥测写权限被撤销期间仍能提交；工作进程失联、重启以及真实 LocalService 正常停止状态通过。修复数据库流式策略的文件缓存假设和根目录递归权限判断，并对共享核心重跑完整回归。
+
+SVNKit 中文仓库 URL 修改 revision 属性的重复编码失败已在未修改的标准 mod_dav_svn + FSFS 上复现；该版本使用 ASCII 路由，服务器不二次解码。跨仓库 COPY 不支持。本机双进程不代表跨主机 HA，DAV readiness 也不代表完整工作线程存活探测。配置、恢复命令及限制见 [M5 DAV 指南](M5-DAV.zh-CN.md)，摘要见 [M5 证据](evidence/m5.json)；早期组件结果保留在 [开发记录](M5-development.zh-CN.md)。
+
+## 后续验证与部署
+
+继续完成固定真实历史、协议回归、故障账本、备份恢复和代表性性能测量，生成可校验的 Windows 部署包与中文新机指南。用户目前没有独立测试机，已明确先完成本机验证和部署包；全新 Windows 安装、整机重启、跨故障域和隔离 Polarion 应用演练仍待验收，M6/M7 不据此提前完成。

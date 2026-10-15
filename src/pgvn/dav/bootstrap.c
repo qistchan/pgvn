@@ -5,8 +5,8 @@
 #include "http_request.h"
 #include "pgvn.h"
 
-/* M0 validates real Apache loading/linkage, not a working DAV provider.
- * Do not register a partial provider or pretend requests were authorized. */
+/* Shared ABI/build diagnostic handlers. Repository requests and authorization
+ * are served by the native providers in the M5 build. */
 static int bootstrap_handler(request_rec *request)
 {
 #ifdef PGVN_AUTHZ_BOOTSTRAP
@@ -22,12 +22,13 @@ static int bootstrap_handler(request_rec *request)
     return OK;
 }
 
-static void register_hooks(apr_pool_t *pool)
+void pgvn_bootstrap_register_hooks(apr_pool_t *pool)
 {
     (void)pool;
     ap_hook_handler(bootstrap_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
+#ifndef PGVN_REAL_DAV
 #ifdef PGVN_AUTHZ_BOOTSTRAP
 #define PGVN_MODULE authz_pgvn_module
 #else
@@ -36,5 +37,6 @@ static void register_hooks(apr_pool_t *pool)
 
 module AP_MODULE_DECLARE_DATA PGVN_MODULE = {
     STANDARD20_MODULE_STUFF,
-    NULL, NULL, NULL, NULL, NULL, register_hooks, 0
+    NULL, NULL, NULL, NULL, NULL, pgvn_bootstrap_register_hooks, 0
 };
+#endif

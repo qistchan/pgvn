@@ -3,7 +3,8 @@
     "repos.h": "63baf8d544df2ecbf9764f80d5bc72febbee5ce3afa52762da7e7fc9523ca57e",
     "repos.c": "d5b563ff1363880fcc9a795a2fa8a3fe03633f6424afa51f0ed7a6dfe70dd8a4",
     "hooks.c": "96392d3013a7f6bb467f00eecac900e54a3d6c9e2280672eb6dd0f9b97ac3495",
-    "dump.c": "10e31e13700f3a74a40e6eedda89dcf479295daaf8bdc22a7cde90eb401cde6b"
+    "dump.c": "10e31e13700f3a74a40e6eedda89dcf479295daaf8bdc22a7cde90eb401cde6b",
+    "authz.c": "77d8cab538643c77ef7ead45a5e9740810425b86e93b4e3053e9bce9f1c92ee7"
   },
   "replacements": [
     {
@@ -30,16 +31,49 @@
       "file": "dump.c",
       "old": "  err = svn_fs_verify(svn_fs_path(fs, pool), svn_fs_config(fs, pool),\n                      start_rev, end_rev,\n                      verify_notify, verify_notify_baton,\n                      cancel_func, cancel_baton, pool);",
       "new": "  if (repos->pgvn_baton)\n    err = pgfs_native_verify(fs, start_rev, end_rev,\n                              verify_notify, verify_notify_baton,\n                              cancel_func, cancel_baton, pool);\n  else\n    err = svn_fs_verify(svn_fs_path(fs, pool), svn_fs_config(fs, pool),\n                        start_rev, end_rev,\n                        verify_notify, verify_notify_baton,\n                        cancel_func, cancel_baton, pool);"
+    },
+    {
+      "file": "authz.c",
+      "old": "  if (filtered_pool)\n",
+      "new": "  /* Stream-parsed database policies have no file-cache identity. */\n  if (filtered_pool && authz->authz_id)\n"
+    },
+    {
+      "file": "authz.c",
+      "old": "  while (path[0] == '/')\n    ++path;     /* Don't update PATH_LEN as we won't need it anymore. */\n",
+      "new": "  while (path[0] == '/')\n    ++path;     /* Don't update PATH_LEN as we won't need it anymore. */\n\n  /* The normalized root has no next segment. Preserve the root subtree\n     rights instead of treating the empty string as a missing child. */\n  if (!*path)\n    return recursive\n      ? ((state->rights.min_rights & required) == required)\n      : ((state->rights.access.rights & required) == required);\n"
     }
   ],
   "hook_details": {
-    "start_commit": {"capabilities":"capabilities"},
-    "pre_revprop_change": {"property_name":"name","property_value":"new_value","action":"action"},
-    "post_revprop_change": {"property_name":"name","property_value":"old_value","action":"action"},
-    "pre_lock": {"path":"path","lock_comment":"comment","force":"steal_lock","lock_token_result":"token"},
-    "post_lock": {"paths":"paths"},
-    "pre_unlock": {"path":"path","lock_token":"token","force":"break_lock"},
-    "post_unlock": {"paths":"paths"}
+    "start_commit": {
+      "capabilities": "capabilities"
+    },
+    "pre_revprop_change": {
+      "property_name": "name",
+      "property_value": "new_value",
+      "action": "action"
+    },
+    "post_revprop_change": {
+      "property_name": "name",
+      "property_value": "old_value",
+      "action": "action"
+    },
+    "pre_lock": {
+      "path": "path",
+      "lock_comment": "comment",
+      "force": "steal_lock",
+      "lock_token_result": "token"
+    },
+    "post_lock": {
+      "paths": "paths"
+    },
+    "pre_unlock": {
+      "path": "path",
+      "lock_token": "token",
+      "force": "break_lock"
+    },
+    "post_unlock": {
+      "paths": "paths"
+    }
   },
   "hook_dispatch": {
     "start_commit": [

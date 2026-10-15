@@ -122,6 +122,20 @@
     const status = nodeStatus(node).textContent;
     return status === "状态未知" || status === "心跳失联" || status === "已停止" ? "未知" : number(node.metrics?.[key]);
   }
+  function nodeDetails(node) {
+    const label = `${node.node_id} / ${node.instance_id.slice(0, 8)}`;
+    if (node.component !== "dav") return element("span", "mono", label);
+    const box = element("details", "node-details"), summary = element("summary", "mono", label);
+    box.dataset.chart = `node-${node.instance_id}`; box.append(summary);
+    const status = nodeStatus(node).textContent;
+    if (["状态未知", "心跳失联", "已停止"].includes(status)) { box.append(element("p", "muted", "当前工作进程指标不可用。")); return box; }
+    box.append(details([["HTTP 请求 / 失败", `${nodeValue(node, "requests")} / ${nodeValue(node, "request_errors")}`], ["正在处理请求", nodeValue(node, "requests_active")], ["SQL 调用 / 失败", `${nodeValue(node, "sql_calls")} / ${nodeValue(node, "sql_errors")}`], ["新修订 / 回执确认", `${nodeValue(node, "published_revisions")} / ${nodeValue(node, "receipt_confirmations")}`], ["遥测失败批次", nodeValue(node, "telemetry_failures")]]));
+    const methods = Array.isArray(node.metrics?.methods) ? node.metrics.methods.slice(0, 17).filter(row => row && row.requests > 0) : [];
+    if (methods.length) box.append(table(["HTTP 方法", "完成", "失败"], methods.map(row => [String(row.method || "未知").slice(0, 32), number(row.requests), number(row.errors)])));
+    const errors = Array.isArray(node.metrics?.recent_errors) ? node.metrics.recent_errors.slice(-5).filter(row => row && typeof row === "object") : [];
+    if (errors.length) box.append(table(["近期错误时间", "HTTP 状态", "请求 ID"], errors.map(row => { const at = Number(row.at_unix_microseconds) / 1000; return [Number.isFinite(at) && Math.abs(at) <= 8640000000000000 ? time(at) : "未知", row.status === 0 ? "连接取消" : number(row.status), String(row.request_id || "未知").slice(0, 32)]; })));
+    return box;
+  }
   function render() {
     const o = state.overview, p = o.process, d = o.database, root = $("content");
     const focused = root.contains(document.activeElement) ? document.activeElement : null;
@@ -146,7 +160,7 @@
       body.append(details([["节点", o.node_id], ["版本", p.version], ["启动时间", time(p.started_at)], ["启动实例", o.instance_id, true], ["CPU（整机比例）", p.cpu_percent_of_machine == null ? "未知" : `${number(p.cpu_percent_of_machine)}%`], ["工作集 / 私有提交", p.working_set_bytes == null ? "未知" : `${number(p.working_set_bytes / 1048576)} / ${number(p.private_bytes / 1048576)} MiB`], ["完成命令 / 失败", `${number(p.commands)} / ${number(p.errors)}`], ["协议接收 / 发送", `${number(p.bytes_received / 1048576)} / ${number(p.bytes_sent / 1048576)} MiB`]])); info.append(body); columns.append(chart(), info); root.append(columns);
       const trends = element("div", "columns equal"); trends.append(chart("失败率", "error_percent", "%"), chart("平均命令延迟", "mean_latency_ms", "毫秒")); root.append(trends);
       root.append(paged("已观测节点", ["节点", "入口", "实例", "心跳", "状态"], rows.map(n => [n.node_id, n.component === "svn" ? "SVN" : "DAV", n.instance_id.slice(0, 8), time(n.last_seen_at), nodeStatus(n)]), "尚未观测到节点"));
-    } else if (state.view === "nodes") root.append(paged("节点列表", ["节点 / 实例", "入口", "版本", "连接租约", "最大配置代数", "最后心跳", "状态"], rows.map(n => [element("span", "mono", `${n.node_id} / ${n.instance_id.slice(0, 8)}`), n.component.toUpperCase(), n.version, nodeValue(n, "connections"), nodeValue(n, "configuration_generation"), time(n.last_seen_at), nodeStatus(n)]), "尚未观测到节点"));
+    } else if (state.view === "nodes") root.append(paged("节点列表", ["节点 / 实例", "入口", "版本", "连接租约", "最大配置代数", "最后心跳", "状态"], rows.map(n => [nodeDetails(n), n.component.toUpperCase(), n.version, nodeValue(n, "connections"), nodeValue(n, "configuration_generation"), time(n.last_seen_at), nodeStatus(n)]), "尚未观测到节点"));
     else if (state.view === "repositories") root.append(paged(state.search ? "仓库搜索结果" : "仓库列表", ["名称", "状态", "HEAD / 配置", "最近提交", "事务 / 锁", "UUID"], rows.map(r => [repositoryLink(r), badge(r.enabled ? "启用" : "禁用", r.enabled ? "good" : "neutral"), `r${r.head_rev} / ${r.generation}`, time(r.last_commit_at), `${number(r.active_transactions)} / ${number(r.lock_count)}`, element("span", "mono", r.svn_uuid)]), state.search ? "没有匹配的仓库" : "还没有仓库"));
     else if (state.view === "detail") {
       const r = state.rows.repository, back = element("a", "back-link", "返回仓库列表"); back.href = "#repositories"; back.dataset.focusKey = "back-repositories"; root.append(back);

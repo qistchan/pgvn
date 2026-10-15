@@ -1,0 +1,1114 @@
+{
+  "milestone": "M5",
+  "status": "PASS",
+  "milestone_complete": true,
+  "test_id": "m5-21229c13cbc1",
+  "created_at": "2026-10-15T11:54:42.425186+00:00",
+  "configuration": "Release",
+  "git_base_commit": "b67d04182d8c627e97a54e04d63166327aedd16a",
+  "scope": "Pinned native Windows Subversion 1.14.5 / PostgreSQL / Apache and SVNKit 1.10.1. Local independent processes, HTTP/HTTPS certificate checks, persistent DAV state, authz, worker monitoring. Known SVNKit Unicode revprop limitation reproduced against stock FSFS. Cross-host failure domains/performance are M6; clean-machine/Polarion application acceptance is M7.",
+  "build_manifest_sha256": "0892cf0217159f3bde6c8f50f3b1608c5474554abf1177528a1745fd6b2d9b1c",
+  "compiler": "clang version 23.1.3 (https://github.com/llvm/llvm-project.git 0d261d1ca552c95a8f007e061c787ac7132fbcbc)\nTarget: x86_64-w64-windows-gnu\nThread model: posix\nInstalledDir: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin\nConfiguration file: C:/Project/PgFS/toolchains/llvm-mingw-20261006-ucrt-x86_64/bin/x86_64-w64-windows-gnu.cfg",
+  "compiler_sha256": "ee85bef2c733e24a26c22be3df94bd631cf9528a048fce91241c182a936737fe",
+  "capabilities": {
+    "repository_by_id": true,
+    "svn_protocol": true,
+    "dav_protocol": true,
+    "monitor": "full"
+  },
+  "source_hashes": {
+    "web/pgvn-monitor/index.html": "af7e08e1c3e2f2e696aaf2ce018aeb27a08aad9279c3d510ca91d7b122618c43",
+    "web/pgvn-monitor/monitor.css": "46d4afe36f579da45c4915a48ab115a181f4572eb3ea5ec38bd87d2fb5e5eb61",
+    "web/pgvn-monitor/monitor.js": "2fb6876c0071eb48e4ab9afabdee2b402de91194004aac0e5a1a96ab3e33eb00",
+    "src/libsvn_fs_pg/pgfs.c": "ed2d38a0ea94048763a0a8320f4cc3ea7964b61f91a60a23c26f63210e194114",
+    "src/libsvn_fs_pg/pgfs_admin.inc": "14464d25a56fbfd72f148c6a2d0260bd970c5ac88d7c9b3a522c7afebd840211",
+    "src/libsvn_fs_pg/pgfs_history.inc": "32f36f894cb00dc73b94a20484c8ab7782fc3c746ef79fa681d1662d88407ddd",
+    "src/libsvn_fs_pg/pgfs_hotcopy.inc": "d05fdd8fbb4d86e974473fb7ee8f92f8a9a63bf1167d065347e97c6701cf54da",
+    "src/libsvn_fs_pg/pgfs_locks.inc": "d507f8405e87d62ae1e6e50f61342df32abddb3e9bd31721249309e58ac8180d",
+    "src/libsvn_fs_pg/pgfs_mergeinfo.inc": "979289539a4a85c220311f4bdf9efd645377cdd3a51459d3d3950fe5a4ae2768",
+    "src/libsvn_fs_pg/pgfs_native.h": "2831cca568b7d7d5ff60a36d1c945d9656d06232e5a61729e6379406e3983379",
+    "src/libsvn_fs_pg/pgfs_native.inc": "98c730dbaebec801ac4bf8fad6cb4936290a0eb4af81fc914cbe91c4cfd530d6",
+    "src/libsvn_fs_pg/pgfs_receipts.inc": "db6303a7c0a2331124baae01f347b62aa5fd7e15883c0617713cc5c615e7d447",
+    "src/libsvn_fs_pg/pgfs_streams.inc": "2b576a0afa00a758b392d8b3523da3ba6340732fc2a5f663dd4130ebfa5d9e50",
+    "src/libsvn_fs_pg/pgfs_transactions.inc": "100d4f7f9264a90c42ae0435d6166a828f5543820806675769a90a1f8184fa22",
+    "src/libsvn_fs_pg/pgfs_tree.inc": "5907737576e2e95e60a61a2bfcb1710384dcca70368728214f8db77ed2483666",
+    "src/pgvn/admin/admin.h": "b07548ba2298b19bb1e618ce267971040b4153696ef6ff43488e54db56acd030",
+    "src/pgvn/admin/commands.c": "c0c67cc41e617cf6c11a6345d9087deb1930a9e80a4701e7113c3ecb9eb19995",
+    "src/pgvn/admin/common.c": "003c6a6e34d3f76ce3026342f437e9309fff084f7127b90bbe67a36eef3f9f28",
+    "src/pgvn/admin/credentials.c": "f736c0f3da5d145bfa6e67c3e915fd7ab90188df22e878163c176a27ec978fa4",
+    "src/pgvn/admin/db.c": "571a61320ef590f4fa0ad91cfdff9689ac279d42759c86f0846dde7953326770",
+    "src/pgvn/admin/history.c": "cfa00962a2edc3a10df7ddc73049108ff47aaba3797753939676528ef46c270d",
+    "src/pgvn/admin/main.c": "9e0151835ca54a7cbeb312d8b5ab1d7d2e962398a56019469f07a139858cac2b",
+    "src/pgvn/admin/maintenance.c": "66a037971534384860bf0bb5d4c092b50266de553732b470c7e8e6300c0a042e",
+    "src/pgvn/admin/policy.c": "9e11953bff66a0b156461d8b03b85a247723e91e98715d1d5ec3e71571f2ca90",
+    "src/pgvn/admin/repositories.c": "0c66c39884020833053be9a9ff66804ef3295776a51301ab59726f3c920e3b74",
+    "src/pgvn/admin/tokens.c": "35b1a36937417050a2edc41dc20b2f3e99fd4ae033b186678d71c10751d84bec",
+    "src/pgvn/core/build_info.c": "37cc1dcf0b870ab3e176044ed5a13167615957199339e11c775180add9a8f9a4",
+    "src/pgvn/core/catalog.c": "1a21680e348a791465da8de539771f9858dffde702fd857e5113ecb6ef488c8c",
+    "src/pgvn/core/context.c": "daf58aeca3ad7a39df46868abadb67e49a8aba24f418218ee3fb642f2544971a",
+    "src/pgvn/core/credentials.c": "49163a28a3913291bff6782b5f3dfa59cc159e4df17b71be69633b6757ea5b00",
+    "src/pgvn/core/credentials.h": "d884a5b3e3e170fc128196c3c5775ee39028dcbc4c7c669a5a379d8890ffa921",
+    "src/pgvn/core/dav_state.c": "128dd5348a1d8f5a292316ad307e5cebbbd8436280fb25fdb9e7ae7a33286953",
+    "src/pgvn/core/dav_state.h": "5b88c33e4b526e94ac7f0c426f5aa670d0d7496031c8ee6e5d2b75593d9c8137",
+    "src/pgvn/core/errors.c": "e14743423a3f54bf574447f763c568cd05279a9c37be70a27ad7f5f1b6b4f030",
+    "src/pgvn/core/hooks_win.c": "27a5bddb3b0c6b86c06852cef34a15df2dfc9697b8c20ac83882c65ecc1acdaf",
+    "src/pgvn/core/internal.h": "488c443a1824cf6e9499113a73a0e6876e6775067347ccd001002be20783f3fb",
+    "src/pgvn/core/management.c": "9251fd05647d6786072235d8c3ff9166dee7606cdc1ca6b1f46115eab4f6054c",
+    "src/pgvn/core/pgvn.h": "31dd88f82bef3f49e7c8d62c153e026a109d55c2a2a660e74375473d46e67040",
+    "src/pgvn/core/policy.c": "523ca50c1d8c569b6c5772224b35831b4c80bf1f625412f8394d5e5ac4263844",
+    "src/pgvn/core/policy_protocol.c": "21e9bdae6f0bdeacc06b40a67e93829c2ffe0f618720324d9685e3766f10d5fc",
+    "src/pgvn/core/repository.c": "8597dd850fd2791597b4daffc10dfba225d33147afbebcbcca7aec59134219a0",
+    "src/pgvn/core/telemetry.c": "94ec7d2db1ab44a3ef0f18dd690e58bbeea7e6f165a6b8e6874ed428d7ab7e65",
+    "src/pgvn/core/telemetry.h": "1eac5d83227cd35ffeb443bfda71d35050ddf87f675ccfb8fd0ec51412261387",
+    "src/pgvn/dav/adapter.c": "ed6ae339c69bf05be6daaa29ded11250e86cd231012ce744f6912a261ec96722",
+    "src/pgvn/dav/adapter.h": "be7560ce76d640b78385f441db5aa4d70fda038b3e670725e5157b1d9abae858",
+    "src/pgvn/dav/bootstrap.c": "ef0f7284189fc9c7e42f5974a2f97d155b6345dfd031d14825bb9c6637ce24dc",
+    "src/pgvn/dav/status.c": "9487d409b91046209dc5d7eb826d5e4a33de61730079d1cbd3d470dbf2e9c750",
+    "src/pgvn/dav/status.h": "94eb7239bd25ccf3b3cad8bc258ee7ea9cc9e162fae00fe5fb885a14479e7149",
+    "src/pgvn/monitor/data.c": "4bf3100d68916ca984f710204223dcd8d7eb67c2806b5aa009d7f47b22e9da99",
+    "src/pgvn/monitor/data.h": "7effca227a8c01841dc2e0514bcdb431a6e8c816dc72a8229c1c73aa4f46691a",
+    "src/pgvn/monitor/http_win.c": "8da23ccd0cd9efd3208e45a1e2251d87c196f745442ff1f225a09adde1782ba3",
+    "src/pgvn/monitor/http_win.h": "f35bdb1ff55e71e0a317536b1a70058a2ae8b5b1f687d145836d2d2915d5800e",
+    "src/pgvn/serve/listener.c": "5cb9549f69decbb13d45e9693a53f72a8b4d54ab484e970ed554b184bb8ac36f",
+    "src/pgvn/serve/listener.h": "d00081b8e81ed07f7c7ee2b74df80c9fea11c170085cf20e0111b746a2210d3f",
+    "src/pgvn/serve/main.c": "77c8bce6d254e83567e3ebbcdc4bea203019f93d25737f9bf29905250f1cf3ac",
+    "src/pgvn/serve/pgvn_protocol.h": "0aa951be3ba059ef5883b3a32c5e64266af477d7866a18a3a8bcebb5a8623f88",
+    "src/pgvn/serve/protocol.c": "f5222bb5c0066cca7f08cf163908419743002f62739ec2605c19d0bdb8d92601",
+    "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+    "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+    "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+    "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+    "sql/pgvn/001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+    "sql/pgvn/002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+    "sql/pgvn/003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+    "sql/pgvn/004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945",
+    "sql/pgvn/005_monitor.sql": "37cdce515bcf8508ef8f4f2b1b2fc18c5c347040975f14523067b7cf103a6cbd",
+    "sql/pgvn/006_dav_state.sql": "48b73740f2af1602ad7d54ab64b32ca61f85d430adb7939f155bba05131825df",
+    "scripts/pgvn/build.py": "ef5df28c829e18c035e1478de92ddd9008f56df025d07e90c7a000ad2666b3e3",
+    "scripts/pgvn/embed_migrations.py": "9ecdbc98cb5013e553a10a60b7e608789c46a52ce9b27a4f4c9a0ea9b17dd26c",
+    "scripts/pgvn/embed_web.py": "5ef5b4ab9a41b01bd763b010b551bdfdf80c9fbb9ed4f4e85dfac9f54aa4a13e",
+    "scripts/pgvn/prepare_dav.py": "b6d9826a56bd14a6bf9a95af70270196373ee1a8dc7b50a46fba22c9f45107b2",
+    "scripts/pgvn/prepare_protocol.py": "c68ac78dde493c5786d9c0e42c481562bc9b71d7f6d9fe71ab1658246c076c13",
+    "scripts/pgvn/prepare_upstream.py": "cd446406843023c4a8906676d38607a4384b58cccc949d9a94f3529b36e863b8",
+    "tests/pgvn/core_probe.c": "4582f3f137b161bc610773c89c3998b6fc8842a2578e88c8ba31632b0ad01dcf",
+    "tests/pgvn/dav_registry_probe.c": "e41c2771b7411d5aaa64df0038baaf30e562e203f8c3324141be8ba27566055b",
+    "tests/pgvn/dav_state_probe.c": "cb82466e730b020d00c0d5f54a5940604788ea9678ecd1258cd8e42a73ee1367",
+    "tests/pgvn/fixture.py": "ad7e1c9efce4446363f3d875d5430c2cd44b13fe819fe21565fdfdbda2b8036c",
+    "tests/pgvn/hook_probe.c": "0e63bc5362c80a3712eceac9feb0c6a0e63190ed80a263f905e0e49c42df2c2e",
+    "tests/pgvn/monitor_browser_fixture.py": "c67fa9a43cd445e47400a711c9bfcbcd85ec23a9f5991028bfc6fdaf0919ec7e",
+    "tests/pgvn/monitor_probe.c": "1a454c7765fdbec53922d489d27d02609290323457f95ff8bd037f617baae41c",
+    "tests/pgvn/run_gates.py": "c3e65cf79185b26cb3d5327a4d0559a4aa2201ba3e0b2a3c2a80d2e92432c154",
+    "tests/pgvn/svnkit_client.py": "f7270c6bc8597ab02797aaa5041bb8424f2f65fb6c9128e776a1a2894783974a",
+    "tests/pgvn/SvnKitProbe.java": "616608ca39e7befacd58b0f9983869fef3267f283d817553bd897bf8def9a0e6",
+    "tests/pgvn/tcp_proxy.py": "0c70c80b258b54ee0bbe357204e57d7cd379a064f4f698dc7c5dfccd8c09e803",
+    "tests/pgvn/test_m0.py": "b555805738b36655d8bdbd561bffb999461c4a7f05c3efb75aa61bd88d27ad53",
+    "tests/pgvn/test_m1.py": "0c9cfe1a519f5b911d2c51c3294cd63d47d8b31d242ca38459261abb8f4b7487",
+    "tests/pgvn/test_m2.py": "d09b5313bde3630d4084ec7964eda2b27d520af9f97e73dc60773f6a558cee2c",
+    "tests/pgvn/test_m3.py": "524f98edb35cd75c4b42f458a7bf4d93f9f8ea1f521909b016661c8ae0b6116a",
+    "tests/pgvn/test_m3_credentials.py": "a24645af3cd5f03d3816b71ad1b80e1f5b88da7b5214bc53eb5436c5d6fecb5c",
+    "tests/pgvn/test_m3_hooks.py": "7d5fbe73f6a9bdb31a28f2d85621a11082d8cba14278e2c0f03bd5f3ff3c863e",
+    "tests/pgvn/test_m3_protocol_smoke.py": "84d59f4053a06e952ab9e413484e49d076140699aaa59d297ac2ba586b969bcc",
+    "tests/pgvn/test_m3_service.py": "9126541ce21830f31c370d8f343ef552d34b097d570bf5d1303606ad9f2b7dac",
+    "tests/pgvn/test_m4.py": "83a022dd320ce3bb610043a1ea201a761c74cd57b42676ac0ec1a696615662c4",
+    "tests/pgvn/test_m4_api.py": "0a400e7168c5c207ffd28ee8226698341d0f50dea0c2b917fe2f0d7d441d29fb",
+    "tests/pgvn/test_m4_ledger.py": "b8b87bbde436e19742259c725d3a0deb25c438028d354564502fb3cc31fba458",
+    "tests/pgvn/test_m4_network.py": "9156a40387182ba112a9e71e2ab311ea5a286418ba6ed5a1d6daae6b97a60686",
+    "tests/pgvn/test_m4_receipt_fault.py": "c70a5c69250e348815ecbd6d79a91e67386c5e3142142a72a066e8cdf81ee948",
+    "tests/pgvn/test_m4_resources.py": "4764d7606ae69d649fd3e556f4799ae566c3237658ee1a72f054954236e127ca",
+    "tests/pgvn/test_m4_smoke.py": "db7bec28a935f44ba1a8bd10f74300fc8a2955a9dbf6e03758167a95d98a3ff6",
+    "tests/pgvn/test_m4_startup.py": "64e0fcd726f2bd08d08b639cb8889f5f6a6016acc7f1dd479c2f473895ea4f8d",
+    "tests/pgvn/test_m5.py": "2956267a3feb7654461395f9df93154bb79840c11988c18ff10e465b96bf507c",
+    "tests/pgvn/test_m5_authz.py": "a5c6fef2aeebc0882d913d8678d1dd186ae5a1b5c7544ae047ed8fa5b9bad1fd",
+    "tests/pgvn/test_m5_balancer.py": "a6f1061d41431f9b9682f7d7cba0b6b922a18e6faaa423adb772f497fd27d8ca",
+    "tests/pgvn/test_m5_creation.py": "a94d9d2058f8d7c08c13ef89f6e76bb8122e8d0c1a5bf4005b325fe22badd186",
+    "tests/pgvn/test_m5_http.py": "37959c931d0d390f35489dd9b84f28e0a8839cd2e2ca44c3a16915e7b1c3a30b",
+    "tests/pgvn/test_m5_registry.py": "db09a38653119fb075fff2657d54014914add23b7d224e49e7251ec49c7a838d",
+    "tests/pgvn/test_m5_service.py": "d9e8f7beca686f89ce27e14f447f927518206c6f8da3a558f3270950173287d1",
+    "tests/pgvn/test_m5_telemetry.py": "43274c430387ea7fe282baca8f9f9ad4278e5d1c38a504c484cc48b19189dbd6",
+    "tests/pgvn/test_m5_unicode_baseline.py": "e3cddf794136cb2890a29a8847feddbd11db0352462f010a27117a4f64542170",
+    "tests/pgvn/test_m5_upgrade.py": "adabc680240a0a40e732c11145f6e3c596454aeaeb0a41049ffadb5540312084",
+    "tests/pgvn/win_process.py": "0d9e8460991c1ae0a5f0d2121c6d4c1a4757f8061131517092ddba98d0158f28"
+  },
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "8c2e8ad6119b975bd5e59f17d6a43f1f803e83681b4abe0f0cc09b01f56c227a",
+    "runtime/pgvn/bin/pgvnadmin.exe": "f86c0d18d554d7401a2325a81f89bd4a8d12aabc40aab6666ef66173538b077c",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "6e442d26b2dcf1c7adb15d0fd1b24dd0010fca815184b2d007b6ac045005410e",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "8abfc6c5192c425ed1fd804d4b44e59d865462f935eeadcb22f3fb58f9497b77"
+  },
+  "runtime_dependencies": {
+    "bin/core_probe.exe": "0bb700c0026bca154bd0272a7acc75689e85268806b933a0229258c6e5df0409",
+    "bin/dav_registry_probe.exe": "7229caaca95baba5f3afacfdca7770a19a91026f92875eaf5e199b41d7bf8582",
+    "bin/dav_state_probe.exe": "5ea641154bfac248e09d01ac513dc07382581c81ba9755653a0bb4857b5bb475",
+    "bin/hook_probe.exe": "a7f40469db7848c72c8ce40e60f3088fd198bae396bce1166b4ed89964f3f755",
+    "bin/icudt77.dll": "26c6b5923c814dab36caeabd19ea7b8006786c80215dae270c8444cb528ed3bf",
+    "bin/icuin77.dll": "e825807402d86307574c88e54ded5845d06b57e010b58b7975a2ab2d07ca7f6a",
+    "bin/icuio77.dll": "8892f4b00f75524d70e5fa91c122a584d14faef7631fac40afff52f3fcfa6cae",
+    "bin/icutu77.dll": "08cfa69abde3af84eccc98040653092710026fdfd65f6f3cddb91bffa7a6e62c",
+    "bin/icuuc77.dll": "465ac249e54de36640d85e084e0039acc4f518eda7ee4a9bbee2826ab5c46829",
+    "bin/libapr-1.dll": "587bcf93d5bdd1a5774ab271d2002f51baab09d9b9e4615a5751ef8711f691c8",
+    "bin/libaprutil-1.dll": "7dbc6239fb56681761b6c7438a53182b028f9b89babec9c68a7cf02cb30e4774",
+    "bin/libcrypto-3-x64.dll": "54c0a88da398559c3daec198d7af8f020ff6fbeead38dbacd97d21ae920c3a00",
+    "bin/libcurl.dll": "7d756f341091924063baa4f9fd79b5a013125e0d5d876badc1e355310e0857f8",
+    "bin/libecpg.dll": "16a8bafadb8380d22007713559542414e891f5f74648c8790c8b17be5b4e8361",
+    "bin/libecpg_compat.dll": "4ff38e031db75f3259fd0021becd4c4ead15b996ddd343cd80be625ee533a2cf",
+    "bin/libexpat.dll": "ca01642a063b89ee58ea7c383df55cd38ae8776c311150ef3ae3c1cc963dc9e1",
+    "bin/libiconv-2.dll": "6095b3fad19fff040aeae05865c28fdeb455526fca109c3216f6ca737af60249",
+    "bin/libintl-9.dll": "1125ac8dc0c4f5c3ed4712e0d8ad29474099fcb55bb0e563a352ce9d03ef1d78",
+    "bin/liblz4.dll": "096af775241b3bd4b1c3d79c83b103bb8f02da54ec4cd76c5d49eef61a68ad01",
+    "bin/libpgtypes.dll": "de59a200591d4a58e0b4afaef65603abf99e2ed9dcc01804c30e1ebfd2a8f948",
+    "bin/libpq.dll": "98d8e12f814ef539ded440195681c0163079dc5871d7fb278de051c2e2d4cba0",
+    "bin/libssl-3-x64.dll": "0ac3d836a2fa84dee83bd06a4abfaf8ab7ded689420edc76febc185500e2d6e1",
+    "bin/libsvn_client-1.dll": "5329c826a19053064516c1e724dfa706c93932b2e69e2cdaf7c08e14927f44ea",
+    "bin/libsvn_delta-1.dll": "f87f50cc8664bf1735eda4c0d6e8222f89b5596991e20d68e480c73081eec0e1",
+    "bin/libsvn_diff-1.dll": "e5e09e4a4523a3ad2469bfb0fcfe5a30a74875fb21bbf2443e8ae9b8a3934ce6",
+    "bin/libsvn_fs-1.dll": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+    "bin/libsvn_fs_fs-1.dll": "1a4bc908659a7179dfbca1142b7434920fbbc2dee72bc11940c972f988f09323",
+    "bin/libsvn_fs_util-1.dll": "cd1efa62635c3911881538231956c28651ab0b43c17e78e923504298993591fc",
+    "bin/libsvn_fs_x-1.dll": "a753ac936c66543d1660fdac8369f45c0e509c68fc03f0c63f015f60312c0942",
+    "bin/libsvn_ra-1.dll": "13b3fe099e2db01209a0318c1b0c5079eb1ff5363e968eb1d86946d301a3155b",
+    "bin/libsvn_repos-1.dll": "ecbdf6370b98613c17cc31a3f95467e138eca24318c3276adcb888181f1ae5b9",
+    "bin/libsvn_subr-1.dll": "601dd8e8960d2aad3b7881bddf1355701cd676e2d17a3caef7c3dc72f6e347f8",
+    "bin/libsvn_wc-1.dll": "2eb812f2d588b77632b7677a09dd0520e366f1289978508b137d2718b06e72db",
+    "bin/libwinpthread-1.dll": "ffe2d56375bb4e8bdee9037df6befc5016ddd8871d0d85027314dd5792f8fdc9",
+    "bin/libxml2.dll": "1cb308eb9be9063eda714549bacda541cc711843c3ab45f91ae91d3ae046dba9",
+    "bin/libxslt.dll": "8226fad0fc6e9b79b14203d4f5263ddec5764c0108aa7c17622dd77f311669a6",
+    "bin/libzstd.dll": "287e7e474961e8886a3d961e2c07da647a7ac8d60d97023545f3a3ecf604daba",
+    "bin/monitor_probe.exe": "768eef5efe37f85aa30649acb4d353adac579c53a9a86ed5d4cf6fea1ec0d0e6",
+    "bin/pgvnadmin.exe": "f86c0d18d554d7401a2325a81f89bd4a8d12aabc40aab6666ef66173538b077c",
+    "bin/pgvnserve.exe": "8c2e8ad6119b975bd5e59f17d6a43f1f803e83681b4abe0f0cc09b01f56c227a",
+    "bin/sqlite3.dll": "96e2412fb6e72a202700f0c368b8ea64f49c634ee4f3dc7b0e0d6bd2d4a7edf1",
+    "bin/svn.exe": "abd18606b8366796815e752cd53404e5e1d5564b9a170b184b3786c4bd4ada5d",
+    "bin/svnadmin.exe": "8077af69b35e413b232f8af76a379bd564cfb1fb4b18b049787c8a02de1c54ad",
+    "bin/svnauthz-validate.exe": "353fb7b5753668da0bca105410b36dac1a133f144ac74af921ffb6cfc6a726d1",
+    "bin/svnauthz.exe": "9eb44c85700375fe8b0383de427990e5201836ecb64b55fe0aafc5d82a6d3529",
+    "bin/svnbench.exe": "0806b0bd77d298561ee0fe8124d342944e9b80a13200db3d207798282bc9db0c",
+    "bin/svndiff-stream-test.exe": "fdb1ae7c8ba1f22c004138c1db2e48d826efaf4418d7dccd1064ad838a178572",
+    "bin/svndumpfilter.exe": "1565e818741fda089d20c947151a9cfb9154ecbb287f0941e62431bc439ceae0",
+    "bin/svnlook.exe": "7b3b2368b484b6b5127e82ff5327e155e00dc85c9a440c2fc37ca596e14ded77",
+    "bin/svnmover.exe": "e38b40e0e1ccd1674b765c8e38430081e0bcc8409916da8d464a2563c233fb62",
+    "bin/svnmucc.exe": "81c5b68a6570cc46cbeba91db74c1f79283ce634c77d360e48e1b9031708aae3",
+    "bin/svnraisetreeconflict.exe": "2402c1f00983c74ea45e669cd447ee13a1647502a183d41c3f13a21de6cc11be",
+    "bin/svnrdump.exe": "47f7b7909f0f2ca4f1d3d15a6bdd8ba221c43cacdf241343ae09e8b18a941ff8",
+    "bin/svnserve.exe": "a2118456bd8d4770606b87e2d0568d3ef132cfef40c55ffe298237b6d35ac1d0",
+    "bin/svnsync.exe": "6fb752daaace13e21be20edc0342720f578e74d89b98b3de1cbe7b92fba7d378",
+    "bin/svnversion.exe": "cc4712c5ed46f7b353663e33aa091db4496eeb7e9e40a8ba8e4d580e0d47f7f0",
+    "bin/testplug.dll": "1a8225dcf5a60c719d2ea98f5493fcb706558ac42b118c536e762b40d0f61a99",
+    "bin/vcruntime140.dll": "d66c3b47091ceb3f8d3cc165a43d285ae919211a0c0fcb74491ee574d8d464f8",
+    "bin/wxbase3211u_net_vc_x64_custom.dll": "f707ee1d13ed5d3264a6b95dbb6cc4cd79e5d663180a91dca80704b1d97783eb",
+    "bin/wxbase3211u_vc_x64_custom.dll": "cc6b32bb8cbc1ecd798a8e08144671bb0542e75217ee5b0f9a76fab9146b88be",
+    "bin/wxbase3211u_xml_vc_x64_custom.dll": "4c716cb9407ed90331d677b55e82b3e31a16ff6f5adf9493321594d01fa200d3",
+    "bin/wxmsw3211u_adv_vc_x64_custom.dll": "e9b0906ec69d7656228f564596ae882a8d68f37b5021f490ebcf2aae289eb742",
+    "bin/wxmsw3211u_aui_vc_x64_custom.dll": "ded33cdf2455389eaef3e9c2bd6bca04d3edfbea9e7f53393ee6f8bab2ae124c",
+    "bin/wxmsw3211u_core_vc_x64_custom.dll": "d658d50d6820d17ac4de22bd66b93799595d63c7469ca6a1d99f479a838b67b8",
+    "bin/wxmsw3211u_html_vc_x64_custom.dll": "74b2e9f9f4b690b554733f1be1e4412c27ea5e0b0a6cd67d05e3895eafb2946e",
+    "bin/wxmsw3211u_xrc_vc_x64_custom.dll": "24bb563eaed37c5b87d238fab8183eac8f66dbf4c67b06c2b9fa54a1234e020f",
+    "bin/zlib1.dll": "890afa7a17fb66308e0026631070409138b157ef2773c0a41d22a76943f7aedf"
+  },
+  "apache_dependencies": {
+    "apache/bin/ab.exe": "3356e3ce8a0abd73e34807c4ab91c193b4ba6ee093e58fdd836a2a05d8604e6e",
+    "apache/bin/abs.exe": "86dfcefc26621a14c795b31986ec35f4f304643a6e20d25b49e073d03e0cf1d6",
+    "apache/bin/ApacheMonitor.exe": "c1c7482f85ac1964896630fb06d75be832c0e266aaddf51aacbde56a28dff3cd",
+    "apache/bin/apr_crypto_openssl-1.dll": "c16ec80d28a4bea7db3cadfc52798179faf6c90c8ea8c3c759cb33e7d55408fb",
+    "apache/bin/apr_dbd_odbc-1.dll": "a37c1b007bb607db93d7d74939314339e3e62e88cb23842bff71f39d6fa6c7d7",
+    "apache/bin/apr_dbd_pgsql-1.dll": "aba5a30851b6115ddef427ef4ee7f781b79af3a47821c41bf973f1a81e212e06",
+    "apache/bin/apr_ldap-1.dll": "addc755bbf33121dd30e7ab59fbbda66cfa34e9205db84d5f808d7adc814dafe",
+    "apache/bin/htcacheclean.exe": "bf9383a548e2498c79b2bd82c3c10c8205e26373b84a408c6b858b8d3958180d",
+    "apache/bin/htdbm.exe": "1da0badfae92879d620db79786c902deb6d29fbe22b6c4cbf9113fb700b23666",
+    "apache/bin/htdigest.exe": "ed14b31638f93597ab89f8d2303372ec33eb3d23bdd791921114646e94019756",
+    "apache/bin/htpasswd.exe": "f31c98278f3eb74b503a9a7cb50711e4253c731f80cd018f113459ab08ca559e",
+    "apache/bin/httpd.exe": "b85df9a28ddf0625d04402a8dad333f7770934f32c117b276e78c9424809fb11",
+    "apache/bin/httxt2dbm.exe": "fe3448747e8ca778f76a910a94805d9892960ff83f4a5ee216e7f1355af7867a",
+    "apache/bin/icudt77.dll": "26c6b5923c814dab36caeabd19ea7b8006786c80215dae270c8444cb528ed3bf",
+    "apache/bin/icuin77.dll": "e825807402d86307574c88e54ded5845d06b57e010b58b7975a2ab2d07ca7f6a",
+    "apache/bin/icuio77.dll": "8892f4b00f75524d70e5fa91c122a584d14faef7631fac40afff52f3fcfa6cae",
+    "apache/bin/icutu77.dll": "08cfa69abde3af84eccc98040653092710026fdfd65f6f3cddb91bffa7a6e62c",
+    "apache/bin/icuuc77.dll": "465ac249e54de36640d85e084e0039acc4f518eda7ee4a9bbee2826ab5c46829",
+    "apache/bin/libapr-1.dll": "587bcf93d5bdd1a5774ab271d2002f51baab09d9b9e4615a5751ef8711f691c8",
+    "apache/bin/libaprutil-1.dll": "7dbc6239fb56681761b6c7438a53182b028f9b89babec9c68a7cf02cb30e4774",
+    "apache/bin/libcrypto-3-x64.dll": "54c0a88da398559c3daec198d7af8f020ff6fbeead38dbacd97d21ae920c3a00",
+    "apache/bin/libcurl.dll": "7d756f341091924063baa4f9fd79b5a013125e0d5d876badc1e355310e0857f8",
+    "apache/bin/libecpg.dll": "16a8bafadb8380d22007713559542414e891f5f74648c8790c8b17be5b4e8361",
+    "apache/bin/libecpg_compat.dll": "4ff38e031db75f3259fd0021becd4c4ead15b996ddd343cd80be625ee533a2cf",
+    "apache/bin/libexpat.dll": "ca01642a063b89ee58ea7c383df55cd38ae8776c311150ef3ae3c1cc963dc9e1",
+    "apache/bin/libhttpd.dll": "ef92c6e04dc0e938a16a939a4c71241f6e6901db22e553bee74ab3f5146106be",
+    "apache/bin/libiconv-2.dll": "6095b3fad19fff040aeae05865c28fdeb455526fca109c3216f6ca737af60249",
+    "apache/bin/libintl-9.dll": "1125ac8dc0c4f5c3ed4712e0d8ad29474099fcb55bb0e563a352ce9d03ef1d78",
+    "apache/bin/liblz4.dll": "096af775241b3bd4b1c3d79c83b103bb8f02da54ec4cd76c5d49eef61a68ad01",
+    "apache/bin/libpgtypes.dll": "de59a200591d4a58e0b4afaef65603abf99e2ed9dcc01804c30e1ebfd2a8f948",
+    "apache/bin/libpq.dll": "98d8e12f814ef539ded440195681c0163079dc5871d7fb278de051c2e2d4cba0",
+    "apache/bin/libssl-3-x64.dll": "0ac3d836a2fa84dee83bd06a4abfaf8ab7ded689420edc76febc185500e2d6e1",
+    "apache/bin/libsvn_client-1.dll": "5329c826a19053064516c1e724dfa706c93932b2e69e2cdaf7c08e14927f44ea",
+    "apache/bin/libsvn_delta-1.dll": "f87f50cc8664bf1735eda4c0d6e8222f89b5596991e20d68e480c73081eec0e1",
+    "apache/bin/libsvn_diff-1.dll": "e5e09e4a4523a3ad2469bfb0fcfe5a30a74875fb21bbf2443e8ae9b8a3934ce6",
+    "apache/bin/libsvn_fs-1.dll": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+    "apache/bin/libsvn_fs_fs-1.dll": "1a4bc908659a7179dfbca1142b7434920fbbc2dee72bc11940c972f988f09323",
+    "apache/bin/libsvn_fs_util-1.dll": "cd1efa62635c3911881538231956c28651ab0b43c17e78e923504298993591fc",
+    "apache/bin/libsvn_fs_x-1.dll": "a753ac936c66543d1660fdac8369f45c0e509c68fc03f0c63f015f60312c0942",
+    "apache/bin/libsvn_ra-1.dll": "13b3fe099e2db01209a0318c1b0c5079eb1ff5363e968eb1d86946d301a3155b",
+    "apache/bin/libsvn_repos-1.dll": "ecbdf6370b98613c17cc31a3f95467e138eca24318c3276adcb888181f1ae5b9",
+    "apache/bin/libsvn_subr-1.dll": "601dd8e8960d2aad3b7881bddf1355701cd676e2d17a3caef7c3dc72f6e347f8",
+    "apache/bin/libsvn_wc-1.dll": "2eb812f2d588b77632b7677a09dd0520e366f1289978508b137d2718b06e72db",
+    "apache/bin/libwinpthread-1.dll": "ffe2d56375bb4e8bdee9037df6befc5016ddd8871d0d85027314dd5792f8fdc9",
+    "apache/bin/libxml2.dll": "1cb308eb9be9063eda714549bacda541cc711843c3ab45f91ae91d3ae046dba9",
+    "apache/bin/libxslt.dll": "8226fad0fc6e9b79b14203d4f5263ddec5764c0108aa7c17622dd77f311669a6",
+    "apache/bin/libzstd.dll": "287e7e474961e8886a3d961e2c07da647a7ac8d60d97023545f3a3ecf604daba",
+    "apache/bin/logresolve.exe": "aa6b379123ee77e496dfd0716cd99f1743967c4da495597cf3910ee127a71c1f",
+    "apache/bin/openssl.exe": "35e9fed2ff43eb121c7c6f2b23d2c33e34b5a5571cca600f0ef5569017c4041a",
+    "apache/bin/pcre.dll": "488e482e4e43d01825997820f0df355c43634c57920027b5f4098fc18601162e",
+    "apache/bin/pcreposix.dll": "06c07320b40c089b590c0054cc91158ec312625823af0f6b28bbfb7cb54bdb8f",
+    "apache/bin/rotatelogs.exe": "7d474313a1effef0db181c015becb14b823c43c4aa272b1c02f9bef72575aa0b",
+    "apache/bin/sqlite3.dll": "96e2412fb6e72a202700f0c368b8ea64f49c634ee4f3dc7b0e0d6bd2d4a7edf1",
+    "apache/bin/sqlite3.exe": "d4edb84c3c72da379395b60347c8c3ab52ca3c9e77de4883a9c2e30083b130aa",
+    "apache/bin/testplug.dll": "1a8225dcf5a60c719d2ea98f5493fcb706558ac42b118c536e762b40d0f61a99",
+    "apache/bin/vcruntime140.dll": "d66c3b47091ceb3f8d3cc165a43d285ae919211a0c0fcb74491ee574d8d464f8",
+    "apache/bin/wxbase3211u_net_vc_x64_custom.dll": "f707ee1d13ed5d3264a6b95dbb6cc4cd79e5d663180a91dca80704b1d97783eb",
+    "apache/bin/wxbase3211u_vc_x64_custom.dll": "cc6b32bb8cbc1ecd798a8e08144671bb0542e75217ee5b0f9a76fab9146b88be",
+    "apache/bin/wxbase3211u_xml_vc_x64_custom.dll": "4c716cb9407ed90331d677b55e82b3e31a16ff6f5adf9493321594d01fa200d3",
+    "apache/bin/wxmsw3211u_adv_vc_x64_custom.dll": "e9b0906ec69d7656228f564596ae882a8d68f37b5021f490ebcf2aae289eb742",
+    "apache/bin/wxmsw3211u_aui_vc_x64_custom.dll": "ded33cdf2455389eaef3e9c2bd6bca04d3edfbea9e7f53393ee6f8bab2ae124c",
+    "apache/bin/wxmsw3211u_core_vc_x64_custom.dll": "d658d50d6820d17ac4de22bd66b93799595d63c7469ca6a1d99f479a838b67b8",
+    "apache/bin/wxmsw3211u_html_vc_x64_custom.dll": "74b2e9f9f4b690b554733f1be1e4412c27ea5e0b0a6cd67d05e3895eafb2946e",
+    "apache/bin/wxmsw3211u_xrc_vc_x64_custom.dll": "24bb563eaed37c5b87d238fab8183eac8f66dbf4c67b06c2b9fa54a1234e020f",
+    "apache/bin/xmlwf.exe": "3d1e72c15750eb110dd7f91402531a4d3c9e3617c74dd4abdbfdfbbbc9e9750b",
+    "apache/bin/z.dll": "70bde905611ad54a0ac3cb3ba2c76ce4406a52c0d122f13c3af6a098c0fb5ceb",
+    "apache/bin/zlib.dll": "70bde905611ad54a0ac3cb3ba2c76ce4406a52c0d122f13c3af6a098c0fb5ceb",
+    "apache/bin/zlib1.dll": "890afa7a17fb66308e0026631070409138b157ef2773c0a41d22a76943f7aedf",
+    "apache/modules/mod_authz_core.so": "521849eb38e9d5510ff77ac891b9e2b006161af9604568d71751c9119163264e",
+    "apache/modules/mod_dav.so": "a8ed4cec75826b9ab67d25ae87ac77928390302ed2986ce465be8f5fc8e7917f",
+    "apache/modules/mod_authn_core.so": "f7d9bd7deb30c94c804bfdbc4aa41f50003522390e7f1394ce258c889cf730ad",
+    "apache/modules/mod_auth_basic.so": "7ef4f5ae1fda0524bde88d4e605956bb4abe16da836a16a3a6e2b0c1a311617c",
+    "apache/modules/mod_authn_file.so": "d59f5f1b78f083a42086a9622c22b140968a716f5d5f1b54e4697d752bf2292a",
+    "apache/modules/mod_authz_user.so": "2ee1151d05ba39167b0c99fad4697e022af2c52cf98b66e0baa58216f4993589",
+    "apache/modules/mod_log_config.so": "af0ad192a0a1db3d59e5ff730fe4f96bd8bd0b928dbbf197b74d25fe8f79954a",
+    "apache/modules/mod_headers.so": "b4c45d0e366b2ad108cacbee16d1c4890f9fb4c5791233eccf5249454234e532",
+    "apache/modules/mod_ssl.so": "7fbd6c0b6b72737585db407058c297fe866ea7071d5742b2b8d7a26d865c2102",
+    "apache/modules/mod_socache_shmcb.so": "bad1cfbe8e6f4d8666794410c761e11fb75fce728939b50f27d07831ca5a1e5d",
+    "apache/modules/mod_proxy.so": "40b25acb3bfaca48180f309a2eb22c21dc66e053c48018851e7da1656cb2a13a",
+    "apache/modules/mod_proxy_http.so": "2d57038efed436768a68f496da065d3241b83c9d8b5f2dd31baa9d26d8f3897c",
+    "apache/modules/mod_proxy_balancer.so": "13a750b6b24a96dc5269ae36d48fb762b0fded704d0e2f8599e4d6cfb926f8f0",
+    "apache/modules/mod_slotmem_shm.so": "cb253400509450e7fc5830a5d79ae5b73e77f18f741797526df20b8d81653a4b",
+    "apache/modules/mod_lbmethod_byrequests.so": "24e8b5311017fe540b72a113f4b8086259e1b875aef73ef2a67c320150f49727"
+  },
+  "upstream_patches": {
+    "specification_sha256": "bf84b65ae9d6660c338f2f67d05245c1d7ac57f69cbf3747134f3dd2c99cc90b",
+    "applied_sha256": "415dd3846a3f93248f3aecb4001272a37e44eaec97073c6417a8e0f5497f56ee",
+    "outputs": {
+      "repos.h": "4366086bbba30d0414d6ea5cb5803426e295439d5b138d79c64e1577fd5e9285",
+      "repos.c": "d26850b6e2fbc1ca904d7177a1544ee0b42091e499205f1e67002fdd6d0ebab2",
+      "hooks.c": "e3f47aeaf2bf73026f2f38d20deea78ce21f1c3bedfe5bf70ccb2713ea0609be",
+      "dump.c": "060aabcc5cfd6d988f6556628f8206c4520911244210430aafcac070e5ab25ed",
+      "authz.c": "5c85ac4143a59bd481670c8ec79decb25210961033fb987a36efb1ef8bfb5199"
+    }
+  },
+  "dav_patches": {
+    "specification_sha256": "085c72b482d708ae246fbfd551abe6c7ec23f696fbde5b80a95e25a4466518ad",
+    "applied_sha256": "c3f0475371b3b47785b75fdb2e08e7cbfdd5dac387f4ae1610f34ece62eeb1ec",
+    "outputs": {
+      "mod_authz_svn/mod_authz_svn.c": "591526df6753df1d4ee1867258ddea6b8648ab51da5bd2bb9431d6b50e0bb67d",
+      "mod_dav_svn/activity.c": "5534a537a3d46dc4e08b6548a093a770141366d2bdf07a82a708f264a0801a27",
+      "mod_dav_svn/authz.c": "e4c3666010a2fc0c42270561fd2c2dd9c067b856fc91f81bf7d046c6f97239a7",
+      "mod_dav_svn/dav_svn.h": "0c0ee03a6034e7b23d29efe99e666fdb98c3ed7feca690cd1087b9cc939070cd",
+      "mod_dav_svn/deadprops.c": "af0ce954bef5bdec14b1fd7b261739027b13c7dbf36587490a2ffbcbf1a1a4a9",
+      "mod_dav_svn/liveprops.c": "e19f4af239f50e79e4810f5482d397e493d84e3b08a75c8c8a23438cc3cbedce",
+      "mod_dav_svn/lock.c": "782f9a97e182ab8013750ba1fade2c6a7da106f4de0408cb26b21521471d7559",
+      "mod_dav_svn/merge.c": "34b761a96c4f043970cd1e32329efd3728d964413865f7d1e9374729625a27c9",
+      "mod_dav_svn/mirror.c": "4c0c0f461dcb60023fbe76cfa7fa048c398a5c4a8ce522d4a9439c0b8a937383",
+      "mod_dav_svn/mod_dav_svn.c": "7728ecc4e6e04923e4fe7afbedccbea7b59ec3b1204e0583080a8c6c6b3f853f",
+      "mod_dav_svn/posts/create_txn.c": "93b3c4250cc7f3fee0363edf19a9c313909d07fc0cf918f65e5332f3e612966f",
+      "mod_dav_svn/reports/dated-rev.c": "2087e0405796fe7ec7cc0e18acf6f69ad586244f9be5914fbc51f6e37b6e7642",
+      "mod_dav_svn/reports/deleted-rev.c": "f49f2589b3659c9b1b035ec0120f0e51bc92e5bcb9d03f5137786aac88579f9a",
+      "mod_dav_svn/reports/file-revs.c": "7eade798fe246a6739c0111aa2395ac7b33b5a0be360529420c65b1cd47f8864",
+      "mod_dav_svn/reports/get-location-segments.c": "95a765124f3293690eba5896c9cc389d6470e3baf90888c503789c532d139270",
+      "mod_dav_svn/reports/get-locations.c": "64efb419f7939c3638fd268f3af795d3fe54fd1d7527a76409ebc78ed352c643",
+      "mod_dav_svn/reports/get-locks.c": "a411857154b8e5eeb8c216f73ffedd2e6df04ccd9e2c4313dbe40cec6b2a29e5",
+      "mod_dav_svn/reports/inherited-props.c": "43ed97b034715b0e0d2a9d3c4d7cd8969f7bbdc7f6645ef3c33f7239e0947567",
+      "mod_dav_svn/reports/list.c": "e496c309d207566c2cd7642cb14a89c7610dc8a0b60ffc51fe8ce9d6daa67c4c",
+      "mod_dav_svn/reports/log.c": "e5047c06f27c43d2e196faf819254f29903e7f4c5ba1caf306b8f5facc3adbc7",
+      "mod_dav_svn/reports/mergeinfo.c": "8693900f76d6491083b491a2931e246eb043373d1075eae56a0e1610c4be2087",
+      "mod_dav_svn/reports/replay.c": "931bce77503c0c37bf39d9c124a6cb4014161c45a320494c4113ff2259990428",
+      "mod_dav_svn/reports/update.c": "0efd258487034e28c3f9c4e83e5927ddc3bcb3390a6eac382c0c8e03f94d607b",
+      "mod_dav_svn/repos.c": "d6f8d46b165cdf22b55566a6c25e39255e72eb7179925a589896fc9c8838036b",
+      "mod_dav_svn/status.c": "09c83c14d0473bfb0fbb2ca1f6ebc76e89b56735e3befac574399d768c18c31b",
+      "mod_dav_svn/util.c": "c4a7fc94ee36b149f69e594648421c443938a16d4ceec5964b99f0dd5f62630d",
+      "mod_dav_svn/version.c": "60ddabf6b6a70d4d7e61e6d0f7e9de67c1fa82d630ff8e72a4e0de9e201f5be3",
+      "include/mod_dav_svn.h": "251f14b3e8cd44956c031e8412a308efb42dff19a6caf2383fab6e1bf6c56f5d",
+      "include/mod_authz_svn.h": "cadff2775bbf41034f45593fc946c7a3db7e0b1b5c646095afec21550fb13671"
+    },
+    "namespace_sha256": "5737464784ed4256b8d82a482e22b2e609fe756517359a2cd1eaaa75f9d90144",
+    "provider": "pgvn",
+    "public_exports": [
+      "dav_pgvn_get_repos_path",
+      "dav_pgvn_get_repos_path2",
+      "dav_pgvn_module",
+      "dav_pgvn_split_uri",
+      "dav_pgvn_split_uri2",
+      "pgvn_http_check_access",
+      "pgvn_http_mount",
+      "pgvn_http_policy",
+      "pgvn_http_resolve"
+    ]
+  },
+  "groups": [
+    {
+      "name": "M0-M4 complete regressions",
+      "status": "PASS",
+      "test_id": "m4-ecb6a432ecae",
+      "elapsed_seconds": 403.2810000000027,
+      "report_sha256": "c7b5d3a9bf56b823b291f3d59c324fa60e43edbcafbfcd92139fde16759cdd56"
+    },
+    {
+      "name": "native creation atomicity",
+      "status": "PASS",
+      "test_id": "m5-creation-75f310f654cd",
+      "elapsed_seconds": 7.186999999990803,
+      "report_sha256": "27a62858f470c14ee0573ae11308938dcf03b642fe96bfaf0dd13e477e22224d"
+    },
+    {
+      "name": "registry lifecycle and admin recovery",
+      "status": "PASS",
+      "test_id": "m5-registry-3331b12d95d0",
+      "elapsed_seconds": 13.125,
+      "report_sha256": "febdbf3f32b33feec715f421724e81cb2a3c4f61b749a472f41288fe81904ae4"
+    },
+    {
+      "name": "actual M4 schema upgrade",
+      "status": "PASS",
+      "test_id": "m5-upgrade-b71cd0af1b19",
+      "elapsed_seconds": 6.813000000009197,
+      "report_sha256": "fcf78afd8531a44fa2baf1a21b114a0a05ba1b980372b6ade416a33f08d4baef"
+    },
+    {
+      "name": "HTTP v1/v2 and Unicode author",
+      "status": "PASS",
+      "test_id": "m5-http-f73ab4b57949",
+      "elapsed_seconds": 15.764999999999418,
+      "report_sha256": "0b0fb27a3172996a4ca044ef6824cd8aa31e5d33e37b8bebb4f2883e16541fc7"
+    },
+    {
+      "name": "HTTP/HTTPS round robin and SVNKit",
+      "status": "PASS",
+      "test_id": "m5-balancer-03cb125ac756",
+      "elapsed_seconds": 32.23500000000058,
+      "report_sha256": "7b9cc61281d6cda47dff3bc0e01244638a335062664a8dd4d3343bcfeadaa04f"
+    },
+    {
+      "name": "path and historical authorization",
+      "status": "PASS",
+      "test_id": "m5-authz-8a16ddcd2566",
+      "elapsed_seconds": 13.375,
+      "report_sha256": "40b17e33535079e677cacf764cc438e1edf483d088c7597d71c08dd83179b600"
+    },
+    {
+      "name": "upstream Unicode client limitation baseline",
+      "status": "PASS",
+      "test_id": "m5-unicode-baseline-2d3f1b1145ea",
+      "elapsed_seconds": 11.702999999994063,
+      "report_sha256": "12ad92d944f88b9a214484a124878a42e25d3a0a24649cdc2093ddd20b05deaa"
+    },
+    {
+      "name": "independent Apache telemetry ledger",
+      "status": "PASS",
+      "test_id": "m5-telemetry-85aedb8cce51",
+      "elapsed_seconds": 36.10899999999674,
+      "report_sha256": "cd1707509e5b401f63bbfc5d66b376a08042aafc6e903e7cdc0610efa64df327"
+    },
+    {
+      "name": "LocalService worker lifecycle",
+      "status": "PASS",
+      "test_id": "m5-dav-service-743a1055da6c",
+      "elapsed_seconds": 12.672000000005937,
+      "report_sha256": "3d4c9c63db952cc4ccf2eeaf8ea1de821fee5d6c6a51ef84cd3432c62d6adaaf"
+    }
+  ],
+  "browser": {
+    "status": "PASS",
+    "created_at": "2026-10-15T11:43:24.555206+00:00",
+    "fixture_stopped": true,
+    "pgvnserve_sha256": "8c2e8ad6119b975bd5e59f17d6a43f1f803e83681b4abe0f0cc09b01f56c227a",
+    "assets": {
+      "index.html": "af7e08e1c3e2f2e696aaf2ce018aeb27a08aad9279c3d510ca91d7b122618c43",
+      "monitor.css": "46d4afe36f579da45c4915a48ab115a181f4572eb3ea5ec38bd87d2fb5e5eb61",
+      "monitor.js": "2fb6876c0071eb48e4ab9afabdee2b402de91194004aac0e5a1a96ab3e33eb00"
+    },
+    "fixture_session": "runtime/pgvn/tests/m3-credentials-fc4dafba1130/browser-session.json",
+    "method": "Real Codex IAB tab 5. UI actions, accessibility/DOM observations and desktop/narrow screenshots; screenshots inspected, not exported. Static source audit for no persistent token.",
+    "observations": {
+      "repository_pages": [
+        50,
+        3
+      ],
+      "search": "工程文档",
+      "history_revision": 1,
+      "active_transactions": 1,
+      "locks": 1,
+      "hostile_name_images": 0,
+      "dav_http_completed": 8,
+      "dav_http_errors": 2,
+      "dav_methods": {
+        "OPTIONS": [
+          5,
+          1
+        ],
+        "PROPFIND": [
+          2,
+          0
+        ],
+        "POST": [
+          1,
+          1
+        ]
+      },
+      "dav_error_request_id": "c83cde41-8",
+      "dav_instances": [
+        "c83cde41",
+        "0a5d09d2"
+      ],
+      "svn_peer_instances": [
+        "ad20a652",
+        "e58131a9"
+      ],
+      "narrow_viewport_requested": [
+        375,
+        812
+      ],
+      "narrow_client_width": 360,
+      "narrow_page_width": 360,
+      "narrow_table_scroll_width": 919,
+      "paused_sample_time": "2026/10/15 19:39:27",
+      "database_stale_seconds_observed": 23.2,
+      "unknown_nodes_during_db_loss": 5,
+      "after_revocation_content_tables": 0,
+      "after_revocation_token_input": ""
+    },
+    "test_id": "m5-browser-fc4dafba1130",
+    "checks": {
+      "worker_details": true,
+      "http_method_counts": true,
+      "request_error_id": true,
+      "refresh_retains_open_and_focus": true,
+      "lost_worker_and_new_instance": true,
+      "narrow_details_layout": true
+    },
+    "modules": {
+      "mod_dav_pgvn.so": "6e442d26b2dcf1c7adb15d0fd1b24dd0010fca815184b2d007b6ac045005410e",
+      "mod_authz_pgvn.so": "8abfc6c5192c425ed1fd804d4b44e59d865462f935eeadcb22f3fb58f9497b77"
+    }
+  },
+  "browser_prior": {
+    "status": "PASS",
+    "created_at": "2026-10-15T11:43:24.555206+00:00",
+    "fixture_stopped": true,
+    "pgvnserve_sha256": "8c2e8ad6119b975bd5e59f17d6a43f1f803e83681b4abe0f0cc09b01f56c227a",
+    "assets": {
+      "index.html": "af7e08e1c3e2f2e696aaf2ce018aeb27a08aad9279c3d510ca91d7b122618c43",
+      "monitor.css": "46d4afe36f579da45c4915a48ab115a181f4572eb3ea5ec38bd87d2fb5e5eb61",
+      "monitor.js": "2fb6876c0071eb48e4ab9afabdee2b402de91194004aac0e5a1a96ab3e33eb00"
+    },
+    "fixture_session": "runtime/pgvn/tests/m3-credentials-fc4dafba1130/browser-session.json",
+    "method": "Real Codex IAB tab 5. UI actions, accessibility/DOM observations and desktop/narrow screenshots; screenshots inspected, not exported. Static source audit for no persistent token.",
+    "observations": {
+      "repository_pages": [
+        50,
+        3
+      ],
+      "search": "工程文档",
+      "history_revision": 1,
+      "active_transactions": 1,
+      "locks": 1,
+      "hostile_name_images": 0,
+      "dav_http_completed": 8,
+      "dav_http_errors": 2,
+      "dav_methods": {
+        "OPTIONS": [
+          5,
+          1
+        ],
+        "PROPFIND": [
+          2,
+          0
+        ],
+        "POST": [
+          1,
+          1
+        ]
+      },
+      "dav_error_request_id": "c83cde41-8",
+      "dav_instances": [
+        "c83cde41",
+        "0a5d09d2"
+      ],
+      "svn_peer_instances": [
+        "ad20a652",
+        "e58131a9"
+      ],
+      "narrow_viewport_requested": [
+        375,
+        812
+      ],
+      "narrow_client_width": 360,
+      "narrow_page_width": 360,
+      "narrow_table_scroll_width": 919,
+      "paused_sample_time": "2026/10/15 19:39:27",
+      "database_stale_seconds_observed": 23.2,
+      "unknown_nodes_during_db_loss": 5,
+      "after_revocation_content_tables": 0,
+      "after_revocation_token_input": ""
+    },
+    "test_id": "m4-browser-fc4dafba1130",
+    "checks": {
+      "all_views": true,
+      "repository_pagination": true,
+      "repository_search": true,
+      "repository_detail": true,
+      "text_only_hostile_name": true,
+      "keyboard_focus_and_refresh": true,
+      "configurable_refresh": true,
+      "narrow_layout": true,
+      "paused_refresh": true,
+      "stale_database_and_unknown_nodes": true,
+      "lost_peer_and_recovery": true,
+      "token_revocation_clears_data": true,
+      "reload_requires_token": true,
+      "no_persistent_token": true
+    }
+  },
+  "details": {
+    "native creation atomicity": {
+      "callback_failure_rolls_back_transaction_properties_and_binding": true,
+      "nested_unit_rejected_without_publishing": true,
+      "output_unchanged_on_failure": true,
+      "unicode_and_quote_binding": true,
+      "binary_initial_property": true,
+      "fresh_process_can_use_and_publish_transaction": true,
+      "concurrent_unique_binding_one_winner_no_orphan": true,
+      "process_loss_before_commit_rolls_back_everything": true,
+      "uuid_casing_preserves_writer_exclusion": true,
+      "full_verify": true,
+      "scope": "Private native atomic creation foundation. Apache DAV provider, transport hooks and HTTP/HTTPS remain incomplete."
+    },
+    "registry lifecycle and admin recovery": {
+      "schema": 6,
+      "service_and_monitor_role_boundaries": true,
+      "repository_kind_and_owner_isolation": true,
+      "read_only_identity_cannot_create": true,
+      "duplicate_binding_rolls_back_staging": true,
+      "binary_initial_properties": true,
+      "cross_process_commit_result_derived_from_pgfs": true,
+      "delete_retains_commit_receipt_and_tombstone": true,
+      "start_hook_rejection_aborts_registered_transaction": true,
+      "committed_staging_visible_while_external_hook_runs": true,
+      "live_creation_lease_blocks_recovery_and_abort_is_rolled_back": true,
+      "policy_revocation_during_hook_rejects_activation": true,
+      "creator_and_hook_process_loss_recoverable_without_age_guess": true,
+      "old_active_transaction_never_age_deleted": true,
+      "missing_schema_table_fails_closed": true,
+      "full_verify": true,
+      "scope": "Production registry/core/admin state APIs; HTTP/HTTPS acceptance is recorded separately."
+    },
+    "actual M4 schema upgrade": {
+      "saved_m4_binary_verified": true,
+      "actual_schema5_created_by_m4": true,
+      "schema5_to6": true,
+      "old_migration_checksums_unchanged": true,
+      "repository_identity_and_history_preserved": true,
+      "binary_content_preserved": true,
+      "service_privileges_updated": true,
+      "m4_rejects_schema6": true,
+      "tampered_migration6_rejected": true,
+      "full_verify": true
+    },
+    "HTTP v1/v2 and Unicode author": {
+      "http_v2": {
+        "standard_client_binary_history_props_copy_locks_revprops": true,
+        "unicode_route_and_percent_filename": true,
+        "canonical_authz_name_distinct_from_route": true,
+        "virtual_owner_and_delete": true,
+        "unicode_authenticated_author_preserved": true
+      },
+      "http_v1": {
+        "standard_client_activity_commit": true,
+        "reader_read_and_write_denial": true
+      },
+      "full_verify": true
+    },
+    "HTTP/HTTPS round robin and SVNKit": {
+      "svnkit_http": {
+        "roundtrip": true,
+        "revision": 3,
+        "source_sha256": "616608ca39e7befacd58b0f9983869fef3267f283d817553bd897bf8def9a0e6",
+        "dependencies": {
+          "org.tmatesoft.svnkit_1.10.1.r10777.jar": "ff0a5039b2c09cbf1b5f67f6b73e9f9f0dae435a423845d220f0a65e98d11fce",
+          "com.trilead.ssh2_1.0.0.build222_185.jar": "ad3b7defdd2ae44b1c5e9c7fefdb8d5bed5fcd66ac9f0daf5ca761fbd4e0a6dc",
+          "org.tmatesoft.sqljet_1.1.12.r1336.jar": "c61e0ccf8de9b4b4b22e4eabbd5abe0072477a27481258299ea198b9fbdbddd0",
+          "antlr-runtime_3.5.3.jar": "cc7b201b7c9528e9919e8ab73f3eb00441a2fed63a8c1a9922a4008e4b7c70c4",
+          "com.jcraft.jsch_0.1.51.jar": "328b43e0d5100c230e0f515ec413b056b81462ae327722798e314662903a179d"
+        }
+      },
+      "creator_process_loss": {
+        "created_on": "node-a",
+        "continued_on": "node-b",
+        "repeated_merge_same_revision": 4
+      },
+      "https": {
+        "native_apache_tls": true,
+        "client_trusts_fixture_ca": true,
+        "proxy_verifies_backend_certificate": true,
+        "read_and_commit": true
+      },
+      "svnkit_https": {
+        "roundtrip": true,
+        "revision": 6,
+        "trusted_fixture_ca": true
+      },
+      "round_robin": {
+        "six_options_alternate": [
+          "node-a",
+          "node-b",
+          "node-a",
+          "node-b",
+          "node-a",
+          "node-b"
+        ],
+        "backend_logs": {
+          "node-a": {
+            "requests": 69,
+            "methods": [
+              "CHECKOUT",
+              "DELETE",
+              "GET",
+              "HEAD",
+              "MERGE",
+              "MKACTIVITY",
+              "MKCOL",
+              "OPTIONS",
+              "POST",
+              "PROPFIND",
+              "PROPPATCH",
+              "REPORT"
+            ]
+          },
+          "node-b": {
+            "requests": 77,
+            "methods": [
+              "CHECKOUT",
+              "DELETE",
+              "GET",
+              "HEAD",
+              "MERGE",
+              "MKACTIVITY",
+              "MKCOL",
+              "OPTIONS",
+              "POST",
+              "PROPFIND",
+              "PROPPATCH",
+              "PUT",
+              "REPORT"
+            ]
+          }
+        },
+        "v1_commit": true,
+        "v2_binary_commit": true,
+        "single_url_decode_through_proxy": true,
+        "scope": "Two local independent Apache processes; no cross-host failover claim."
+      },
+      "full_verify": true
+    },
+    "path and historical authorization": {
+      "hidden_read_list_and_history_denied": true,
+      "copyfrom_hidden_path_filtered_in_log": true,
+      "cross_repository_destination_policy_checked": true,
+      "recursive_copy_source_denied": true,
+      "inherited_props_and_mergeinfo_path_checks": true,
+      "keepalive_policy_revocation": true,
+      "staged_transaction_cannot_publish_after_revocation": true,
+      "full_verify": true,
+      "unsafe_configuration_rejected": true,
+      "missing_authz_module_refused_at_startup": true,
+      "database_failure_is_503_and_recovers": true,
+      "authorized_cross_repository_copy_rejected_without_path_io": true
+    },
+    "upstream Unicode client limitation baseline": {
+      "unicode-native": {
+        "binary_read_and_commit_before_revprop_failure": true,
+        "revprop_error_codes": [
+          175002,
+          175008
+        ],
+        "once_decoded_log_retains_percent_encoded_repository": "PROPPATCH /svn/%E5%9B%A2%E9%98%9F/!svn/bln/3 404",
+        "client": {
+          "source_sha256": "616608ca39e7befacd58b0f9983869fef3267f283d817553bd897bf8def9a0e6",
+          "dependencies": {
+            "org.tmatesoft.svnkit_1.10.1.r10777.jar": "ff0a5039b2c09cbf1b5f67f6b73e9f9f0dae435a423845d220f0a65e98d11fce",
+            "com.trilead.ssh2_1.0.0.build222_185.jar": "ad3b7defdd2ae44b1c5e9c7fefdb8d5bed5fcd66ac9f0daf5ca761fbd4e0a6dc",
+            "org.tmatesoft.sqljet_1.1.12.r1336.jar": "c61e0ccf8de9b4b4b22e4eabbd5abe0072477a27481258299ea198b9fbdbddd0",
+            "antlr-runtime_3.5.3.jar": "cc7b201b7c9528e9919e8ab73f3eb00441a2fed63a8c1a9922a4008e4b7c70c4",
+            "com.jcraft.jsch_0.1.51.jar": "328b43e0d5100c230e0f515ec413b056b81462ae327722798e314662903a179d"
+          }
+        }
+      },
+      "unicode-stock": {
+        "binary_read_and_commit_before_revprop_failure": true,
+        "revprop_error_codes": [
+          175002,
+          175008
+        ],
+        "once_decoded_log_retains_percent_encoded_repository": "PROPPATCH /svn/%E5%9B%A2%E9%98%9F/!svn/bln/3 404",
+        "client": {
+          "source_sha256": "616608ca39e7befacd58b0f9983869fef3267f283d817553bd897bf8def9a0e6",
+          "dependencies": {
+            "org.tmatesoft.svnkit_1.10.1.r10777.jar": "ff0a5039b2c09cbf1b5f67f6b73e9f9f0dae435a423845d220f0a65e98d11fce",
+            "com.trilead.ssh2_1.0.0.build222_185.jar": "ad3b7defdd2ae44b1c5e9c7fefdb8d5bed5fcd66ac9f0daf5ca761fbd4e0a6dc",
+            "org.tmatesoft.sqljet_1.1.12.r1336.jar": "c61e0ccf8de9b4b4b22e4eabbd5abe0072477a27481258299ea198b9fbdbddd0",
+            "antlr-runtime_3.5.3.jar": "cc7b201b7c9528e9919e8ab73f3eb00441a2fed63a8c1a9922a4008e4b7c70c4",
+            "com.jcraft.jsch_0.1.51.jar": "328b43e0d5100c230e0f515ec413b056b81462ae327722798e314662903a179d"
+          }
+        }
+      },
+      "stock_module_sha256": {
+        "mod_dav_svn.so": "f7c580dfc0c41cc9a3655c1e03688731dfdbabd00cf55971aede51b5472a9121",
+        "mod_authz_svn.so": "3633412c666240517a7e4205bfa1b77b0b28c08948acd20033d6ba0d6f824d48"
+      },
+      "scope": "Expected limitation reproduced with installed SVNKit 1.10.1 on both servers; full SVNKit roundtrip uses ASCII routes in the balancer gate. Standard native SVN Unicode operations are covered independently. No server-side second URL decode is introduced."
+    },
+    "independent Apache telemetry ledger": {
+      "telemetry_permission_failure_does_not_block_real_commit": true,
+      "telemetry_recovers_after_privilege_restore": true,
+      "access_log_method_and_error_counts_exact": true,
+      "active_zero_and_histogram_balance": true,
+      "new_publications_two_receipt_one": true,
+      "response_request_id_in_bounded_recent_errors": true,
+      "worker_memory_and_connections": true,
+      "restricted_monitor_api_observes_dav_workers": true,
+      "lost_worker_heartbeat_ages_without_false_stop": true,
+      "restart_has_new_instance": true,
+      "workers": [
+        {
+          "instance_id": "4e044cdf-2381-c142-9c1a-5e57c76ea45c",
+          "node_id": "dav-telemetry-a",
+          "component": "dav",
+          "process_id": 6464,
+          "metrics": {
+            "ready": true,
+            "methods": [
+              {
+                "errors": 3,
+                "method": "OPTIONS",
+                "requests": 15,
+                "microseconds": 711626
+              },
+              {
+                "errors": 0,
+                "method": "GET",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "HEAD",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PROPFIND",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "REPORT",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 1,
+                "method": "POST",
+                "requests": 3,
+                "microseconds": 115788
+              },
+              {
+                "errors": 0,
+                "method": "MKACTIVITY",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "CHECKOUT",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PROPPATCH",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PUT",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "COPY",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "MERGE",
+                "requests": 2,
+                "microseconds": 223191
+              },
+              {
+                "errors": 0,
+                "method": "DELETE",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "MKCOL",
+                "requests": 1,
+                "microseconds": 59891
+              },
+              {
+                "errors": 0,
+                "method": "LOCK",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "UNLOCK",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "other",
+                "requests": 0,
+                "microseconds": 0
+              }
+            ],
+            "stopped": false,
+            "requests": 21,
+            "cancelled": 0,
+            "sql_calls": 436,
+            "sql_errors": 0,
+            "connections": 1,
+            "ready_basis": "catalog_primary_probe",
+            "private_bytes": 4739072,
+            "recent_errors": [
+              {
+                "status": 401,
+                "request_id": "4e044cdf-2",
+                "at_unix_microseconds": 1792065239315868
+              },
+              {
+                "status": 401,
+                "request_id": "4e044cdf-17",
+                "at_unix_microseconds": 1792065240361673
+              },
+              {
+                "status": 404,
+                "request_id": "4e044cdf-18",
+                "at_unix_microseconds": 1792065240376079
+              },
+              {
+                "status": 403,
+                "request_id": "4e044cdf-19",
+                "at_unix_microseconds": 1792065240377595
+              }
+            ],
+            "request_errors": 4,
+            "writers_active": 0,
+            "requests_active": 0,
+            "sql_microseconds": 117069,
+            "telemetry_queries": 3,
+            "working_set_bytes": 16945152,
+            "telemetry_failures": 0,
+            "published_revisions": 1,
+            "request_microseconds": 1110496,
+            "receipt_confirmations": 1,
+            "configuration_generation": 2,
+            "request_latency_cumulative": [
+              4,
+              4,
+              18,
+              21,
+              21,
+              21
+            ]
+          },
+          "age": 1.161886
+        },
+        {
+          "instance_id": "7b2f2101-67b1-854b-84f0-7c4204424950",
+          "node_id": "dav-telemetry-b",
+          "component": "dav",
+          "process_id": 28772,
+          "metrics": {
+            "ready": true,
+            "methods": [
+              {
+                "errors": 0,
+                "method": "OPTIONS",
+                "requests": 1,
+                "microseconds": 104956
+              },
+              {
+                "errors": 0,
+                "method": "GET",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "HEAD",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PROPFIND",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "REPORT",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "POST",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "MKACTIVITY",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "CHECKOUT",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PROPPATCH",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "PUT",
+                "requests": 1,
+                "microseconds": 75607
+              },
+              {
+                "errors": 0,
+                "method": "COPY",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "MERGE",
+                "requests": 1,
+                "microseconds": 116094
+              },
+              {
+                "errors": 0,
+                "method": "DELETE",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "MKCOL",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "LOCK",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "UNLOCK",
+                "requests": 0,
+                "microseconds": 0
+              },
+              {
+                "errors": 0,
+                "method": "other",
+                "requests": 0,
+                "microseconds": 0
+              }
+            ],
+            "stopped": false,
+            "requests": 3,
+            "cancelled": 0,
+            "sql_calls": 215,
+            "sql_errors": 0,
+            "connections": 1,
+            "ready_basis": "catalog_primary_probe",
+            "private_bytes": 5779456,
+            "recent_errors": [],
+            "request_errors": 0,
+            "writers_active": 0,
+            "requests_active": 0,
+            "sql_microseconds": 52117,
+            "telemetry_queries": 3,
+            "working_set_bytes": 16928768,
+            "telemetry_failures": 0,
+            "published_revisions": 1,
+            "request_microseconds": 296657,
+            "receipt_confirmations": 0,
+            "configuration_generation": 2,
+            "request_latency_cumulative": [
+              0,
+              0,
+              1,
+              3,
+              3,
+              3
+            ]
+          },
+          "age": 0.061094
+        }
+      ],
+      "full_verify": true
+    },
+    "LocalService worker lifecycle": {
+      "account": "NT AUTHORITY\\LocalService",
+      "real_dav_commit": true,
+      "parent_pid": 31216,
+      "worker_pid": 55292,
+      "worker_instance": "08476528-18cf-724e-a9a3-e291cec55c92",
+      "telemetry_registered_in_worker_only": true,
+      "normal_stop_publishes_stopped_and_drains_connections": true,
+      "stop_seconds": 2.2810000000026776,
+      "full_verify": true,
+      "unique_service_removed": true
+    }
+  },
+  "elapsed_seconds": 552.593000000008,
+  "known_limitations": [
+    "SVNKit 1.10.1 Unicode repository URL revprop double-encoding also reproduced against stock mod_dav_svn + FSFS; ASCII routes pass.",
+    "Cross-repository COPY is unsupported.",
+    "DAV readiness uses catalog/primary probes and initialized business context, not a full request-thread watchdog.",
+    "Same-host processes do not establish cross-host HA, PostgreSQL promotion or performance budgets.",
+    "No clean Windows test machine is available. User prioritizes local validation and deployment package; reboot and Polarion application acceptance remain pending."
+  ]
+}

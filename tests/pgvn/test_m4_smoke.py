@@ -123,7 +123,7 @@ def checks():
         setup.admin("monitor-token","revoke",issued["id"])
         until(lambda: unauthorized(a,token),seconds=10)
         setup.admin("verify",repo["id"])
-        return {"schema":5,"readonly_role_boundaries":True,"token_origin_methods_queries":True,
+        return {"schema":6,"readonly_role_boundaries":True,"token_origin_methods_queries":True,
             "pagination_and_hostile_text":True,"two_node_heartbeats":True,"publication_command_ledger":True,
             "database_disconnect_live_and_stale_snapshot":True,"recovery":True,"token_revocation":True,
             "full_verify":True,"milestone_complete":False}

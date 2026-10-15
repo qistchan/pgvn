@@ -2,6 +2,7 @@
 #include "admin.h"
 #include <apr_strings.h>
 #include "pgfs_native.h"
+#include "dav_state.h"
 
 static wchar_t *wide(const char *text,apr_pool_t *pool)
 {
@@ -130,6 +131,22 @@ svn_error_t *admin_maintenance(admin_command *command)
     }
     pgvn_repository *repository;
     SVN_ERR(pgvn_repos_open_admin(&repository,command->context,binding->repository_id,command->pool));
+    if(!strcmp(op,"recover-dav-creation")) {
+        const char *values[]={binding->repository_id,command->argv[3]};PGresult *result;
+        SVN_ERR(pgvn_control_query(&result,command->context,
+            "SELECT owner_name FROM pgvn.dav_transactions WHERE repository_id=$1::uuid AND txn_id=$2",2,values));
+        if(PQntuples(result)!=1) { PQclear(result);return svn_error_create(SVN_ERR_FS_NOT_FOUND,NULL,"PgVN DAV transaction was not found"); }
+        const char *owner=PQgetisnull(result,0,0) ? NULL : apr_pstrdup(command->pool,PQgetvalue(result,0,0));PQclear(result);
+        pgvn_dav_txn_info *before,*after;
+        SVN_ERR(pgvn_dav_lookup(&before,repository,PGVN_DAV_NATIVE,command->argv[3],owner,command->pool));
+        SVN_ERR(pgvn_dav_recover_creation(repository,command->argv[3],owner,command->pool));
+        SVN_ERR(pgvn_dav_lookup(&after,repository,PGVN_DAV_NATIVE,command->argv[3],owner,command->pool));
+        const char *states[]={"creating","active","committed","aborted","deleted"};
+        fputs("{\"ok\":true,\"operation\":\"maintenance.recover-dav-creation\",\"transaction_id\":",stdout);
+        admin_json_cstr(stdout,after->transaction_id);
+        fputs(",\"action\":",stdout);admin_json_cstr(stdout,before->phase==PGVN_DAV_CREATING && after->creation_failed ? "aborted_creating" : "unchanged");
+        fputs(",\"state\":",stdout);admin_json_cstr(stdout,states[after->phase]);puts("}");return SVN_NO_ERROR;
+    }
     svn_fs_t *fs=svn_repos_fs(pgvn_repo_svn(repository));
     if(!strcmp(op,"pack")) SVN_ERR(pgfs_native_pack(fs,command->pool));
     else if(!strcmp(op,"recover")) SVN_ERR(pgfs_native_recover(fs,command->pool));

@@ -135,9 +135,10 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     pgvn_context_options options={dsn,3,5000};
     SVN_ERR(pgvn_context_create(&listener->context,&options,pool));
     PGresult *result;
-    SVN_ERR(pgvn_control_query(&result,listener->context,"SELECT max(version)=5 FROM pgvn.schema_versions",0,NULL));
+    SVN_ERR(pgvn_control_query(&result,listener->context,
+        apr_psprintf(pool,"SELECT max(version)=%d FROM pgvn.schema_versions",PGVN_CATALOG_VERSION),0,NULL));
     svn_boolean_t current=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
-    if(!current) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN SVN service requires catalog schema 5; run db migrate");
+    if(!current) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN SVN service requires the current catalog schema; run db migrate");
     listener->context->minimum_catalog_version=PGVN_CATALOG_VERSION;
     svn_config_get(config,&listener->context->hook_root,"pgvn","hook-root",NULL);
     SVN_ERR(svn_dirent_get_absolute(&listener->context->configuration_path,configuration,pool));

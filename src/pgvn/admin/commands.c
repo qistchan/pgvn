@@ -27,6 +27,7 @@ static const command_definition commands[]={
     {"maintenance","freeze",3,3,O(TIMEOUT)},
     {"maintenance","hotcopy",4,4,O(INCREMENTAL)|O(ROUTE)},
     {"maintenance","purge",3,3,O(CONFIRM_ID)},{"maintenance","abort-txn",4,4,0},
+    {"maintenance","recover-dav-creation",4,4,0},
     {"config","show",3,3,0},{"config","publish",3,3,O(GENERATION)|O(AUTHZ)|O(GROUPS)|O(HOOKS)|O(SETTINGS)},
     {"authz","validate",2,2,O(AUTHZ)|O(GROUPS)}, {"authz","check",6,6,0},
     {"monitor-token","create",2,2,O(LABEL)|O(EXPIRES)}, {"monitor-token","list",2,2,0},

@@ -90,7 +90,9 @@ def finish_paused(process, success=True):
 
 
 def creation_and_routing():
-    repository = new_repository("中文仓库")
+    # Guarantee that upper() changes this case-sensitive route even when the
+    # random hexadecimal suffix happens to contain only digits.
+    repository = new_repository("中文仓库-case")
     assert repository["id"] != repository["uuid"]
     info = json.loads(probe("info", repository["id"]))
     assert info == {"uuid": repository["uuid"], "identity": "pgvn:" + repository["id"],

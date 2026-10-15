@@ -17,6 +17,7 @@ import struct
 import subprocess
 from prepare_upstream import prepare
 from prepare_protocol import prepare_protocol
+from prepare_dav import prepare_dav
 from embed_migrations import embed
 from embed_web import embed_web
 
@@ -24,6 +25,9 @@ ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "build/pgvn"
 RUNTIME = ROOT / "runtime/pgvn"
 ARTIFACTS = ROOT / "artifacts/pgvn/build"
+APACHE_MODULES=("mod_authz_core.so","mod_dav.so","mod_authn_core.so","mod_auth_basic.so","mod_authn_file.so",
+    "mod_authz_user.so","mod_log_config.so","mod_headers.so","mod_ssl.so","mod_socache_shmcb.so",
+    "mod_proxy.so","mod_proxy_http.so","mod_proxy_balancer.so","mod_slotmem_shm.so","mod_lbmethod_byrequests.so")
 
 
 def digest(path):
@@ -125,7 +129,7 @@ def main():
     libraries, exports = {}, {}
     dlls = [svn_bin / name for name in ("libapr-1.dll", "libaprutil-1.dll",
             "libsvn_subr-1.dll", "libsvn_delta-1.dll", "libsvn_fs-1.dll", "libsvn_repos-1.dll",
-            "libsvn_ra-1.dll", "libsvn_diff-1.dll", "libsvn_fs_util-1.dll")] + [apache / "bin/libhttpd.dll"]
+            "libsvn_ra-1.dll", "libsvn_diff-1.dll", "libsvn_fs_util-1.dll")] + [apache / "bin/libhttpd.dll",apache / "modules/mod_dav.so"]
     for dll in dlls:
         libraries[dll.name], exports[dll.name] = import_library(tools, dll)
     # The two hosts must use the same APR data ABI during this pinned M0 build.
@@ -137,6 +141,8 @@ def main():
                       ROOT / "patches/pgvn/subversion-1.14.5/repos.json")
     protocol_patched = prepare_protocol(svn,BUILD / "upstream",
                       ROOT / "patches/pgvn/subversion-1.14.5/protocol.json")
+    dav_source=BUILD / "upstream/dav"
+    dav_patched=prepare_dav(svn,dav_source,ROOT / "patches/pgvn/subversion-1.14.5/dav.json")
     legacy_spec = importlib.util.spec_from_file_location("pgfs_legacy_build", ROOT / "scripts/build.py")
     legacy = importlib.util.module_from_spec(legacy_spec)
     legacy_spec.loader.exec_module(legacy)
@@ -186,10 +192,30 @@ def main():
          "-Wl,--no-insert-timestamp", "-o", products[0]])
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
          "-Wl,--no-insert-timestamp", "-o", products[1]])
-    for product, define in ((products[2], []), (products[3], ["-DPGVN_AUTHZ_BOOTSTRAP"])):
-        run([compiler, *options, "-shared", *define, ROOT / "src/pgvn/dav/bootstrap.c",
-             *core_links, libraries["libhttpd.dll"], "-Wl,--no-insert-timestamp", "-o", product])
+    dav_options=[o for o in options if o!='-Werror']
+    dav_options[:0]=["-I",dav_source / "include","-I",dav_source / "mod_dav_svn","-I",ROOT / "src/pgvn/dav"]
+    dav_options += ["-include",dav_source / "pgvn_dav_namespace.h","-DPGVN_REAL_DAV",
+                    "-Wno-deprecated-declarations","-Wno-missing-field-initializers"]
+    dav_objects=[]
+    for source in sorted((dav_source / "mod_dav_svn").rglob("*.c")):
+        output=BUILD / "objects" / ("dav-"+source.relative_to(dav_source / "mod_dav_svn").as_posix().replace('/','-')+'.o')
+        run([compiler,*dav_options,"-DPGVN_DAV_BUILD","-c",source,"-o",output]);dav_objects.append(output)
+    run([compiler,*dav_options,"-DPGVN_DAV_BUILD","-shared",ROOT / "src/pgvn/dav/adapter.c",
+         ROOT / "src/pgvn/dav/status.c",ROOT / "src/pgvn/dav/bootstrap.c",*dav_objects,*core_links,libraries["libhttpd.dll"],libraries["mod_dav.so"],"-lws2_32","-lpsapi",
+         "-Wl,--no-insert-timestamp","-o",products[2]])
+    dav_import,dav_exports=import_library(tools,products[2])
+    run([compiler,*dav_options,"-DPGVN_AUTHZ_BOOTSTRAP","-shared",dav_source / "mod_authz_svn/mod_authz_svn.c",
+         ROOT / "src/pgvn/dav/bootstrap.c",dav_import,*core_links,libraries["libhttpd.dll"],libraries["mod_dav.so"],
+         "-Wl,--no-insert-timestamp","-o",products[3]])
     probe = ROOT / "tests/pgvn/core_probe.c"
+    dav_probe = ROOT / "tests/pgvn/dav_state_probe.c"
+    if dav_probe.exists():
+        run([compiler, *options, "-municode", dav_probe, *core_links, "-Wl,--no-insert-timestamp",
+             "-o", RUNTIME / "bin/dav_state_probe.exe"])
+    registry_probe = ROOT / "tests/pgvn/dav_registry_probe.c"
+    if registry_probe.exists():
+        run([compiler, *options, "-municode", registry_probe, *core_links, "-Wl,--no-insert-timestamp",
+             "-o", RUNTIME / "bin/dav_registry_probe.exe"])
     if probe.exists():
         run([compiler, *options, "-municode", probe, *core_links, "-Wl,--no-insert-timestamp",
              "-o", RUNTIME / "bin/core_probe.exe"])
@@ -208,7 +234,7 @@ def main():
         for item in (pg / "bin").glob("*.dll"):
             shutil.copy2(item, target / item.name)
     # Core Windows MPM is built into this distribution. Other test modules are copied explicitly.
-    for name in ("mod_authz_core.so",):
+    for name in APACHE_MODULES:
         shutil.copy2(apache / "modules" / name, RUNTIME / "apache/modules" / name)
     legacy.RUNTIME.mkdir(parents=True, exist_ok=True)
     for item in (RUNTIME / "bin").glob("*"):
@@ -232,7 +258,7 @@ def main():
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "milestone": re.search(r'#define PGVN_MILESTONE "([^"]+)"', (ROOT / "src/pgvn/core/pgvn.h").read_text()).group(1), "configuration": args.configuration,
-        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": False, "monitor": "full"},
+        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": True, "monitor": "full"},
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
         "inputs": {k: str(v) for k, v in paths.items()},
@@ -241,6 +267,10 @@ def main():
                              "applied_sha256": digest(BUILD / "upstream/applied-repos.patch"), "outputs": patched},
         "protocol_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/protocol.json"),
                              "applied_sha256": digest(BUILD / "upstream/applied-protocol.patch"), "outputs": protocol_patched},
+        "dav_patches": {"specification_sha256": digest(ROOT / "patches/pgvn/subversion-1.14.5/dav.json"),
+                        "applied_sha256": digest(dav_source / "applied-dav.patch"),"outputs":dav_patched,
+                        "namespace_sha256":digest(dav_source / "pgvn_dav_namespace.h"),
+                        "provider":"pgvn","public_exports":dav_exports},
         "sources": {**{"web/" + k: v for k, v in inventory(ROOT / "web").items()}, **{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
                     **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
                     **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()},
@@ -252,6 +282,8 @@ def main():
         "git_base_commit": run(["git", "rev-parse", "HEAD"]).strip(),
         "git_worktree_dirty": bool(run(["git", "status", "--porcelain"]).strip()),
         "runtime_dependencies": {"bin/" + k: v for k, v in inventory(RUNTIME / "bin").items()},
+        "apache_dependencies": {**{"apache/bin/"+k:v for k,v in inventory(RUNTIME / "apache/bin",{".exe",".dll"}).items()},
+                                **{"apache/modules/"+name:digest(RUNTIME / "apache/modules" / name) for name in APACHE_MODULES}},
         "private_api_audit": {
             "ra_svn_exported": sorted(e for e in exports["libsvn_ra-1.dll"] if e.startswith("svn_ra_svn")),
             "ra_svn_requires_source_build": "svn_ra_svn__read_tuple" not in exports["libsvn_ra-1.dll"],
@@ -263,7 +295,7 @@ def main():
     manifest_path = ARTIFACTS / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     build_id = hashlib.sha256(json.dumps({key: manifest[key] for key in (
-        "sources", "upstream_patches", "protocol_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
+        "sources", "upstream_patches", "protocol_patches", "dav_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
         sort_keys=True).encode()).hexdigest()[:16]
     archive = ARTIFACTS / (manifest["milestone"] + "-" + build_id + ".json")
     if not archive.exists():

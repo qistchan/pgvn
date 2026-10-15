@@ -206,12 +206,14 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
         "(SELECT string_agg(migration_sha256,',' ORDER BY version) FROM pgvn.storage_migrations),"
         "(SELECT string_agg(migration_sha256,',' ORDER BY version) FROM pgvn.schema_versions),"
         "(SELECT healthy FROM pgvn_monitor.configuration_health),(SELECT max_configuration_generation FROM pgvn_monitor.configuration_health),"
-        "NOT has_table_privilege(current_user,'pgvn.credentials','SELECT') AND NOT has_table_privilege(current_user,'pgvn.monitor_tokens','SELECT')",0,NULL);
+        "NOT has_table_privilege(current_user,'pgvn.credentials','SELECT') AND NOT has_table_privilege(current_user,'pgvn.monitor_tokens','SELECT'),"
+        "to_regclass('pgvn.dav_transactions') IS NOT NULL AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL);
     if(!result) return 0;
     int valid=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4")
-        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5") && !strcmp(PQgetvalue(result,0,2),"f")
+        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5,6") && !strcmp(PQgetvalue(result,0,2),"f")
         && !strcmp(PQgetvalue(result,0,3),"on") && !strcmp(PQgetvalue(result,0,4),PGVN_STORAGE_HASHES)
         && !strcmp(PQgetvalue(result,0,5),PGVN_CATALOG_HASHES);
+    valid=valid && !strcmp(PQgetvalue(result,0,9),"t");
     if(valid) { sample->configuration_healthy=!strcmp(PQgetvalue(result,0,6),"t");
         sample->configuration_generation=PQgetisnull(result,0,7) ? -1 : apr_atoi64(PQgetvalue(result,0,7));
         sample->reader_restricted=!strcmp(PQgetvalue(result,0,8),"t"); }

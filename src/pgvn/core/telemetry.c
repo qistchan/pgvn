@@ -46,6 +46,11 @@ apr_time_t pgvn_command_start(void)
     return apr_time_now();
 }
 void pgvn_command_repository(const char *id) { snprintf(command_repository,sizeof(command_repository),"%s",id ? id : ""); }
+void pgvn_telemetry_scope(const char *id)
+{
+    encoded_failure=0;command_repository[0]=0;
+    snprintf(command_request,sizeof(command_request),"%s",id ? id : "");
+}
 void pgvn_command_failure(const svn_error_t *error) { encoded_failure=pgvn_error_exit_code(error)==PGVN_EXIT_DENIED ? 1 : 2; }
 void pgvn_command_finish(const char *operation,apr_time_t start,const svn_error_t *error)
 {

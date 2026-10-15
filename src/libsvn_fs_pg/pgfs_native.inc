@@ -74,6 +74,67 @@ svn_error_t *pgfs_native_atomic(svn_fs_t *fs,pgfs_native_atomic_callback callbac
     return pgfs_unit_end(fs,callback(((pgfs_data_t *)fs->fsap_data)->connection,baton,pool));
 }
 
+static svn_error_t *pgfs_native_bound_unit_begin(svn_fs_t *fs)
+{
+    if(!fs || fs->vtable!=&pgfs_fs_vtable || !fs->fsap_data)
+        return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgFS native binding requires a PgFS handle");
+    pgfs_data_t *data=fs->fsap_data;
+    apr_status_t status=apr_thread_mutex_lock(data->mutex);
+    if(status) return svn_error_wrap_apr(status,"PgFS bound transaction lock failed");
+    svn_error_t *error=NULL;
+    /* The ordinary unit helper does not implement SQL nesting. Check while
+     * owning the same nested mutex used by every operation on this PGconn. */
+    if(!data->connection || PQstatus(data->connection)!=CONNECTION_OK)
+        error=svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgFS bound transaction database connection is unavailable");
+    else if(PQtransactionStatus(data->connection)!=PQTRANS_IDLE)
+        error=svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgFS bound transaction requires an idle connection");
+    else error=pgfs_unit_begin(fs);
+    if(error) {
+        status=apr_thread_mutex_unlock(data->mutex);
+        if(status) error=svn_error_compose_create(error,svn_error_wrap_apr(status,"PgFS bound transaction unlock failed"));
+    }
+    return error;
+}
+static svn_error_t *pgfs_native_bound_unit_end(svn_fs_t *fs,svn_error_t *error)
+{
+    error=pgfs_unit_end(fs,error);
+    apr_status_t status=apr_thread_mutex_unlock(((pgfs_data_t *)fs->fsap_data)->mutex);
+    return status ? svn_error_compose_create(error,svn_error_wrap_apr(status,"PgFS bound transaction unlock failed")) : error;
+}
+
+svn_error_t *pgfs_native_begin_bound_txn(svn_fs_txn_t **txn,svn_fs_t *fs,
+    svn_revnum_t base,apr_uint32_t flags,const apr_array_header_t *properties,
+    pgfs_native_txn_binding_callback callback,void *baton,apr_pool_t *pool)
+{
+    if(!txn || !callback || !SVN_IS_VALID_REVNUM(base) || (properties &&
+        (properties->elt_size!=(int)sizeof(svn_prop_t) || properties->nelts<0 || (properties->nelts && !properties->elts))))
+        return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgFS bound transaction creation");
+    if(properties) for(int i=0;i<properties->nelts;++i) {
+        const svn_prop_t *prop=&APR_ARRAY_IDX(properties,i,svn_prop_t);
+        if(!prop->name || !*prop->name)
+            return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgFS transaction property name");
+    }
+    SVN_ERR(pgfs_native_bound_unit_begin(fs));
+    svn_fs_txn_t *created=NULL;
+    svn_error_t *error=pgfs_begin_body(&created,fs,base,flags,pool);
+    if(!error && properties) error=pgfs_txn_props_body(created,properties,pool);
+    if(!error) error=callback(((pgfs_data_t *)fs->fsap_data)->connection,created,baton,pool);
+    error=pgfs_native_bound_unit_end(fs,error);
+    if(!error) *txn=created;
+    return error;
+}
+
+svn_error_t *pgfs_native_abort_bound_txn(svn_fs_t *fs,const char *transaction_id,
+    pgfs_native_atomic_callback callback,void *baton,apr_pool_t *pool)
+{
+    if(!transaction_id || !*transaction_id || !callback)
+        return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Invalid PgFS bound transaction abort");
+    SVN_ERR(pgfs_native_bound_unit_begin(fs));
+    svn_error_t *error=pgfs_abort_body(fs,transaction_id,pool);
+    if(!error) error=callback(((pgfs_data_t *)fs->fsap_data)->connection,baton,pool);
+    return pgfs_native_bound_unit_end(fs,error);
+}
+
 svn_error_t *pgfs_native_delete_rows(svn_fs_t *fs,apr_pool_t *pool)
 {
     return pgfs_delete_fs_body(fs,pool);

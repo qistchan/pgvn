@@ -1,0 +1,152 @@
+{
+  "milestone": "M5 development",
+  "milestone_complete": false,
+  "catalog_schema": 6,
+  "git_base_commit": "b67d04182d8c627e97a54e04d63166327aedd16a",
+  "scope": "Passed component and shared-core regression evidence for the product hashes recorded in each entry. Subsequent Apache adapter/cache changes require fresh final-candidate gates.",
+  "records": [
+    {
+      "test_id": "m5-creation-d68e7c456a8e",
+      "report_sha256": "1716781413f641ac3c326cd9b3ddd39eb2a41b52d806108366e3e11551b5b13e",
+      "created_at": "2026-10-15T10:10:22.657746+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "dav_state_probe_sha256": "21fc6c1f195deba47c2c52e3ab691dd76296eaa629b42f41c3c887094ed4801a",
+        "pgvnserve_sha256": "7d45edbda449981c99b0f2cee6a0190e595bf970456431d5dadcbaf52760ffcb"
+      },
+      "details": {
+        "callback_failure_rolls_back_transaction_properties_and_binding": true,
+        "nested_unit_rejected_without_publishing": true,
+        "output_unchanged_on_failure": true,
+        "unicode_and_quote_binding": true,
+        "binary_initial_property": true,
+        "fresh_process_can_use_and_publish_transaction": true,
+        "concurrent_unique_binding_one_winner_no_orphan": true,
+        "process_loss_before_commit_rolls_back_everything": true,
+        "uuid_casing_preserves_writer_exclusion": true,
+        "full_verify": true,
+        "scope": "Private native atomic creation foundation. DAV provider, real mapping migration, hooks and HTTP/HTTPS remain incomplete."
+      },
+      "build_manifest_sha256": null
+    },
+    {
+      "test_id": "m5-registry-ce182d9eeaef",
+      "report_sha256": "512fe384ef0241f01a6710a16328589a1241d88cb09b33e503b9440f1e00e677",
+      "created_at": "2026-10-15T10:10:16.128527+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "dav_registry_probe_sha256": "05ac02a8fcff240cd6412328baa539431a013a44c16d78b843d9c7621b5ee252",
+        "pgvnserve_sha256": "7d45edbda449981c99b0f2cee6a0190e595bf970456431d5dadcbaf52760ffcb"
+      },
+      "details": {
+        "schema": 6,
+        "service_and_monitor_role_boundaries": true,
+        "repository_kind_and_owner_isolation": true,
+        "read_only_identity_cannot_create": true,
+        "duplicate_binding_rolls_back_staging": true,
+        "binary_initial_properties": true,
+        "cross_process_commit_result_derived_from_pgfs": true,
+        "delete_retains_commit_receipt_and_tombstone": true,
+        "start_hook_rejection_aborts_registered_transaction": true,
+        "committed_staging_visible_while_external_hook_runs": true,
+        "live_creation_lease_blocks_recovery_and_abort_is_rolled_back": true,
+        "policy_revocation_during_hook_rejects_activation": true,
+        "creator_and_hook_process_loss_recoverable_without_age_guess": true,
+        "old_active_transaction_never_age_deleted": true,
+        "missing_schema_table_fails_closed": true,
+        "full_verify": true,
+        "scope": "Production registry/core state APIs; actual Apache DAV/authz and HTTP/HTTPS remain incomplete."
+      },
+      "build_manifest_sha256": null
+    },
+    {
+      "test_id": "m5-upgrade-3799d0709274",
+      "report_sha256": "745413e52cb76541789f07fc772512565862c2296c190fe7af1799e667ea1611",
+      "created_at": "2026-10-15T10:25:12.259092+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "pgvnadmin_sha256": "812f21425be7f43bf0922f07a169b49d4e4c3deb752d2abdde97131c78e181c7"
+      },
+      "details": {
+        "saved_m4_binary_verified": true,
+        "actual_schema5_created_by_m4": true,
+        "schema5_to6": true,
+        "old_migration_checksums_unchanged": true,
+        "repository_identity_and_history_preserved": true,
+        "binary_content_preserved": true,
+        "service_privileges_updated": true,
+        "m4_rejects_schema6": true,
+        "tampered_migration6_rejected": true,
+        "full_verify": true
+      },
+      "build_manifest_sha256": null
+    },
+    {
+      "test_id": "m3-9bc37556b100",
+      "report_sha256": "a9ed996cca4bda1c9041ed4dfffe42919c96fdbc4c80954e2de3d681c5d1cfa7",
+      "created_at": "2026-10-15T10:29:12.209889+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "runtime/pgvn/bin/pgvnserve.exe": "a8399968ba7dd700143464bf9d8b32a224858bb45a1994053e3bcc8c8b8b20b6",
+        "runtime/pgvn/bin/pgvnadmin.exe": "812f21425be7f43bf0922f07a169b49d4e4c3deb752d2abdde97131c78e181c7",
+        "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "f79164dedc4db111db79b44486f7b11e4f9bf0ae2d02ca8b01b5b0e3aad76697",
+        "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "dff93d392c658bf9b0bdb94c7e0cc6bd76a04354be26e1d90bd33601e5d8b1c2"
+      },
+      "details": {},
+      "build_manifest_sha256": "b6eb66cd03cf492c8e5e38a8998fd7bf95d048dadf6f0f9d20291610abd9cb1b"
+    },
+    {
+      "test_id": "m4-smoke-05377f8b2c2f",
+      "report_sha256": "1fe017c73dd1bea7f6c9f44e59071c234139193a4dab38afd68397ec60fbf3a3",
+      "created_at": "2026-10-15T10:29:46.442203+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "pgvnserve_sha256": "a8399968ba7dd700143464bf9d8b32a224858bb45a1994053e3bcc8c8b8b20b6"
+      },
+      "details": {
+        "schema": 6,
+        "readonly_role_boundaries": true,
+        "token_origin_methods_queries": true,
+        "pagination_and_hostile_text": true,
+        "two_node_heartbeats": true,
+        "publication_command_ledger": true,
+        "database_disconnect_live_and_stale_snapshot": true,
+        "recovery": true,
+        "token_revocation": true,
+        "full_verify": true,
+        "milestone_complete": false
+      },
+      "build_manifest_sha256": null
+    },
+    {
+      "test_id": "m4-api-b3a81dfc364a",
+      "report_sha256": "f9c99ce47ce0519d0d1e396187891884d9e75ab928ec2630708c2ef77a7e924f",
+      "created_at": "2026-10-15T10:30:22.168878+00:00",
+      "status": "PASS",
+      "tested_products": {
+        "pgvnserve_sha256": "a8399968ba7dd700143464bf9d8b32a224858bb45a1994053e3bcc8c8b8b20b6"
+      },
+      "details": {
+        "reader_role": "pgvn_monitor",
+        "readonly_connection": true,
+        "search_and_repository_detail": true,
+        "bounded_series_and_validation": true,
+        "http_count_delta": 51,
+        "no_business_sql_on_http_refresh": true,
+        "wire_bytes_received": 133869,
+        "wire_bytes_sent": 133551,
+        "exact_socket_byte_accounting": true,
+        "sql_result_classes_balance": true,
+        "repository_error_correlation": true,
+        "malformed_metadata_is_unknown": true,
+        "configuration_readiness": true,
+        "windows_resources": true,
+        "event_ring_and_evicted_cursor": true,
+        "overprivileged_reader_rejected": true,
+        "full_verify": true
+      },
+      "build_manifest_sha256": null
+    }
+  ],
+  "remaining": "Actual HTTP/HTTPS DAV/authz operations, cross-request node switching and fault recovery, Apache worker telemetry, final frozen M5 gate."
+}

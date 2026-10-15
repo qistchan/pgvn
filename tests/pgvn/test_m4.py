@@ -35,7 +35,7 @@ def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def build_identity():
     manifest=prior_identity()
-    assert manifest["milestone"]=="M4" and manifest["capabilities"]["monitor"]=="full"
+    assert manifest["milestone"] in ("M4","M5-dev","M5") and manifest["capabilities"]["monitor"]=="full"
     actual={}
     for root,suffixes in (("web",None),("src",None),("sql",None),
         ("scripts/pgvn",{".py",".ps1"}),("tests/pgvn",{".py",".c",".inc",".java"})):

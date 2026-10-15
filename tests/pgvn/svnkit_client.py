@@ -30,8 +30,10 @@ class SvnKit:
         return [str(self.java / "java.exe"), "-cp", self.classpath, "SvnKitProbe", mode,
                 *self.urls, self.user, str(self.work / "svnkit-config"), str(content or "unused")]
 
-    def roundtrip(self, content):
-        result = subprocess.run(self.arguments("roundtrip", content), input=self.password + b"\n",
+    def roundtrip(self, content, directory=None):
+        args=self.arguments("roundtrip",content)
+        if directory:args.append(directory)
+        result = subprocess.run(args, input=self.password + b"\n",
             capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW, timeout=45)
         assert result.returncode == 0, result.stderr[:4000]
         return json.loads(result.stdout)

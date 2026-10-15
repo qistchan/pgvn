@@ -78,6 +78,12 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
         svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 5 is missing monitor surfaces");
     }
+    if(catalog>=6) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regclass('pgvn.dav_transactions') IS NOT NULL "
+            "AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL));
+        svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 6 is missing DAV state tables");
+    }
     for(apr_size_t i=0;i<sizeof(pgvn_migrations)/sizeof(pgvn_migrations[0]);++i) {
         const admin_migration *migration=&pgvn_migrations[i];
         if(!latest && !strcmp(migration->namespace_name,"pgvn") && migration->version>catalog) continue;
@@ -184,6 +190,10 @@ static svn_error_t *grant_role(admin_command *command,const char *role,int kind)
         "GRANT USAGE ON SCHEMA pgfs,pgvn TO %s;"
         "GRANT SELECT ON pgfs.repositories,pgvn.repositories,pgvn.routes,pgvn.schema_versions,pgvn.storage_migrations,pgfs.schema_versions TO %s;",identifier,identifier);
     SVN_ERR(script(command->context,sql));
+    if(kind==1 && command->context->catalog_version>=6) {
+        sql=apr_psprintf(command->pool,"GRANT SELECT,INSERT,UPDATE,DELETE ON pgvn.dav_transactions,pgvn.dav_bindings TO %s;",identifier);
+        SVN_ERR(script(command->context,sql));
+    }
     if(kind==0) sql=apr_psprintf(command->pool,
         "GRANT USAGE ON SCHEMA pgvn_monitor TO %s;"
         "GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA pgvn_monitor TO %s;"
@@ -220,5 +230,5 @@ svn_error_t *admin_db(admin_command *command)
     }
     return admin_emit_query(command,
         "SELECT json_build_object('ok',true,'database',current_database(),'server_version_num',current_setting('server_version_num')::integer,"
-        "'schema',json_build_object('pgfs',4,'pgvn',5,'checksums','match'))",0,NULL);
+        "'schema',json_build_object('pgfs',4,'pgvn',(SELECT max(version) FROM pgvn.schema_versions),'checksums','match'))",0,NULL);
 }

@@ -29,7 +29,7 @@ def hash_file(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def build_identity():
     manifest=json.loads((ROOT/"artifacts/pgvn/build/manifest.json").read_text())
-    assert manifest["milestone"] in ("M3","M4-dev","M4") and manifest["configuration"]=="Release"
+    assert manifest["milestone"] in ("M3","M4-dev","M4","M5-dev","M5") and manifest["configuration"]=="Release"
     assert manifest["capabilities"]["svn_protocol"] is True
     for path,expected in manifest["sources"].items(): assert hash_file(ROOT/path)==expected,path
     for path,metadata in manifest["products"].items(): assert hash_file(ROOT/path)==metadata["sha256"],path

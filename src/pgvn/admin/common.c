@@ -194,6 +194,7 @@ void admin_help(void)
          "  maintenance hotcopy SOURCE DESTINATION [--route /PREFIX] [--incremental]\n"
          "  maintenance purge SELECTOR --confirm-id STORAGE_ID\n"
          "  maintenance abort-txn SELECTOR TXN\n"
+         "  maintenance recover-dav-creation SELECTOR TXN\n"
          "  config show SELECTOR | config publish SELECTOR --expected-generation N --authz FILE [--groups FILE] [--hooks FILE] [--settings FILE]\n"
          "  authz validate --authz FILE [--groups FILE] | authz check SELECTOR USER PATH read|write\n"
          "  monitor-token create --label LABEL [--expires-in SECONDS]\n"

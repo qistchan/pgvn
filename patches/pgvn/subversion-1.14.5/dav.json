@@ -1,0 +1,33 @@
+{
+  "base_sha256": {
+    "mod_authz_svn/mod_authz_svn.c": "366a3ddb01eb3f4b423c4a8804e5dd61acbfb04826f8cabc56b0e541820ba5d2",
+    "mod_dav_svn/activity.c": "e84ca356a145d5e264f8e829155f9278db0443e9f37f2209fdedafe4b61cf7b1",
+    "mod_dav_svn/authz.c": "e11c44595e1e056eaceb59a1f578eed319fedc86f9507d20b14c64deeb0c86d9",
+    "mod_dav_svn/dav_svn.h": "903adb1a94e4f424952187b3f862f438fe23e1c9ebab11b914ad5f8fa487d1df",
+    "mod_dav_svn/deadprops.c": "f61b48d2811948985281df7d47e32bfeff478a5307edaadceaaba2a81dd07ade",
+    "mod_dav_svn/liveprops.c": "f96288c11c209fe6e0230e6365bc5b7893f973ac5dd63461d7a42d0506c5f556",
+    "mod_dav_svn/lock.c": "c5bc4498df507c4fa9fa46c943286cf1111b4edc7752cf07fab2a5681eb1bce7",
+    "mod_dav_svn/merge.c": "e8a9d878febb05d292e3a3b65fa434c9962c1349b09c171a6281c92177d6ff50",
+    "mod_dav_svn/mirror.c": "b9ab14e128b4c2f9dac4f7adcaf2041bf0dfaec8e2850d037f4b2d8a7ce50862",
+    "mod_dav_svn/mod_dav_svn.c": "a95f701c0a29191564cda13b3af7870fcdf257b3a1600b6ee7bbb11c7f49602e",
+    "mod_dav_svn/posts/create_txn.c": "fdbb9fe26e9c21d244acdd2cd4fc1c860f3f32cd4289c06ecc3096c8033d45f8",
+    "mod_dav_svn/reports/dated-rev.c": "c45708c8997cfbf537a8be8f866ffe9c7efbe96661a37f77e51735b6d411f3b1",
+    "mod_dav_svn/reports/deleted-rev.c": "639915799a79a8181e2227a050b2b556f74ae67704f99cc9f06a9e64a3d9ec80",
+    "mod_dav_svn/reports/file-revs.c": "6efa4630426dabd05340d1a435814091f206fec64e651ee3d5905618d5e148f8",
+    "mod_dav_svn/reports/get-location-segments.c": "a5127778d80cac5853ba5eade615152f007a40b31b1975896dd673bc2960908d",
+    "mod_dav_svn/reports/get-locations.c": "681da4c234580a41367fc0eebcde2fcea283884e7e0d2c160080db13e98e616a",
+    "mod_dav_svn/reports/get-locks.c": "1279f8eb1374d28ec3729430a9e1e0c3af4d1b5a6f3abc9821c1c34915e7957a",
+    "mod_dav_svn/reports/inherited-props.c": "a1ed27b41e1cd5b97f4a2fefd709233c2dac8592ecf83f6a44c5ed9c3460e586",
+    "mod_dav_svn/reports/list.c": "9c852cb6ba67f446291a5b2cca9522ec6084e98525885793beedf28318cfdc20",
+    "mod_dav_svn/reports/log.c": "3b2ec519b33951f9e940b2b435352e8bca4fe2bd40c14b670d4eaed6a4f71b92",
+    "mod_dav_svn/reports/mergeinfo.c": "094b9d34c12744ea45b1504fa27e6796a4149809aae8e0432df52f26b22fef2f",
+    "mod_dav_svn/reports/replay.c": "af77144b5161ebf3a84ec142f44d3dbea5e65dd13de12ad3165702fe6c622667",
+    "mod_dav_svn/reports/update.c": "172174063d0d87bcad5bee720d9c3971aad430011cabc5e325d2242a91393c87",
+    "mod_dav_svn/repos.c": "940bc5282be7b76330e2f08a8de4e8de1d569fab2ef91b7b40f87e67a5f98eb9",
+    "mod_dav_svn/status.c": "d88b5d771ddb21df01940057b25e4feab604f50b4651a742b018d5bee297c423",
+    "mod_dav_svn/util.c": "e27d11d47e16b9832ccc0dafafa5096284d805f86ec2a03210df77c3a286cc63",
+    "mod_dav_svn/version.c": "3904f5a2f4028987ae3fe2e3208ed3e8d0f905de2b5e21439203a76cbca1e29e",
+    "include/mod_dav_svn.h": "095e48c8d663e83dc37f9bccfba48adfe7441bbf9e7e476603aa07b53cf545cc",
+    "include/mod_authz_svn.h": "ca4ff6733d808803558c6a68919144072babe4f4eafe5718de9f6d958d7efb28"
+  }
+}

@@ -6,6 +6,7 @@ Actions: stop-peer, start-peer, block-db, restore-db, revoke-token, stop.
 The fixture expires after fifteen minutes and always restores DB access.
 """
 import hashlib
+import argparse
 import json
 import time
 import test_m3_credentials as setup
@@ -15,6 +16,7 @@ from test_m4_smoke import ready_status, until
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--dav',action='store_true');args=parser.parse_args()
     setup.setup_database(); setup.fixture.assert_ours()
     key=setup.WORK/"browser.key"; setup.admin("key","create",key,"browser-v1")
     setup.admin("user","set","pg vn test","writer","--key-file",key,input=PASSWORD)
@@ -26,6 +28,11 @@ def main():
     for i in range(51): setup.admin("repo","create",f"分页仓库 {i:02}","--route",f"/page-{i}")
     issued=setup.admin("monitor-token","create","--label","disposable browser fixture","--expires-in",1800)
     a,b=Node("browser-main",key),Node("browser-peer",key)
+    dav=None
+    if args.dav:
+        import test_m5_http as dav_test
+        dav=dav_test.Apache('browser-dav')
+        dav.config.write_text(dav.config.read_text(encoding='utf-8').replace('<Location /svn>','<Location />'),encoding='utf-8')
     for n in (a,b):
         with n.config.open("a",encoding="utf-8") as out: out.write("node-id = "+n.name+"\n")
     state={"url":f"http://127.0.0.1:{a.monitor_port}/monitor/","database":setup.DATABASE,
@@ -42,6 +49,14 @@ def main():
         client("svnmucc","-m","denied","mkdir",a.url("/ui-demo/forbidden"),expected=1)
         setup.run(setup.PROBE,["begin",repo["id"],"writer"],role="pgvn_service")
         until(lambda:len(__import__('test_m4_smoke').request(a,"/api/monitor/v1/nodes",issued["token"])[0]["items"])==2)
+        if dav:
+            dav.start();dav_test.svn('info',dav.url('/ui-demo'))
+            status,headers,body=dav.request('POST','/ui-demo/!svn/me',b'( create-txn )',{'Content-Type':'application/vnd.svn-skel'},user='reader')
+            assert status==403,(status,body)
+            state['dav_error_request_id']=headers['X-PgVN-Request-Id']
+            until(lambda:len(__import__('test_m4_smoke').request(a,'/api/monitor/v1/nodes',issued['token'])[0]['items'])==3)
+            state.update(dav_pid=dav.process.pid,dav_node_id='dav-browser-dav',
+                dav_modules={name:hashlib.sha256((dav_test.APACHE/'modules'/name).read_bytes()).hexdigest() for name in ('mod_dav_pgvn.so','mod_authz_pgvn.so')})
         state.update(pid=a.process.pid,peer_pid=b.process.pid,sequence=0,action="started",status="running")
         (setup.WORK/"browser-session.json").write_text(json.dumps(state),encoding="utf-8")
         print(json.dumps(dict(state,token=issued["token"])),flush=True)
@@ -56,6 +71,12 @@ def main():
                     if action=="stop": break
                     if action=="stop-peer": b.stop()
                     elif action=="start-peer": b.start()
+                    elif action=='stop-dav':
+                        if not dav:raise ValueError('DAV fixture is not enabled')
+                        dav.close()
+                    elif action=='start-dav':
+                        if not dav:raise ValueError('DAV fixture is not enabled')
+                        dav.start();dav_test.svn('info',dav.url('/ui-demo'));state['dav_pid']=dav.process.pid
                     elif action=="block-db":
                         setup.fixture.sql(f"ALTER DATABASE {setup.DATABASE} ALLOW_CONNECTIONS false",database="postgres"); blocked=True
                         setup.fixture.sql(f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{setup.DATABASE}'",database="postgres")
@@ -67,6 +88,7 @@ def main():
                     (setup.WORK/"browser-session.json").write_text(json.dumps(state),encoding="utf-8")
             time.sleep(.2)
     finally:
+        if dav:dav.close()
         if blocked: setup.fixture.sql(f"ALTER DATABASE {setup.DATABASE} ALLOW_CONNECTIONS true",database="postgres")
         a.stop(); b.stop(); setup.admin("monitor-token","revoke",issued["id"])
         state["status"]="stopped"

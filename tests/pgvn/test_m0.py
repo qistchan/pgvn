@@ -161,6 +161,7 @@ def monitor_console():
 
 
 def apache_modules():
+    manifest=json.loads((ROOT/'artifacts/pgvn/build/manifest.json').read_text())
     apache = RUNTIME / "apache"
     port = free_port()
     document_root = WORK / "htdocs"
@@ -173,6 +174,7 @@ PidFile "{(WORK / 'httpd.pid').as_posix()}"
 ErrorLog "{(WORK / 'apache-error.log').as_posix()}"
 LogLevel warn
 LoadModule authz_core_module modules/mod_authz_core.so
+LoadModule dav_module modules/mod_dav.so
 LoadModule dav_pgvn_module modules/mod_dav_pgvn.so
 LoadModule authz_pgvn_module modules/mod_authz_pgvn.so
 DocumentRoot "{document_root.as_posix()}"
@@ -209,7 +211,7 @@ AcceptFilter http none
                         pass
                     assert time.monotonic() < deadline, "Apache startup timeout"
                     time.sleep(0.1)
-                assert json.loads(body)["capabilities"]["dav_protocol"] is False
+                assert json.loads(body)["capabilities"]["dav_protocol"]==manifest['capabilities']['dav_protocol']
                 status, _, body = request(port, "/authz-bootstrap")
                 assert status == 200 and json.loads(body)["product"] == "PgVN"
             finally:
