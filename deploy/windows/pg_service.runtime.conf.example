@@ -1,0 +1,15 @@
+[pgvn_service]
+host=@DB_HOST@
+port=@DB_PORT@
+dbname=@DB_NAME@
+user=pgvn_service
+sslmode=@SSL_MODE@
+sslrootcert=@PGVN_ROOT@/config.local/postgresql-ca.pem
+
+[pgvn_monitor]
+host=@DB_HOST@
+port=@DB_PORT@
+dbname=@DB_NAME@
+user=pgvn_monitor
+sslmode=@SSL_MODE@
+sslrootcert=@PGVN_ROOT@/config.local/postgresql-ca.pem

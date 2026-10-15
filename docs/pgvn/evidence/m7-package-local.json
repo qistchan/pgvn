@@ -1,0 +1,458 @@
+{
+  "status": "LOCAL_PROFILE_PASS",
+  "milestone_complete": false,
+  "package_id": "e00975a030422a34",
+  "archive": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\packages\\PgVN-M5-windows-x64-e00975a030422a34.zip",
+  "archive_sha256": "f3749a8ef51680c0f621e2b4c046adf7f716ca658b7c351386410f112b20286d",
+  "archive_bytes": 22877635,
+  "package_manifest_sha256": "9e7ecf164555359d422c30c4312e0cd9ed289d6f50ab651137a61f24f07fd955",
+  "build_manifest_sha256": "7acf2fc447107a482d5f6082110bec86274dbeb6116b38aca2e0386eb0e68046",
+  "native_products_unchanged_from_m6_component_baseline": true,
+  "files": 178,
+  "native_images": 95,
+  "profile": {
+    "installation_path": "ASCII including spaces",
+    "username": "ASCII",
+    "database_auth": "Dedicated local loopback trust fixture"
+  },
+  "local_acceptance": {
+    "report_sha256": "d5546a771dcc2d6e28d106b40ddfa17179736aef78090dc7bc782d0265bc9ecc",
+    "report": {
+      "test_id": "m7-package-c9cb9cc55427",
+      "component": "M7 offline Windows package local acceptance",
+      "status": "PASS",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T15:14:22.428341+00:00",
+      "elapsed_seconds": 49.46799999999348,
+      "test_source_sha256": "b98b1a609b4e672f5171dede68b293df88da4f90ca2d74c42341e1b233287309",
+      "details": {
+        "archive": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\packages\\PgVN-M5-windows-x64-e00975a030422a34.zip",
+        "archive_sha256": "f3749a8ef51680c0f621e2b4c046adf7f716ca658b7c351386410f112b20286d",
+        "source_database": "pgvn_pkg_c9cb9cc55427",
+        "target_database": "pgvn_pkg_restore_c9cb9cc55427",
+        "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+        "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+        "package_id": "e00975a030422a34",
+        "package_status": "development-snapshot",
+        "localservice_svn_dav": true,
+        "unicode_install_path": false,
+        "unicode_username": false,
+        "installer_idempotent": true,
+        "source_head": 1,
+        "payload_sha256": "c9cab251ab92df1ef221fe6344e13df8a3f617783a5f6a016b771a6edfb05081",
+        "public_uuid": "d0b6c25b-0b57-894d-a8e3-e9ee29dd86b2",
+        "backup_manifest_sha256": "90fd8892cee6fa3593519dd84d1b9491e5d646136277e6fcbcd8721867b43ea6",
+        "restored_non_superuser": true,
+        "archive_acl_preserved": true,
+        "monitor_credentials_denied": true,
+        "public_telemetry_execute_denied": true,
+        "restored_binary_content_and_revprop": true,
+        "lock_preserved": true,
+        "monitor_token_preserved": true,
+        "restored_protocol_commit": true,
+        "restored_head": 2,
+        "source_unchanged": true,
+        "protected_key_reconfigured": true,
+        "global_hook_inventory_copied": true,
+        "tamper_rejected": true,
+        "package_files_unchanged": true,
+        "services_uninstalled": true,
+        "url_reservations_removed": true
+      },
+      "error": null,
+      "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-c9cb9cc55427",
+      "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+    }
+  },
+  "retained_failures": [
+    {
+      "reason": "PowerShell 5.1 inherited module auto-loading; fixed in Common",
+      "report_sha256": "ccf1b9ff51427f5d45d6580945258044f08ecb53fdc328859204060d844eda89",
+      "report": {
+        "test_id": "m7-package-4df6c3490847",
+        "component": "M7 offline Windows package local acceptance",
+        "status": "FAIL",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:45:05.249297+00:00",
+        "elapsed_seconds": 1.687000000005355,
+        "test_source_sha256": "1be920dcb509e322b7211c85a028e0fa501aa1b2f7801c63c3a4bf0a0e9b2b1d",
+        "details": {
+          "archive": "C:\\Program Files\\PostgreSQL\\pgfs-work\\package-check\\PgVN-M5-windows-x64-54a73640a9188db8.zip",
+          "archive_sha256": "52bda4ebeea0065d03069d7c6059abe65c64ff30e6a4c740ecb34b089e49d5ec",
+          "source_database": "pgvn_pkg_4df6c3490847",
+          "target_database": "pgvn_pkg_restore_4df6c3490847",
+          "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+          "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+          "package_id": "54a73640a9188db8",
+          "package_status": "development-snapshot",
+          "services_uninstalled": true
+        },
+        "error": "Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 299, in main\n    test.checks()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 191, in checks\n    source = self.extract('source', self.source_db, self.owner)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 150, in extract\n    self.script(root, 'Test-PgVNPackage.ps1')\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 83, in script\n    return self.powershell(root / 'deploy/windows' / name, parameters, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 77, in powershell\n    result = self.run([self.ps, '-NoProfile', '-File', self.private / 'launch.ps1', str(request)],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 68, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe'), 1, '', \"Get-FileHash : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable \\r\\nprogram. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.\\r\\nAt C:\\\\Project\\\\PgVN\\\\pgvn\\\\runtime\\\\pgvn\\\\tests\\\\m7-package-4df6c3490847\\\\部署 source space \\r\\n中文\\\\PgVN-M5-windows-x64-54a73640a9188db8\\\\deploy\\\\windows\\\\PgVN.Common.ps1:92 char:10\\r\\n+     if ((Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).H ...\\r\\n+          ~~~~~~~~~~~~\\r\\n    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], CommandNotFoundException\\r\\n    + FullyQualifiedErrorId : CommandNotFoundException\\r\\n \\r\\n\\r\\n\")\n",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-4df6c3490847",
+        "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+      }
+    },
+    {
+      "reason": "Acceptance credential bridge inherited module auto-loading; fixture fixed",
+      "report_sha256": "73e96df7af7560bc7f73d6ab3d7d42df9d7e7cc89ae8a0c2755dd47289d5a25b",
+      "report": {
+        "test_id": "m7-package-cadb7658f926",
+        "component": "M7 offline Windows package local acceptance",
+        "status": "FAIL",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:46:29.953812+00:00",
+        "elapsed_seconds": 5.5789999999979045,
+        "test_source_sha256": "1be920dcb509e322b7211c85a028e0fa501aa1b2f7801c63c3a4bf0a0e9b2b1d",
+        "details": {
+          "archive": "C:\\Program Files\\PostgreSQL\\pgfs-work\\package-check\\PgVN-M5-windows-x64-22ecfb58d9ede94c.zip",
+          "archive_sha256": "ac64e9432f1feb0f2d17aa4b6932df2b2f11af681c94472adb45130c4f2cfe6a",
+          "source_database": "pgvn_pkg_cadb7658f926",
+          "target_database": "pgvn_pkg_restore_cadb7658f926",
+          "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+          "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+          "package_id": "22ecfb58d9ede94c",
+          "package_status": "development-snapshot",
+          "services_uninstalled": true
+        },
+        "error": "Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 299, in main\n    test.checks()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 195, in checks\n    self.bridge(source, 'SetUser')\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 91, in bridge\n    return self.powershell(self.private / 'credential-bridge.ps1',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 77, in powershell\n    result = self.run([self.ps, '-NoProfile', '-File', self.private / 'launch.ps1', str(request)],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 68, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe'), 1, '', \"ConvertTo-SecureString : The 'ConvertTo-SecureString' command was found in the module 'Microsoft.PowerShell.Security', \\r\\nbut the module could not be loaded. For more information, run 'Import-Module Microsoft.PowerShell.Security'.\\r\\nAt C:\\\\Project\\\\PgVN\\\\pgvn\\\\runtime\\\\pgvn\\\\tests\\\\m7-package-cadb7658f926\\\\private\\\\credential-bridge.ps1:3 char:13\\r\\n+ $password = ConvertTo-SecureString $secret.Password -AsPlainText -For ...\\r\\n+             ~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : ObjectNotFound: (ConvertTo-SecureString:String) [], CommandNotFoundException\\r\\n    + FullyQualifiedErrorId : CouldNotAutoloadMatchingModule\\r\\n \\r\\n\\r\\n\")\n",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-cadb7658f926",
+        "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+      }
+    },
+    {
+      "reason": "ServiceController assembly load; fixed, owned services subsequently removed and re-audited",
+      "report_sha256": "ad6c0167f55db1dfa3917c917ccdbf4e8bfa246379525b1b209713aaf0877165",
+      "report": {
+        "test_id": "m7-package-23e59253820c",
+        "component": "M7 offline Windows package local acceptance",
+        "status": "FAIL",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:46:56.521615+00:00",
+        "elapsed_seconds": 10.109000000011292,
+        "test_source_sha256": "2705f83d3e7e7a0223a6229894ec0f706fc42ee2951f892e3ad75639b4fe7f27",
+        "details": {
+          "archive": "C:\\Program Files\\PostgreSQL\\pgfs-work\\package-check\\PgVN-M5-windows-x64-22ecfb58d9ede94c.zip",
+          "archive_sha256": "ac64e9432f1feb0f2d17aa4b6932df2b2f11af681c94472adb45130c4f2cfe6a",
+          "source_database": "pgvn_pkg_23e59253820c",
+          "target_database": "pgvn_pkg_restore_23e59253820c",
+          "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+          "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+          "package_id": "22ecfb58d9ede94c",
+          "package_status": "development-snapshot",
+          "services_uninstalled": false
+        },
+        "error": "Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 300, in main\n    test.checks()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 204, in checks\n    initial = self.install(source, 'source')\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 176, in install\n    self.script(root, 'Install-PgVNServices.ps1', {'ServiceName': service, 'DavServiceName': dav, 'StartupType': 'Manual'})\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 83, in script\n    return self.powershell(root / 'deploy/windows' / name, parameters, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 77, in powershell\n    result = self.run([self.ps, '-NoProfile', '-File', self.private / 'launch.ps1', str(request)],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 68, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe'), 1, '', 'New-Object : Cannot find type [ServiceProcess.ServiceController]: verify that the assembly containing this type is \\r\\nloaded.\\r\\nAt C:\\\\Project\\\\PgVN\\\\pgvn\\\\runtime\\\\pgvn\\\\tests\\\\m7-package-23e59253820c\\\\部署 source space \\r\\n中文\\\\PgVN-M5-windows-x64-22ecfb58d9ede94c\\\\deploy\\\\windows\\\\Install-PgVNServices.ps1:95 char:27\\r\\n+ ...      $controller = New-Object ServiceProcess.ServiceController($name)\\r\\n+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : InvalidType: (:) [New-Object], PSArgumentException\\r\\n    + FullyQualifiedErrorId : TypeNotFound,Microsoft.PowerShell.Commands.NewObjectCommand\\r\\n \\r\\n\\r\\n')\n\nTraceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 305, in main\n    test.cleanup()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 289, in cleanup\n    raise RuntimeError('Owned service cleanup failed: ' + '\\n'.join(errors))\nRuntimeError: Owned service cleanup failed: Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 284, in cleanup\n    self.script(root, 'Uninstall-PgVNServices.ps1')\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 83, in script\n    return self.powershell(root / 'deploy/windows' / name, parameters, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 77, in powershell\n    result = self.run([self.ps, '-NoProfile', '-File', self.private / 'launch.ps1', str(request)],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 68, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe'), 1, '', 'New-Object : Cannot find type [ServiceProcess.ServiceController]: verify that the assembly containing this type is \\r\\nloaded.\\r\\nAt C:\\\\Project\\\\PgVN\\\\pgvn\\\\runtime\\\\pgvn\\\\tests\\\\m7-package-23e59253820c\\\\部署 source space \\r\\n中文\\\\PgVN-M5-windows-x64-22ecfb58d9ede94c\\\\deploy\\\\windows\\\\PgVN.Common.ps1:169 char:16\\r\\n+     $service = New-Object ServiceProcess.ServiceController($Name)\\r\\n+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : InvalidType: (:) [New-Object], PSArgumentException\\r\\n    + FullyQualifiedErrorId : TypeNotFound,Microsoft.PowerShell.Commands.NewObjectCommand\\r\\n \\r\\n\\r\\n')\n\n",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-23e59253820c",
+        "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+      }
+    },
+    {
+      "reason": "Unresolved Unicode installation path: DAV DB unavailable",
+      "report_sha256": "f5227aae13a1eb9664ac55827fc459310f84724ac998bf3d276aadcf7310606f",
+      "report": {
+        "test_id": "m7-package-2e97c3aaf7ff",
+        "component": "M7 offline Windows package local acceptance",
+        "status": "FAIL",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:48:35.148147+00:00",
+        "elapsed_seconds": 15.39100000000326,
+        "test_source_sha256": "2705f83d3e7e7a0223a6229894ec0f706fc42ee2951f892e3ad75639b4fe7f27",
+        "details": {
+          "archive": "C:\\Program Files\\PostgreSQL\\pgfs-work\\package-check\\PgVN-M5-windows-x64-bf80f2d0ef4fca42.zip",
+          "archive_sha256": "cb7ad650108eaa2eaaa05b4230d1392e0dfccbbd055733e7794f17298477a9db",
+          "source_database": "pgvn_pkg_2e97c3aaf7ff",
+          "target_database": "pgvn_pkg_restore_2e97c3aaf7ff",
+          "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+          "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+          "package_id": "bf80f2d0ef4fca42",
+          "package_status": "development-snapshot",
+          "services_uninstalled": true
+        },
+        "error": "Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 300, in main\n    test.checks()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 204, in checks\n    initial = self.install(source, 'source')\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 178, in install\n    return json.loads(self.bridge(root, 'Smoke').stdout)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 91, in bridge\n    return self.powershell(self.private / 'credential-bridge.ps1',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 77, in powershell\n    result = self.run([self.ps, '-NoProfile', '-File', self.private / 'launch.ps1', str(request)],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 68, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe'), 1, '', 'svn.exe 失败，退出码 1：svn: E170013: Unable to connect to a repository at URL \\'http://127.0.0.1:51833/svn/package-demo\\'\\r\\nsvn: E175002: Unexpected HTTP status 503 \\'Service Unavailable\\' on \\'/svn/package-demo\\'\\r\\n\\r\\nAt C:\\\\Project\\\\PgVN\\\\pgvn\\\\runtime\\\\pgvn\\\\tests\\\\m7-package-2e97c3aaf7ff\\\\部署 source space \\r\\n中文\\\\PgVN-M5-windows-x64-bf80f2d0ef4fca42\\\\deploy\\\\windows\\\\PgVN.Common.ps1:76 char:13\\r\\n+             throw \"$([IO.Path]::GetFileName($FilePath)) 失败，退出码 $($pro ...\\r\\n+             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\r\\n    + CategoryInfo          : OperationStopped: (svn.exe 失败，退出码 ...package-demo\\'\\r\\n:String) [], RuntimeException\\r\\n    + FullyQualifiedErrorId : svn.exe 失败，退出码 1：svn: E170013: Unable to connect to a repository at URL \\'http://127.0.0. \\r\\n   1:51833/svn/package-demo\\'\\r\\nsvn: E175002: Unexpected HTTP status 503 \\'Service Unavailable\\' on \\'/svn/package-demo\\'\\r\\n\\r\\n \\r\\n\\r\\n')\n",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-2e97c3aaf7ff",
+        "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+      }
+    },
+    {
+      "reason": "Unicode-username svnmucc disconnect; reproduced against stock server/FSFS",
+      "report_sha256": "832bf405cc6485d411e6a86bf1d2ee8e692a31537e6b442a547ca87e8ecc1865",
+      "report": {
+        "test_id": "m7-package-091a8b0af0c1",
+        "component": "M7 offline Windows package local acceptance",
+        "status": "FAIL",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:54:00.613328+00:00",
+        "elapsed_seconds": 18.438000000009197,
+        "test_source_sha256": "149dcc8820d6d17ff89339f33331a9f091b9d68f8f74865af7c9cad6dc095fab",
+        "details": {
+          "archive": "C:\\Program Files\\PostgreSQL\\pgfs-work\\package-check\\PgVN-M5-windows-x64-bf80f2d0ef4fca42.zip",
+          "archive_sha256": "cb7ad650108eaa2eaaa05b4230d1392e0dfccbbd055733e7794f17298477a9db",
+          "source_database": "pgvn_pkg_091a8b0af0c1",
+          "target_database": "pgvn_pkg_restore_091a8b0af0c1",
+          "db_data_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\pg-primary",
+          "database_authentication_scope": "Existing isolated loopback trust fixture; production SCRAM/TLS configuration is a separate deployment check",
+          "package_id": "bf80f2d0ef4fca42",
+          "package_status": "development-snapshot",
+          "protocol_failure_diagnostics": {
+            "PgVNPkg-091a8b0af0c1-source": "\r\nSERVICE_NAME: PgVNPkg-091a8b0af0c1-source \r\n        TYPE               : 10  WIN32_OWN_PROCESS  \r\n        STATE              : 4  RUNNING \r\n                                (STOPPABLE, NOT_PAUSABLE, ACCEPTS_SHUTDOWN)\r\n        WIN32_EXIT_CODE    : 0  (0x0)\r\n        SERVICE_EXIT_CODE  : 0  (0x0)\r\n        CHECKPOINT         : 0x0\r\n        WAIT_HINT          : 0x0\r\n        PID                : 684\r\n        FLAGS              : \r\n",
+            "PgVNDAVPkg-091a8b0af0c1-source": "\r\nSERVICE_NAME: PgVNDAVPkg-091a8b0af0c1-source \r\n        TYPE               : 10  WIN32_OWN_PROCESS  \r\n        STATE              : 4  RUNNING \r\n                                (STOPPABLE, NOT_PAUSABLE, ACCEPTS_SHUTDOWN)\r\n        WIN32_EXIT_CODE    : 0  (0x0)\r\n        SERVICE_EXIT_CODE  : 0  (0x0)\r\n        CHECKPOINT         : 0x0\r\n        WAIT_HINT          : 0x0\r\n        PID                : 54548\r\n        FLAGS              : \r\n",
+            "/health/live": {
+              "status": 200,
+              "body": {
+                "live": true
+              }
+            },
+            "/health/ready": {
+              "status": 200,
+              "body": {
+                "ready": true
+              }
+            },
+            "/api/monitor/v1/events": {
+              "status": 200,
+              "body": {
+                "sampled_at": "2026-10-15T14:53:52Z",
+                "age_seconds": 4.516,
+                "freshness": "fresh",
+                "source": "postgresql_sample",
+                "node_id": "package-source",
+                "instance_id": "5978bc61-23b1-ad42-a7a0-e5cc78136d99",
+                "sample_id": 1,
+                "last_attempt_ok": true,
+                "reason": "ok",
+                "event_source": "process",
+                "items": [
+                  {
+                    "sampled_at": "2026-10-15T14:53:52Z",
+                    "source": "sampler",
+                    "code": "ok",
+                    "operation": "",
+                    "error_code": 0,
+                    "repository_id": "",
+                    "request_id": "",
+                    "sequence": 1
+                  }
+                ],
+                "limit": 50,
+                "capacity": 200,
+                "next_cursor": null
+              }
+            },
+            "/api/monitor/v1/overview": {
+              "status": 200,
+              "body": {
+                "sampled_at": "2026-10-15T14:53:52Z",
+                "age_seconds": 4.532,
+                "freshness": "fresh",
+                "source": "postgresql_sample",
+                "node_id": "package-source",
+                "instance_id": "5978bc61-23b1-ad42-a7a0-e5cc78136d99",
+                "sample_id": 1,
+                "last_attempt_ok": true,
+                "reason": "ok",
+                "ready": true,
+                "sampler_milliseconds": 156.0,
+                "sample_failures": 0,
+                "sampler_sql_calls": 7,
+                "sampler_sql_errors": 0,
+                "dropped_telemetry_batches": 0,
+                "database": {
+                  "version": 180006,
+                  "database_bytes": 9762495,
+                  "reader_read_only": true,
+                  "repositories": 1,
+                  "nodes_total": 0,
+                  "nodes_online": 0,
+                  "active_transactions": 0,
+                  "svn_locks": 0,
+                  "writable": true,
+                  "reader_restricted": true,
+                  "configuration_healthy": true,
+                  "application_connections_same_role": 1,
+                  "backend_lock_waits_same_role": 0
+                },
+                "process": {
+                  "source": "process",
+                  "version": "0.1.0-dev/M5",
+                  "started_at": "2026-10-15T14:53:51Z",
+                  "uptime_seconds": 4.625,
+                  "pid": 684,
+                  "commands": 4,
+                  "errors": 0,
+                  "commands_active": 0,
+                  "published_revisions": 0,
+                  "receipt_confirmations": 0,
+                  "sessions_active": 0,
+                  "sessions_started": 2,
+                  "sessions_rejected": 0,
+                  "sql_calls": 38,
+                  "sql_errors": 0,
+                  "sql_milliseconds": 12.591,
+                  "sql_active": 0,
+                  "connections_leased": 1,
+                  "connection_limit": 32,
+                  "connection_rejections": 0,
+                  "connection_failures": 0,
+                  "control_waiters": 0,
+                  "writers_active": 0,
+                  "bytes_received": 577,
+                  "bytes_sent": 1001,
+                  "byte_source": "svn_ra_svn_socket",
+                  "monitor_requests": 6,
+                  "monitor_errors": 0,
+                  "monitor_active": 1,
+                  "command_mean_milliseconds": 0.626,
+                  "command_p95_upper_bound_ms": 5,
+                  "command_p95_overflow": false,
+                  "resource_sampled_at": "2026-10-15T14:53:52Z",
+                  "cpu_percent_of_machine": null,
+                  "working_set_bytes": 12775424,
+                  "private_bytes": 3297280,
+                  "sqlstate_classes": {
+                    "00": 38,
+                    "08": 0,
+                    "22": 0,
+                    "23": 0,
+                    "25": 0,
+                    "40": 0,
+                    "42": 0,
+                    "53": 0,
+                    "55": 0,
+                    "57": 0,
+                    "other": 0
+                  }
+                }
+              }
+            }
+          },
+          "services_uninstalled": true
+        },
+        "error": "Traceback (most recent call last):\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 325, in main\n    test.checks()\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 239, in checks\n    self.svn(source, 'svnmucc', '-m', 'package r1', 'put', data, svn_url + '/payload.bin')\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 184, in svn\n    return self.run([root / 'tools/svn' / (tool + '.exe'), *map(str, arguments), '--non-interactive',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\PostgreSQL\\pgfs-work\\pgvn-src\\tests\\pgvn\\test_m7_package.py\", line 70, in run\n    raise AssertionError((arguments[0], result.returncode,\nAssertionError: (WindowsPath('C:/Project/PgVN/pgvn/runtime/pgvn/tests/m7-package-091a8b0af0c1/deployment source space/PgVN-M5-windows-x64-bf80f2d0ef4fca42/tools/svn/svnmucc.exe'), 1, '', \"svnmucc: E170013: Unable to connect to a repository at URL 'svn://127.0.0.1:63143/svn/package-demo'\\r\\nsvnmucc: E210002: Network connection closed unexpectedly\\r\\n\")\n",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m7-package-091a8b0af0c1",
+        "scope": "Current host, Windows PowerShell 5.1 and isolated PostgreSQL 16432 fixture only. No OS reboot, clean machine, cross-host HA or Polarion application acceptance."
+      }
+    }
+  ],
+  "stock_unicode_username_control": {
+    "report_sha256": "202d474ee65fb1b925d3906c59513d97c977ed0e11089493796785e76fecd5bb",
+    "report": {
+      "test_id": "m6-username-control-fdc46bd10f35",
+      "status": "PROBE_COMPLETE",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T15:02:45.350755+00:00",
+      "scope": "Unmodified bundled SVN 1.14.5 svnserve + FSFS, same native clients as the offline package, ASCII paths, isolated repository; no PgVN module/server.",
+      "binaries": {
+        "svn.exe": "abd18606b8366796815e752cd53404e5e1d5564b9a170b184b3786c4bd4ada5d",
+        "svnmucc.exe": "81c5b68a6570cc46cbeba91db74c1f79283ce634c77d360e48e1b9031708aae3",
+        "svnserve.exe": "a2118456bd8d4770606b87e2d0568d3ef132cfef40c55ffe298237b6d35ac1d0",
+        "svnadmin.exe": "8077af69b35e413b232f8af76a379bd564cfb1fb4b18b049787c8a02de1c54ad"
+      },
+      "records": [
+        {
+          "tool": "svn",
+          "username": "control-writer",
+          "exit_code": 0,
+          "stdout_sha256": "515ae34e5465a74e28ab817bab26f70439a3fe332ef0a14ae918c50f1f7fac9e",
+          "stderr": ""
+        },
+        {
+          "tool": "svnmucc",
+          "username": "control-writer",
+          "exit_code": 0,
+          "stdout_sha256": "3661caf81ce70b996abd571a3c4cd5dd723c339d0dc17a6892db8298b7ed1a10",
+          "stderr": ""
+        },
+        {
+          "tool": "svn",
+          "username": "包验证用户",
+          "exit_code": 0,
+          "stdout_sha256": "498f65e6d974a8d9498e523d93d4b459213732a09bdeb482b57cc02318e274bc",
+          "stderr": ""
+        },
+        {
+          "tool": "svnmucc",
+          "username": "包验证用户",
+          "exit_code": 1,
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr": "svnmucc: E170013: Unable to connect to a repository at URL 'svn://127.0.0.1:49236/demo'\r\nsvnmucc: E170001: Authentication error from server: Username not found\r\n"
+        }
+      ],
+      "repository_head": "1",
+      "server_stopped": true
+    }
+  },
+  "post_run_cleanup_audit": {
+    "all_owned_services_and_url_acls_absent": true,
+    "records": [
+      {
+        "test_directory": "m7-package-091a8b0af0c1",
+        "service": "PgVNPkg-091a8b0af0c1-source",
+        "dav": "PgVNDAVPkg-091a8b0af0c1-source",
+        "url": "http://127.0.0.1:63144/"
+      },
+      {
+        "test_directory": "m7-package-23e59253820c",
+        "service": "PgVNPkg-23e59253820c-source",
+        "dav": "PgVNDAVPkg-23e59253820c-source",
+        "url": "http://127.0.0.1:60531/"
+      },
+      {
+        "test_directory": "m7-package-2e97c3aaf7ff",
+        "service": "PgVNPkg-2e97c3aaf7ff-source",
+        "dav": "PgVNDAVPkg-2e97c3aaf7ff-source",
+        "url": "http://127.0.0.1:51832/"
+      },
+      {
+        "test_directory": "m7-package-556d96b23f73",
+        "service": "PgVNPkg-556d96b23f73-restore",
+        "dav": "PgVNDAVPkg-556d96b23f73-restore",
+        "url": "http://127.0.0.1:57177/"
+      },
+      {
+        "test_directory": "m7-package-556d96b23f73",
+        "service": "PgVNPkg-556d96b23f73-source",
+        "dav": "PgVNDAVPkg-556d96b23f73-source",
+        "url": "http://127.0.0.1:57047/"
+      },
+      {
+        "test_directory": "m7-package-61a2405a898f",
+        "service": "PgVNPkg-61a2405a898f-restore",
+        "dav": "PgVNDAVPkg-61a2405a898f-restore",
+        "url": "http://127.0.0.1:57681/"
+      },
+      {
+        "test_directory": "m7-package-61a2405a898f",
+        "service": "PgVNPkg-61a2405a898f-source",
+        "dav": "PgVNDAVPkg-61a2405a898f-source",
+        "url": "http://127.0.0.1:57480/"
+      },
+      {
+        "test_directory": "m7-package-ba36fa2f4a03",
+        "service": "PgVNPkg-ba36fa2f4a03-source",
+        "dav": "PgVNDAVPkg-ba36fa2f4a03-source",
+        "url": "http://127.0.0.1:59442/"
+      },
+      {
+        "test_directory": "m7-package-c9cb9cc55427",
+        "service": "PgVNPkg-c9cb9cc55427-restore",
+        "dav": "PgVNDAVPkg-c9cb9cc55427-restore",
+        "url": "http://127.0.0.1:49305/"
+      },
+      {
+        "test_directory": "m7-package-c9cb9cc55427",
+        "service": "PgVNPkg-c9cb9cc55427-source",
+        "dav": "PgVNDAVPkg-c9cb9cc55427-source",
+        "url": "http://127.0.0.1:49181/"
+      }
+    ]
+  },
+  "reproducibility": "Same frozen manifest and package inputs rebuilt to the identical ZIP hash; see checksum and immutable output guard.",
+  "pending": [
+    "Unicode installation-path DAV connection investigation",
+    "full M6 regression/fault/performance acceptance",
+    "clean Windows installation/reboot",
+    "cross-host failover",
+    "isolated Polarion application acceptance"
+  ],
+  "scope": "Offline development snapshot and local ASCII profile only; not a release or M7 completion."
+}

@@ -1,0 +1,12 @@
+[pgvn]
+connection = service=pgvn_service
+monitor-connection = service=pgvn_monitor
+credential-key-file = @PGVN_ROOT@/secrets/credentials-v1.key
+identity-domain = pgvn
+hook-root = @PGVN_ROOT@/hooks
+listen-host = 127.0.0.1
+listen-port = @SVN_PORT@
+node-id = @NODE_ID@
+read-only = false
+max-request-bytes = 67108864
+max-response-bytes = 67108864

@@ -1,0 +1,3 @@
+[pgvn]
+connection = service=pgvn_restore
+hook-root = @PGVN_ROOT@/hooks

@@ -6,6 +6,8 @@
 
 监控页面已更新明暗主题、集中健康摘要、趋势图表和移动布局；实测范围、截图及高对比度待验收项见 [监控改版记录](docs/pgvn/M4-monitor.zh-CN.md#监控页面改版)。
 
+原生 Windows 离线包、独立数据库、LocalService 安装及备份恢复步骤见 [新机部署指南](deploy/windows/README.zh-CN.md)。开发快照及本机验收范围见 [M7 部署记录](docs/pgvn/M7-package-local.zh-CN.md)，固定历史和状态恢复进展见 [M6 组件验证](docs/pgvn/M6-validation.zh-CN.md)。
+
 ## Windows 开发构建
 
 准备固定 SVN 1.14.5、APR 1.7.6、APR-util 1.6.3 源码/头文件、匹配的 Windows x64 DLL、Apache 2.4.68 SDK、PostgreSQL 18.6 SDK 和 LLVM-MinGW。源码/SDK 可放在任意只读目录，不修改原安装。构建需要 Python 3，运行时无需 Python 或 Node.js。

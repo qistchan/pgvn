@@ -1,0 +1,178 @@
+{
+  "status": "COMPONENTS_PASS",
+  "milestone_complete": false,
+  "frozen_build_manifest_sha256": "82ba42e0277f7f44557a6433e9e63ac379578862def0a0590e207659d490008a",
+  "records": {
+    "history": {
+      "report_sha256": "4d38b980fc3616460eaf2ede3309e950bc87a2aa16d78c2f97a7534a68a0f71c",
+      "report": {
+        "test_id": "m6-history-7dec7f595eb4",
+        "component": "M6 native fixed real history",
+        "status": "PASS",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:30:06.132092+00:00",
+        "elapsed_seconds": 1721.4530000000086,
+        "details": {
+          "build_manifest_sha256": "82ba42e0277f7f44557a6433e9e63ac379578862def0a0590e207659d490008a",
+          "test_source_sha256": "428ea847dcbaf127c5186089c14df7188898d60c48318c70eeaf1fa679e37a93",
+          "database": "pgvn_m6_history_1f98569f9104",
+          "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-1f98569f9104",
+          "archive_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+          "archive_bytes": 61641751,
+          "head": 637,
+          "original_repository_accessed": false,
+          "revision_property_parser_sha256": "6693f036424af74158ccc6c5d8b8723509056aad15d6058893b488f9cb1ea2e8",
+          "repository_id": "bedb337b-42a1-6645-9adc-359269090465",
+          "fsfs_load_seconds": 96.01499999999942,
+          "native_load_seconds": 839.875,
+          "preparation_evidence": {
+            "test_id": "m6-history-1f98569f9104",
+            "status": "FAIL",
+            "report_sha256": "e8d293ccdb401841639abedc6a9d1b556f5995d49d99f334348a0007cd1d7a79",
+            "manifest_sha256": "c8b36706b8e039ec7b4a2340cc843f1f13b3afa5f312c818f1dcd393a1e928b3",
+            "test_source_sha256": "b0cd4e7b3a40078467c53a9d4fbf8aab6ea884b40f18b55ce15e00621431afff",
+            "original_verify_seconds": 411.68700000000536,
+            "original_verified_revisions": 638,
+            "note": "Import reused after a fixture access-state failure; full native verify is run again below."
+          },
+          "verified_revisions": 638,
+          "verify_seconds": 414.5159999999887,
+          "validation_work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-1f98569f9104\\validation-7dec7f595eb4",
+          "snapshots": [
+            {
+              "revision": 0,
+              "sha256": "d69c8744dedb5856053247f6eea802ca0edf9e125eee98b6e5ab61abf5dadcdc",
+              "nodes": 1
+            },
+            {
+              "revision": 1,
+              "sha256": "79fe4d02150425fcfa7edd293c88dcf9c6bc0eca25a031f007b4cd1df42a3dcb",
+              "nodes": 2791
+            },
+            {
+              "revision": 318,
+              "sha256": "3f7b03994a3287cc3250a3d4c9a53e65f9c854aab1cc14fdfcf913ab5d8e121f",
+              "nodes": 10423
+            },
+            {
+              "revision": 636,
+              "sha256": "684109575198599e95796ef13409c389fbfe55d7b837d01992d83326953da78c",
+              "nodes": 10644
+            },
+            {
+              "revision": 637,
+              "sha256": "0d40bd98ed26a976e9a2c40a53343b623ab87503da83482d4c444473fb2a1060",
+              "nodes": 10644
+            }
+          ],
+          "changed_path_oracle": {
+            "r0": "stock svnlook changed, empty",
+            "r1_through_head": "stock svn log --xml --verbose"
+          },
+          "changed_path_revisions_compared": 638,
+          "revision_properties_compared": 638,
+          "changed_ledger_sha256": "64bc1dbc23b82439def8af6ed2e6f16a1c94b0c81a9f78e28079610ed43490e9",
+          "revprop_ledger_sha256": "d26bbe1cad332e8abbc1ff0744a573f4c8e8fac8415b889798811d03f2b35610",
+          "changed_node_kinds_compared": 11480,
+          "known_change_flags_compared": 22960,
+          "oracle_unknown_change_flag_attributes": 0,
+          "native_dump_seconds": 139.39100000000326,
+          "dump_roundtrip_revision_properties": true,
+          "dump_roundtrip_snapshots": true,
+          "native_dump_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+          "no_per_repository_directory": true
+        },
+        "error": null,
+        "pgvnadmin_sha256": "f86c0d18d554d7401a2325a81f89bd4a8d12aabc40aab6666ef66173538b077c",
+        "core_probe_sha256": "0bb700c0026bca154bd0272a7acc75689e85268806b933a0229258c6e5df0409",
+        "scope": "Authorized fixed export only. Full native verify and all changed/revision-property records; five logical full snapshots and FSFS dump/load round-trip. No claim of every-node comparison at every revision."
+      }
+    },
+    "backup": {
+      "report_sha256": "9e57d1b5aaf9826bcdcdd0b08ec877624596658296ffe649ccc20e8c71dbf6d1",
+      "report": {
+        "test_id": "m6-backup-4e45713029fa",
+        "component": "M6 logical backup, protected keys and stateful restore",
+        "status": "PASS",
+        "milestone_complete": false,
+        "created_at": "2026-10-15T14:09:16.786412+00:00",
+        "elapsed_seconds": 25.64100000000326,
+        "details": {
+          "source_database": "pgvn_m6_backup_4e45713029fa",
+          "target_database": "pgvn_m6_restore_4e45713029fa",
+          "source_head": 2,
+          "restored_head_after_resume": 3,
+          "repository_identity_preserved": true,
+          "public_uuid": "a0c8ec3b-bee3-4b4b-bf4a-e1c1af6f721b",
+          "logical_tables_and_sequences": 30,
+          "logical_row_ledger_sha256": "94ed910c46b079fc8a235341bd30f9efd871d170bd7d813562cc8eb2189787dd",
+          "full_row_and_sequence_equality": true,
+          "archive_sha256": "0f2f4dfa63ba9d59ac67312782629a5071cdf3676e3433f88f3f3907fdc2ebf7",
+          "archive_bytes": 109133,
+          "protected_config_file_hashes": {
+            "authz.conf": "522082e0ed6d77aa1eb35a0f5c95156114c9d81c06234630d9a68dba419cbc52",
+            "credentials-v1.key": "bf6cae18e361fe75ccd473cab44330b4f013708c194f405b8f90a775832e6a8e",
+            "hooks.json": "22ffbf729a2ec3c5014f3737f8131edd482860f33e64ce921684310bfb6e51d2",
+            "users.htpasswd": "0db34c0f39d676e9564baf2b17d62f95db735e6208853ac4972f78d804d92022"
+          },
+          "encrypted_credential_authentication": true,
+          "monitor_token_survives": true,
+          "svn_lock_token_preserved": true,
+          "binary_revision_property_preserved": true,
+          "published_receipt_survives": true,
+          "pending_dav_transaction_resumes": true,
+          "repeated_merge_no_new_revision": true,
+          "reader_write_denied": true,
+          "public_telemetry_execute_denied": true,
+          "monitor_credentials_read_denied": true,
+          "source_unchanged": true,
+          "no_per_repository_directory": true,
+          "restore_owner_superuser": false,
+          "archive_acl_preserved": true,
+          "test_source_sha256": "1c4e8dbbf4bdfb512afc5d9e9aef17c508de3b680fc9674a621e1146d07e94fc",
+          "build_manifest_sha256": "82ba42e0277f7f44557a6433e9e63ac379578862def0a0590e207659d490008a"
+        },
+        "error": null,
+        "scope": "Two unique databases and independent service processes on the dedicated local cluster; not cross-host failover or a clean-machine test."
+      }
+    }
+  },
+  "retained_history_preparation_failure": {
+    "report_sha256": "e8d293ccdb401841639abedc6a9d1b556f5995d49d99f334348a0007cd1d7a79",
+    "report": {
+      "test_id": "m6-history-1f98569f9104",
+      "component": "M6 native fixed real history",
+      "status": "FAIL",
+      "milestone_complete": false,
+      "created_at": "2026-10-15T13:56:32.323228+00:00",
+      "elapsed_seconds": 1350.8440000000119,
+      "details": {
+        "build_manifest_sha256": "c8b36706b8e039ec7b4a2340cc843f1f13b3afa5f312c818f1dcd393a1e928b3",
+        "test_source_sha256": "b0cd4e7b3a40078467c53a9d4fbf8aab6ea884b40f18b55ce15e00621431afff",
+        "database": "pgvn_m6_history_1f98569f9104",
+        "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-1f98569f9104",
+        "archive_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+        "archive_bytes": 61641751,
+        "head": 637,
+        "original_repository_accessed": false,
+        "revision_property_parser_sha256": "6693f036424af74158ccc6c5d8b8723509056aad15d6058893b488f9cb1ea2e8",
+        "fsfs_load_seconds": 96.01499999999942,
+        "repository_id": "bedb337b-42a1-6645-9adc-359269090465",
+        "native_load_seconds": 839.875,
+        "verified_revisions": 638,
+        "verify_seconds": 411.68700000000536
+      },
+      "error": "Traceback (most recent call last):\n  File \"C:\\Project\\PgVN\\pgvn\\tests\\pgvn\\test_m6_history.py\", line 160, in main\n    try:checks();status='PASS';error=None\n        ^^^^^^^^\n  File \"C:\\Project\\PgVN\\pgvn\\tests\\pgvn\\test_m6_history.py\", line 94, in checks\n    actual,_=command(setup.PROBE,'snapshot',repo['id'],rev)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Project\\PgVN\\pgvn\\tests\\pgvn\\test_m6_history.py\", line 51, in command\n    assert result.returncode==0,(Path(executable).name,result.returncode,result.stderr[:2000])\n           ^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('core_probe.exe', 1, b'PgVN: E160013: PgVN repository or configuration is unavailable\\r\\n')\n",
+      "pgvnadmin_sha256": "f86c0d18d554d7401a2325a81f89bd4a8d12aabc40aab6666ef66173538b077c",
+      "core_probe_sha256": "0bb700c0026bca154bd0272a7acc75689e85268806b933a0229258c6e5df0409",
+      "scope": "Authorized fixed export only. Full native verify and all changed/revision-property records; five logical full snapshots and FSFS dump/load round-trip. No claim of every-node comparison at every revision."
+    }
+  },
+  "pending": [
+    "upstream protocol fixture/regression entry",
+    "failure ledger and cross-host database failover",
+    "representative performance and full monitor overhead",
+    "Unicode install-path and username deployment findings"
+  ],
+  "scope": "Fixed authorized export and two unique databases on the dedicated local PostgreSQL cluster. M6 remains incomplete."
+}

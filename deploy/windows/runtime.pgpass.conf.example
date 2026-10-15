@@ -1,0 +1,3 @@
+# Fill only service/monitor passwords in this service-readable file.
+@DB_HOST_PASS@:@DB_PORT@:@DB_NAME_PASS@:pgvn_service:CHANGE_ME_SERVICE_PASSWORD
+@DB_HOST_PASS@:@DB_PORT@:@DB_NAME_PASS@:pgvn_monitor:CHANGE_ME_MONITOR_PASSWORD

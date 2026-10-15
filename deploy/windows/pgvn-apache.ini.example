@@ -1,0 +1,4 @@
+[pgvn]
+connection = service=pgvn_service
+hook-root = @PGVN_ROOT@/hooks
+node-id = dav-@NODE_ID@

@@ -1,0 +1,4 @@
+# This operator-only file must never be readable by the service account.
+@DB_HOST_PASS@:@DB_PORT@:@DB_NAME_PASS@:pgvn_admin:CHANGE_ME_ADMIN_PASSWORD
+@DB_HOST_PASS@:@DB_PORT@:@DB_NAME_PASS@:pgvn_migrate:CHANGE_ME_MIGRATION_PASSWORD
+@DB_HOST_PASS@:@DB_PORT@:@DB_NAME_PASS@_restore:pgvn_restore:CHANGE_ME_RESTORE_PASSWORD
