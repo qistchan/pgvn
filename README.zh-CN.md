@@ -13,19 +13,16 @@
 
 [English](README.md) · **简体中文**
 
-[产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [部署](#快速部署) · [使用](#使用说明) · [构建](#源码构建) · [常见问题](#常见问题) · [项目状态](#项目状态) · [文档](#文档导航)
+[快速部署](#快速部署) · [产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [使用说明](#使用说明) · [文档导航](#文档导航)
 
 </div>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/pgvn/images/monitor-night-ops-dark.jpg">
-  <source media="(prefers-color-scheme: light)" srcset="docs/pgvn/images/m6-copy-prop-overview.jpg">
-  <img alt="PgVN 控制台：服务健康、数据库采样、在线节点和请求趋势" src="docs/pgvn/images/monitor-night-ops-dark.jpg" width="1280">
-</picture>
+![PgVN 监控网页：服务健康、数据库采样、在线节点和请求趋势](docs/pgvn/images/m6-workflows-overview.jpg)
 
-*真实页面截图，来自本机隔离验证环境，图中为测试数据。*
+*内置监控控制台，截图来自已记录的本机验证。[查看网页功能](#监控网页)。*
 
-> **当前阶段：** M0–M5 已有本机验收记录；M6 的完整兼容性、故障与性能验证正在推进。全新机器安装、整机重启、跨主机故障切换和 Polarion 应用验收尚待完成。目前部署包为开发快照，各项结果的实测范围和构建身份以[进展与验证](docs/pgvn/progress.zh-CN.md)为准。
+> [!IMPORTANT]
+> **开发快照。** M0–M5 已有本机验收记录；M6 的兼容性、故障与性能验证正在推进。全新机器安装、整机重启、跨主机故障切换和 Polarion 应用验收尚待完成。各项结果的实测范围和构建身份以[进展与验证](docs/pgvn/progress.zh-CN.md)为准。
 
 ## 从这里开始
 
@@ -40,7 +37,9 @@
 
 PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 PostgreSQL 中。标准 SVN 客户端继续通过 `svn://`、HTTP 或 HTTPS 接入；运维人员通过 `pgvnadmin` 管理仓库，通过内置网页查看服务状态。
 
-产品由专用服务端、Apache 模块和管理工具组成，公共仓库核心运行在各组件进程内部。早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。Polarion 是目标集成场景，仍需完成应用层验收。
+PgVN 面向希望保留 SVN 客户端工作流、通过统一 PostgreSQL 后端管理仓库存储与策略的团队。产品由专用服务端、Apache 模块和管理工具组成，公共仓库核心分别链接到各组件进程。
+
+早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。Polarion 是目标集成场景，仍需完成应用层验收。
 
 | 能力 | 当前实现 |
 | --- | --- |
@@ -53,23 +52,28 @@ PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 Postgr
 
 ## 监控网页
 
-网页内嵌在 `pgvnserve.exe` 中，运行时不需要 Node.js、Python 或独立前端服务。当前界面使用中文，支持明暗主题、窄屏布局和键盘导航。
+网页内嵌在 `pgvnserve.exe` 中，运行时不需要 Node.js、Python 或独立前端服务。当前使用中文界面，支持明暗主题、桌面与窄屏布局、键盘导航、自动刷新及暂停。
 
-- 健康条集中显示服务就绪、数据库采样、可写主库、节点可见性和样本新鲜度。
-- 提供概览、节点、仓库、数据库、请求与错误五个视图；仓库列表支持搜索、分页和详情，趋势图展示请求活动与近期失败。
-- 展开 Apache 工作进程，可查看 HTTP 方法计数、活动请求和通过 `X-PgVN-Request-Id` 关联的错误。
-- 使用可过期、可撤销的 `monitor:read` 令牌，浏览器只在当前页面内存保存令牌。
+| 视图 | 可以查看的内容 |
+| --- | --- |
+| 概览 | 服务就绪、可写主库、样本新鲜度、请求趋势与进程资源。 |
+| 节点 | 心跳、服务实例，以及可展开的 Apache 工作进程遥测。 |
+| 仓库 | 搜索与分页、仓库身份、HEAD 修订、配置代数、事务和锁。 |
+| 数据库 | 监控角色可见范围内的连接使用、SQL 活动、等待及采样状态。 |
+| 请求与错误 | SVN 命令结果、实例实际生效的会话容量、DAV 方法计数和关联请求错误。 |
+
+访问使用可过期、可撤销的 `monitor:read` 令牌，页面仅在内存保存令牌。仓库、用户和策略变更通过 `pgvnadmin` 执行，连接方式见[监控网页与令牌](#监控网页与令牌)。
 
 <details>
-<summary>查看亮色主题与移动端节点详情</summary>
+<summary>更多截图：请求与错误 · 窄屏节点页</summary>
 
-![PgVN 亮色运维控制台](docs/pgvn/images/m6-copy-prop-overview.jpg)
+![PgVN 请求与错误视图，显示当前实例实际生效的 SVN 会话容量](docs/pgvn/images/m6-workflows-capacity.jpg)
 
 <p align="center">
-  <img src="docs/pgvn/images/m6-copy-prop-workers.jpg" alt="PgVN 窄屏节点详情，表格可在自身容器内滚动" width="300">
+  <img src="docs/pgvn/images/m6-workflows-nodes.jpg" alt="PgVN 窄屏节点概览：样本新鲜度、在线节点和工作进程数量" width="300">
 </p>
 
-*亮色概览与窄屏节点详情来自已记录的 [copy/prop 浏览器验证](docs/pgvn/M6-network-copy-prop.zh-CN.md#监控输入清理与完整浏览器验收)。截图用于展示界面，图中的采样数值不代表性能基准。*
+*以上截图及首页概览图来自同一次已记录的[工作流与容量浏览器验收](docs/pgvn/M6-network-workflows.zh-CN.md#冻结构建与完整回归)。图中为隔离环境测试数据，采样数值不代表性能基准。*
 
 </details>
 
@@ -77,15 +81,28 @@ PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 Postgr
 
 ```mermaid
 flowchart TB
-    SVN["标准 SVN 客户端"] -->|"svn://"| SERVE["pgvnserve<br/>SVN 与内置监控"]
-    SVN -->|"HTTP / HTTPS"| DAV["pgvnhttpd<br/>mod_dav_pgvn<br/>mod_authz_pgvn"]
-    ADMIN["pgvnadmin"] --> CORE
-    SERVE --> CORE["PgVN 公共核心<br/>进程内静态链接"]
-    DAV --> CORE
-    CORE --> FS["PgFS 存储引擎"]
-    FS --> PG[("PostgreSQL<br/>pgfs / pgvn / pgvn_monitor")]
-    CORE -->|"仓库注册、策略、DAV 状态"| PG
-    WEB["浏览器控制台"] -->|"只读监控 API"| SERVE
+    CLIENT["标准 SVN 客户端"]
+    WEB["浏览器控制台"]
+    OPERATOR["运维人员 / 自动化"]
+
+    subgraph RUNTIME["原生 Windows 运行组件"]
+        SERVE["pgvnserve<br/>SVN 接入与内置监控"]
+        DAV["pgvnhttpd<br/>mod_dav_pgvn + mod_authz_pgvn"]
+        ADMIN["pgvnadmin"]
+        CORE["PgVN 公共仓库核心<br/>分别链接到各组件"]
+        FS["PgFS 存储引擎"]
+        SERVE --> CORE
+        DAV --> CORE
+        ADMIN --> CORE
+        CORE --> FS
+    end
+
+    CLIENT -->|"svn://"| SERVE
+    CLIENT -->|"HTTP / HTTPS"| DAV
+    WEB -->|"只读监控 API"| SERVE
+    OPERATOR --> ADMIN
+    FS --> PG[("PostgreSQL<br/>历史、仓库注册、策略与持久化 DAV 状态")]
+    CORE -->|"仓库注册、策略与 DAV 状态"| PG
     SERVE -->|"监控角色"| PG
     DAV -->|"工作进程遥测"| PG
 ```
@@ -143,11 +160,11 @@ if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -ine $expected) {
     throw 'ZIP 摘要不符'
 }
 Expand-Archive -LiteralPath $zip -DestinationPath 'C:\Deploy'
-$root = 'C:\Deploy\PgVN-M5-windows-x64-PACKAGE_ID'
+$root = Join-Path 'C:\Deploy' ([IO.Path]::GetFileNameWithoutExtension($zip))
 & "$root\deploy\windows\Test-PgVNPackage.ps1"
 ```
 
-ZIP 内含一个顶层目录，`$root` 应指向该目录，其中包含 `bin`、`apache`、`deploy`。包检查会核对文件摘要、x64 依赖和程序启动。
+ZIP 内含与压缩包基本名称相同的顶层目录，`$root` 指向该目录，其中包含 `bin`、`apache`、`deploy`。包检查会核对文件摘要、x64 依赖和程序启动。自行生成快照见[源码构建](#源码构建)，包内容与本机验证见[打包指南](docs/pgvn/M7-package-local.zh-CN.md)。
 
 ### 2. 准备数据库与配置
 
@@ -306,6 +323,22 @@ Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF
 
 令牌原值仅显示一次，权限固定为 `monitor:read`，不要放入 URL。重新加载页面需再次认证；过期或撤销后，控制台断开并清空已显示的业务数据。网页仅供只读监控，仓库和用户变更通过 `pgvnadmin` 执行。
 
+### 节点配置
+
+初始化后，可编辑已有的 `config.local\pgvnserve.ini` 设置 SVN 入口和会话上限。以下仅为片段，应保留生成的数据库连接与密钥设置：
+
+```ini
+[pgvn]
+node-id = node-1
+listen-host = 127.0.0.1
+listen-port = 14690
+max-connections = 64
+```
+
+`max-connections` 默认 **64**，范围为 **1–64**，修改后重启服务生效。它限制同时保持的 SVN 协议连接，一次客户端操作可能使用多个连接。网页、监控 API 和 Prometheus 显示当前实例实际生效的值。
+
+业务数据库连接租约上限 **32** 单独计量，两个数值均不是客户端数量或吞吐承诺。多节点部署应设置不同的节点 ID，并协调密钥、hook 程序与配置。具体设置和重启行为见 [SVN 服务指南](docs/pgvn/M3-serve.zh-CN.md#服务与访问设置)。
+
 ### 备份、恢复与升级
 
 ```powershell
@@ -325,6 +358,7 @@ Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF
 | 认证成功，但仓库读写被拒绝 | 新仓库默认拒绝访问；核对已发布的 authz、仓库名及 `config show` 返回的 generation。 |
 | SVN 可以访问，DAV 返回 401 | SVN 账号与 Apache 密码文件分别维护；确认建用户时使用了 `Set-PgVNUser.ps1 -AlsoDav`。 |
 | URL 无法打开仓库 | 用 `repo list`、`repo show` 检查路由和启用状态，再核对客户端的完整 URL。 |
+| 负载增大时，新 SVN 连接被关闭 | 核对当前会话数与实例实际生效的 `max-connections`。一个客户端可能保持多个连接，数据库租约上限单独计量。 |
 | 网页重载后要求重新输入令牌 | 属于预期行为；令牌只保存在页面内存，过期或撤销后需重新认证。 |
 | 重新初始化后端口没有变化 | 初始化脚本保留已有文件；核对 `config.local` 与 `admin\deployment.json`，按部署指南调整并重启相应服务。 |
 
@@ -376,6 +410,22 @@ python scripts/pgvn/package.py --development
 
 测试统一使用 `scripts/pgvn` 与 `tests/pgvn`。完整 M5 需要匹配的真实浏览器证据、JDK/SVNKit 和专用测试集群，见[浏览器与测试准备](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径)和 [M5 开发记录](docs/pgvn/M5-development.zh-CN.md)。门禁会创建隔离库及临时服务，部分测试重启**测试数据库**，不要指向部署库。遗留 PgFS 脚本及结果仅作历史参考，不能作为当前 PgVN 构建的验收结论。
 
+<details>
+<summary>源码目录导航</summary>
+
+```text
+src/pgvn/             原生服务、公共核心、管理工具和 Apache 模块
+src/libsvn_fs_pg/     PostgreSQL SVN 存储引擎
+web/pgvn-monitor/     内嵌 HTML、CSS 与 JavaScript
+sql/                  版本化数据库迁移
+scripts/pgvn/         构建、依赖准备和打包
+tests/pgvn/           里程碑门禁与上游兼容性夹具
+deploy/windows/       Windows 配置与运维脚本
+docs/pgvn/            架构、指南和验证证据
+```
+
+</details>
+
 ## 项目状态
 
 | 里程碑 | 范围 | 状态 |
@@ -386,7 +436,9 @@ python scripts/pgvn/package.py --development
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-已记录的兼容性工作包括原版 Subversion 网络套件在 SVN、HTTP、HTTPS 上与 FSFS 的差分验证，见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)、[授权结果](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update 结果](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop 结果](docs/pgvn/M6-network-copy-prop.zh-CN.md)、[log/diff 结果](docs/pgvn/M6-network-log-diff.zh-CN.md)及[仓库工作流与容量结果](docs/pgvn/M6-network-workflows.zh-CN.md)。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收。
+最近记录的[仓库工作流验收](docs/pgvn/M6-network-workflows.zh-CN.md)覆盖原版 export、import、cat、blame、history、info 套件及 checkout 网络用例 1–13，分别在 SVN、HTTP、HTTPS 上与 FSFS 对照；浏览器检查和完整 M5 门禁使用同一冻结构建。依赖盘符的 `file:///` checkout 用例单独记录适用边界。
+
+此前已记录[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 
@@ -397,6 +449,7 @@ python scripts/pgvn/package.py --development
 | 指南 | 内容 |
 | --- | --- |
 | [Windows 部署指南](deploy/windows/README.zh-CN.md) | 安装、角色、服务、TLS、备份恢复与升级 |
+| [打包与本机验证](docs/pgvn/M7-package-local.zh-CN.md) | 开发快照、运行依赖与包完整性检查 |
 | [管理指南](docs/pgvn/M2-admin.zh-CN.md) | 选择器、dump/load、校验与策略发布 |
 | [SVN 服务指南](docs/pgvn/M3-serve.zh-CN.md) | 凭据、配置、hooks 与服务生命周期 |
 | [监控指南](docs/pgvn/M4-monitor.zh-CN.md) | API、令牌、采样与网页行为 |
