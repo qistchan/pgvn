@@ -4,7 +4,7 @@
 
 **标准 Subversion 协议 · PostgreSQL 存储 · 无每库本地目录**
 
-原生 Windows Subversion 服务端，提供数据库仓库管理和内置运维控制台。
+以 PostgreSQL 为存储后端的 Windows Subversion 服务端，提供原生 SVN/DAV 接入、集中式仓库管理和内置监控网页。
 
 ![状态：实验阶段](https://img.shields.io/badge/status-experimental-orange)
 ![平台：Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4)
@@ -13,7 +13,7 @@
 
 [English](README.md) · **简体中文**
 
-[产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [快速部署](#快速部署) · [文档导航](#文档导航)
+[产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [部署](#快速部署) · [使用](#使用说明) · [文档](#文档导航)
 
 </div>
 
@@ -29,7 +29,9 @@
 
 ## 产品特性
 
-PgVN 将仓库内容与控制状态保存在 PostgreSQL 中，对客户端提供标准 Subversion 网络协议。项目以支持 Polarion 仓库后端为目标，仍需完成 Polarion 应用层验收。
+PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 PostgreSQL 中。标准 SVN 客户端继续通过 `svn://`、HTTP 或 HTTPS 接入；运维人员通过 `pgvnadmin` 管理仓库，通过内置网页查看服务状态。
+
+产品由专用服务端、Apache 模块和管理工具组成，公共仓库核心运行在各组件进程内部。早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。Polarion 是目标集成场景，仍需完成应用层验收。
 
 | 能力 | 当前实现 |
 | --- | --- |
@@ -45,14 +47,20 @@ PgVN 将仓库内容与控制状态保存在 PostgreSQL 中，对客户端提供
 网页内嵌在 `pgvnserve.exe` 中，运行时不需要 Node.js、Python 或独立前端服务。当前界面使用中文，支持明暗主题、窄屏布局和键盘导航。
 
 - 健康条集中显示服务就绪、数据库采样、可写主库、节点可见性和样本新鲜度。
-- 趋势图与表格展示请求活动、仓库状态、数据库会话及近期失败。
+- 提供概览、节点、仓库、数据库、请求与错误五个视图；仓库列表支持搜索、分页和详情，趋势图展示请求活动与近期失败。
 - 展开 Apache 工作进程，可查看 HTTP 方法计数、活动请求和通过 `X-PgVN-Request-Id` 关联的错误。
 - 使用可过期、可撤销的 `monitor:read` 令牌，浏览器只在当前页面内存保存令牌。
 
 <details>
-<summary>查看亮色主题</summary>
+<summary>查看亮色主题与移动端节点详情</summary>
 
 ![PgVN 亮色运维控制台](docs/pgvn/images/monitor-night-ops-light.jpg)
+
+<p align="center">
+  <img src="docs/pgvn/images/m6-commit-update-workers.jpg" alt="PgVN 窄屏节点详情，表格可在自身容器内滚动" width="300">
+</p>
+
+*窄屏截图来自已记录的 commit/update 浏览器验证。截图用于展示界面，图中的采样数值不代表性能基准。*
 
 </details>
 
@@ -61,19 +69,33 @@ PgVN 将仓库内容与控制状态保存在 PostgreSQL 中，对客户端提供
 ```mermaid
 flowchart TB
     SVN["标准 SVN 客户端"] -->|"svn://"| SERVE["pgvnserve<br/>SVN 与内置监控"]
-    SVN -->|"HTTP / HTTPS"| DAV["pgvnhttpd<br/>DAV / 授权模块"]
+    SVN -->|"HTTP / HTTPS"| DAV["pgvnhttpd<br/>mod_dav_pgvn + mod_authz_pgvn"]
     ADMIN["pgvnadmin"] --> CORE
-    SERVE --> CORE["PgVN 公共核心<br/>进程内链接"]
+    SERVE --> CORE["PgVN 公共核心<br/>分别链接到各进程"]
     DAV --> CORE
-    CORE --> PG[("PostgreSQL<br/>pgfs + pgvn")]
+    CORE --> FS["PgFS 存储引擎"]
+    FS --> PG[("PostgreSQL<br/>pgfs / pgvn / pgvn_monitor")]
+    CORE -->|"仓库目录、策略、DAV 状态"| PG
     WEB["浏览器控制台"] -->|"只读监控 API"| SERVE
     SERVE -->|"监控角色"| PG
     DAV -->|"工作进程遥测"| PG
 ```
 
-公共仓库核心直接编译进对应进程与模块，不需要独立仓库 RPC 服务。内部仓库 ID 与公开 SVN UUID 分开，一个数据库可管理多个仓库及其 URL 路由。
+| 组件 | 职责 |
+| --- | --- |
+| `pgvnserve.exe` | 原生 SVN 接入、Windows 服务生命周期、健康探针、监控 API 和内嵌网页资源。 |
+| `pgvnhttpd.exe` + `mod_dav_pgvn.so` | Apache 宿主与 Subversion DAV 协议，持久化活动、事务和提交回执。 |
+| `mod_authz_pgvn.so` | 对 DAV 请求执行数据库管理的路径授权。 |
+| `pgvnadmin.exe` | 仓库生命周期、策略发布、凭据、dump/load、校验与维护。 |
+| PgVN 公共核心 + PgFS | 仓库解析、授权/hook 策略和 PostgreSQL 版本存储，链接到上述组件中。 |
 
-`pgfs` schema 保存内容、修订和锁；`pgvn` 保存目录路由、策略、DAV 状态及遥测数据。
+请求先将 URL 路由解析为内部仓库 ID，再应用已发布策略，通过 PgFS 访问历史。内部 ID 与公开 SVN UUID 分开，一个数据库可管理多个仓库及其 URL 路由。公共核心是进程内库，部署时无需独立仓库 RPC 服务。
+
+| 数据库 schema | 保存的状态 |
+| --- | --- |
+| `pgfs` | 仓库历史、版本化目录树、文件内容、属性、事务和锁。 |
+| `pgvn` | 仓库目录、URL 路由、版本化策略、SVN 凭据、监控令牌摘要和持久化 DAV 状态。 |
+| `pgvn_monitor` | 节点心跳、有界指标采样和只读监控视图。 |
 
 **本地文件边界。** 节点仍需要程序、全局配置、受保护的密钥、证书、日志、临时文件和外部 hook 程序。“无每库目录”指仓库与每库状态不依赖本地目录，这些全局部署文件仍然存在。
 
@@ -81,18 +103,38 @@ flowchart TB
 
 ## 快速部署
 
-### 1. 准备运行包与数据库
+### 环境要求
+
+| 项目 | 要求 |
+| --- | --- |
+| 服务主机 | Windows x64，支持 Windows 10 1903 起的进程 UTF-8 清单机制；需在目标系统运行包检查。 |
+| 安装工具 | 管理员 Windows PowerShell 5.1 或 PowerShell，用于安装服务和设置 NTFS 权限。 |
+| 数据库 | 单独部署的 UTF-8 PostgreSQL 数据库，当前固定构建使用 PostgreSQL **18.6**。 |
+| 运行依赖 | 同一构建的完整运行包；目标机器无需 Python、Node.js、编译器、SDK 或既有 Polarion 安装。 |
+| 客户端 | 标准 SVN 客户端，包内附固定版本的 SVN CLI。 |
+
+固定构建还使用 Subversion **1.14.5**、Apache **2.4.68**、APR **1.7.6** 和 APR-util **1.6.3**。这里列出的是实测构建依赖，其他版本的兼容矩阵尚未建立。
+
+### 1. 校验并解压运行包
 
 使用**同一构建的完整 Windows x64 包**，包含 DLL、Apache 宿主、模块及部署脚本。从构建输出取得 ZIP 与 SHA-256 文件，校验后解压；这里不表示项目已有正式生产发布版。只复制两个 DLL 到另一套 SVN/Apache 安装中不足以完成部署。
 
-当前固定依赖为 Subversion **1.14.5**、Apache **2.4.68**、APR **1.7.6**、APR-util **1.6.3** 和 PostgreSQL **18.6**。包内附 PostgreSQL 客户端，数据库服务端另行准备。Windows 需支持 Windows 10 1903 起的进程 UTF-8 清单机制，并在目标系统执行包检查。
-
-在管理员 PowerShell 中，将 `$root` 指向解压后包含 `bin`、`apache`、`deploy` 的目录：
+在管理员 PowerShell 中操作，将 `PACKAGE_ID` 替换为实际包 ID，通过可信渠道取得运行包与校验文件：
 
 ```powershell
-$root = 'C:\PgVN'
+$zip = 'C:\Transfer\PgVN-M5-windows-x64-PACKAGE_ID.zip'
+$expected = (Get-Content -LiteralPath ($zip + '.sha256') -Raw).Split(' ')[0]
+if ((Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash -ine $expected) {
+    throw 'ZIP 摘要不符'
+}
+Expand-Archive -LiteralPath $zip -DestinationPath 'C:\Deploy'
+$root = 'C:\Deploy\PgVN-M5-windows-x64-PACKAGE_ID'
 & "$root\deploy\windows\Test-PgVNPackage.ps1"
 ```
+
+ZIP 内含一个顶层目录，`$root` 应指向该目录，其中包含 `bin`、`apache`、`deploy`。包检查会核对文件摘要、x64 依赖和程序启动。
+
+### 2. 准备数据库与配置
 
 由 DBA 创建专用 UTF-8 数据库和非超级用户角色：
 
@@ -107,19 +149,20 @@ CREATE DATABASE pgvn OWNER pgvn_migrate ENCODING 'UTF8' TEMPLATE template0;
 
 通过 psql `\password` 交互设置各角色密码，并配置数据库访问规则。以下示例使用本机 **5432** 端口；项目故障测试使用的 **16432** 属于**另一套**专用隔离集群。
 
-### 2. 初始化配置与权限
-
 ```powershell
 & "$root\deploy\windows\Initialize-PgVNConfiguration.ps1" `
     -DatabaseHost '127.0.0.1' -DatabasePort 5432 -DatabaseName pgvn `
     -NodeId node-1 -SvnPort 14690 -MonitorPort 14691 -HttpPort 14980
 ```
 
-填写 `admin\secrets\pgpass.conf` 中的管理员密码及 `secrets\runtime.pgpass.conf` 中的业务/监控密码，保留受保护的 NTFS 权限。远程数据库按[完整部署指南](deploy/windows/README.zh-CN.md)配置 CA 和验证主机名的 TLS。
+填写 `admin\secrets\pgpass.conf` 中的管理员密码及 `secrets\runtime.pgpass.conf` 中的业务/监控密码，保留受保护的 NTFS 权限。远程数据库按[完整部署指南](deploy/windows/README.zh-CN.md)配置 CA 和验证主机名的 TLS。再次执行初始化会保留已有配置，新参数不会覆盖旧值。
+
+### 3. 初始化权限、凭据与仓库
 
 ```powershell
 $admin = "$root\deploy\windows\Invoke-PgVNAdmin.ps1"
 & $admin -Profile Migrate -Arguments @('db','init','--json')
+if ($LASTEXITCODE) { throw '数据库初始化失败' }
 & $admin -Profile Migrate -Arguments @('db','check','--json')
 & $admin -Profile Migrate -Arguments @('db','grant','--admin-role','pgvn_admin','--service-role','pgvn_service','--monitor-role','pgvn_monitor','--json')
 & $admin -Arguments @('key','create',"$root\secrets\credentials-v1.key",'deployment-v1')
@@ -131,7 +174,7 @@ $password = Read-Host 'SVN/DAV 用户 alice 的密码' -AsSecureString
 
 `-AlsoDav` 同时设置 SVN 账号和 Apache 密码文件。两种协议分别认证身份，共用数据库中的路径授权策略。
 
-### 3. 发布策略并启动服务
+### 4. 发布策略并启动服务
 
 新建仓库默认拒绝访问。将 `admin\demo.authz` 保存为 UTF-8 **无 BOM**：
 
@@ -142,8 +185,11 @@ alice = rw
 ```
 
 ```powershell
+& $admin -Arguments @('config','show','name:demo','--json')
 # generation=1 仅适用于刚创建且未修改的仓库。
+# 已有仓库使用上一步返回的真实 generation。
 & $admin -Arguments @('config','publish','name:demo','--expected-generation','1','--authz',"$root\admin\demo.authz",'--json')
+& $admin -Arguments @('authz','check','name:demo','alice','/','write','--json')
 & "$root\deploy\windows\Install-PgVNServices.ps1"
 & "$root\deploy\windows\Test-PgVNDeployment.ps1" `
     -RepositoryRoute /svn/demo -UserName alice -Password $password
@@ -164,16 +210,21 @@ alice = rw
 
 ### 标准 SVN 客户端
 
+以下使用包内 CLI，也可替换为已安装的 SVN 客户端。示例沿用部署时的 PowerShell 会话和 `alice` 账号，密码由 SVN 交互询问。
+
 ```powershell
-svn checkout svn://127.0.0.1:14690/svn/demo demo --username alice
+$svn = "$root\tools\svn\svn.exe"
+& $svn checkout svn://127.0.0.1:14690/svn/demo demo --username alice
 Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF8
-svn add .\demo\hello.txt
-svn commit .\demo -m 'Initial commit' --username alice
-svn log svn://127.0.0.1:14690/svn/demo --username alice
-svn ls http://127.0.0.1:14980/svn/demo --username alice
+& $svn add .\demo\hello.txt
+& $svn commit .\demo -m 'Initial commit' --username alice
+& $svn log svn://127.0.0.1:14690/svn/demo --username alice
+& $svn ls http://127.0.0.1:14980/svn/demo --username alice
 ```
 
 ### 管理与迁移
+
+通过部署包装脚本加载受保护的 libpq 配置和匹配的运行依赖：
 
 ```powershell
 & $admin -Arguments @('repo','list','--json')
@@ -182,23 +233,47 @@ svn ls http://127.0.0.1:14980/svn/demo --username alice
 & $admin -Arguments @('dump','name:demo','--file','D:\Backup\demo.dump','--deltas')
 ```
 
-迁移现有 SVN 历史时，先生成标准 dump，创建独立目标仓库并**禁用**，通过 `load --file` 导入，校验历史、发布策略后再启用。Windows PowerShell 下使用 `--file` 保持 dump 二进制数据不变，详见[管理指南](docs/pgvn/M2-admin.zh-CN.md)。
+迁移现有 SVN 历史时，先生成标准 dump，再导入**独立的空目标仓库**：
 
-### 监控与备份
+```powershell
+& $admin -Arguments @('repo','create','imported','--route','/svn/imported','--json')
+& $admin -Arguments @('repo','disable','name:imported','--json')
+& $admin -Arguments @('load','name:imported','--file','C:\Transfer\existing.dump')
+& $admin -Arguments @('verify','name:imported')
+& $admin -Arguments @('config','show','name:imported','--json')
+```
+
+准备导入仓库的 authz，使用上一步返回的真实 generation 发布，再执行 `repo enable name:imported`。针对该仓库的规则段应使用 `[imported:/]`。Windows PowerShell 下通过 `--file` 保持 dump 二进制数据不变。dump/load 迁移历史，用户、授权和 hooks 另行配置，详见[管理指南](docs/pgvn/M2-admin.zh-CN.md)。
+
+### 监控网页与令牌
 
 ```powershell
 & $admin -Arguments @('monitor-token','create','--label','local-ops','--expires-in','3600')
 # 打开 http://127.0.0.1:14691/monitor/，输入返回的令牌。
+& $admin -Arguments @('monitor-token','list','--json')
+# TOKEN_ID 使用列表中的 ID，而不是令牌原值。
+& $admin -Arguments @('monitor-token','revoke','TOKEN_ID','--json')
+```
+
+令牌原值仅显示一次，权限固定为 `monitor:read`，不要放入 URL。重新加载页面需再次认证；过期或撤销后，控制台断开并清空已显示的业务数据。网页仅供只读监控，仓库和用户变更通过 `pgvnadmin` 执行。
+
+### 备份、恢复与升级
+
+```powershell
 & "$root\deploy\windows\Backup-PgVN.ps1" -Destination 'D:\PgVN-backups\snapshot-01'
 ```
 
-令牌仅显示一次，不要放入 URL。备份包含数据库及受保护的部署文件；使用 `Restore-PgVN.ps1` 恢复到**独立空数据库**，检查配置和历史后再启动服务。当前控制 schema 为 **6**，回退需要匹配的数据库备份、密钥及配置，尚无 schema 降级迁移。
+备份包含数据库及受保护的部署文件；使用 `Restore-PgVN.ps1` 恢复到**独立空数据库**，检查配置和历史后再启动服务。当前控制 schema 为 **6**，回退需要匹配的数据库备份、密钥及配置，尚无 schema 降级迁移。
+
+多节点部署需协调各节点的密钥、hook 程序与配置版本，数据库的一致性备份不能替代这些外部文件的备份。完整恢复和升级流程见[部署指南](deploy/windows/README.zh-CN.md#5-备份和恢复到空数据库)。
 
 ## 源码构建
 
 开发需要 Python 3、LLVM-MinGW 和固定版本的源码/SDK。复制 `config/build.example.json` 为忽略提交的 `config/build.local.json`，填写本机路径；SDK 和既有 Polarion 安装作为只读输入。
 
 ```powershell
+Copy-Item -LiteralPath config/build.example.json -Destination config/build.local.json
+# 编辑 config/build.local.json，填写本机实际 SDK/源码路径。
 python scripts/pgvn/fetch_httpd.py
 python scripts/pgvn/build.py --config config/build.local.json --configuration Release
 python scripts/pgvn/package.py --development
@@ -217,6 +292,8 @@ python scripts/pgvn/package.py --development
 | M4–M5 | 监控、DAV、授权及工作进程遥测 | 已有本机验收记录，结果绑定具体构建 |
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
+
+已记录的兼容性工作包括原版 Subversion 网络套件在 SVN、HTTP、HTTPS 上与 FSFS 的差分验证，见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)、[授权结果](docs/pgvn/M6-network-authz.zh-CN.md)及 [commit/update 结果](docs/pgvn/M6-network-commit-update.zh-CN.md)。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收。
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 
