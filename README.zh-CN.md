@@ -13,7 +13,7 @@
 
 [English](README.md) · **简体中文**
 
-[产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [部署](#快速部署) · [使用](#使用说明) · [构建](#源码构建) · [项目状态](#项目状态) · [文档](#文档导航)
+[产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [部署](#快速部署) · [使用](#使用说明) · [构建](#源码构建) · [常见问题](#常见问题) · [项目状态](#项目状态) · [文档](#文档导航)
 
 </div>
 
@@ -26,6 +26,15 @@
 *真实页面截图，来自本机隔离验证环境，图中为测试数据。*
 
 > **当前阶段：** M0–M5 已有本机验收记录；M6 的完整兼容性、故障与性能验证正在推进。全新机器安装、整机重启、跨主机故障切换和 Polarion 应用验收尚待完成。目前部署包为开发快照，各项结果的实测范围和构建身份以[进展与验证](docs/pgvn/progress.zh-CN.md)为准。
+
+## 从这里开始
+
+| 你的目标 | 阅读入口 |
+| --- | --- |
+| 了解产品与实现方式 | [产品特性](#产品特性)、[监控网页](#监控网页)和[技术架构](#技术架构) |
+| 在全新 Windows 主机试部署 | 按[快速部署](#快速部署)完成数据库、仓库及服务配置 |
+| 连接客户端或迁移已有历史 | [使用说明](#使用说明)与[导入步骤](#管理与迁移) |
+| 参与开发或判断验证范围 | [源码构建](#源码构建)与[项目状态](#项目状态) |
 
 ## 产品特性
 
@@ -89,7 +98,13 @@ flowchart TB
 | `pgvnadmin.exe` | 仓库生命周期、策略发布、凭据、dump/load、校验与维护。 |
 | PgVN 公共核心 + PgFS | 仓库解析、授权/hook 策略和 PostgreSQL 版本存储，链接到上述组件中。 |
 
-请求先将 URL 路由解析为内部仓库 ID，再应用已发布策略，通过 PgFS 访问历史。内部 ID 与公开 SVN UUID 分开，一个数据库可管理多个仓库及其 URL 路由。修订发布与授权策略复核位于同一 PostgreSQL 事务内。公共核心是进程内库，部署时无需独立仓库 RPC 服务。
+一次仓库请求按以下路径执行：
+
+1. **解析仓库。** 协议入口将 URL 路由解析为内部仓库 ID；内部 ID 与客户端看到的 SVN UUID 分开，一个数据库可管理多个仓库和路由。
+2. **应用策略。** 公共核心读取已发布的访问配置，执行路径授权和 hook 策略。
+3. **读写历史。** PgFS 访问 PostgreSQL 中的版本化数据；修订发布与授权策略复核在同一数据库事务内完成。
+
+公共核心链接在各服务进程内部，部署时无需独立仓库 RPC 服务。网页通过只读监控接口查看状态；仓库和策略变更通过管理工具执行。
 
 | 数据库 schema | 保存的状态 |
 | --- | --- |
@@ -196,15 +211,15 @@ $password = Read-Host 'SVN/DAV 用户 alice 的密码' -AsSecureString
 
 ### 4. 发布策略并启动服务
 
-新建仓库默认拒绝访问。将 `admin\demo.authz` 保存为 UTF-8 **无 BOM**：
+新建仓库默认拒绝访问。以下命令以 UTF-8 **无 BOM** 创建 `admin\demo.authz`，再发布访问策略：
 
-```ini
+```powershell
+$authz = @'
 [demo:/]
 alice = rw
 * =
-```
-
-```powershell
+'@
+[IO.File]::WriteAllText("$root\admin\demo.authz", $authz, [Text.UTF8Encoding]::new($false))
 & $admin -Arguments @('config','show','name:demo','--json')
 # generation=1 仅适用于刚创建且未修改的仓库。
 # 已有仓库使用上一步返回的真实 generation。
@@ -251,7 +266,10 @@ Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF
 & $svn update .\demo --username alice
 & $svn log svn://127.0.0.1:14690/svn/demo --username alice
 & $svn ls http://127.0.0.1:14980/svn/demo --username alice
+& $svn cat http://127.0.0.1:14980/svn/demo/hello.txt --username alice
 ```
+
+最后一条命令应通过 DAV 读出刚由 SVN 提交的 `Hello from PgVN`。结合部署烟测返回的一致仓库 UUID，可确认两个入口访问同一仓库；网页“仓库”视图可查看其状态。
 
 ### 管理与迁移
 
@@ -297,6 +315,50 @@ Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF
 备份包含数据库及受保护的部署文件；使用 `Restore-PgVN.ps1` 恢复到**独立空数据库**，检查配置和历史后再启动服务。当前控制 schema 为 **6**，回退需要匹配的数据库备份、密钥及配置，尚无 schema 降级迁移。
 
 多节点部署需协调各节点的密钥、hook 程序与配置版本，数据库的一致性备份不能替代这些外部文件的备份。完整恢复和升级流程见[部署指南](deploy/windows/README.zh-CN.md#5-备份和恢复到空数据库)。
+
+## 故障排查
+
+| 现象 | 优先检查 |
+| --- | --- |
+| 服务无法启动 | 先运行 `Test-PgVNPackage.ps1`；核对完整运行包、服务配置、密钥和运行账号的文件权限。 |
+| 存活探针成功，就绪探针返回 503 | 检查 PostgreSQL 连通性、业务与监控角色权限、schema 版本、可写主库和仓库配置；按部署指南处理后再次检查。 |
+| 认证成功，但仓库读写被拒绝 | 新仓库默认拒绝访问；核对已发布的 authz、仓库名及 `config show` 返回的 generation。 |
+| SVN 可以访问，DAV 返回 401 | SVN 账号与 Apache 密码文件分别维护；确认建用户时使用了 `Set-PgVNUser.ps1 -AlsoDav`。 |
+| URL 无法打开仓库 | 用 `repo list`、`repo show` 检查路由和启用状态，再核对客户端的完整 URL。 |
+| 网页重载后要求重新输入令牌 | 属于预期行为；令牌只保存在页面内存，过期或撤销后需重新认证。 |
+| 重新初始化后端口没有变化 | 初始化脚本保留已有文件；核对 `config.local` 与 `admin\deployment.json`，按部署指南调整并重启相应服务。 |
+
+部署日志位于 `$root\logs`；默认 DAV 日志为 `apache-error.log` 和 `apache-access.log`。完整步骤见 [Windows 部署指南](deploy/windows/README.zh-CN.md)。
+
+## 常见问题
+
+<details>
+<summary>能否只复制两个 SVN DLL 到新机器？</summary>
+
+部署需要同一构建的完整运行包，包括专用服务程序、管理工具、Apache 宿主和模块、匹配 DLL、配置模板及脚本。按[快速部署](#快速部署)初始化数据库、配置和密钥后再安装服务。
+
+</details>
+
+<details>
+<summary>无每库目录，是否意味着完全不需要本地文件？</summary>
+
+仓库历史、每库配置和持久化 DAV 状态在 PostgreSQL 中；程序、节点级配置、密钥、证书、日志、临时文件及外部 hook 程序仍属于节点部署文件。客户端工作副本也继续保存在客户端。
+
+</details>
+
+<details>
+<summary>是否已经提供分布式高可用和多主写入？</summary>
+
+当前支持多个服务进程共享同一 PostgreSQL 后端。数据库复制、选主、fencing 和连接路由需要由 PostgreSQL 部署提供；跨主机故障切换、RPO/RTO 与代表性性能仍待验证。当前没有分布式多主写入的验收结论，见[技术架构](#技术架构)和[项目状态](#项目状态)。
+
+</details>
+
+<details>
+<summary>现在可以直接替换 Polarion 的生产 SVN 后端吗？</summary>
+
+当前仍处于开发与隔离验证阶段。标准 SVN 协议检查已有记录，Polarion 应用级集成、全新机器安装和重启演练尚未完成；完成相应验收前，应在隔离环境评估。
+
+</details>
 
 ## 源码构建
 

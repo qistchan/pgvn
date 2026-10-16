@@ -13,7 +13,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Features](#features) · [Web console](#web-console) · [Architecture](#architecture) · [Deploy](#quick-start) · [Usage](#use-pgvn) · [Build](#build-from-source) · [Status](#project-status) · [Docs](#documentation)
+[Features](#features) · [Web console](#web-console) · [Architecture](#architecture) · [Deploy](#quick-start) · [Usage](#use-pgvn) · [Build](#build-from-source) · [FAQ](#frequently-asked-questions) · [Status](#project-status) · [Docs](#documentation)
 
 </div>
 
@@ -26,6 +26,15 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 *Actual Chinese-language console from an isolated local test environment; the screenshot contains test data.*
 
 > **Development status:** M0–M5 have recorded local acceptance runs. M6 compatibility, failure and performance validation is in progress. Clean-machine installation, reboot recovery, cross-host failover and Polarion application acceptance remain pending. Deployment packages are development snapshots. See [validation progress](docs/pgvn/progress.zh-CN.md) for the scope and build identity of each result.
+
+## Start here
+
+| Your goal | Start with |
+| --- | --- |
+| Understand the product and implementation | [Features](#features), [web console](#web-console) and [architecture](#architecture) |
+| Try a deployment on a fresh Windows host | [Quick start](#quick-start), from database preparation to running services |
+| Connect clients or migrate history | [Usage](#use-pgvn) and [migration steps](#administration-and-migration) |
+| Develop PgVN or assess validation coverage | [Build from source](#build-from-source) and [project status](#project-status) |
 
 ## Features
 
@@ -89,7 +98,13 @@ flowchart TB
 | `pgvnadmin.exe` | Repository lifecycle, policy publication, credentials, dump/load, verification and maintenance. |
 | PgVN core + PgFS | Repository lookup, authorization/hook policy and PostgreSQL-backed versioned storage; linked into the components above. |
 
-A request resolves its URL route to an internal repository ID, applies the published policy and accesses history through PgFS. Internal IDs are distinct from public SVN UUIDs. One database can contain multiple repositories and URL routes. Revision publication and authorization-policy rechecks occur in the same PostgreSQL transaction. The shared core is an in-process library; deployment requires no separate repository RPC service.
+A repository request follows this path:
+
+1. **Resolve the repository.** The protocol endpoint maps the URL route to an internal repository ID. Internal IDs are distinct from the SVN UUIDs clients see; one database can hold multiple repositories and routes.
+2. **Apply policy.** The shared core reads the published access configuration and enforces path authorization and hook policy.
+3. **Access history.** PgFS reads or writes versioned data in PostgreSQL. Revision publication and authorization-policy rechecks occur in the same database transaction.
+
+The shared core is linked into each service process; deployment requires no separate repository RPC service. The web console reads status through the monitoring API; repository and policy changes use the administration tool.
 
 | Database schema | Stored state |
 | --- | --- |
@@ -196,15 +211,15 @@ $password = Read-Host 'Password for SVN/DAV user alice' -AsSecureString
 
 ### 4. Publish policy and start services
 
-A new repository denies access by default. Save `admin\demo.authz` as UTF-8 **without BOM**:
+A new repository denies access by default. Create `admin\demo.authz` as UTF-8 **without BOM**, then publish the access policy:
 
-```ini
+```powershell
+$authz = @'
 [demo:/]
 alice = rw
 * =
-```
-
-```powershell
+'@
+[IO.File]::WriteAllText("$root\admin\demo.authz", $authz, [Text.UTF8Encoding]::new($false))
 & $admin -Arguments @('config','show','name:demo','--json')
 # Generation 1 applies only to this newly created, unchanged repository.
 # For an existing repository, use the generation returned above.
@@ -251,7 +266,10 @@ Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF
 & $svn update .\demo --username alice
 & $svn log svn://127.0.0.1:14690/svn/demo --username alice
 & $svn ls http://127.0.0.1:14980/svn/demo --username alice
+& $svn cat http://127.0.0.1:14980/svn/demo/hello.txt --username alice
 ```
+
+The last command should read `Hello from PgVN` through DAV after the SVN commit. Together with the matching repository UUIDs returned by the deployment check, this confirms both endpoints access the same repository. You can also inspect its status in the console’s repository view.
 
 ### Administration and migration
 
@@ -297,6 +315,50 @@ The secret token is shown once and grants only `monitor:read`. Keep it out of UR
 Backup includes database data and protected deployment files. Restore into an **empty, separate database** using `Restore-PgVN.ps1`, then verify configuration and history before starting services. Current control schema is **6**. Rollback requires a matching database backup, keys and configuration; there is no schema downgrade migration.
 
 For a multi-node deployment, coordinate keys, hook programs and configuration versions across nodes. Database consistency alone does not back up those external files. Follow the [deployment guide](deploy/windows/README.zh-CN.md#5-备份和恢复到空数据库) for the full restore and upgrade procedure.
+
+## Troubleshooting
+
+| Symptom | Check first |
+| --- | --- |
+| A service will not start | Run `Test-PgVNPackage.ps1`; check the complete runtime, service configuration, keys and file permissions for the service account. |
+| Liveness succeeds but readiness returns 503 | Check PostgreSQL connectivity, service/monitor role permissions, schema version, writable primary and repository configuration; follow the deployment guide, then check again. |
+| Authentication succeeds but repository access is denied | New repositories deny access by default. Check the published authz, repository name and generation returned by `config show`. |
+| SVN works but DAV returns 401 | SVN credentials and Apache's password file are maintained separately. Ensure the user was created with `Set-PgVNUser.ps1 -AlsoDav`. |
+| A repository URL cannot be opened | Check the route and enabled state with `repo list` and `repo show`, then verify the full client URL. |
+| The console asks for a token after reloading | This is expected: tokens stay in page memory. Expired or revoked tokens require authentication again. |
+| Reinitializing does not change the ports | Initialization preserves existing files. Check `config.local` and `admin\deployment.json`; follow the deployment guide to update configuration and restart the affected services. |
+
+Deployment logs are under `$root\logs`; the default DAV logs are `apache-error.log` and `apache-access.log`. See the [Windows deployment guide](deploy/windows/README.zh-CN.md) for complete procedures.
+
+## Frequently asked questions
+
+<details>
+<summary>Can I deploy by copying two SVN DLLs to a new machine?</summary>
+
+Use one complete, matching runtime package, including the dedicated services, administration tool, Apache host/modules, DLLs, templates and scripts. Follow the [quick start](#quick-start) to initialize the database, configuration and keys before installing services.
+
+</details>
+
+<details>
+<summary>Does eliminating per-repository directories eliminate all local files?</summary>
+
+Repository history, per-repository configuration and durable DAV state live in PostgreSQL. Programs, node configuration, keys, certificates, logs, temporary files and external hook executables remain deployment files. Client working copies remain on clients.
+
+</details>
+
+<details>
+<summary>Does PgVN already provide distributed HA and multi-primary writes?</summary>
+
+Multiple service processes can share one PostgreSQL backend. PostgreSQL deployment must provide replication, primary election, fencing and connection routing. Cross-host failover, RPO/RTO and representative performance still require validation. Distributed multi-primary writes have no acceptance result; see [architecture](#architecture) and [project status](#project-status).
+
+</details>
+
+<details>
+<summary>Can I replace Polarion's production SVN backend now?</summary>
+
+PgVN is still in development and isolated validation. Standard SVN protocol checks have recorded results; Polarion application integration, clean-machine installation and reboot exercises remain pending. Evaluate in an isolated environment until those acceptance steps are complete.
+
+</details>
 
 ## Build from source
 
