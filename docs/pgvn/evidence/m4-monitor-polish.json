@@ -1,0 +1,1174 @@
+{
+  "status": "PASS",
+  "scope": "Second monitor iteration on frozen Release; full M0-M5 regressions and real browser checks. M6/M7 and the overall PgVN goal remain incomplete.",
+  "created_at": "2026-10-16T01:35:08.492389+00:00",
+  "build_manifest_sha256": "e9695fbad78a4070aecee53eafdbbb3b0f53b99d730dea2c21c322a41f7496c7",
+  "source_changes": [
+    "web/pgvn-monitor/monitor.css",
+    "web/pgvn-monitor/monitor.js"
+  ],
+  "product_changes": [
+    "runtime/pgvn/bin/pgvnserve.exe"
+  ],
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "30b3b1ec083496b40243731e317f9609c55dda4811635dc1cc744416f61c08f2",
+    "runtime/pgvn/bin/pgvnadmin.exe": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "assets": {
+    "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+    "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+    "monitor.js": "bba56e9c9bf68c6f22cba549e42a3efde30ffa30add4dab8759f66dd3166dfd3"
+  },
+  "resource_sizes": {
+    "index.html": 18290,
+    "monitor.css": 26179,
+    "monitor.js": 58036
+  },
+  "m4": {
+    "test_id": "m4-f80d7e26b175",
+    "status": "PASS",
+    "elapsed_seconds": 398.68799999999464,
+    "report_sha256": "c34810fc57437552c945ca942f9a88b4bea7784117b2e16ae7dac8720bd2dcd8",
+    "records": [
+      {
+        "name": "M0-M3 regressions",
+        "status": "PASS",
+        "test_id": "m3-3d800aa43587",
+        "elapsed_seconds": 237.59399999998277,
+        "report_sha256": "c12a00646b7b2e2adab786e2bd87821b03cb10cf892b2f7cb85e34562124d6d4"
+      },
+      {
+        "name": "authentication, snapshots and recovery",
+        "status": "PASS",
+        "test_id": "m4-smoke-1c6ab8a4c316",
+        "elapsed_seconds": 34.03100000001723,
+        "report_sha256": "3f9c092ce225327e1a4dfee90a65492afe4b5a024aa76812a8d9ef83829f6d2e"
+      },
+      {
+        "name": "API and independent wire accounting",
+        "status": "PASS",
+        "test_id": "m4-api-f3158c3392c4",
+        "elapsed_seconds": 34.71899999998277,
+        "report_sha256": "f80adfda6a7e9f895c372e0e188fcf76d57ca61d1e885ab794935753a810e1ee"
+      },
+      {
+        "name": "cold PostgreSQL startup and recovery",
+        "status": "PASS",
+        "test_id": "m4-startup-75c1bb11c6fe",
+        "elapsed_seconds": 8.375,
+        "report_sha256": "b44f789e080eacd18cf4b98f509c48b78c94c168cf8b94a966fc2c58cc631576"
+      },
+      {
+        "name": "LocalService TCP blackhole and slow HTTP shutdown",
+        "status": "PASS",
+        "test_id": "m4-network-d28f785da75f",
+        "elapsed_seconds": 22.344000000011874,
+        "report_sha256": "54115631459d823b4cf60a2a518329217bf2b36c3088457dc1d792dd17b12735"
+      },
+      {
+        "name": "publication, receipts and writer lifecycles",
+        "status": "PASS",
+        "test_id": "m4-ledger-4e4c53243ab0",
+        "elapsed_seconds": 3.139999999984866,
+        "report_sha256": "c42bc9c9aec47ff8c4c6f6d2699a0e553f50b74b0deadb11cbe6d9bb9196ded4"
+      },
+      {
+        "name": "lost PostgreSQL COMMIT acknowledgement",
+        "status": "PASS",
+        "test_id": "m4-receipt-fault-e1e819470045",
+        "elapsed_seconds": 3.3440000000118744,
+        "report_sha256": "d775a8cd704b88048ad5ab0efc19195284f66b3ef0470c76d3f63677601c76af"
+      },
+      {
+        "name": "capacity, isolation and measured overhead",
+        "status": "PASS",
+        "test_id": "m4-resources-d0aa09c3f33b",
+        "elapsed_seconds": 54.937999999994645,
+        "report_sha256": "ff643b1c1254468afb69443315a1effc0508c9a08dbe9bb02bb806a66b691752"
+      }
+    ]
+  },
+  "m5": {
+    "test_id": "m5-9cc4f3a5b58d",
+    "status": "PASS",
+    "elapsed_seconds": 551.2190000000119,
+    "report_sha256": "54973d25cd549b8c7fce4e37dbece81c1f35f04ce9e1e01145f9e29a8fc1e5c1",
+    "records": [
+      {
+        "name": "M0-M4 complete regressions",
+        "status": "PASS",
+        "test_id": "m4-f80d7e26b175",
+        "elapsed_seconds": 398.81299999999464,
+        "report_sha256": "c34810fc57437552c945ca942f9a88b4bea7784117b2e16ae7dac8720bd2dcd8"
+      },
+      {
+        "name": "native creation atomicity",
+        "status": "PASS",
+        "test_id": "m5-creation-8d3b78e6121c",
+        "elapsed_seconds": 6.953000000008615,
+        "report_sha256": "c223c514c1ec707e34ad9085a53239ec402eec652523e148fe38ee6e7a5f1f0a"
+      },
+      {
+        "name": "registry lifecycle and admin recovery",
+        "status": "PASS",
+        "test_id": "m5-registry-cb1e2f38a381",
+        "elapsed_seconds": 13.59299999999348,
+        "report_sha256": "8eb0dbb8dc25ed596c154a2d818916c08dc3f514965d5e3966bc25a4f9b0cca5"
+      },
+      {
+        "name": "actual M4 schema upgrade",
+        "status": "PASS",
+        "test_id": "m5-upgrade-1d92e8bc5f6b",
+        "elapsed_seconds": 6.812999999994645,
+        "report_sha256": "dba8d978afbe58a27a1e2db5de9a53a1dd3def46651f882efa77564e23ff2f5a"
+      },
+      {
+        "name": "HTTP v1/v2 and Unicode author",
+        "status": "PASS",
+        "test_id": "m5-http-c2f17f5bd95b",
+        "elapsed_seconds": 16.546999999991385,
+        "report_sha256": "d021bffa8b0dbb5a0d165b5ed0d3d756810539bb0029729cc3e9a9d330ae2892"
+      },
+      {
+        "name": "HTTP/HTTPS round robin and SVNKit",
+        "status": "PASS",
+        "test_id": "m5-balancer-ca7d34c1e7e0",
+        "elapsed_seconds": 33.234000000025844,
+        "report_sha256": "070629280f7761d7788ae01f8b915b20c0423d7a97016ff78f833dcc8128753e"
+      },
+      {
+        "name": "path and historical authorization",
+        "status": "PASS",
+        "test_id": "m5-authz-2264d56f2ecb",
+        "elapsed_seconds": 14.34399999998277,
+        "report_sha256": "0d7d9ea25827d991ef630a8c9b9d0ce3a2953d6584d2da964c813419ae1eb320"
+      },
+      {
+        "name": "upstream Unicode client limitation baseline",
+        "status": "PASS",
+        "test_id": "m5-unicode-baseline-f6921903bf01",
+        "elapsed_seconds": 12.078000000008615,
+        "report_sha256": "9727602001e2377a15b1233e8c2b8bd30d546059ca06b5ac3c4a86e5dc476fee"
+      },
+      {
+        "name": "independent Apache telemetry ledger",
+        "status": "PASS",
+        "test_id": "m5-telemetry-2faf2d1edf43",
+        "elapsed_seconds": 35.96899999998277,
+        "report_sha256": "204c70136b9fdacb90f14d34251d8e01693fe940b68821c9fdf9508b015a0812"
+      },
+      {
+        "name": "LocalService worker lifecycle",
+        "status": "PASS",
+        "test_id": "m5-dav-service-de7819816304",
+        "elapsed_seconds": 12.578000000008615,
+        "report_sha256": "432d3fa5d01ec432745de3dc3c4ea4afd5b3000351add59ca73ced701fa0d23d"
+      }
+    ]
+  },
+  "browser": {
+    "m4": {
+      "status": "PASS",
+      "created_at": "2026-10-16T01:25:43.510111+00:00",
+      "fixture_stopped": true,
+      "pgvnserve_sha256": "30b3b1ec083496b40243731e317f9609c55dda4811635dc1cc744416f61c08f2",
+      "assets": {
+        "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+        "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+        "monitor.js": "bba56e9c9bf68c6f22cba549e42a3efde30ffa30add4dab8759f66dd3166dfd3"
+      },
+      "dav_host_sha256": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+      "dav_host_runtime": {
+        "product": "PgVNHTTPD",
+        "apache_base": "2.4.68",
+        "process_code_page": 65001
+      },
+      "fixture_session": "runtime/pgvn/tests/m3-credentials-f7fa9e9c4686/browser-session.json",
+      "observations": {
+        "m4_checks": {
+          "authentication": true,
+          "all_views": true,
+          "repository_pagination": true,
+          "repository_search": true,
+          "repository_detail": true,
+          "text_only_hostile_name": true,
+          "keyboard_focus_and_refresh": true,
+          "narrow_layout": true,
+          "configurable_refresh": true,
+          "paused_refresh": true,
+          "lost_peer_and_recovery": true,
+          "stale_database_and_unknown_nodes": true,
+          "reload_requires_token": true,
+          "token_revocation_clears_data": true,
+          "no_persistent_token": true
+        },
+        "m5_checks": {
+          "worker_details": true,
+          "http_method_counts": true,
+          "request_error_id": true,
+          "refresh_retains_open_and_focus": true,
+          "narrow_details_layout": true,
+          "lost_worker_and_new_instance": true
+        },
+        "views": [
+          {
+            "clientWidth": 1265,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "服务概览",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1280,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1280,
+            "statusRegions": 1,
+            "title": "节点状态",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "仓库状态",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "数据库状态",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "请求与错误",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "服务概览",
+            "width": 1280,
+            "theme": "dark"
+          },
+          {
+            "clientWidth": 1280,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1280,
+            "statusRegions": 1,
+            "title": "节点状态",
+            "width": 1280,
+            "theme": "dark"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "仓库状态",
+            "width": 1280,
+            "theme": "dark"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "数据库状态",
+            "width": 1280,
+            "theme": "dark"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "请求与错误",
+            "width": 1280,
+            "theme": "dark"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(15, 26, 46)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "仓库详情",
+            "width": 1280,
+            "theme": "light"
+          },
+          {
+            "clientWidth": 1265,
+            "color": "rgb(230, 237, 247)",
+            "error": false,
+            "height": 900,
+            "inlineStyles": 0,
+            "kpis": 4,
+            "pageWidth": 1265,
+            "statusRegions": 1,
+            "title": "仓库详情",
+            "width": 1280,
+            "theme": "dark"
+          }
+        ],
+        "narrow": [
+          {
+            "clientWidth": 360,
+            "focus": true,
+            "height": 812,
+            "open": true,
+            "outline": "solid",
+            "pageWidth": 360,
+            "rowHeights": [
+              62.59375,
+              62.59375,
+              65
+            ],
+            "scrollLeft": 100,
+            "tableClient": 311,
+            "tableWidth": 834,
+            "width": 375,
+            "theme": "light",
+            "details": "HTTP 请求 / 失败\n8 / 2\n正在处理请求\n0\nSQL 调用 / 失败\n111 / 0\n新修订 / 回执确认\n0 / 0\n遥测失败批次\n0\nHTTP 方法\nDAV 方法计数。可聚焦表格区域，使用方向键滚动。\n方法\t完成\t失败\n\nOPTIONS\n\t5\t1\n\nPROPFIND\n\t2\t0\n\nPOST\n\t1\t1\n近期错误\nDAV 近期错误。可聚焦表格区域，使用方向键滚动。\n时间\tHTTP 状态\t请求 ID\n2026/10/16 09:16:20\t401\t0a83203d-1\n2026/10/16 09:16:20\t403\t0a83203d-8"
+          },
+          {
+            "clientWidth": 360,
+            "focus": true,
+            "height": 812,
+            "open": true,
+            "outline": "solid",
+            "pageWidth": 360,
+            "rowHeights": [
+              62.59375,
+              62.59375,
+              65
+            ],
+            "scrollLeft": 180,
+            "tableClient": 311,
+            "tableWidth": 834,
+            "width": 375,
+            "theme": "dark",
+            "details": "HTTP 请求 / 失败\n8 / 2\n正在处理请求\n0\nSQL 调用 / 失败\n111 / 0\n新修订 / 回执确认\n0 / 0\n遥测失败批次\n0\nHTTP 方法\nDAV 方法计数。可聚焦表格区域，使用方向键滚动。\n方法\t完成\t失败\n\nOPTIONS\n\t5\t1\n\nPROPFIND\n\t2\t0\n\nPOST\n\t1\t1\n近期错误\nDAV 近期错误。可聚焦表格区域，使用方向键滚动。\n时间\tHTTP 状态\t请求 ID\n2026/10/16 09:16:20\t401\t0a83203d-1\n2026/10/16 09:16:20\t403\t0a83203d-8"
+          }
+        ],
+        "observations": [
+          "产品检查排除浏览器注入的 codex-browser-sidebar-comments-root；隐藏 caption 的定位溢出在最终版本修复并复验。",
+          "数据库恢复后重新读取，写主恢复为可写主库；旧实例保留失联记录，新实例就绪。",
+          "无持久令牌检查结合重新加载必须认证和当前静态检查：源码未使用 localStorage/sessionStorage/indexedDB/cookie/URL 保存令牌。",
+          "撤销后先验证内容与健康摘要清空；随后再提交同一已撤销令牌，观察 401 路径焦点返回 token、内容为空且输入 aria-invalid=true。补充结果来自本轮 CUA 只读 DOM 检查。"
+        ],
+        "clock": [
+          {
+            "before": {
+              "at": 1792113514158,
+              "freshness": "已暂停 · 4.9 秒前",
+              "meta": "采样于 2026/10/16 09:18:29 · 4.8 秒前",
+              "readiness": "服务就绪",
+              "rows": [
+                {
+                  "last": "2026-10-16T01:18:24.106Z",
+                  "status": "就绪"
+                },
+                {
+                  "last": "2026-10-16T01:18:24.644Z",
+                  "status": "就绪"
+                },
+                {
+                  "last": "2026-10-16T01:18:25.099Z",
+                  "status": "就绪"
+                }
+              ],
+              "summary": "3 / 3 在线"
+            },
+            "after": {
+              "at": 1792113520616,
+              "freshness": "已暂停 · 10.9 秒前",
+              "meta": "采样于 2026/10/16 09:18:29 · 4.8 秒前",
+              "readiness": "服务就绪",
+              "rows": [
+                {
+                  "last": "2026-10-16T01:18:24.106Z",
+                  "status": "心跳失联"
+                },
+                {
+                  "last": "2026-10-16T01:18:24.644Z",
+                  "status": "心跳失联"
+                },
+                {
+                  "last": "2026-10-16T01:18:25.099Z",
+                  "status": "就绪"
+                }
+              ],
+              "summary": "1 / 3 在线"
+            },
+            "stale": {
+              "at": 1792113532180,
+              "freshness": "已暂停 · 22.9 秒前",
+              "meta": "采样于 2026/10/16 09:18:29 · 4.8 秒前",
+              "readiness": "状态未知",
+              "rows": [
+                {
+                  "last": "2026-10-16T01:18:24.106Z",
+                  "status": "状态未知"
+                },
+                {
+                  "last": "2026-10-16T01:18:24.644Z",
+                  "status": "状态未知"
+                },
+                {
+                  "last": "2026-10-16T01:18:25.099Z",
+                  "status": "状态未知"
+                }
+              ],
+              "summary": "未知"
+            },
+            "manual": {
+              "at": 1792113533046,
+              "freshness": "已暂停 · 3.8 秒前",
+              "meta": "采样于 2026/10/16 09:18:49 · 3.6 秒前",
+              "readiness": "服务就绪",
+              "rows": [
+                {
+                  "last": "2026-10-16T01:18:44.153Z",
+                  "status": "就绪"
+                },
+                {
+                  "last": "2026-10-16T01:18:44.689Z",
+                  "status": "就绪"
+                },
+                {
+                  "last": "2026-10-16T01:18:45.103Z",
+                  "status": "就绪"
+                }
+              ],
+              "summary": "3 / 3 在线"
+            }
+          }
+        ],
+        "charts": [
+          {
+            "theme": "light",
+            "label": "命令速率趋势，2026/10/16 09:16:18 · 2 次 / 秒。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 2 次 / 秒"
+          },
+          {
+            "theme": "light",
+            "label": "失败率趋势，2026/10/16 09:16:18 · 10 %。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 10 %"
+          },
+          {
+            "theme": "light",
+            "label": "平均命令延迟趋势，2026/10/16 09:16:18 · 4 毫秒。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 4 毫秒"
+          },
+          {
+            "theme": "light",
+            "window": {
+              "count": 3,
+              "decoration": "underline",
+              "focus": "window-commands_per_second-300",
+              "values": [
+                "5 分钟",
+                "5 分钟",
+                "5 分钟"
+              ],
+              "widths": [
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                },
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                },
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                }
+              ]
+            }
+          },
+          {
+            "theme": "dark",
+            "label": "命令速率趋势，2026/10/16 09:16:18 · 2 次 / 秒。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 2 次 / 秒"
+          },
+          {
+            "theme": "dark",
+            "label": "失败率趋势，2026/10/16 09:16:18 · 10 %。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 10 %"
+          },
+          {
+            "theme": "dark",
+            "label": "平均命令延迟趋势，2026/10/16 09:16:18 · 4 毫秒。使用方向键读取采样点。",
+            "readout": "2026/10/16 09:16:18 · 4 毫秒"
+          },
+          {
+            "theme": "dark",
+            "window": {
+              "count": 3,
+              "decoration": "underline",
+              "focus": "window-commands_per_second-300",
+              "values": [
+                "5 分钟",
+                "5 分钟",
+                "5 分钟"
+              ],
+              "widths": [
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                },
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                },
+                {
+                  "font": "12px",
+                  "viewBox": "0 0 314 220",
+                  "width": 314
+                }
+              ]
+            }
+          }
+        ],
+        "focus": [
+          {
+            "focus": "节点列表，可滚动表格",
+            "open": true,
+            "scroll": 180
+          }
+        ],
+        "repository": [
+          {
+            "theme": "light",
+            "first": 50,
+            "last": 3,
+            "retained": 3,
+            "detail": {
+              "focus": "main",
+              "revisions": [
+                "r1",
+                "r0"
+              ],
+              "text": "最新修订\n\nr1\n\n数据库仓库历史\n\n配置代数\n\n2\n\n当前发布版本\n\n活动事务\n\n1\n\n未完成的 SVN 事务\n\n业务锁\n\n1\n\n有效 SVN 锁\n\n返回仓库列表\n工程文档\n启用\n89ba28c5-9e8b-e048-ab4c-0f1565666f02\n近期修订\n2 条 / 当前样本\nr1\n2026/10/16 09:16:14\nr0\n2026/10/16 09:16:06\n活动事务\n1 条 / 当前样本\n活动事务。可聚焦表格区域，使用方向键滚动。\n事务 ID\t基础修订\t创建时间\n7b6dc568-bf4b-2b44-af95-14a1ce084a8f\tr1\t2026/10/16 09:16:15\n业务锁\n1 条 / 当前样本\n业务锁。可聚焦表格区域，使用方向键滚动。\n路径\t所有者\t创建时间\n/readme.txt\twriter\t2026/10/16 09:16:14\n仓库信息\n数据库目录\n仓库 ID\ncdb76f8c-32b2-8543-ae25-696edc78dccf\n公开 UUID\n89ba28c5-9e8b-e048-ab4c-0f1565666f02\n启用状态\n启用\n最近提交\n2026/10/16 09:16:14\n本机近期相关错误\n当前实例 · 最多 200 条\n命令被权限规则拒绝\n2026/10/16 09:16:15\nsvn / commit\nsvn-000000000000000a"
+            }
+          },
+          {
+            "theme": "dark",
+            "first": 50,
+            "last": 3,
+            "retained": 3,
+            "detail": {
+              "focus": "main",
+              "revisions": [
+                "r1",
+                "r0"
+              ],
+              "text": "最新修订\n\nr1\n\n数据库仓库历史\n\n配置代数\n\n2\n\n当前发布版本\n\n活动事务\n\n1\n\n未完成的 SVN 事务\n\n业务锁\n\n1\n\n有效 SVN 锁\n\n返回仓库列表\n工程文档\n启用\n89ba28c5-9e8b-e048-ab4c-0f1565666f02\n近期修订\n2 条 / 当前样本\nr1\n2026/10/16 09:16:14\nr0\n2026/10/16 09:16:06\n活动事务\n1 条 / 当前样本\n活动事务。可聚焦表格区域，使用方向键滚动。\n事务 ID\t基础修订\t创建时间\n7b6dc568-bf4b-2b44-af95-14a1ce084a8f\tr1\t2026/10/16 09:16:15\n业务锁\n1 条 / 当前样本\n业务锁。可聚焦表格区域，使用方向键滚动。\n路径\t所有者\t创建时间\n/readme.txt\twriter\t2026/10/16 09:16:14\n仓库信息\n数据库目录\n仓库 ID\ncdb76f8c-32b2-8543-ae25-696edc78dccf\n公开 UUID\n89ba28c5-9e8b-e048-ab4c-0f1565666f02\n启用状态\n启用\n最近提交\n2026/10/16 09:16:14\n本机近期相关错误\n当前实例 · 最多 200 条\n命令被权限规则拒绝\n2026/10/16 09:16:15\nsvn / commit\nsvn-000000000000000a"
+            }
+          }
+        ],
+        "table_focus_preserved": true,
+        "clock_checks": {
+          "heartbeat_expires_before_sample": true,
+          "summary_matches_rows": true,
+          "stale_readiness_unknown": true
+        },
+        "chart_cursor_and_label": true,
+        "images": {
+          "light": {
+            "theme": "light",
+            "width": 375,
+            "height": 812,
+            "view": "overview"
+          },
+          "dark": {
+            "theme": "dark",
+            "width": 1280,
+            "height": 900,
+            "view": "overview"
+          }
+        },
+        "lost_nodes": [
+          [
+            "心跳失联\n\tbrowser-peer / a5eeaf1e\tSVN\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:21:19",
+            "心跳失联\n\t\ndav-browser-dav / 0a83203d\n\tDAV\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:21:20",
+            "就绪\n\tbrowser-main / dc1d5572\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:22:14"
+          ],
+          [
+            "心跳失联\n\tbrowser-peer / a5eeaf1e\tSVN\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:21:19",
+            "心跳失联\n\t\ndav-browser-dav / 0a83203d\n\tDAV\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:21:20",
+            "就绪\n\tbrowser-main / dc1d5572\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:22:44",
+            "就绪\n\tbrowser-peer / 0ac5c3a1\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:22:45",
+            "就绪\n\t\ndav-browser-dav / 6251760a\n\tDAV\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:22:47"
+          ]
+        ],
+        "database_failure": [
+          {
+            "rows": [
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              }
+            ],
+            "sample": "样本过期 · 34.4 秒前",
+            "status": "数据库状态暂时无法更新。保留上次成功样本，本机进程指标仍可查看。",
+            "theme": "light",
+            "writer": "未知"
+          },
+          {
+            "rows": [
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              },
+              {
+                "connections": "未知",
+                "generation": "未知",
+                "state": "状态未知"
+              }
+            ],
+            "sample": "样本过期 · 34.4 秒前",
+            "status": "数据库状态暂时无法更新。保留上次成功样本，本机进程指标仍可查看。",
+            "theme": "dark",
+            "writer": "未知"
+          }
+        ],
+        "revocation": [
+          {
+            "children": 0,
+            "focus": "theme",
+            "hidden": true,
+            "invalid": "true",
+            "readiness": "未连接",
+            "sample": "尚未取得状态样本",
+            "theme": "light"
+          },
+          {
+            "children": 0,
+            "focus": "theme",
+            "hidden": true,
+            "invalid": "true",
+            "readiness": "未连接",
+            "sample": "尚未取得状态样本",
+            "theme": "dark"
+          }
+        ],
+        "revoked_reconnect": {
+          "children": 0,
+          "focus": "token",
+          "hidden": true,
+          "invalid": "true"
+        }
+      },
+      "screenshots": {
+        "dark": {
+          "path": "docs/pgvn/images/monitor-polish-dark.jpg",
+          "bytes": 86620,
+          "sha256": "dd58ec95164b593e71d1383e7b22dec3b021fd95631feaa8c776abd06c449687"
+        },
+        "light": {
+          "path": "docs/pgvn/images/monitor-polish-light.jpg",
+          "bytes": 30675,
+          "sha256": "8e8132e4b0a5bcdf9659ce16e2c0b862da9d47fa54fb0230c8719cd6816cc63f"
+        }
+      },
+      "static_audit": {
+        "status": "PASS",
+        "static_contracts": true,
+        "contrast": [
+          {
+            "theme": "light",
+            "front": "text",
+            "back": "bg",
+            "ratio": 16.074,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "text-2",
+            "back": "surface-1",
+            "ratio": 7.189,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "text-3",
+            "back": "bg",
+            "ratio": 4.779,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "text-3",
+            "back": "surface-2",
+            "ratio": 4.945,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "on-primary",
+            "back": "primary",
+            "ratio": 6.16,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "nav-text",
+            "back": "nav",
+            "ratio": 14.759,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "nav-muted",
+            "back": "nav",
+            "ratio": 8.001,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "nav-good",
+            "back": "nav",
+            "ratio": 9.046,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "border-strong",
+            "back": "surface-2",
+            "ratio": 3.016,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "focus",
+            "back": "surface-1",
+            "ratio": 6.16,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "series-1",
+            "back": "surface-1",
+            "ratio": 6.16,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "series-2",
+            "back": "surface-1",
+            "ratio": 5.801,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "series-3",
+            "back": "surface-1",
+            "ratio": 5.628,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "series-4",
+            "back": "surface-1",
+            "ratio": 5.358,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "good",
+            "back": "good-bg",
+            "ratio": 4.71,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "warn",
+            "back": "warn-bg",
+            "ratio": 5.132,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "bad",
+            "back": "bad-bg",
+            "ratio": 5.521,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "info",
+            "back": "info-bg",
+            "ratio": 5.14,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "light",
+            "front": "neutral",
+            "back": "neutral-bg",
+            "ratio": 5.469,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "text",
+            "back": "bg",
+            "ratio": 15.979,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "text-2",
+            "back": "surface-1",
+            "ratio": 7.978,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "text-3",
+            "back": "bg",
+            "ratio": 6.06,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "text-3",
+            "back": "surface-2",
+            "ratio": 5.096,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "on-primary",
+            "back": "primary",
+            "ratio": 6.794,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "nav-text",
+            "back": "nav",
+            "ratio": 16.458,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "nav-muted",
+            "back": "nav",
+            "ratio": 8.923,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "nav-good",
+            "back": "nav",
+            "ratio": 10.088,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "border-strong",
+            "back": "surface-2",
+            "ratio": 3.266,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "focus",
+            "back": "surface-1",
+            "ratio": 8.823,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "series-1",
+            "back": "surface-1",
+            "ratio": 6.257,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "series-2",
+            "back": "surface-1",
+            "ratio": 6.443,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "series-3",
+            "back": "surface-1",
+            "ratio": 6.372,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "series-4",
+            "back": "surface-1",
+            "ratio": 9.595,
+            "minimum": 3,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "good",
+            "back": "good-bg",
+            "ratio": 6.867,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "warn",
+            "back": "warn-bg",
+            "ratio": 7.8,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "bad",
+            "back": "bad-bg",
+            "ratio": 5.172,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "info",
+            "back": "info-bg",
+            "ratio": 5.39,
+            "minimum": 4.5,
+            "pass": true
+          },
+          {
+            "theme": "dark",
+            "front": "neutral",
+            "back": "neutral-bg",
+            "ratio": 5.361,
+            "minimum": 4.5,
+            "pass": true
+          }
+        ],
+        "assets": {
+          "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+          "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+          "monitor.js": "bba56e9c9bf68c6f22cba549e42a3efde30ffa30add4dab8759f66dd3166dfd3"
+        },
+        "scope": "Source and computed contrast only; not a claim of forced-colors/reduced-motion browser emulation."
+      },
+      "method": "Fresh CUA UI actions with read-only DOM and computed-style checks on the frozen Release. Browser-injected comment overlay excluded from product inline-style counts. Notes/screenshots saved through a nonce-protected loopback form; fixture stopped and token revoked before recording.",
+      "additional_manual_acceptance_pending": [
+        "Windows forced-colors actual visual inspection; CSS adaptation reviewed, browser media emulation/native desktop controls unavailable."
+      ],
+      "test_id": "m4-browser-polish-f7fa9e9c4686",
+      "checks": {
+        "all_views": true,
+        "repository_pagination": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "text_only_hostile_name": true,
+        "keyboard_focus_and_refresh": true,
+        "configurable_refresh": true,
+        "narrow_layout": true,
+        "paused_refresh": true,
+        "stale_database_and_unknown_nodes": true,
+        "lost_peer_and_recovery": true,
+        "token_revocation_clears_data": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "authentication": true
+      }
+    },
+    "m5": {
+      "status": "PASS",
+      "created_at": "2026-10-16T01:25:43.510111+00:00",
+      "fixture_stopped": true,
+      "pgvnserve_sha256": "30b3b1ec083496b40243731e317f9609c55dda4811635dc1cc744416f61c08f2",
+      "assets": {
+        "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+        "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+        "monitor.js": "bba56e9c9bf68c6f22cba549e42a3efde30ffa30add4dab8759f66dd3166dfd3"
+      },
+      "dav_host_sha256": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+      "dav_host_runtime": {
+        "product": "PgVNHTTPD",
+        "apache_base": "2.4.68",
+        "process_code_page": 65001
+      },
+      "fixture_session": "runtime/pgvn/tests/m3-credentials-f7fa9e9c4686/browser-session.json",
+      "method": "Fresh CUA UI actions with read-only DOM and computed-style checks on the frozen Release. Browser-injected comment overlay excluded from product inline-style counts. Notes/screenshots saved through a nonce-protected loopback form; fixture stopped and token revoked before recording.",
+      "additional_manual_acceptance_pending": [
+        "Windows forced-colors actual visual inspection; CSS adaptation reviewed, browser media emulation/native desktop controls unavailable."
+      ],
+      "test_id": "m5-browser-polish-f7fa9e9c4686",
+      "checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "refresh_retains_open_and_focus": true,
+        "lost_worker_and_new_instance": true,
+        "narrow_details_layout": true
+      },
+      "modules": {
+        "mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+        "mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5"
+      }
+    }
+  },
+  "development_findings": [
+    {
+      "issue": "Hidden captions escaped an unpositioned scroll container when DAV details opened.",
+      "observed_css_sha256": "9c376aa7ab4fb99a0912ab4ee965361094b09a2e1cdd33be446541874ec09323",
+      "observed_viewport": 375,
+      "observed_client_width": 360,
+      "observed_page_width": 581,
+      "fix": "Position each table scroll container relatively; final browser evidence checks both themes with page width 360."
+    },
+    {
+      "issue": "Node version and heartbeat text wrapped into tall narrow-screen rows.",
+      "observed_row_height_about_px": 104,
+      "fix": "Use single-line version/time values inside independent horizontal scrolling; observed final rows approximately 63-65 px."
+    }
+  ],
+  "limits": [
+    "Windows forced-colors visual acceptance remains pending; CSS and computed contrast checks are recorded separately.",
+    "Automatic table-focus retention was verified for the outer node list. Inner DAV tables currently derive focus keys from shared view/cursor/columns; add the instance prefix already used by scroll restoration and verify simultaneous historical DAV instances in the next iteration.",
+    "M6 upstream network entry, fault/performance budgets and M7 clean Windows/reboot/cross-host/Polarion acceptance remain unfinished. Existing deployment ZIPs retain their original build identity."
+  ]
+}

@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const labels = { overview: "概览", nodes: "节点", repositories: "仓库", database: "数据库", requests: "请求与错误", detail: "仓库详情" };
   const titles = { overview: "服务概览", nodes: "节点状态", repositories: "仓库状态", database: "数据库状态", requests: "请求与错误", detail: "仓库详情" };
-  const state = { token: "", view: "overview", busy: false, paused: false, timer: null, cursor: "", next: null, overview: null, rows: null, trends: null, events: null, repository: "", search: "", epoch: 0, refreshSeconds: 5, renderedEpoch: -1, theme: null, chartWindow: 900, chartCursors: {}, chartObservers: [], kpiValues: {}, fetchedAt: 0, updateFailed: false, ageExpired: false, clock: null };
+  const state = { token: "", view: "overview", busy: false, paused: false, timer: null, cursor: "", next: null, overview: null, rows: null, trends: null, events: null, repository: "", search: "", epoch: 0, refreshSeconds: 5, renderedEpoch: -1, theme: null, chartWindow: 900, chartCursors: {}, chartObservers: [], kpiValues: {}, fetchedAt: 0, updateFailed: false, ageExpired: false, nodeStatusKey: "", clock: null };
   const number = value => value == null ? "未知" : new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 1 }).format(value);
   const time = value => value != null && value !== "" && Number.isFinite(new Date(value).getTime()) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "未知";
   const element = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text != null) e.textContent = text; return e; };
@@ -28,10 +28,24 @@
     const sample = state.rows;
     if (state.updateFailed || state.ageExpired || !sample || !sample.last_attempt_ok || sample.freshness !== "fresh" || !Number.isFinite(node.age_seconds) || node.age_seconds < 0) return { text: "状态未知", tone: "neutral", rank: 2 };
     if (node.metrics?.stopped === true) return { text: "已停止", tone: "neutral", rank: 2 };
-    if (node.age_seconds + (sample.age_seconds || 0) > 15) return { text: "心跳失联", tone: "warning", rank: 0 };
+    if (node.age_seconds + (sample.age_seconds || 0) + elapsedSinceFetch() > limits.sampleAge) return { text: "心跳失联", tone: "warning", rank: 0 };
     if (node.metrics?.ready === false) return { text: "未就绪", tone: "warning", rank: 1 };
     return node.metrics?.ready === true ? { text: "就绪", tone: "good", rank: 3 } : { text: "在线 / 就绪未知", tone: "neutral", rank: 2 };
   }
+  function elapsedSinceFetch() { return Math.max(0, (performance.now() - state.fetchedAt) / 1000); }
+  function nodeStatusKey() {
+    return ["overview", "nodes"].includes(state.view) ? (state.rows?.items || []).map(n => `${n.instance_id}:${nodeInfo(n).text}`).join("|") : "";
+  }
+  function tick() {
+    if (!state.token || !state.overview) return;
+    const age = state.overview.age_seconds, expired = age != null && age + elapsedSinceFetch() > limits.sampleAge;
+    const changed = expired !== state.ageExpired;
+    state.ageExpired = expired;
+    // Heartbeats may expire before the database sample, including while paused.
+    if (state.renderedEpoch === state.epoch && (changed || nodeStatusKey() !== state.nodeStatusKey)) render();
+    else healthStrip();
+  }
+  function timestamp(value) { const e = element("time", "nowrap", time(value)); if (value != null && value !== "" && Number.isFinite(new Date(value).getTime())) e.dateTime = new Date(value).toISOString(); return e; }
   function nodeStatus(node) { const s = nodeInfo(node); return badge(s.text, s.tone); }
   function panel(title, subtitle) { const p = element("section", "panel"), heading = element("div", "panel-heading"); heading.append(element("h2", "", title)); if (subtitle) heading.append(element("small", "", subtitle)); p.append(heading); return p; }
   function details(items) { const dl = element("dl", "detail-list"); for (const [title, value, mono] of items) { const dd = element("dd", mono ? "mono" : ""); if (value instanceof Node) dd.append(value); else dd.textContent = value == null ? "未知" : value; dl.append(element("dt", "", title), dd); } return dl; }
@@ -40,9 +54,12 @@
     const box = element("div", "skeleton"), stats = element("div", "stats"); box.setAttribute("aria-hidden", "true");
     for (let i = 0; i < 4; i++) stats.append(element("div", "skeleton-block")); box.append(stats, element("div", "skeleton-block")); return box;
   }
-  function table(columns, rows) {
+  function table(columns, rows, title = "数据表") {
     const wrap = element("div", "table-wrap"), t = element("table"), head = element("thead"), tr = element("tr");
     wrap.dataset.scrollKey = JSON.stringify([state.view, state.repository, state.search, state.cursor, columns.map(c => typeof c === "string" ? c : c.label)]);
+    wrap.tabIndex = 0; wrap.dataset.focusKey = `table-${encodeURIComponent(wrap.dataset.scrollKey)}`;
+    wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", `${title}，可滚动表格`);
+    const caption = element("caption", "sr-only", `${title}。可聚焦表格区域，使用方向键滚动。`); t.append(caption);
     for (const column of columns) { const th = element("th", column.align === "end" ? "align-end" : "", typeof column === "string" ? column : column.label); th.scope = "col"; tr.append(th); } head.append(tr); t.append(head);
     const body = element("tbody");
     for (const row of rows) {
@@ -75,15 +92,18 @@
     if (!connected) { delete document.body.dataset.connected; $("health").dataset.tone = "neutral"; setSignal("readiness", "未连接", "neutral", "question"); for (const id of ["health-sample", "health-writer", "health-nodes"]) setSignal(id, "未知", "neutral", "question"); setSignal("health-age", "尚无样本", "neutral", "clock"); $("freshness").className = "freshness neutral"; $("freshness").replaceChildren(icon("clock"), element("span", "", "等待连接")); return; }
     document.body.dataset.connected = "true";
     const d = o.database, fresh = !state.updateFailed && !state.ageExpired && o.last_attempt_ok && o.freshness === "fresh";
-    const age = o.age_seconds == null ? null : Math.max(0, o.age_seconds + (performance.now() - state.fetchedAt) / 1000);
+    const age = o.age_seconds == null ? null : Math.max(0, o.age_seconds + elapsedSinceFetch());
     const ageText = age == null ? "尚无样本" : `${number(age)} 秒前`;
-    setSignal("readiness", o.ready ? "服务就绪" : "尚未就绪", o.ready ? "good" : "warning", o.ready ? "check-circle" : "warning");
+    const reachable = !state.updateFailed && elapsedSinceFetch() <= limits.sampleAge;
+    setSignal("readiness", !reachable ? "状态未知" : o.ready ? "服务就绪" : "尚未就绪", !reachable ? "neutral" : o.ready ? "good" : "warning", !reachable ? "question" : o.ready ? "check-circle" : "warning");
     setSignal("health-sample", fresh ? `采样正常 · ${number(o.sampler_milliseconds)} ms` : o.sampled_at ? `样本过期 · ${ageText}` : "尚无成功样本", fresh ? "good" : "warning", fresh ? "check-circle" : "warning");
     setSignal("health-writer", !fresh || d?.writable == null ? "未知" : d.writable ? "可写主库" : "未确认可写", !fresh || d?.writable == null ? "neutral" : d.writable ? "good" : "warning", !fresh ? "question" : d?.writable ? "pencil-simple-line" : "warning");
     const known = fresh && d?.nodes_online != null && d?.nodes_total != null;
-    setSignal("health-nodes", known ? `${number(d.nodes_online)} / ${number(d.nodes_total)} 在线` : "未知", known ? d.nodes_online === d.nodes_total ? "good" : "warning" : "neutral", known ? d.nodes_online === d.nodes_total ? "hard-drives" : "warning" : "question");
+    const completeNodes = state.renderedEpoch === state.epoch && ["overview", "nodes"].includes(state.view) && state.rows?.last_attempt_ok && state.rows.freshness === "fresh" && !state.cursor && !state.rows.next_cursor && !state.rows.truncated && state.rows.items?.length === d?.nodes_total;
+    const online = completeNodes ? state.rows.items.filter(n => ["就绪", "未就绪", "在线 / 就绪未知"].includes(nodeInfo(n).text)).length : d?.nodes_online;
+    setSignal("health-nodes", known ? `${number(online)} / ${number(d.nodes_total)} ${completeNodes ? "在线" : "样本在线"}` : "未知", known ? online === d.nodes_total ? "good" : "warning" : "neutral", known ? online === d.nodes_total ? "hard-drives" : "warning" : "question");
     setSignal("health-age", ageText, age == null ? "neutral" : age > limits.sampleAge ? "warning" : "good", "clock");
-    $("health").dataset.tone = state.updateFailed ? "danger" : !fresh || !o.ready || (known && d.nodes_online < d.nodes_total) || age > limits.sampleAge ? "warning" : "good";
+    $("health").dataset.tone = state.updateFailed ? "danger" : !fresh || !o.ready || (known && online < d.nodes_total) || age > limits.sampleAge ? "warning" : "good";
     const text = state.paused ? `已暂停 · ${ageText}` : !fresh || age > limits.sampleAge ? `样本过期 · ${ageText}` : `实时 · ${ageText}`;
     $("freshness").className = `freshness ${state.paused ? "neutral" : fresh && age <= limits.sampleAge ? "good" : "warning"}`;
     $("freshness").replaceChildren(icon(state.paused ? "pause" : fresh ? "pulse" : "warning"), element("span", "", text));
@@ -180,7 +200,7 @@
       $("subtitle").textContent = `${overview.node_id} · 实例 ${overview.instance_id.slice(0, 8)} · ${overview.process.version}`;
       $("sample-meta").textContent = `采样于 ${time(overview.sampled_at)} · ${overview.age_seconds == null ? "尚无样本" : `${number(overview.age_seconds)} 秒前`}`;
       status(stale ? "数据库状态暂时无法更新。保留上次成功样本，本机进程指标仍可查看。" : state.paused ? "自动刷新已暂停，可手动刷新。" : ready ? `服务运行正常。每 ${state.refreshSeconds} 秒自动刷新，只读访问。` : "监控已连接，仓库服务尚未就绪。", stale ? "warning" : "");
-      render(); if (!state.clock) state.clock = setInterval(() => { if (!state.token || !state.overview) return; const age = state.overview.age_seconds, expired = age != null && age + (performance.now() - state.fetchedAt) / 1000 > limits.sampleAge; if (expired !== state.ageExpired) { state.ageExpired = expired; if (state.renderedEpoch === state.epoch) render(); else healthStrip(); } else healthStrip(); }, 1000);
+      render(); if (!state.clock) state.clock = setInterval(tick, 1000);
     } catch (error) {
       if (error.auth) { disconnect(error.message); $("token-error").textContent = error.message; $("token-error").hidden = false; $("token").setAttribute("aria-invalid", "true"); }
       else if (error.cursor) { state.cursor = ""; status(error.message); setTimeout(refresh, 0); }
@@ -197,16 +217,17 @@
     box.querySelector(".panel-heading").append(tools);
     const valid = points.filter(p => Number.isFinite(p[field]) && p[field] >= 0);
     if (valid.length < 2) { box.append(empty("正在收集趋势", "足够样本后显示；无完成命令时，失败率和延迟为未知。")); return box; }
+    const metric = value => Number.isFinite(value) && value >= 0 ? number(value) : "未知";
     const latest = points.at(-1)?.[field], peak = Math.max(...valid.map(p => p[field]));
-    const summary = element("div", "chart-summary"); summary.append(element("span", "", `当前 ${number(latest)} ${unit}`), element("span", "", `峰值 ${number(peak)} ${unit}`)); box.append(summary);
+    const summary = element("div", "chart-summary"); summary.append(element("span", "", `当前 ${metric(latest)} ${unit}`), element("span", "", `峰值 ${number(peak)} ${unit}`)); box.append(summary);
     const plot = element("div", `chart-plot series-${series}`); plot.tabIndex = 0; plot.dataset.focusKey = `chart-${field}`;
-    plot.setAttribute("role", "img"); plot.setAttribute("aria-label", `${title}趋势，当前 ${number(latest)} ${unit}，峰值 ${number(peak)} ${unit}。使用方向键读取采样点。`);
+    plot.setAttribute("role", "img"); plot.setAttribute("aria-label", `${title}趋势，当前 ${metric(latest)} ${unit}，峰值 ${number(peak)} ${unit}。使用方向键读取采样点。`);
     plot.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight Home End Escape");
     const svg = svgElement("svg", { class: `chart series-${series}`, "aria-hidden": "true", viewBox: "0 0 720 220" }); plot.append(svg);
     const readout = element("p", "chart-readout", "选择图表，使用 ← / →、Home / End 查看采样值；Esc 隐藏准线。"); readout.id = `readout-${field}`; plot.setAttribute("aria-describedby", readout.id);
     const help = element("p", "chart-help", series === 2 ? "虚线 · 缺口表示无样本；详细数值可展开下方数据表。" : series === 3 ? "点线 · 缺口表示无样本；详细数值可展开下方数据表。" : "实线 · 缺口表示无样本；详细数值可展开下方数据表。");
     box.append(plot, readout, help);
-    const raw = element("details", "chart-details"); raw.dataset.chart = field; raw.append(element("summary", "", "查看趋势数据"), table(["采样时间", endColumn(title)], points.map(p => [time(p.sampled_at), number(p[field])]))); box.append(raw);
+    const raw = element("details", "chart-details"); raw.dataset.chart = field; raw.append(element("summary", "", "查看趋势数据"), table(["采样时间", endColumn(title)], points.map(p => [time(p.sampled_at), metric(p[field])]), `${title}趋势数据`)); box.append(raw);
     const saved = state.chartCursors[field]; let selected = saved ? points.findIndex(p => p.sampled_at === saved.at) : points.length - 1;
     if (selected < 0) selected = points.length - 1;
     let width = 720, crosshair, marker, cursorVisible = saved?.visible === true;
@@ -220,9 +241,10 @@
       crosshair?.setAttribute("x1", x(p)); crosshair?.setAttribute("x2", x(p)); crosshair?.setAttribute("visibility", visible ? "visible" : "hidden");
       marker?.setAttribute("cx", x(p)); marker?.setAttribute("cy", known ? y(p[field]) : 176); marker?.setAttribute("visibility", visible && known ? "visible" : "hidden");
       readout.textContent = visible ? `${time(p.sampled_at)} · ${known ? `${number(p[field])} ${unit}` : "无样本"}` : "选择图表，使用 ← / →、Home / End 查看采样值；Esc 隐藏准线。";
+      plot.setAttribute("aria-label", `${title}趋势，${visible ? readout.textContent : `当前 ${metric(latest)} ${unit}，峰值 ${number(peak)} ${unit}`}。使用方向键读取采样点。`);
     }
     function draw(actualWidth) {
-      width = Math.max(280, actualWidth); svg.setAttribute("viewBox", `0 0 ${width} 220`); svg.replaceChildren();
+      width = Math.max(180, actualWidth); svg.setAttribute("viewBox", `0 0 ${width} 220`); svg.replaceChildren();
       const make = (tag, attrs, parent = svg) => { const e = svgElement(tag, attrs); parent.append(e); return e; };
       const defs = make("defs", {}), gradientId = `area-${state.view}-${field}`, gapId = `gap-${state.view}-${field}`;
       const gradient = make("linearGradient", { id: gradientId, x1: 0, x2: 0, y1: 0, y2: 1 }, defs);
@@ -263,7 +285,7 @@
   function paged(title, columns, rows, emptyTitle) {
     const box = panel(title, `${state.rows?.items?.length || 0} 条 / 当前页${state.view === "nodes" ? " · 当前页按状态排序" : ""}`);
     if (state.view === "repositories") box.append(searchForm);
-    if (rows.length) box.append(table(columns, rows)); else box.append(empty(emptyTitle, state.rows?.freshness === "unknown" ? "尚未取得数据库样本。" : "最近一次采样没有符合条件的记录。"));
+    if (rows.length) box.append(table(columns, rows, title)); else box.append(empty(emptyTitle, state.rows?.freshness === "unknown" ? "尚未取得数据库样本。" : "最近一次采样没有符合条件的记录。"));
     const pager = element("div", "pager"), buttons = element("div", "pager-buttons");
     pager.append(element("span", "", state.rows?.truncated ? "样本达到 1000 条上限，部分记录未展示。" : "每页最多 50 条，状态基于最近一次采样。"));
     const first = element("button", "", "第一页"); first.dataset.page = "first"; first.disabled = !state.cursor; first.addEventListener("click", () => { state.cursor = ""; refresh(true); });
@@ -290,7 +312,7 @@
   }
   function summaryTable(title, columns, collection, convert, emptyTitle) {
     const box = panel(title, `${collection?.items?.length || 0} 条 / 当前样本`), rows = collection?.items || [];
-    box.append(rows.length ? table(columns, rows.map(convert)) : empty(emptyTitle, "最近一次成功采样没有记录。"));
+    box.append(rows.length ? table(columns, rows.map(convert), title) : empty(emptyTitle, "最近一次成功采样没有记录。"));
     if (collection?.truncated || collection?.next_cursor) box.append(element("div", "pager", "本区仅展示有界摘要，部分记录未展示。")); return box;
   }
   function nodeValue(node, key) { return ["状态未知", "心跳失联", "已停止"].includes(nodeInfo(node).text) ? "未知" : number(node.metrics?.[key]); }
@@ -303,10 +325,10 @@
     const info = element("div"); info.append(details([["HTTP 请求 / 失败", `${nodeValue(node, "requests")} / ${nodeValue(node, "request_errors")}`], ["正在处理请求", nodeValue(node, "requests_active")], ["SQL 调用 / 失败", `${nodeValue(node, "sql_calls")} / ${nodeValue(node, "sql_errors")}`], ["新修订 / 回执确认", `${nodeValue(node, "published_revisions")} / ${nodeValue(node, "receipt_confirmations")}`], ["遥测失败批次", nodeValue(node, "telemetry_failures")]])); body.append(info);
     const methods = Array.isArray(node.metrics?.methods) ? node.metrics.methods.slice(0, 17).filter(row => row && row.requests > 0) : [], max = Math.max(1, ...methods.map(row => row.requests));
     const methodBox = element("div"); methodBox.append(element("h3", "kpi-label", "HTTP 方法"));
-    if (methods.length) methodBox.append(table(["方法", endColumn("完成"), endColumn("失败")], methods.map(row => { const name = element("div", "mono", String(row.method || "未知").slice(0, 32)); name.append(meter(row.requests, max)); return [name, number(row.requests), number(row.errors)]; })));
+    if (methods.length) methodBox.append(table(["方法", endColumn("完成"), endColumn("失败")], methods.map(row => { const name = element("div", "mono", String(row.method || "未知").slice(0, 32)); name.append(meter(row.requests, max)); return [name, number(row.requests), number(row.errors)]; }), "DAV 方法计数"));
     else methodBox.append(empty("尚无 HTTP 请求", "完成请求后显示。")); body.append(methodBox);
     const errors = Array.isArray(node.metrics?.recent_errors) ? node.metrics.recent_errors.slice(-5).filter(row => row && typeof row === "object") : [], errorBox = element("div"); errorBox.append(element("h3", "kpi-label", "近期错误"));
-    if (errors.length) errorBox.append(table(["时间", endColumn("HTTP 状态"), "请求 ID"], errors.map(row => { const at = Number(row.at_unix_microseconds) / 1000; return [Number.isFinite(at) && Math.abs(at) <= 8640000000000000 ? time(at) : "未知", row.status === 0 ? "连接取消" : number(row.status), mono(String(row.request_id || "未知").slice(0, 32))]; })));
+    if (errors.length) errorBox.append(table(["时间", endColumn("HTTP 状态"), "请求 ID"], errors.map(row => { const at = Number(row.at_unix_microseconds) / 1000; return [Number.isFinite(at) && Math.abs(at) <= 8640000000000000 ? time(at) : "未知", row.status === 0 ? "连接取消" : number(row.status), mono(String(row.request_id || "未知").slice(0, 32))]; }), "DAV 近期错误"));
     else errorBox.append(empty("没有近期错误", "最多保留 5 条工作进程错误。")); body.append(errorBox); box.append(body); return box;
   }
   function revisionTimeline(collection) {
@@ -348,10 +370,10 @@
       const cpu = element("div", "", p.cpu_percent_of_machine == null ? "未知" : `${number(p.cpu_percent_of_machine)}%`); cpu.append(meter(p.cpu_percent_of_machine, 100));
       body.append(details([["节点", o.node_id], ["版本", p.version], ["启动时间", time(p.started_at)], ["启动实例", o.instance_id, true], ["CPU（整机比例）", cpu], ["工作集 / 私有提交", p.working_set_bytes == null ? "未知" : `${number(p.working_set_bytes / 1048576)} / ${number(p.private_bytes / 1048576)} MiB`], ["完成命令 / 失败", `${number(p.commands)} / ${number(p.errors)}`], ["协议接收 / 发送", `${number(p.bytes_received / 1048576)} / ${number(p.bytes_sent / 1048576)} MiB`]])); info.append(body); columns.append(chart(), info); root.append(columns);
       const trends = element("div", "columns equal"); trends.append(chart("失败率", "error_percent", "%", 2), chart("平均命令延迟", "mean_latency_ms", "毫秒", 3)); root.append(trends);
-      const sorted = [...rows].sort((a, b) => nodeInfo(a).rank - nodeInfo(b).rank); root.append(paged("已观测节点", ["状态", "节点", "入口", "实例", "心跳"], sorted.map(n => [nodeStatus(n), n.node_id, n.component === "svn" ? "SVN" : "DAV", mono(n.instance_id, true), time(n.last_seen_at)]), "尚未观测到节点"));
+      const sorted = [...rows].sort((a, b) => nodeInfo(a).rank - nodeInfo(b).rank); root.append(paged("已观测节点", ["状态", "节点", "入口", "实例", "心跳"], sorted.map(n => [nodeStatus(n), n.node_id, n.component === "svn" ? "SVN" : "DAV", mono(n.instance_id, true), timestamp(n.last_seen_at)]), "尚未观测到节点"));
     } else if (state.view === "nodes") {
       const sorted = [...rows].sort((a, b) => nodeInfo(a).rank - nodeInfo(b).rank);
-      root.append(paged("节点列表", ["状态", "节点 / 实例", "入口", "版本", endColumn("连接租约"), endColumn("最大配置代数"), "最后心跳"], sorted.map(n => [nodeStatus(n), nodeDetails(n), n.component.toUpperCase(), n.version, nodeValue(n, "connections"), nodeValue(n, "configuration_generation"), time(n.last_seen_at)]), "尚未观测到节点"));
+      root.append(paged("节点列表", ["状态", "节点 / 实例", "入口", "版本", endColumn("连接租约"), endColumn("最大配置代数"), "最后心跳"], sorted.map(n => [nodeStatus(n), nodeDetails(n), n.component.toUpperCase(), element("span", "nowrap", n.version), nodeValue(n, "connections"), nodeValue(n, "configuration_generation"), timestamp(n.last_seen_at)]), "尚未观测到节点"));
     } else if (state.view === "repositories") root.append(paged(state.search ? "仓库搜索结果" : "仓库列表", ["名称 / UUID", "状态", endColumn("HEAD / 配置"), "最近提交", endColumn("事务 / 锁")], rows.map(r => [repositoryLink(r), badge(r.enabled ? "启用" : "禁用", r.enabled ? "good" : "neutral"), `r${r.head_rev} / ${r.generation}`, time(r.last_commit_at), element("span", r.active_transactions || r.lock_count ? "warning mono" : "mono", `${number(r.active_transactions)} / ${number(r.lock_count)}`)]), state.search ? "没有匹配的仓库" : "还没有仓库"));
     else if (state.view === "detail") {
       const r = state.rows.repository, back = element("a", "back-link"); back.append(icon("arrow-left"), element("span", "", "返回仓库列表")); back.href = "#repositories"; back.dataset.focusKey = "back-repositories";
@@ -364,17 +386,17 @@
       const box = panel("连接与查询", "数据库样本 / 本机累计"), body = element("div", "panel-body");
       body.append(details([["数据库状态", databaseFresh ? "可用" : "不可用 / 过期"], ["PostgreSQL 版本", d?.version == null ? "未知" : `${Math.floor(d.version / 10000)}.${d.version % 10000}`], ["写主状态", !databaseFresh || d?.writable == null ? "未知" : d.writable ? "可写主库" : "未确认可写"], ["受限只读采样", d?.reader_read_only && d?.reader_restricted ? "已启用" : "未使用独立受限角色"], ["同角色集群连接 / 锁等待", !databaseFresh ? "未知" : `${number(d?.application_connections_same_role)} / ${number(d?.backend_lock_waits_same_role)}`], ["SQL 调用 / 失败", `${number(p.sql_calls)} / ${number(p.sql_errors)}`], ["正在执行 SQL", number(p.sql_active)], ["SQL 总耗时", `${number(p.sql_milliseconds)} ms`], ["打开写流", number(p.writers_active)], ["采样失败 / 丢弃批次", `${number(o.sample_failures)} / ${number(o.dropped_telemetry_batches)}`]])); box.append(body);
       const categories = panel("SQLSTATE 分类", "按完成计数 · 条长为对数比例"), entries = Object.entries(p.sqlstate_classes || {}), maximum = Math.max(1, ...entries.map(([, n]) => n));
-      categories.append(table(["类别 / 对数比例", endColumn("次数")], entries.map(([key, value]) => { const cell = element("div", "", key === "00" ? "00 · 成功" : key === "other" ? "其他错误" : `${key} · 错误类别`); cell.append(meter(Math.log1p(value), Math.log1p(maximum), { tone: key === "00" ? "good" : "danger" })); return [cell, number(value)]; })));
+      categories.append(table(["类别 / 对数比例", endColumn("次数")], entries.map(([key, value]) => { const cell = element("div", "", key === "00" ? "00 · 成功" : key === "other" ? "其他错误" : `${key} · 错误类别`); cell.append(meter(Math.log1p(value), Math.log1p(maximum), { tone: key === "00" ? "good" : "danger" })); return [cell, number(value)]; }), "SQLSTATE 分类"));
       const columns = element("div", "columns equal"); columns.append(box, categories); root.append(columns, paged("活动事务", ["仓库 ID", "事务 ID", endColumn("基础修订"), "创建时间"], rows.map(tx => [mono(tx.repository_id), mono(tx.transaction_id + (tx.id_truncated ? "…" : "")), `r${tx.base_rev}`, time(tx.created_at)]), "没有活动事务"));
     } else {
       const columns = element("div", "columns"), used = rows.filter(r => r.success || r.denied || r.error), box = panel("命令结果", "当前实例 · SVN 入口 · 成功 / 拒绝 / 失败");
-      box.append(used.length ? table(["操作", endColumn("成功"), endColumn("权限拒绝"), endColumn("其他失败"), "结果分布"], used.map(r => [r.operation, number(r.success), number(r.denied), number(r.error), resultBar([r.success, r.denied, r.error])])) : empty("尚未完成业务命令", "客户端访问仓库后显示计数。"));
+      box.append(used.length ? table(["操作", endColumn("成功"), endColumn("权限拒绝"), endColumn("其他失败"), "结果分布"], used.map(r => [r.operation, number(r.success), number(r.denied), number(r.error), resultBar([r.success, r.denied, r.error])]), "命令结果") : empty("尚未完成业务命令", "客户端访问仓库后显示计数。"));
       const monitor = panel("监控入口", "与业务命令分别计数"), body = element("div", "panel-body"); body.append(details([["已完成 HTTP 请求", number(p.monitor_requests)], ["错误响应 / 取消", number(p.monitor_errors)], ["正在处理", number(p.monitor_active)]])); monitor.append(body); columns.append(box, monitor); root.append(columns, eventPanel(state.events?.items));
     }
     for (const key of expanded) { const item = root.querySelector(`details[data-chart="${key}"]`); if (item) { item.open = true; if (item.pgvnExpandedRow) item.pgvnExpandedRow.hidden = false; } }
     for (const e of root.querySelectorAll(".table-wrap")) { const at = scrolls.get(scrollKey(e)); if (at) { e.scrollLeft = at[0]; e.scrollTop = at[1]; } }
     if (focused) { const target = searchFocused ? focused : focusedPage ? root.querySelector(`[data-page="${focusedPage}"]:not(:disabled)`) || root.querySelector("[data-page]:not(:disabled)") : focusedKey ? root.querySelector(`[data-focus-key="${focusedKey}"]`) : focusedChart ? root.querySelector(`details[data-chart="${focusedChart}"] summary`) : null; (target || $("main")).focus({ preventScroll: true }); }
-    healthStrip();
+    state.nodeStatusKey = nodeStatusKey(); healthStrip();
   }
   function navigate() {
     const focusMain = $("content").contains(document.activeElement);

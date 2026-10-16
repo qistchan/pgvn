@@ -69,6 +69,7 @@ small,.muted { color:var(--text-3); }
 small { font-size:var(--fs-xs); }
 .mono,.num,.align-end { font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
 .mono { overflow-wrap:anywhere; }
+.nowrap { white-space:nowrap; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .icon { width:var(--icon-md); height:var(--icon-md); flex:none; fill:currentColor; vertical-align:middle; }
 .skip { position:fixed; top:8px; left:8px; z-index:var(--z-skip); transform:translateY(-200%); padding:10px 16px; border-radius:var(--radius-sm); background:var(--surface-1); }
@@ -207,7 +208,8 @@ main { padding:24px; max-width:1664px; margin:0 auto; min-width:0; }
 .skeleton>.skeleton-block { min-height:260px; }
 
 /* Tables and expanded worker panels. */
-.table-wrap { max-height:min(70vh,640px); overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
+.table-wrap { position:relative; max-height:min(70vh,640px); overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; }
+.table-wrap:focus-visible { outline-offset:-3px; }
 table { border-collapse:separate; border-spacing:0; width:100%; font-size:var(--fs-sm); }
 th,td { padding:10px 16px; min-height:var(--row-h); text-align:left; vertical-align:top; border-bottom:1px solid var(--border); overflow-wrap:anywhere; }
 th { position:sticky; top:0; z-index:1; background:var(--surface-2); color:var(--text-2); font-size:var(--fs-xs); font-weight:500; white-space:nowrap; }
@@ -245,7 +247,8 @@ td .badge { min-height:22px; }
 /* Charts keep 220px of height; the viewBox follows the panel width so labels stay 12px. */
 .chart-window { display:flex; border:1px solid var(--border-strong); border-radius:var(--radius-sm); overflow:hidden; }
 .chart-window button { border:0; border-radius:0; min-height:32px; padding:4px 10px; font-size:var(--fs-xs); background:transparent; }
-.chart-window button[aria-pressed="true"] { color:var(--primary); background:var(--primary-soft); }
+.chart-window button[aria-pressed="true"] { color:var(--primary); background:var(--primary-soft); text-decoration:underline; text-underline-offset:4px; }
+.chart-window button:focus-visible { outline-offset:-3px; }
 .chart-summary { padding:12px 20px 0; display:flex; justify-content:space-between; gap:12px; color:var(--text-3); font-size:var(--fs-xs); font-variant-numeric:tabular-nums; }
 .chart-plot { margin:8px 12px 0; min-height:220px; border-radius:var(--radius-sm); }
 .chart { display:block; width:100%; height:220px; overflow:visible; }
@@ -310,12 +313,13 @@ td .badge { min-height:22px; }
   .sidebar nav a[aria-current="page"] { border-bottom-color:var(--series-1); }
   .sidebar nav a .icon { width:16px; height:16px; }
   .sidebar nav a::after { display:none; }
+  .sidebar nav a:focus-visible { outline-offset:-4px; }
   .workspace { margin-left:0; }
   .topbar { padding:8px 12px; gap:4px; }
   .breadcrumb { flex-basis:100%; padding:0 4px; }
-  .actions { width:100%; justify-content:space-between; gap:0; flex-wrap:wrap; }
+  .actions { width:100%; justify-content:flex-start; gap:4px; flex-wrap:wrap; }
   .freshness { flex-basis:100%; min-height:28px; padding-left:4px; }
-  .actions select { min-height:44px; }
+  .actions select { min-height:44px; margin-right:auto; }
   .icon-button { width:44px; height:44px; min-height:44px; }
   main { padding:20px 16px 16px; }
   .health li { padding:12px; }
@@ -343,7 +347,7 @@ td .badge { min-height:22px; }
   .health { border-left-width:4px; }
   .chart-line,.spark-line,.chart-grid,.chart-crosshair,.meter-tick { stroke:CanvasText; }
   .chart-area,.chart-gap { display:none; }
-  .chart-dot,.meter-fill,.meter-good,.meter-warning,.meter-danger { fill:CanvasText; }
+  .chart-dot,.meter-fill,.meter-neutral,.meter-good,.meter-warning,.meter-danger { fill:CanvasText; }
   .meter-track { fill:Canvas; stroke:CanvasText; }
   :focus-visible { outline-color:Highlight; }
   .sidebar nav a[aria-current="page"] { outline:2px solid Highlight; outline-offset:-3px; }

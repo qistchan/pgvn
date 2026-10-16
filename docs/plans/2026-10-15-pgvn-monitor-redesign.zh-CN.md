@@ -613,6 +613,22 @@ P1–P3 和 P4 本机可执行检查已完成。当前浏览器未开放媒体�
 
 ---
 
+## 13 第二轮打磨（2026-10-16）
+
+在已有 Night Ops 页面上继续优化，产品改动仅 `monitor.js`、`monitor.css`，API、路由、CSP 和令牌契约不变。
+
+- 心跳年龄加入浏览器端经过时间；暂停后不继续显示过期的就绪状态。完整节点页的健康条与列表使用同一年龄判断，有界摘要明确标为“样本在线”；超过 15 秒未收到响应的服务入口显示未知。
+- 表格增加有名称的键盘滚动区域与隐藏标题。节点版本和心跳时间保持单行，375px 下主表行高约 63–65px；标题定位限制在自身滚动容器，展开 DAV 详情不撑宽整页。
+- 时间窗选中项增加下划线，窄屏与图表控件焦点框移到边界内侧。方向键读数同步更新图表可访问名称，缺样本数值保持未知；图表 viewBox 随实际窄屏宽度调整。
+
+最终 Release 的完整 M5 门禁 `m5-9cc4f3a5b58d` 十组通过，耗时 551.219 秒；包含完整 M4 `m4-f80d7e26b175` 八组和 M0–M3 回归。新浏览器记录为 `m4-browser-polish-f7fa9e9c4686`（15 项）和 `m5-browser-polish-f7fa9e9c4686`（6 项），包含双主题、实际 375×812、暂停计时、数据库故障/恢复、失联/新实例、撤销及重载检查。38 项计算对比度、静态契约和 JS 语法通过。原始发现、修复、源码/产物摘要和范围见 [第二轮证据](../pgvn/evidence/m4-monitor-polish.json)。
+
+预览：[暗色桌面](../pgvn/images/monitor-polish-dark.jpg)、[亮色窄屏](../pgvn/images/monitor-polish-light.jpg)。相对 `698e7bb` 冻结构建，五个产品中仅内嵌页面的 `pgvnserve.exe` 摘要改变。旧部署 ZIP 不改标为本轮构建。
+
+后续仍需实际 Windows 高对比度视觉验收，以及同页多个 DAV 历史实例时内层表格的焦点恢复边界检查；本次自动刷新焦点验证覆盖节点主表。M6/M7 继续按实施计划推进。
+
+---
+
 ## 附录 A：ui-ux-pro-max 查询记录
 
 | 查询 | 领域 | 采用结论 |
@@ -628,3 +644,4 @@ P1–P3 和 P4 本机可执行检查已完成。当前浏览器未开放媒体�
 | `monospace dashboard technical system font` | typography | Fira Code + Fira Sans（因 CSP 换成 Cascadia Mono + Segoe UI） |
 | `server database status activity` | icons | Phosphor：database、pulse、check-circle、warning、x-circle、clock、info |
 | `data table dense sticky header` `--stack html-tailwind` | stack | 无匹配（项目不用 Tailwind），表格规范按通用做法制定 |
+| `responsive dashboard horizontal overflow` | ux | 宽表在自身容器内滚动；长标识不撑宽整页；窄屏结果以实际布局测量为准 |
