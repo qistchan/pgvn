@@ -1,0 +1,4815 @@
+{
+  "component": "M6 original copy/prop across SVN/HTTP/HTTPS and matching complete M5",
+  "status": "COPY_PROP_THREE_PROTOCOLS_AND_FROZEN_M5_PASS",
+  "created_at": "2026-10-16T10:04:40.741829+00:00",
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "m7_complete": false,
+  "build_manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+  "git_base_commit": "a38611f055189f303bd100959eecd6b64b309793",
+  "git_worktree_dirty_at_build": true,
+  "source_count": 151,
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "fceb92aab1e4dc7c60a37e63b78bd86498e2704d2447cad925b86ebf69980ade",
+    "runtime/pgvn/bin/pgvnadmin.exe": "2dbf50085701d43c05acbc2bafb2ca3541329242b812aa2e6aeb4fa2c4ce4453",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "9604c8d2b2bd198112aea956f58867d440695035eff19a952e88dbf72a75cf8a",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c2a140302b552fe7603d3ed01fc3d149c1e5cc921e780b74f60e6571701c27d2",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "source_changes_since_prior_accepted_build": {
+    "web/pgvn-monitor/monitor.js": {
+      "before": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5",
+      "after": "9f50a51c6c1cde5be4053e86f7b3cec64291dfce0d1c4a6f05b11bdf63fe68a8"
+    },
+    "src/pgvn/core/policy.c": {
+      "before": "36968b3f729a99d336e9d3c087e4cf6d28c4722e7df2e0d3e920b0cf78465500",
+      "after": "3aed30082334dda13a9dbaed8d4d564ef555396dba6ecfd90f49d84badc4a504"
+    },
+    "tests/pgvn/test_m6_network.py": {
+      "before": "d0de2785d062c137110fc1ad066843a86448c5d06ca500efc772b161b1c0b21f",
+      "after": "af49dafd036ca0375cb8b41984b763f9cafbf979e7234e8bbf58f74d68ef7e65"
+    },
+    "tests/pgvn/test_m6_network_copy.py": {
+      "before": null,
+      "after": "962a8f4c46011ef69d513370872ad3e1d81b7e3400a35c66c86b5f01f3d73921"
+    },
+    "tests/pgvn/upstream_network_copy.py": {
+      "before": null,
+      "after": "24c875f20813529eb7f0f396f0079ee3d072e3a7ab38772e2e24236bc726a074"
+    },
+    "tests/pgvn/upstream_network_entry.py": {
+      "before": "7263bbfb9561677b7fe00a3b35d29f0fc339dcc8ba6d4abf59953849a6ae7198",
+      "after": "a20597796c8a393f8bc66c5c3d4678681d2a75b4806e6feb5ad928213a31eca0"
+    }
+  },
+  "changed_products": [
+    "runtime/pgvn/bin/pgvnserve.exe",
+    "runtime/pgvn/bin/pgvnadmin.exe",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so"
+  ],
+  "final_runs": [
+    {
+      "test_id": "m6-network-de4b15a7a393",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_de4b15a7a393",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 511.5320000000065,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 64420,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60136,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 7500,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 11000,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-de4b15a7a393.json",
+      "report_sha256": "a3780ab5c51578542583113a90adecfc15bfd9803aa6114fb35b8c2543e3a0ce",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "c767a54306718484dab8098822a6a11fd9edc96a979fee15d3032d5c9346ee38",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "5936049586b77c3e52887fe2fc45cfb771d128ec45d16a45bfa0e5dca9357978",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "4d3553fc-b545-ec49-9706-578b36ecc793",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-de4b15a7a393\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-de4b15a7a393\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "450b4be7-1739-524e-a129-e9886e8f2b2c",
+          "public_uuid": "fc95732b-66ef-0d4a-a64e-d4a38b6a2cad",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-38c82e3523a5",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_38c82e3523a5",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 930.0939999999828,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 46864,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 66292,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 62324,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 40056,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 5572,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-38c82e3523a5.json",
+      "report_sha256": "77e6ca412f8852908c2fbdae546a196f66c39e6cf27ddcb42d9e972ca7fe7ad2",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "c767a54306718484dab8098822a6a11fd9edc96a979fee15d3032d5c9346ee38",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "5fcdb9d85d53dc8e3a3e211efa8ef8869ed7816405715514e7b740449b51bffa",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:59387",
+            "config_sha256": "510209adc37635bbcb7574249457cbfdccd7f0bed7216eaa4b01b11ce9f3d2ca",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "509bc272-20fd-a24a-b6d5-9e1fa4c4be8f",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-38c82e3523a5\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-38c82e3523a5\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "e40d2c69-80a6-d641-98dd-f8ce309029a2",
+          "public_uuid": "b1372fb5-98cf-564b-a3d6-7499a26209fb",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-ee27f1d686c3",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_ee27f1d686c3",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 946.8910000000033,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 62360,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 52376,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 12960,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 47520,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 46532,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-ee27f1d686c3.json",
+      "report_sha256": "86bdcd892dd8d4201657872cc84faa4cdd704ce4499c6036c71d1d0d68113399",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "80681719402c1a1b26d5022e82fd19bcf6032074f917419bf0fce6c3da937853",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "0c198e17def593c1b7eb1894ad0d15d759c7490d22d83567bb06e81b6c8550bd",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.015
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.032
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.031
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "14a67b2832d7e6e6682d381a82b2c745cccba8200d490ed5be222f73db5cd24d",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "0c198e17def593c1b7eb1894ad0d15d759c7490d22d83567bb06e81b6c8550bd",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.031
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.031
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.032
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:60499",
+            "config_sha256": "270527cbce793091f7d314002ffae777258d6c6c5c45d1ac4cbcee5982826722",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "24591f4e-9aec-a849-a37d-ae0c995c7d68",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-ee27f1d686c3\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-ee27f1d686c3\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "ccc47ed2-eb22-cb49-84b9-a7ab0e188938",
+          "public_uuid": "9cad6792-30e4-9c4c-a10d-9316c09f753f",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-e1baeb913bb0",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_e1baeb913bb0",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 214.04699999999139,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 33112,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 56208,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57280,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 30892,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-e1baeb913bb0.json",
+      "report_sha256": "1304aa001fe86aeac2b1fd228af37aff998f91146b6c2063112c74541871efb7",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "57028ced307d2954a35f0a305be7a2bc60c5d5ec0b926ea0d231a0140eb11c8b",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "a667c2165a34c2430097c6a5a8e541237909a66139c63a80b0e600ef6807d80d",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-a41ccd4d5711",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_a41ccd4d5711",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 346.7029999999795,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 15236,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 30740,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 65048,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 35580,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 49532,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-a41ccd4d5711.json",
+      "report_sha256": "a95d50ea3bf682df08a7662153d5f24386629dd826418c19b15ed1552ca7db1e",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "57028ced307d2954a35f0a305be7a2bc60c5d5ec0b926ea0d231a0140eb11c8b",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "d037b3914f4d39420ae14a50906fa170178c2129a45e0d11927b3471c0e29e1e",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:62577",
+            "config_sha256": "b8c07916fa00ba3f44bccbd46957d3d76ba30277b185624abff286c54fa66132",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-671195c95bad",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_671195c95bad",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 331.85899999999674,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 63192,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 63344,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 12144,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 53144,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 62448,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-671195c95bad.json",
+      "report_sha256": "bcfc1dec86a83efb70805a2459a1f219538dab1302e8ef493ad70ea836f41747",
+      "manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "6aaaa3aaa8923e344f6164260543052e280b4bec76104dea0302f9855a6266d4",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "4e5c9971ad33dc4fc4a168800958cee517ce33f11b1b590f82222aec832e1a7a",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.015
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.016
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.016
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "b1346c78973c6b354da86c41bc22a2d3554a63772fa4f5e49d94e94dadcc0ec1",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "4e5c9971ad33dc4fc4a168800958cee517ce33f11b1b590f82222aec832e1a7a",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.031
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.031
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.031
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:63082",
+            "config_sha256": "fe6961577d5a5ff60127200932c7510b73e2ceab1da2e3f3fbe6d4c5f788796c",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    }
+  ],
+  "total_outcomes": 984,
+  "actual_entries_including_original_xfail": 972,
+  "unique_original_case_functions": 164,
+  "unique_entered_functions_per_backend_protocol": 162,
+  "initial_failures": [
+    {
+      "test_id": "m6-network-02c0284b99e6",
+      "status": "FAIL",
+      "protocol": "svn",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 115,
+          "SKIP": 1,
+          "XFAIL": 1,
+          "FAIL": 1
+        }
+      },
+      "elapsed_seconds": 581.7190000000119,
+      "cleanup": [
+        {
+          "pid": 7032,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 16176,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 63196,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 49164,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "a2e4a2b4f76db112d8c21e705c364d6b6805a967a9500c5da1451678558da842",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          114
+        ]
+      }
+    },
+    {
+      "test_id": "m6-network-b87aadcb2f00",
+      "status": "FAIL",
+      "protocol": "http",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 115,
+          "SKIP": 1,
+          "XFAIL": 1,
+          "FAIL": 1
+        }
+      },
+      "elapsed_seconds": 1070.2660000000033,
+      "cleanup": [
+        {
+          "pid": 60180,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 54512,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 36668,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 64908,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57260,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "3ad14780b5b7bbcab3d8ed7ea5b2d654a0e26278e94e0b3d6cd9a2570b47ab1e",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          114
+        ]
+      }
+    },
+    {
+      "test_id": "m6-network-7c1ecf77dea8",
+      "status": "FAIL",
+      "protocol": "https",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 115,
+          "SKIP": 1,
+          "XFAIL": 1,
+          "FAIL": 1
+        }
+      },
+      "elapsed_seconds": 1091.7179999999935,
+      "cleanup": [
+        {
+          "pid": 48564,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 42576,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57280,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 33804,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 50052,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "3421072abdd80398d0abfa736d37ee712e019e1d6dc9e6f9d954c2acc17f940f",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          114
+        ]
+      }
+    },
+    {
+      "test_id": "m6-network-45573935f136",
+      "status": "FAIL",
+      "protocol": "svn",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 44,
+          "FAIL": 1,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 245.56200000000536,
+      "cleanup": [
+        {
+          "pid": 23256,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 39196,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 10000,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 58260,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "3006a56d536c44a07bcadee61716dfe8ed01ff6d1573b94767f8db4e4bd00cc3",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          12
+        ]
+      }
+    },
+    {
+      "test_id": "m6-network-bde0465bbadb",
+      "status": "FAIL",
+      "protocol": "http",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 44,
+          "FAIL": 1,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 392.9539999999979,
+      "cleanup": [
+        {
+          "pid": 18608,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 43948,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60264,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60480,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 61056,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "5e304180d915e2f4d33306aafa44425d77795a850e87998f6ca898070d6f04ca",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          12
+        ]
+      }
+    },
+    {
+      "test_id": "m6-network-248023a0cc2a",
+      "status": "FAIL",
+      "protocol": "https",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 44,
+          "FAIL": 1,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 358.90600000001723,
+      "cleanup": [
+        {
+          "pid": 59044,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 27896,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 31276,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 37184,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51644,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "28f7bd93de62e476ebe15bfa29638e7ed4eaf36a276c27d9dbe6050f1525a643",
+      "build_manifest_sha256": "8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5",
+      "failures": {
+        "fsfs": [],
+        "pgvn": [
+          12
+        ]
+      }
+    }
+  ],
+  "intermediate_targets": [
+    {
+      "test_id": "m6-network-71a5d45262f7",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 16.030999999988126,
+      "cleanup": [
+        {
+          "pid": 6568,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 55896,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 53864,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60784,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "48eb0fc9d50ab501e9364f0fece0a93fc6a40ca8ad37e4bd6acaa1070e08d2ea",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-42c9237d8016",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 29.125,
+      "cleanup": [
+        {
+          "pid": 61432,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 64116,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 28408,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51644,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 65584,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "1ba561616801bb4a69b981273c63d268211e0d4573a4612e78baf2d837383910",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-a1fd9e14cf34",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 31.046999999991385,
+      "cleanup": [
+        {
+          "pid": 53652,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51516,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 38908,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 50192,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 3540,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "16b9d0d0446954b18cecd4a0fd194cba2d85adedc78977953b8ffab50d6051dc",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-43ffad72ebec",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 15.64100000000326,
+      "cleanup": [
+        {
+          "pid": 1444,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 1816,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 44784,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 56456,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "049ff0f3d976e6f6df763fac5fbea57a4062cb1411ee1b4b115eb6e1eecd473f",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-0770b8a90756",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 29.39100000000326,
+      "cleanup": [
+        {
+          "pid": 46852,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 29176,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 61388,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 52540,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 43872,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "9ecb19864209653e11f9471dd7fa6a37f6b00ca27548feb1e474e74f1da1480e",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-1c5984368ae3",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 29.84299999999348,
+      "cleanup": [
+        {
+          "pid": 15140,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60404,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 36460,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 27744,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 59056,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "ef808999184a403f5f02d4e56d5a428e31a69220e3bfd806e872fc274f8899c2",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    }
+  ],
+  "intermediate_full": [
+    {
+      "test_id": "m6-network-47e884e42c42",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 572.6870000000054,
+      "cleanup": [
+        {
+          "pid": 61720,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 58244,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 45076,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 63444,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "78783912fe0e2fa43dd3fbe2f48e5cb295e117b38834e59ea2071a1924ede22c",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-53db52fdd25b",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 1014.3910000000033,
+      "cleanup": [
+        {
+          "pid": 28800,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51088,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 12544,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 11092,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 29940,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "4012c5590cd5b4dcffc9962dd9d9ae5a3265f8b88373b3ca3697878364d9adfb",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-0d2176ec0e1b",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "copy_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 1030.4690000000119,
+      "cleanup": [
+        {
+          "pid": 44620,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 40164,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 45788,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 41656,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51172,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "847de09977671ddbc1bb6991e0fba61363e6fadf3936534a0f797ae9f5d61df7",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    },
+    {
+      "test_id": "m6-network-3d5591d694b3",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "prop_tests",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 237.875,
+      "cleanup": [
+        {
+          "pid": 33272,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 11456,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 64644,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 61272,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report_sha256": "ecc234bd04c7400e482c3ecd0888c7271d29d3bc7a1b89692022b25e267d1ee2",
+      "build_manifest_sha256": "f7e57a79f14b1a58b3618fb3585c33e4e10845ff25016031faff3f52f16bcbcc",
+      "failures": {
+        "fsfs": [],
+        "pgvn": []
+      }
+    }
+  ],
+  "before_autofill_full": [
+    {
+      "test_id": "m6-network-180564d849c2",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_180564d849c2",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 553.0929999999935,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 5752,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 25188,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 13256,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 61608,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-180564d849c2.json",
+      "report_sha256": "5e2c2f1bd0f3519e95b67df2b8e3848a391b085d47c4631bda5e072246097477",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "c767a54306718484dab8098822a6a11fd9edc96a979fee15d3032d5c9346ee38",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "cd90d10a85a73865af11f2e7813925c4a306fd702c30fab9e831e46e747c6e58",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "dfcd8c1b-fa80-d44b-9699-7642fc55efe3",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-180564d849c2\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-180564d849c2\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "b55e04de-0bd4-454f-8fc3-defaa7451362",
+          "public_uuid": "ad0fb833-106b-d14a-bd9a-27fa7560af8d",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-e68c3ece7c29",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_e68c3ece7c29",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 997.7179999999935,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 2812,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 65404,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60264,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 65356,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 25556,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-e68c3ece7c29.json",
+      "report_sha256": "79ac3a32b0178e31f903d2f3f67e56a3bf6740b798a06b340953ef5b4dbfa98c",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "c767a54306718484dab8098822a6a11fd9edc96a979fee15d3032d5c9346ee38",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "d89dd40b4817e02c63aeeffdb53381773f4c6d9790e69a2117edc3cb2ed24826",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:56079",
+            "config_sha256": "b72492fa2cadf955ae8b91b309543395816e3f11fc17d226ea81d9e0959ae8ef",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "970250ca-be92-7344-84d3-55102ed38b6b",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-e68c3ece7c29\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-e68c3ece7c29\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "83e2f665-9e32-da42-bcc0-357dd472832d",
+          "public_uuid": "17e26259-d32a-fe4c-9ecb-59475b24ce94",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-37cfbc697b87",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "copy_tests",
+      "database": "pgvn_m6_net_37cfbc697b87",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 116,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "elapsed_seconds": 1007.9059999999881,
+      "upstream_python_case_outcomes": 236,
+      "upstream_python_tests_executed": 234,
+      "cleanup": [
+        {
+          "pid": 43692,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 12176,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 17732,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 62820,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 44520,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-37cfbc697b87.json",
+      "report_sha256": "8296e70cc0e119bb0877eb696b3e0299bd84f74b34a227e4160a50c91c620ee0",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "fe2a4af6dd5ee5ecf419030b2e0c0fa8a3d107f9b0c310a88f667d88681eceb7",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "d83237dc39737976f0c84f30ad36afcaa937f33a6c7624d163d674aacabf8359",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.016
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.015
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.015
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "f553430eb9506a42c9fcfd3231802475397929e4657daa4fdab82da96f92f333",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118
+            ],
+            "FAIL": [],
+            "XFAIL": [
+              105
+            ],
+            "XPASS": [],
+            "SKIP": [
+              10
+            ]
+          },
+          "declared_native_aliases": 122,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "d83237dc39737976f0c84f30ad36afcaa937f33a6c7624d163d674aacabf8359",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.031
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.016
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.031
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:63133",
+            "config_sha256": "3e82bcf9382eaff45c6873fcc1eed8c71b34e2031840c6f77434b60a20af75c5",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [
+        {
+          "event": "native-copytree",
+          "source_id": "51a76b77-91d1-7346-a8dc-6224226d1325",
+          "source_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-37cfbc697b87\\pgvn\\svn-test-work\\repositories\\copy_tests-114",
+          "destination_alias": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-37cfbc697b87\\pgvn\\svn-test-work\\repositories\\copy_tests-114.relocated",
+          "destination_name": "upstream-copy-393be80516ca2e26802b4943",
+          "destination_route": "/svn-test-work/repositories/copy_tests-114.relocated",
+          "destination_id": "0fd0f09f-8260-0b43-964a-71fd3be25e72",
+          "public_uuid": "efc71217-fb5f-e64a-9721-5a39d204b4b4",
+          "head": 1,
+          "verified_revisions": 2,
+          "operation": "production maintenance hotcopy"
+        }
+      ],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {
+          "105": [
+            "svntest.wc.State(wc_dir, {",
+            "svntest.wc.State(wc_dir, {",
+            "W: EXCEPTION: SVNTreeUnequal",
+            "svntest.tree.SVNTreeUnequal"
+          ]
+        },
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-f4f9ac7b7e22",
+      "status": "PASS",
+      "protocol": "svn",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_f4f9ac7b7e22",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 225.92199999999139,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 26460,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 13672,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 28108,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 40608,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-f4f9ac7b7e22.json",
+      "report_sha256": "f80b57d676bced396fd051baf8ae51b81ea50836279aac6c1ff49c2c85c6c527",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "57028ced307d2954a35f0a305be7a2bc60c5d5ec0b926ea0d231a0140eb11c8b",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "495177b90519c96ebaeb4518ca93a80b6b72d922d41cb9e38c966e9eab8198a2",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-4f040427e490",
+      "status": "PASS",
+      "protocol": "http",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_4f040427e490",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 398.5,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 8800,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 26596,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 39156,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 55728,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 47240,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-4f040427e490.json",
+      "report_sha256": "28d800e4279f93942b60a831bfb115f6fdbda1c6766041694d624f513206f5cf",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "57028ced307d2954a35f0a305be7a2bc60c5d5ec0b926ea0d231a0140eb11c8b",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "969310a8aa826d7d567bbbfdd9af5f33617df8c32cadea66efd595bfa85a432a",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": null,
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:62151",
+            "config_sha256": "97b8cee95da0a1ea7aaf7c89928b1cd3c2dd7fe504a63bf6008f3f6eff3c13fe",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    },
+    {
+      "test_id": "m6-network-036e1e10e29e",
+      "status": "PASS",
+      "protocol": "https",
+      "suite": "prop_tests",
+      "database": "pgvn_m6_net_036e1e10e29e",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 45,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 45,
+          "SKIP": 1
+        }
+      },
+      "elapsed_seconds": 406.5469999999914,
+      "upstream_python_case_outcomes": 92,
+      "upstream_python_tests_executed": 90,
+      "cleanup": [
+        {
+          "pid": 42756,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 65480,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 19140,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 64496,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 54208,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "report": "artifacts/pgvn/tests/m6-network-036e1e10e29e.json",
+      "report_sha256": "aaec5e6c3172d409688252a8b4bf6fd711c39b87c6d5350e29575462047d167e",
+      "manifest_sha256": "fc15e0e6974a5d394cf0e33396068fec2089fec05905c1b8529b6aa4ff948747",
+      "entries": {
+        "fsfs": {
+          "entry_sha256": "d86001bf8aff8cdce891234ae978b937ddd22d343d84ed9802b369e1cddb71ae",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 0,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "e3064a9308b2236cfb69c1401c2c0c93a7b434897e212e3315bf0701517097a0",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.0
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.015
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.0
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": null
+        },
+        "pgvn": {
+          "entry_sha256": "7351f85d1dbcb0e04c92b20747412c45f79ba176bdbdbb2260627e8c778e298d",
+          "outcomes": {
+            "PASS": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46
+            ],
+            "FAIL": [],
+            "XFAIL": [],
+            "XPASS": [],
+            "SKIP": [
+              23
+            ]
+          },
+          "declared_native_aliases": 46,
+          "native_aliases_absent": true,
+          "tls_verification": {
+            "version": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "peer_certificate_der_sha256": "e3064a9308b2236cfb69c1401c2c0c93a7b434897e212e3315bf0701517097a0",
+            "hostname_and_chain_verified": true,
+            "verified_names": [
+              "127.0.0.1",
+              "localhost"
+            ],
+            "verified_endpoints": [
+              {
+                "connect_host": "127.0.0.1",
+                "peer_address": "127.0.0.1",
+                "verified_hostname": "127.0.0.1",
+                "tcp_connect_seconds": 0.015
+              },
+              {
+                "connect_host": "localhost",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.016
+              },
+              {
+                "connect_host": "::1",
+                "peer_address": "::1",
+                "verified_hostname": "localhost",
+                "tcp_connect_seconds": 0.0
+              }
+            ],
+            "negative_controls": [
+              {
+                "case": "untrusted CA",
+                "verify_code": 20
+              },
+              {
+                "case": "wrong hostname",
+                "verify_code": 62
+              }
+            ],
+            "client_url_hostname": "localhost",
+            "localhost_resolves_to": [
+              "127.0.0.1",
+              "::1"
+            ]
+          },
+          "local_fixture_server": {
+            "url": "svn://127.0.0.1:53160",
+            "config_sha256": "4924972fe6720ce784cf8efdeec18520f859bb7cd022773568964326cc3b1b45",
+            "purpose": "Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs."
+          }
+        }
+      },
+      "native_clone_audit": [],
+      "xfail_diagnostic_audit": {
+        "equal_after_work_directory_normalization": true,
+        "diagnostics": {},
+        "method": "Post-run only; original commands, assertions and output are unchanged."
+      }
+    }
+  ],
+  "offline_guards": [
+    {
+      "test_id": "m6-network-copy-offline-22313d1c9bdf",
+      "report_sha256": "6e9acb78b9529d9ed472dc1792c30324f2823fddf9a3bbefc5d42425d8971c6b",
+      "checks": [
+        {
+          "name": "Valid registered source and declared target prepare a route without disk aliases",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong database prefix rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong fixture root rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong plan owner rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Installed-cluster endpoint rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Stale frozen manifest rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Undeclared copy target rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Target outside repository mount rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Already registered destination rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Malformed source UUID rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Materialized destination rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Non-default hook policy rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Non-default copytree options rejected",
+          "status": "PASS"
+        }
+      ],
+      "real_subprocesses_started": 0,
+      "database_connections_attempted": 0
+    },
+    {
+      "test_id": "m6-hook-output-offline-7573b6e63bd7",
+      "report_sha256": "2a0a92bfcbd38889ba97e741a8a86de52f6be9b0875bb28271780fdbf9e548e8",
+      "checks": [
+        {
+          "name": "Wrong fixture root rejected before replacing I/O functions",
+          "status": "PASS"
+        },
+        {
+          "name": "Registered hooks.log round-trips through global output without creating an alias",
+          "status": "PASS"
+        },
+        {
+          "name": "Unknown repository is not redirected",
+          "status": "PASS"
+        },
+        {
+          "name": "Other repository filenames remain real filesystem failures",
+          "status": "PASS"
+        },
+        {
+          "name": "Unlink removes only the relocated file",
+          "status": "PASS"
+        },
+        {
+          "name": "Malformed repository ID rejected",
+          "status": "PASS"
+        },
+        {
+          "name": "Materialized native alias rejected instead of hidden by a redirect",
+          "status": "PASS"
+        },
+        {
+          "name": "Original I/O functions restored",
+          "status": "PASS"
+        },
+        {
+          "name": "Runner executes hook body unchanged with original alias argv",
+          "status": "PASS"
+        },
+        {
+          "name": "Tampered runner hash rejected before hook execution",
+          "status": "PASS"
+        }
+      ],
+      "real_subprocesses_started": 0,
+      "database_connections_attempted": 0
+    },
+    {
+      "test_id": "m6-network-policy-offline-406025c6e19f",
+      "report_sha256": "5b7e39fc50f6102d9b1d0fef06e7ea51a29bfbe743d637d2f0f04bbe4488de3b",
+      "checks": [
+        {
+          "name": "Exact namespace only; wrong case, global rules and comments retained",
+          "status": "PASS"
+        },
+        {
+          "name": "Only the specific administrator authz-parser rejection enables raw-file fixture",
+          "status": "PASS"
+        },
+        {
+          "name": "DDT route outside the ordinary repository mount rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "DDT route with noncanonical alias spelling rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "DDT route wrong database rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong database prefix rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong runtime directory rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong database owner in plan rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Stale frozen manifest rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Non-UUID repository selector rejected before subprocess",
+          "status": "PASS"
+        },
+        {
+          "name": "Wrong actual cluster stops after read-only identity query",
+          "status": "PASS"
+        }
+      ],
+      "real_subprocesses_started": 0,
+      "database_connections_attempted": 0
+    }
+  ],
+  "browser": {
+    "m4": {
+      "test_id": "m4-browser-copy-prop-539cd1eb81fe",
+      "report_sha256": "3ab1b8b837b0ab64efa51ac95acf7cb7ccea0c9d8e688d263b87e7ec855b5585",
+      "checks": {
+        "authentication": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "repository_pagination": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "text_only_hostile_name": true,
+        "paused_refresh": true,
+        "configurable_refresh": true,
+        "all_views": true,
+        "narrow_layout": true,
+        "keyboard_focus_and_refresh": true,
+        "lost_peer_and_recovery": true,
+        "stale_database_and_unknown_nodes": true,
+        "token_revocation_clears_data": true
+      },
+      "observations": [
+        "Invalid token rejected; actual reload required re-authentication and cleared all rows. After reconnect, manual logout cleared input before/after AX, showed placeholder, removed autofill state and focused token.",
+        "Actual first/second repository pages had 50/3 rows; matching search one row, unmatched search zero, hostile <img text one row and no injected image. Detail showed r1/r0, generation 2, one active transaction and one lock.",
+        "All five views inspected. Both DAV workers showed OPTIONS 5/1, PROPFIND 2/0, POST 1/1; denied request IDs 57cce87f-8 and 0133072c-8 matched fixture output.",
+        "At 375x812, document width 360 and node table scrollWidth 872 inside 311px region. Two open details and peer-summary focus survived an actual sample timestamp change from 17:31:34 to 17:32:14.",
+        "Paused refresh held the complete footer unchanged; interval 10 then 5 selected through the actual control.",
+        "Stopped own peer/DAV: 2/4 online, old 8cd9b811 and 57cce87f lost with unknown/unavailable metrics. Restarted: peer 38a52554 and DAV fea6b163, 4/6 online and old lost rows retained.",
+        "Blocked only this database: sample expired at 26.7s, all nodes/write-primary unknown and DAV details unavailable. Restoration returned Ready and 4/6 online.",
+        "Actual second reload cleared input and all rows/details. Reconnected, focused the DAV peer summary, and revoked the real token. Automatic refresh cleared the field, showed placeholder, removed autofill, cleared rows/details and focused token, both before and after AX."
+      ]
+    },
+    "m5": {
+      "test_id": "m5-browser-copy-prop-539cd1eb81fe",
+      "report_sha256": "a26963503a05ead169de4973fa944e24ffb428b8be7808f386bd7f28d7c822d3",
+      "checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "refresh_retains_open_and_focus": true,
+        "narrow_details_layout": true,
+        "lost_worker_and_new_instance": true
+      },
+      "observations": [
+        "Invalid token rejected; actual reload required re-authentication and cleared all rows. After reconnect, manual logout cleared input before/after AX, showed placeholder, removed autofill state and focused token.",
+        "Actual first/second repository pages had 50/3 rows; matching search one row, unmatched search zero, hostile <img text one row and no injected image. Detail showed r1/r0, generation 2, one active transaction and one lock.",
+        "All five views inspected. Both DAV workers showed OPTIONS 5/1, PROPFIND 2/0, POST 1/1; denied request IDs 57cce87f-8 and 0133072c-8 matched fixture output.",
+        "At 375x812, document width 360 and node table scrollWidth 872 inside 311px region. Two open details and peer-summary focus survived an actual sample timestamp change from 17:31:34 to 17:32:14.",
+        "Paused refresh held the complete footer unchanged; interval 10 then 5 selected through the actual control.",
+        "Stopped own peer/DAV: 2/4 online, old 8cd9b811 and 57cce87f lost with unknown/unavailable metrics. Restarted: peer 38a52554 and DAV fea6b163, 4/6 online and old lost rows retained.",
+        "Blocked only this database: sample expired at 26.7s, all nodes/write-primary unknown and DAV details unavailable. Restoration returned Ready and 4/6 online.",
+        "Actual second reload cleared input and all rows/details. Reconnected, focused the DAV peer summary, and revoked the real token. Automatic refresh cleared the field, showed placeholder, removed autofill, cleared rows/details and focused token, both before and after AX."
+      ]
+    },
+    "notes_sha256": "dc40764bf24ca9085956d326e9ac8083c80ebc81bfcf84315e8d150d97d5c77a",
+    "revocation": {
+      "beforeAX": {
+        "autofill": false,
+        "details": 0,
+        "empty": true,
+        "focus": "token",
+        "placeholder": true,
+        "rows": 0
+      },
+      "afterAX": {
+        "autofill": false,
+        "details": 0,
+        "empty": true,
+        "focus": "token",
+        "placeholder": true,
+        "rows": 0
+      },
+      "trigger": "Automatic refresh after production revoke, following full fault/recovery/reload sequence and focus in DAV peer summary."
+    },
+    "refresh": {
+      "before": {
+        "focus": "dav-browser-dav-peer / 0133072c",
+        "footer": "PgVN · 原生仓库服务只读 · 无持久令牌采样于 2026/10/16 17:31:34 · 0.4 秒前",
+        "open": 2
+      },
+      "after": {
+        "focus": "dav-browser-dav-peer / 0133072c",
+        "footer": "PgVN · 原生仓库服务只读 · 无持久令牌采样于 2026/10/16 17:32:14 · 0.5 秒前",
+        "open": 2,
+        "pageWidth": 360,
+        "width": 375
+      }
+    },
+    "manual_logout": {
+      "autofill": false,
+      "empty": true,
+      "focus": "token",
+      "placeholder": true
+    }
+  },
+  "browser_history": [
+    {
+      "test_id": "m4-browser-copy-prop-initial-fb36f651ea64",
+      "status": "FAIL",
+      "report_sha256": "0c6e1491b785fc0581f854a4365a26c3c01747ad16adf9e6a9a6670a423be1d0"
+    },
+    {
+      "test_id": "m4-browser-copy-prop-autofill-4369d215e829",
+      "status": "REVOCATION_SMOKE_PASS",
+      "report_sha256": "4f97db495692ca4a912d712a5202b8c7378effad04ab701d5f21eb247e217f7b"
+    },
+    {
+      "test_id": "m4-browser-copy-prop-autofill-2863c735e01c",
+      "status": "INCOMPLETE",
+      "report_sha256": "f9575579c2e7279deefc5c4aa9161ec12d499291e23539f1a85a0055e9a21c97"
+    },
+    {
+      "test_id": "m4-browser-copy-prop-autofill-7faf4f6ddcc1",
+      "status": "FAIL",
+      "report_sha256": "1660c63fe09e261847de3a3786b42aff8e72e7ab5699d0b3d8bc6e3aaa4c17b0"
+    }
+  ],
+  "full_m5": {
+    "test_id": "m5-279992c5cea3",
+    "report_sha256": "0e43ba72b63342121a4fe3154855b0e49ba73360e51137428cbe288cfebd44a0",
+    "elapsed_seconds": 560.4370000000054,
+    "groups": 10,
+    "m4_test_id": "m4-32a12d8202c5",
+    "m4_groups": 8,
+    "m3_test_id": "m3-27a08f1333ea",
+    "m3_groups": 7,
+    "database_fault_still_503_and_recovers_to_200": true
+  },
+  "post_run_cleanup": {
+    "gate_databases_checked": 22,
+    "gate_tokens": 7,
+    "gate_tokens_revoked_now": 5,
+    "browser_tokens_checked": 5,
+    "unrevoked_tokens_remaining": 0,
+    "remaining_runtime_processes": 0,
+    "remaining_temporary_services": 0,
+    "databases_and_roles_retained": true
+  },
+  "development_package": {
+    "status": "PASS",
+    "created_at": "2026-10-16T09:40:52.364132+00:00",
+    "build_manifest_sha256": "dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af",
+    "package_id": "789ce2453389afee",
+    "archive": "runtime/pgvn/packages/PgVN-M5-windows-x64-789ce2453389afee.zip",
+    "archive_sha256": "417dadaf9c9d8742ee3d280e81574c7f0f8c8176e8b460868812e419569c6f10",
+    "archive_bytes": 23415025,
+    "payload_files": 207,
+    "zip_entries": 209,
+    "native_images": 95,
+    "five_products_match": true,
+    "zip_payloads_match_staged_files": true,
+    "file_hashes_and_sizes_match": true,
+    "clean_path_check": {
+      "Status": "PASS",
+      "PackageId": "789ce2453389afee",
+      "NativeImages": 95,
+      "ValidationStatus": "development-snapshot",
+      "TestScope": "Hashes, x64 PE headers and clean-PATH version startup; no clean-machine claim"
+    },
+    "clean_path_check_sha256": "72be6e04c4f9e0088b2aaff0b2b4e93ec8151f34ae4a368d7c3f26966881ef1d",
+    "validation_status": "development-snapshot",
+    "clean_machine_acceptance": false,
+    "polarion_application_acceptance": false,
+    "initial_validator_correction": "Initial independent checker omitted the required package-manifest.json.sha256 sidecar from its expected file set; archive and payload bytes were unchanged.",
+    "additional_files_since_prior_package": [
+      "docs/pgvn/M6-network-commit-update.zh-CN.md",
+      "docs/pgvn/evidence/m6-network-commit-update.json",
+      "docs/pgvn/images/m6-commit-update-overview.jpg",
+      "docs/pgvn/images/m6-commit-update-workers.jpg"
+    ]
+  },
+  "baselines": [
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-initial-svn-02c0284b99e6",
+      "index_sha256": "3b2ee1f72a360873c6caa9ce4f054e41d5792be13c0500016a6f65a519ccaa33",
+      "files": 271
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-initial-7c1ecf77dea8",
+      "index_sha256": "b059e51d83afcc3210fc52b07f55c4ef18e8342a619d5aa115b95f2423c82b28",
+      "files": 315
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-prop-initial-248023a0cc2a",
+      "index_sha256": "88a9f37ee4588cb230023e929ee6e478a26a255379617e2822e1aa713da861db",
+      "files": 315
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-target-1c5984368ae3",
+      "index_sha256": "2edd96463609497459f6133d77efc2e5a99107ef41105198781cee7f3c3e14f9",
+      "files": 374
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-before-ui-3d5591d694b3",
+      "index_sha256": "9957a036997b97d54e0bac8d8b93d1f641fb33d66073f5884bb67a200f7a5a92",
+      "files": 330
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-browser-initial-fb36f651ea64",
+      "index_sha256": "b2cab8e1cc6d6e85a26ca4a97360569b201a93f5acaeb908e6308625c3858ffa",
+      "files": 163
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-before-autofill-036e1e10e29e",
+      "index_sha256": "94d9c2e3fc5d103af3fc7ff37d0a5f1c08c5fb674936500ec5ef161d34fe3a0a",
+      "files": 374
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-autofill-7faf4f6ddcc1",
+      "index_sha256": "73829044a321e58dd7f10ca27db5ea6528faec1458f0f2936ce97efe29345726",
+      "files": 169
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-final-671195c95bad",
+      "index_sha256": "50c514eb92f1241fc8ce27f0da30afc9d3d9873aa6a0c2dd20e0eb4148af8c2a",
+      "files": 374
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-copy-prop-m5-279992c5cea3",
+      "index_sha256": "1ba4f75c5889d2b20c01a6bc7864a6fd44f928391efeae7f1de85d488f372798",
+      "files": 316
+    }
+  ],
+  "scope_notes": [
+    "Original functions/assertions/decorators retained; no added exclusions.",
+    "copy 10 and prop 23 are original POSIX-only skips; copy 105 is original upstream XFAIL Issue 3899.",
+    "Only registered source, declared destination and default policy copytree setup uses production hotcopy; working-copy copies are untouched.",
+    "pre-revprop-change denial code and policy remain unchanged; diagnostic now names the hook.",
+    "Actual full browser autofill failure retained; early value clearing plus native form reset after visibility/focus passed the full sequence.",
+    "Runtime and browser failures/earlier builds remain separately identified; earlier PASS is not promoted to the final build.",
+    "Concurrent suite durations are functional diagnostic timings, not throughput or latency benchmarks."
+  ],
+  "remaining": [
+    "Remaining original suites and full applicability ledger; final-build replay of earlier suites.",
+    "Complete maintenance semantics; final-build 638-revision corpus and 30-table backup/restore revalidation.",
+    "Acknowledged-commit ledger, cross-failure-domain standby/fencing and recovery objectives.",
+    "Six representative workloads, 1/8/32 clients, 60s warmup, 300s measurement, three repeats and monitor overhead budgets.",
+    "Native Windows high-contrast visual acceptance; independent Windows installation/reboot and isolated Polarion acceptance."
+  ]
+}

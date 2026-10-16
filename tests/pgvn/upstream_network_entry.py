@@ -12,6 +12,7 @@ import http.client
 import json
 import os
 import re
+import shutil
 import ssl
 import subprocess
 import sys
@@ -38,6 +39,10 @@ def main():
     assert sha(output_source)==manifest['sources']['tests/pgvn/upstream_hook_output.py']
     output_spec=importlib.util.spec_from_file_location('pgvn_upstream_hook_output',output_source)
     output_boundary=importlib.util.module_from_spec(output_spec);output_spec.loader.exec_module(output_boundary)
+    copy_source=ROOT/'tests/pgvn/upstream_network_copy.py'
+    assert sha(copy_source)==manifest['sources']['tests/pgvn/upstream_network_copy.py']
+    copy_spec=importlib.util.spec_from_file_location('pgvn_upstream_copy',copy_source)
+    copy_boundary=importlib.util.module_from_spec(copy_spec);copy_spec.loader.exec_module(copy_boundary)
     work=Path(config['work']).resolve();os.chdir(work)
     assert work.is_relative_to((ROOT/'runtime/pgvn/tests').resolve()) and configuration.is_relative_to(work)
     native=config['backend']=='pgvn';assert config['backend'] in ('pgvn','fsfs')
@@ -276,6 +281,20 @@ def main():
     def set_name(sbox,*args,**kwargs):
         original_set_name(sbox,*args,**kwargs);declared.add(full(sbox.repo_dir));folder=policy_paths(sbox.repo_dir)
         sbox.authz_file=str(folder/'authz');sbox.groups_file=str(folder/'groups')
+    original_add_repo=svntest.sandbox.Sandbox.add_repo_path;original_copytree=shutil.copytree
+    def add_repo(sbox,*args,**kwargs):
+        path,url=original_add_repo(sbox,*args,**kwargs);declared.add(full(path));return path,url
+    def copytree(source,destination,*args,**kwargs):
+        refresh_registry();first=full(source);second=full(destination)
+        if first not in repositories and second not in declared:
+            return original_copytree(source,destination,*args,**kwargs)
+        value=copy_boundary.request(config,work,first,second,repositories,declared,policy,args,kwargs)
+        copied=copy_boundary.clone(value,admin)
+        repositories[second]=copied['destination_id'];post_create(second)
+        admin('repo','enable','id:'+copied['destination_id'])
+        assert not first.exists() and not second.exists()
+        event('native-copytree',**copied)
+        return destination
     if native:
         output_boundary.install(work,lambda:repositories)
         os.environ.update(PGVN_UPSTREAM_DATABASE=config['database'],PGVN_UPSTREAM_ROOT=work.as_posix(),
@@ -286,6 +305,7 @@ def main():
         main.get_svnserve_conf_file_path=conf_path;main.write_restrictive_svnserve_conf=restrictive
         main.write_groups_file=groups
         main.write_authz_file=authz;svntest.sandbox.Sandbox._set_name=set_name
+        svntest.sandbox.Sandbox.add_repo_path=add_repo;shutil.copytree=copytree
         for kind in ('start-commit','pre-commit','post-commit','pre-revprop-change','pre-lock','pre-unlock'):
             setattr(main,'get_'+kind.replace('-','_')+'_hook_path',lambda repo,k=kind:hook_path(repo,k))
     sys.argv=[str(cmdline/(config['suite']+'.py')),'--url='+config['url'],
@@ -334,6 +354,7 @@ def main():
                                   'historical FSFS archive imported with stock dump and native load, preserving UUID/revisions',
                                   'DDT Apache parent alias represented by a guarded second catalog route',
                                   'only hooks.log scratch I/O relocated to global hook output with an operation audit',
+                                  'registered repository copytree setup uses a verified production hotcopy; relocation/copy assertions unchanged',
                                   'legacy file:// svnmucc setup uses a same-database loopback SVN writer; tested updates retain their URLs'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',
                                   'Direct physical repository file operations and historical disk formats need case applicability review.'] if native else []}

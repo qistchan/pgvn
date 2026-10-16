@@ -169,11 +169,11 @@
   }
   function schedule() { clearTimeout(state.timer); if (!state.paused && state.token) state.timer = setTimeout(refresh, (document.hidden ? Math.max(30, state.refreshSeconds) : state.refreshSeconds) * 1000); }
   function disconnect(message) {
-    state.token = ""; clearTimeout(state.timer); clearInterval(state.clock); state.clock = null;
+    state.token = ""; $("token").value = ""; clearTimeout(state.timer); clearInterval(state.clock); state.clock = null;
     state.chartObservers.forEach(observer => observer.disconnect()); state.chartObservers = []; state.chartCursors = {}; state.kpiValues = {}; state.updateFailed = false; state.search = ""; $("repository-search").value = "";
     $("content").before(searchForm); state.overview = null; state.rows = null; state.trends = null; state.events = null; state.next = null;
     $("content").hidden = true; $("content").replaceChildren(); $("login").hidden = false; $("logout").hidden = true; $("search-form").hidden = true; state.epoch++;
-    $("readiness").textContent = "未连接"; $("readiness").className = "badge neutral"; if (message) status(message, "warning"); $("subtitle").textContent = "连接监控，查看节点与仓库的运行状态。"; $("sample-meta").textContent = "尚未取得状态样本"; $("health-retry").hidden = true; healthStrip(); $("token").focus({ preventScroll: true });
+    $("readiness").textContent = "未连接"; $("readiness").className = "badge neutral"; if (message) status(message, "warning"); $("subtitle").textContent = "连接监控，查看节点与仓库的运行状态。"; $("sample-meta").textContent = "尚未取得状态样本"; $("health-retry").hidden = true; healthStrip(); $("token").focus({ preventScroll: true }); $("token-form").reset();
   }
   async function refresh(force = false) {
     clearTimeout(state.timer); if (!state.token || state.busy) return;

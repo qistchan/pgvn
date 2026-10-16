@@ -142,7 +142,7 @@ svn_error_t *pgvn_hook_dispatch(const pgvn_policy *policy,const pgvn_hook_contex
     const char *handler=policy->hook_handlers[event->event];
     if(policy->external_hooks[event->event]) return pgvn_external_hook(policy,event,pool);
     if(!handler && event->event==PGVN_HOOK_PRE_REVPROP)
-        return svn_error_create(SVN_ERR_REPOS_DISABLED_FEATURE,NULL,"Revision property changes require an explicit PgVN hook policy");
+        return svn_error_create(SVN_ERR_REPOS_DISABLED_FEATURE,NULL,"Revision property changes require an explicit PgVN pre-revprop-change hook policy");
     if(!handler || !strcmp(handler,"allow")) return SVN_NO_ERROR;
     if(!strcmp(handler,"reject"))
         return svn_error_createf(SVN_ERR_REPOS_HOOK_FAILURE,NULL,"PgVN %s policy rejected the event",events[event->event]);

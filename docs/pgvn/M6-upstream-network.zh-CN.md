@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。基础套件与锁用例已记录通过；新增 authz 1–35 三协议与原版 FSFS 对照一致，详见[授权套件记录](M6-network-authz.zh-CN.md)。不同轮次按各自构建摘要记录，不合并为同一构建的全矩阵结论。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
+当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。基础套件与锁用例已记录通过；新增 authz 1–35 三协议与原版 FSFS 对照一致，详见[授权套件记录](M6-network-authz.zh-CN.md)。原版 commit/update 和 copy/prop 已分别完成三协议对照，见[commit/update](M6-network-commit-update.zh-CN.md)与[copy/prop](M6-network-copy-prop.zh-CN.md)。不同轮次按各自构建摘要记录，不合并为同一构建的全矩阵结论。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
 
 ## 可复现入口
 
@@ -30,9 +30,9 @@ python scripts/pgvn/catalog_upstream_network.py --require-frozen-inputs --snapsh
 ```powershell
 python scripts/pgvn/build_upstream_network.py
 python tests/pgvn/test_m6_network_tools.py --offline
-python tests/pgvn/test_m6_network_tools.py --plan
-# 将上一条输出的完整 plan.json 路径传入；每个计划仅执行一次。
-python tests/pgvn/test_m6_network_tools.py --execute-plan <plan.json路径>
+$pgvnToolsRun = python tests/pgvn/test_m6_network_tools.py --plan | ConvertFrom-Json
+# 核对本次计划的范围后执行；每个计划仅执行一次。
+python tests/pgvn/test_m6_network_tools.py --execute-plan $pgvnToolsRun.plan
 ```
 
 执行范围为已授权的 `127.0.0.1:16432` 专用集群和仓库 runtime，库名强制为 `pgvn_m6_net_<12位十六进制>`。计划冻结输入摘要，启动前核对真实数据目录，每次创建独立非超级用户所有者和测试库。原版 CLI 适配器在连接前核对 host、port、dbname、user，拒绝 service 重定向。此组件不启动网络服务、不创建监控令牌。
@@ -48,10 +48,10 @@ python tests/pgvn/test_m6_network_tools.py --execute-plan <plan.json路径>
 ```powershell
 python scripts/pgvn/build_upstream_network.py
 python scripts/pgvn/build_upstream_helpers.py
-python tests/pgvn/test_m6_network.py --plan --suite basic_tests --cases 1:71
-python tests/pgvn/test_m6_network.py --execute-plan <上一条生成的plan.json路径>
-python tests/pgvn/test_m6_network.py --plan --suite lock_tests --cases 53
-python tests/pgvn/test_m6_network.py --execute-plan <新的plan.json路径>
+$pgvnBasicRun = python tests/pgvn/test_m6_network.py --plan --suite basic_tests --cases 1:71 | ConvertFrom-Json
+python tests/pgvn/test_m6_network.py --execute-plan $pgvnBasicRun.plan
+$pgvnLockRun = python tests/pgvn/test_m6_network.py --plan --suite lock_tests --cases 53 | ConvertFrom-Json
+python tests/pgvn/test_m6_network.py --execute-plan $pgvnLockRun.plan
 ```
 
 每个计划仅执行一次，冻结产品、入口、C 工具、私有 WC DLL、原版客户端及解释器摘要。验证原始归档后创建新源码快照，以 `-I -B` 导入；运行前后复核 234 个原始文件、无字节码缓存和原 `test_list`。用例函数、装饰器、预期输出均未改。入口强制串行，避免上游并行子入口绕过原生 fixture。
@@ -73,12 +73,12 @@ XFAIL 为原用例 63；SKIP 为 52、67、70、71，均由原始装饰器/条�
 
 ```powershell
 python scripts/pgvn/build_upstream_http.py
-python tests/pgvn/test_m6_network.py --plan --protocol http --suite basic_tests --cases 1:71
-python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
-python tests/pgvn/test_m6_network.py --plan --protocol https --suite basic_tests --cases 1:71
-python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
-python tests/pgvn/test_m6_network.py --plan --protocol https --suite lock_tests --cases 53:54
-python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
+$pgvnHttpBasicRun = python tests/pgvn/test_m6_network.py --plan --protocol http --suite basic_tests --cases 1:71 | ConvertFrom-Json
+python tests/pgvn/test_m6_network.py --execute-plan $pgvnHttpBasicRun.plan
+$pgvnHttpsBasicRun = python tests/pgvn/test_m6_network.py --plan --protocol https --suite basic_tests --cases 1:71 | ConvertFrom-Json
+python tests/pgvn/test_m6_network.py --execute-plan $pgvnHttpsBasicRun.plan
+$pgvnHttpsLocksRun = python tests/pgvn/test_m6_network.py --plan --protocol https --suite lock_tests --cases 53:54 | ConvertFrom-Json
+python tests/pgvn/test_m6_network.py --execute-plan $pgvnHttpsLocksRun.plan
 # HTTP 锁测试将上一条计划的 --protocol 改为 http，另行生成计划。
 ```
 
@@ -134,3 +134,9 @@ lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解�
 仅替换 `run_svnadmin()` 无法覆盖建库帮助函数的直接调用。静态工具操作和 repo 路径提示只是语法线索，间接变量及运行时路径仍需实测，不据此自动跳过测试。
 
 当前 SVN 入口已在导入用例前绑定服务/管理 fixture，后续扩展剩余帮助函数和 HTTP/HTTPS，并与 FSFS 对照记录逐项适用性。旧 `tests/run_upstream.py`、`tests/upstream_entry.py`、`tests/upstream_http.py` 仍属于 PgFS 目录与 15432 配置，不作为 PgVN 执行入口。
+
+## 2026-10-16：copy/prop 扩展与最终候选
+
+原版 copy 1–118、prop 1–46 的 SVN/HTTP/HTTPS 两侧结果一致，共 984 个结果/972 次实际进入，无新增排除。copy 的物理仓库复制准备由有严格来源/目标/策略约束的生产 hotcopy 完成，正常工作副本复制不改变；13 项新增离线边界通过。revprop 拒绝诊断补全标准 hook 名称，原错误码与行为不变。
+
+完整浏览器进一步发现并修复断开时自动填充残留：显示与焦点恢复后执行原生表单 reset。本轮新浏览器 15+6 项及完整 M5 `m5-279992c5cea3` 绑定清单 `dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af` 通过。较早段落中的“新浏览器/完整 M5 待执行”保留为当时状态，已由各后续组件的对应构建记录补齐；不能跨构建合并验收。详情、原始失败、清理与开发包见[组件记录](M6-network-copy-prop.zh-CN.md)。完整网络矩阵、维护、真实历史/备份最终复核、故障与性能出口及 M7 仍未完成。
