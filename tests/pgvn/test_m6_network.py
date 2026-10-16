@@ -27,7 +27,7 @@ from catalog_upstream_network import read_lock,verify_inputs,materialize_snapsho
 
 OWN=('tests/pgvn/test_m6_network.py','tests/pgvn/upstream_network_entry.py','tests/pgvn/upstream_hook_bridge.py',
      'tests/pgvn/upstream_network_policy.py','tests/pgvn/upstream_network_import.py','tests/pgvn/upstream_hook_output.py',
-     'tests/pgvn/upstream_network_copy.py')
+     'tests/pgvn/upstream_network_copy.py','tests/pgvn/upstream_network_log.py')
 
 def identity(protocol='svn'):
     assert protocol in ('svn','http','https')

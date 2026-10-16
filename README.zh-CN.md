@@ -324,7 +324,7 @@ python scripts/pgvn/package.py --development
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-已记录的兼容性工作包括原版 Subversion 网络套件在 SVN、HTTP、HTTPS 上与 FSFS 的差分验证，见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)、[授权结果](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update 结果](docs/pgvn/M6-network-commit-update.zh-CN.md)及 [copy/prop 结果](docs/pgvn/M6-network-copy-prop.zh-CN.md)。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收。
+已记录的兼容性工作包括原版 Subversion 网络套件在 SVN、HTTP、HTTPS 上与 FSFS 的差分验证，见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)、[授权结果](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update 结果](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop 结果](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff 结果](docs/pgvn/M6-network-log-diff.zh-CN.md)。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收。
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 

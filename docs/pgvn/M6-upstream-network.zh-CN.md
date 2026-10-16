@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。基础套件与锁用例已记录通过；新增 authz 1–35 三协议与原版 FSFS 对照一致，详见[授权套件记录](M6-network-authz.zh-CN.md)。原版 commit/update 和 copy/prop 已分别完成三协议对照，见[commit/update](M6-network-commit-update.zh-CN.md)与[copy/prop](M6-network-copy-prop.zh-CN.md)。不同轮次按各自构建摘要记录，不合并为同一构建的全矩阵结论。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
+当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。基础套件与锁用例已记录通过；新增 authz 1–35 三协议与原版 FSFS 对照一致，详见[授权套件记录](M6-network-authz.zh-CN.md)。原版 commit/update、copy/prop 和 log/diff 已分别完成三协议对照，见[commit/update](M6-network-commit-update.zh-CN.md)、[copy/prop](M6-network-copy-prop.zh-CN.md)及[log/diff](M6-network-log-diff.zh-CN.md)。不同轮次按各自构建摘要记录，不合并为同一构建的全矩阵结论。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
 
 ## 可复现入口
 
@@ -140,3 +140,13 @@ lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解�
 原版 copy 1–118、prop 1–46 的 SVN/HTTP/HTTPS 两侧结果一致，共 984 个结果/972 次实际进入，无新增排除。copy 的物理仓库复制准备由有严格来源/目标/策略约束的生产 hotcopy 完成，正常工作副本复制不改变；13 项新增离线边界通过。revprop 拒绝诊断补全标准 hook 名称，原错误码与行为不变。
 
 完整浏览器进一步发现并修复断开时自动填充残留：显示与焦点恢复后执行原生表单 reset。本轮新浏览器 15+6 项及完整 M5 `m5-279992c5cea3` 绑定清单 `dff1a26e649812903ce70f054fadc37a149ab9baa6424c419c21f4fe6e5dc7af` 通过。较早段落中的“新浏览器/完整 M5 待执行”保留为当时状态，已由各后续组件的对应构建记录补齐；不能跨构建合并验收。详情、原始失败、清理与开发包见[组件记录](M6-network-copy-prop.zh-CN.md)。完整网络矩阵、维护、真实历史/备份最终复核、故障与性能出口及 M7 仍未完成。
+
+## 2026-10-16：原版 log/diff 三协议
+
+原版 log 1–46 与 diff 1–96 在 SVN、HTTP、HTTPS 完成 FSFS 对照；每侧 log 为 45 PASS/1 原有 XFAIL，diff 为 91 PASS/4 原有 XFAIL/1 Windows 原有 SKIP。六轮共 852 个结果、846 次实际进入，142 个唯一原版函数，未新增排除。原版 XFAIL 的完整预期/实际输出及异常，经精确归一工作目录与本轮监听地址后匹配；客户端输出和原断言未改。
+
+补齐 log-msg 临时输入及其 SVN 文件参数、真实 SVN 1.5 兼容 FSFS 经 dump/load 的历史准备，以及客户端通用 Python/batch 脚本与原生仓库 hook 的分流。72 项无数据库/无子进程的离线边界检查、三协议定点与全量均通过；源模板 hooks 限制及 diff 48 原失败、已执行计划和未执行旧计划分别保留。
+
+冻结清单 `7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4` 含 154 项本仓库输入，改动为五个测试文件。五个生产产物、三份网页资源、67 项运行依赖和 84 项 Apache 依赖与此前 copy/prop 产品验收构建相同。浏览器和完整 M5 复用其产品层验收，原记录仍绑定原清单；本轮没有把它们改写为新运行。原生仓库别名均未生成目录，最终 28 个 Job 已关闭，未创建监控令牌或临时 Windows 服务；库及角色保留。
+
+详细结果与修复边界见[log/diff 组件](M6-network-log-diff.zh-CN.md)和[结构化证据](evidence/m6-network-log-diff.json)，开发包的完整性与最小 PATH 检查见[包旁记录](evidence/m7-package-log-diff.json)。包为 development-snapshot。PGVN-601、M6、M7 保持未完成；剩余套件/适用性、最终构建复跑、维护、真实历史/备份复核、跨故障域/确认账本、代表性性能和独立环境验收继续推进。

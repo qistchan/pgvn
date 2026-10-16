@@ -43,6 +43,10 @@ def main():
     assert sha(copy_source)==manifest['sources']['tests/pgvn/upstream_network_copy.py']
     copy_spec=importlib.util.spec_from_file_location('pgvn_upstream_copy',copy_source)
     copy_boundary=importlib.util.module_from_spec(copy_spec);copy_spec.loader.exec_module(copy_boundary)
+    log_source=ROOT/'tests/pgvn/upstream_network_log.py'
+    assert sha(log_source)==manifest['sources']['tests/pgvn/upstream_network_log.py']
+    log_spec=importlib.util.spec_from_file_location('pgvn_upstream_log',log_source)
+    log_boundary=importlib.util.module_from_spec(log_spec);log_spec.loader.exec_module(log_boundary)
     work=Path(config['work']).resolve();os.chdir(work)
     assert work.is_relative_to((ROOT/'runtime/pgvn/tests').resolve()) and configuration.is_relative_to(work)
     native=config['backend']=='pgvn';assert config['backend'] in ('pgvn','fsfs')
@@ -107,10 +111,12 @@ def main():
             connection.set_debuglevel(debuglevel);return connection
         return original_http(url,debuglevel)
     main.create_http_connection=create_http_connection
+    log_fixture=None
     original_open=main.open_pipe
     def open_pipe(command,*args,**kwargs):
         if native:
             refresh_registry()
+            if log_fixture is not None:command=log_fixture.command(command,main.svn_binary)
             # Some upstream cases use the *local* repository format file only
             # as arbitrary upload data. Supply the same bytes used by the
             # completed FSFS control, outside every native repository alias.
@@ -243,10 +249,21 @@ def main():
         return str(path)
     original_hook=main.create_python_hook_script
     def hook(path,code,cmd_alternative=None):
-        absolute=full(path)
+        absolute=full(path);refresh_registry()
         if absolute not in hook_paths:
-            assert absolute.parent.name=='hooks'
-            path=hook_path(absolute.parent.parent,absolute.name);absolute=full(path)
+            repository=full(absolute.parent.parent) if absolute.parent.name=='hooks' else None
+            if repository not in repositories:
+                assert absolute.is_relative_to(work) and absolute!=work
+                assert not any(absolute.is_relative_to(alias) for alias in set(repositories)|declared)
+                candidates=(absolute,Path(str(absolute)+'.py'),Path(str(absolute)+'.bat'))
+                assert all(candidate.resolve().is_relative_to(work) and not any(candidate.resolve().is_relative_to(alias) for alias in set(repositories)|declared) for candidate in candidates)
+                result=original_hook(path,code,cmd_alternative)
+                files={str(candidate):sha(candidate) for candidate in candidates if candidate.is_file()}
+                assert files,'Original generic script helper produced no files'
+                event('generic-script-helper',path=str(absolute),files=files,cmd_alternative=cmd_alternative is not None,
+                      supplied_python_sha256=hashlib.sha256(code.encode('utf-8') if isinstance(code,str) else bytes(code)).hexdigest())
+                return result
+            path=hook_path(repository,absolute.name);absolute=full(path)
         repo,kind=hook_paths[absolute]
         original_hook(str(absolute),code,cmd_alternative)
         # The Python body is the portable original helper input. The optional
@@ -296,6 +313,19 @@ def main():
         event('native-copytree',**copied)
         return destination
     if native:
+        if config['suite']=='log_tests':
+            log_fixture=log_boundary.LogFixtures(config,work,repositories,declared,event)
+            original_file_write=main.file_write;original_copy_repos=main.copy_repos
+            def file_write(path,contents,*args,**kwargs):
+                refresh_registry()
+                return log_fixture.write(original_file_write,path,contents,*args,**kwargs)
+            def copy_repos(source,destination,head_revision,ignore_uuid=1,minor_version=None):
+                if minor_version in (None,14):
+                    return original_copy_repos(source,destination,head_revision,ignore_uuid,minor_version)
+                refresh_registry()
+                value=log_fixture.history_request(source,destination,head_revision,ignore_uuid,minor_version)
+                return log_fixture.copy_history(value,create,admin,refresh_registry)
+            main.file_write=file_write;main.copy_repos=copy_repos
         output_boundary.install(work,lambda:repositories)
         os.environ.update(PGVN_UPSTREAM_DATABASE=config['database'],PGVN_UPSTREAM_ROOT=work.as_posix(),
             PGVN_UPSTREAM_LEDGER=(work/'native-commands.jsonl').as_posix(),
@@ -347,6 +377,7 @@ def main():
             'native_aliases_absent':all(not path.exists() for path in set(repositories)|declared),
             'fixture_boundaries':['tool paths','create/configure repository','logical repository cleanup/chmod',
                                   'hook Python body argv/stdin translation','Sandbox policy file locations','authz publication',
+                                  'ordinary client script helpers retain the original Python/batch creation within non-repository fixture paths',
                                   'local format-file upload sample redirected to byte-identical stock-control data',
                                   'svnserve config/groups files relocated to global policy and versioned settings',
                                   'exact authz repository namespace mapped to canonical ID-fixture name',
@@ -354,6 +385,8 @@ def main():
                                   'historical FSFS archive imported with stock dump and native load, preserving UUID/revisions',
                                   'DDT Apache parent alias represented by a guarded second catalog route',
                                   'only hooks.log scratch I/O relocated to global hook output with an operation audit',
+                                  'log-suite registered log-msg input and its matching SVN -F/--file argument relocated together; bytes unchanged',
+                                  'log-suite historical copy input round-trips through real SVN 1.5-compatible stock FSFS and native dump/load',
                                   'registered repository copytree setup uses a verified production hotcopy; relocation/copy assertions unchanged',
                                   'legacy file:// svnmucc setup uses a same-database loopback SVN writer; tested updates retain their URLs'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',

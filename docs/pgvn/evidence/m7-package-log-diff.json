@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "validation_kind": "package_integrity_and_clean_path_startup_only",
+  "created_at": "2026-10-16T11:55:55.090315+00:00",
+  "build_manifest_sha256": "7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4",
+  "package_id": "0b120832b12feae6",
+  "archive": "runtime/pgvn/packages/PgVN-M5-windows-x64-0b120832b12feae6.zip",
+  "archive_sha256": "42dec12d143ed7f84357ff12c2e30fb72d7b6c26d0020a587eb61f20b61a0195",
+  "archive_bytes": 23573209,
+  "payload_files": 214,
+  "zip_entries": 216,
+  "native_images": 95,
+  "five_products_match": true,
+  "zip_payloads_match_staged_files": true,
+  "file_hashes_and_sizes_match": true,
+  "clean_path_check": {
+    "Status": "PASS",
+    "PackageId": "0b120832b12feae6",
+    "NativeImages": 95,
+    "ValidationStatus": "development-snapshot",
+    "TestScope": "Hashes, x64 PE headers and clean-PATH version startup; no clean-machine claim"
+  },
+  "clean_path_check_sha256": "77b6d309262f0bd213a11aafb46749491e0dcf487633cf31b3b979ddeafb38b4",
+  "validation_status": "development-snapshot",
+  "clean_machine_acceptance": false,
+  "polarion_application_acceptance": false,
+  "milestone_complete": false,
+  "additional_files_since_prior_package": [
+    "docs/pgvn/M6-network-copy-prop.zh-CN.md",
+    "docs/pgvn/M6-network-log-diff.zh-CN.md",
+    "docs/pgvn/evidence/m6-network-copy-prop.json",
+    "docs/pgvn/evidence/m6-network-log-diff.json",
+    "docs/pgvn/images/m6-copy-prop-overview.jpg",
+    "docs/pgvn/images/m6-copy-prop-revoked.jpg",
+    "docs/pgvn/images/m6-copy-prop-workers.jpg"
+  ],
+  "changed_files_since_prior_package": [
+    "build-manifest.json",
+    "docs/pgvn/M6-upstream-network.zh-CN.md",
+    "docs/pgvn/M7-package-local.zh-CN.md",
+    "docs/pgvn/Windows-UTF8.zh-CN.md",
+    "docs/pgvn/progress.zh-CN.md",
+    "docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md"
+  ],
+  "self_reference_policy": "This validation is an external ZIP sidecar; m7-package evidence is excluded by the existing packager."
+}

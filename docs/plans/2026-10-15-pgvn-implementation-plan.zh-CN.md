@@ -429,3 +429,13 @@ Debug 与 Release 分别记录编译选项和摘要。实际发布的 Release �
 - [ ] Polarion 隔离验收完成，未完成或不适用的调用路径明确记录后再判断生产切换。
 
 执行从 PGVN-001 开始，以 M0 出口确认技术假设和工程估算，再依次推进 M1、M2、M3 与 M4。Apache 和生产切换依赖前置阶段的可重复证据。
+
+## 2026-10-16：原版 log/diff 三协议
+
+原版 log 1–46 与 diff 1–96 在 SVN、HTTP、HTTPS 完成 FSFS 对照；每侧 log 为 45 PASS/1 原有 XFAIL，diff 为 91 PASS/4 原有 XFAIL/1 Windows 原有 SKIP。六轮共 852 个结果、846 次实际进入，142 个唯一原版函数，未新增排除。原版 XFAIL 的完整预期/实际输出及异常，经精确归一工作目录与本轮监听地址后匹配；客户端输出和原断言未改。
+
+补齐 log-msg 临时输入及其 SVN 文件参数、真实 SVN 1.5 兼容 FSFS 经 dump/load 的历史准备，以及客户端通用 Python/batch 脚本与原生仓库 hook 的分流。72 项无数据库/无子进程的离线边界检查、三协议定点与全量均通过；源模板 hooks 限制及 diff 48 原失败、已执行计划和未执行旧计划分别保留。
+
+冻结清单 `7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4` 含 154 项本仓库输入，改动为五个测试文件。五个生产产物、三份网页资源、67 项运行依赖和 84 项 Apache 依赖与此前 copy/prop 产品验收构建相同。浏览器和完整 M5 复用其产品层验收，原记录仍绑定原清单；本轮没有把它们改写为新运行。原生仓库别名均未生成目录，最终 28 个 Job 已关闭，未创建监控令牌或临时 Windows 服务；库及角色保留。
+
+详细结果与修复边界见[log/diff 组件](../pgvn/M6-network-log-diff.zh-CN.md)和[结构化证据](../pgvn/evidence/m6-network-log-diff.json)，开发包的完整性与最小 PATH 检查由随 ZIP 单独提供的校验记录说明（`<ZIP_STEM>.validation.json`）。包为 development-snapshot。PGVN-601、M6、M7 保持未完成；剩余套件/适用性、最终构建复跑、维护、真实历史/备份复核、跨故障域/确认账本、代表性性能和独立环境验收继续推进。
