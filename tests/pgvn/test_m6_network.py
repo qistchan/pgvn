@@ -25,7 +25,8 @@ from test_m6_upstream_helpers import identity as helpers_identity
 sys.path.insert(0,str(ROOT/'scripts/pgvn'))
 from catalog_upstream_network import read_lock,verify_inputs,materialize_snapshot,suite_catalog
 
-OWN=('tests/pgvn/test_m6_network.py','tests/pgvn/upstream_network_entry.py','tests/pgvn/upstream_hook_bridge.py')
+OWN=('tests/pgvn/test_m6_network.py','tests/pgvn/upstream_network_entry.py','tests/pgvn/upstream_hook_bridge.py',
+     'tests/pgvn/upstream_network_policy.py','tests/pgvn/upstream_network_import.py')
 
 def identity(protocol='svn'):
     assert protocol in ('svn','http','https')

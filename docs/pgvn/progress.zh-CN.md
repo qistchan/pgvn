@@ -140,3 +140,11 @@ pgvnserve、pgvnadmin 和 mod_dav_pgvn 产品已变化，网页资源未改；�
 保留首轮 IP URL 的证书主机名 FAIL，改用 localhost；同时修正 IPv4 单独监听导致的本机 IPv6 回退等待，并在最终输入上重跑。源码仅涉及测试，五个生产产品保持 492cced 核心修复候选的字节；所有本轮 Job 进程清空，库及所有者保留，未创建监控令牌或 Windows 临时服务。命令及边界见 [网络入口](M6-upstream-network.zh-CN.md)，冻结原始证据见 [HTTP/HTTPS 组件记录](evidence/m6-network-http.json)。
 
 剩余套件与完整适用性、授权挂载/hook 边界、当前核心产品的全 M5/浏览器回归、故障与性能出口继续推进；PGVN-601 和 M6/M7 保持未完成。
+
+## M6 原版授权套件与匹配的完整回归（2026-10-16）
+
+原版 authz 1–35 三协议均与 FSFS 对照一致：每侧 31 PASS；SVN 另有 3 个原有 XFAIL、1 个原有 SKIP，HTTP/HTTPS 各有 2 个原有 XFAIL、2 个原有 SKIP，无新增排除。补齐精确仓库名映射、全局配置/groups、无效文件夹具、旧历史 dump/load，以及原版 dontdothat 模块/额外挂载。所有原生仓库别名均不存在本地目录，11 项离线边界保护通过，原始失败保留。
+
+生产只修复无效 authz 被归为 HTTP 503 的分类：现返回 403，真实数据库故障仍返回 503。新浏览器 15+6 项和完整 M5 `m5-7e3dbdd48f38`（含 M4 `m4-0041b28dd2df` 八组、M0–M3 七组）通过，均绑定清单 `612a8df7a539a427294e49a6b089c5577e082a56dc04d5be2a9234a2af5329ce`；本轮令牌已撤销，自有夹具已停止。详见[授权套件与回归](M6-network-authz.zh-CN.md)和[冻结证据](evidence/m6-network-authz.json)。
+
+此前记录中的“当前核心的新浏览器/完整 M5 待执行”已由本轮完成；各早期结果仍保留原构建身份。PGVN-601 的剩余协议矩阵、维护语义、最终核心的真实历史/备份复核、跨故障域和确认账本、代表性性能继续推进。M6/M7 仍未完成，实际 Windows 高对比度视觉、干净机器、重启和 Polarion 应用验收待独立环境。

@@ -235,7 +235,9 @@ dav_error *dav_svn__create_txn(dav_svn_repos *repos,const char **name,apr_hash_t
         svn_error_t *error=pgvn_http_policy(&policy,r,scratch_pool);
         if(error) {
             pgvn_exit_code code=pgvn_error_exit_code(error);
-            apr_table_setn(r->notes,"pgvn-authz-error-status",code==PGVN_EXIT_NOT_FOUND ? "404" : "503");
+            const char *status=svn_error_find_cause(error,SVN_ERR_AUTHZ_INVALID_CONFIG) ? "403" :
+                (code==PGVN_EXIT_NOT_FOUND ? "404" : "503");
+            apr_table_setn(r->notes,"pgvn-authz-error-status",status);
             log_svn_error(APLOG_MARK,r,"PgVN authorization policy unavailable:",error,scratch_pool);return NULL;
         }
         return policy;

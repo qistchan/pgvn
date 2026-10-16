@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。SVN 基础套件与 lock 53 每侧 67 PASS、1 XFAIL、4 SKIP；HTTP 和 HTTPS 的基础套件与 lock 53–54，各协议每侧 69 PASS、1 XFAIL、3 SKIP，PgVN 与原版 FSFS 结果一致。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
+当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。基础套件与锁用例已记录通过；新增 authz 1–35 三协议与原版 FSFS 对照一致，详见[授权套件记录](M6-network-authz.zh-CN.md)。不同轮次按各自构建摘要记录，不合并为同一构建的全矩阵结论。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
 
 ## 可复现入口
 
@@ -72,6 +72,7 @@ XFAIL 为原用例 63；SKIP 为 52、67、70、71，均由原始装饰器/条�
 同一入口通过 `--protocol` 选择传输，默认仍为 `svn`。HTTP 对照使用固定摘要的原版 mod_dav_svn/mod_authz_svn 与 FSFS；原生侧使用生产 mod_dav_pgvn/mod_authz_pgvn 和专用 pgvnhttpd。Apache 配置、工作副本和日志全部在本轮 runtime 目录。
 
 ```powershell
+python scripts/pgvn/build_upstream_http.py
 python tests/pgvn/test_m6_network.py --plan --protocol http --suite basic_tests --cases 1:71
 python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
 python tests/pgvn/test_m6_network.py --plan --protocol https --suite basic_tests --cases 1:71

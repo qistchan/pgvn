@@ -40,7 +40,16 @@ def identity(manifest):
     for name in ('runtime/pgvn/apache/bin/pgvnhttpd.exe','runtime/pgvn/apache/modules/mod_dav_pgvn.so',
                  'runtime/pgvn/apache/modules/mod_authz_pgvn.so'):
         assert sha(ROOT/name)==manifest['products'][name]['sha256']
+    ddt_path=ROOT/'artifacts/pgvn/build/upstream-http.json';ddt=json.loads(ddt_path.read_bytes())
+    assert ddt['build_manifest_sha256']==sha(ROOT/'artifacts/pgvn/build/manifest.json')
+    builder='scripts/pgvn/build_upstream_http.py'
+    assert sha(ROOT/builder)==ddt['builder_sha256']==manifest['sources'][builder]
+    assert sha(Path(manifest['inputs']['subversion'])/ddt['source'])==ddt['source_sha256']
+    assert ddt['namespace_sha256']==manifest['dav_patches']['namespace_sha256']
+    for record in ddt['products'].values():assert sha(ROOT/record['path'])==record['sha256']
+    for name,expected in ddt['dependencies'].items():assert sha(ROOT/name)==expected
     return {'source_sha256':sha(ROOT/SELF),'stock_providers':stock,
+            'dontdothat':{'manifest_sha256':sha(ddt_path),'products':ddt['products']},
             'apache_dependencies':dependencies,'apache_version':manifest['apache_host']['version'],
             'native_products':{name:record['sha256'] for name,record in manifest['products'].items() if '/apache/' in name}}
 
@@ -154,6 +163,14 @@ def configure(area,backend,number,database,domain,manifest,env,tls=None):
             text+='SVNAdvertiseV2Protocol On\nAuthzSVNAccessFile "'+(area/'svn-test-work/authz').as_posix()+'"\n'
             text+=auth+'</Location>\n'
         executable=APACHE/'bin/httpd.exe'
+    ddt=pinned['dontdothat']['products'][backend]
+    text+='LoadModule dontdothat_module "'+(ROOT/ddt['path']).as_posix()+'"\n'
+    ddt_config=area/'dontdothat.conf';ddt_config.write_text('[recursive-actions]\n/ = deny\n',encoding='ascii')
+    text+='<Location /ddt-test-work/repositories>\n'
+    if backend=='fsfs':
+        text+='DAV svn\nSVNParentPath "'+(area/'svn-test-work/repositories').as_posix()+'"\n'
+        text+='SVNAdvertiseV2Protocol On\nAuthzSVNAccessFile "'+(area/'svn-test-work/authz').as_posix()+'"\n'+auth
+    text+='DontDoThatConfigFile "'+ddt_config.as_posix()+'"\n</Location>\n'
     if tls:
         text+='LoadModule socache_shmcb_module modules/mod_socache_shmcb.so\nLoadModule ssl_module modules/mod_ssl.so\n'
         text+='SSLSessionCache none\nSSLEngine On\nSSLProtocol -all +TLSv1.2 +TLSv1.3\n'

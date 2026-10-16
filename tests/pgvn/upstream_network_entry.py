@@ -7,6 +7,7 @@ from pathlib import Path
 import configparser
 import hashlib
 import importlib
+import importlib.util
 import http.client
 import json
 import os
@@ -28,6 +29,10 @@ def main():
     assert sha(manifest_path)==config['manifest_sha256'];manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
     for name in ('upstream_network_entry.py','upstream_hook_bridge.py'):
         assert sha(ROOT/'tests/pgvn'/name)==manifest['sources']['tests/pgvn/'+name]
+    policy_source=ROOT/'tests/pgvn/upstream_network_policy.py'
+    assert sha(policy_source)==manifest['sources']['tests/pgvn/upstream_network_policy.py']
+    policy_spec=importlib.util.spec_from_file_location('pgvn_upstream_policy',policy_source)
+    policy_boundary=importlib.util.module_from_spec(policy_spec);policy_spec.loader.exec_module(policy_boundary)
     work=Path(config['work']).resolve();os.chdir(work)
     assert work.is_relative_to((ROOT/'runtime/pgvn/tests').resolve()) and configuration.is_relative_to(work)
     native=config['backend']=='pgvn';assert config['backend'] in ('pgvn','fsfs')
@@ -40,15 +45,17 @@ def main():
     verify_snapshot();cmdline=snapshot/'subversion/tests/cmdline'
     sys.path.insert(0,str(cmdline));import svntest
     main=svntest.main;actions=svntest.actions
-    results=[];events=work/'fixture-events.jsonl';repositories={};policy={};hook_paths={};purged=set()
+    results=[];events=work/'fixture-events.jsonl';repositories={};policy={};hook_paths={};purged=set();declared=set()
     registry_lock=threading.RLock()
     def event(action,**values):
         with events.open('a',encoding='utf-8') as output:output.write(json.dumps({'event':action,**values})+'\n')
     def full(path):return Path(path).resolve()
-    def admin(*args,expected=0):
+    def admin_process(*args):
         env=dict(os.environ,PGVN_DSN=f"host=127.0.0.1 port=16432 dbname={config['database']} user=pgvn_admin sslmode=disable")
-        result=subprocess.run([str(ROOT/'runtime/pgvn/bin/pgvnadmin.exe'),*map(str,args),'--json'],
+        return subprocess.run([str(ROOT/'runtime/pgvn/bin/pgvnadmin.exe'),*map(str,args),'--json'],
             cwd=work,env=env,capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW,timeout=30)
+    def admin(*args,expected=0):
+        result=admin_process(*args)
         if result.returncode!=expected:raise svntest.Failure('Native fixture admin failed: '+result.stderr.decode('utf-8','replace'))
         return json.loads(result.stdout) if result.stdout else None
     def bind_tools():
@@ -162,14 +169,29 @@ def main():
         authz.write_text(state['authz'],encoding='utf-8');hooks.write_text(json.dumps(state['hooks']),encoding='utf-8')
         settings.write_text(json.dumps(state['settings']),encoding='utf-8')
         current=admin('repo','show','id:'+identifier)
-        admin('config','publish','id:'+identifier,'--expected-generation',current['generation'],
-              '--authz',authz,'--hooks',hooks,'--settings',settings)
+        translated,mapping=policy_boundary.namespace(state['authz'],path,current['name'])
+        native_authz=folder/'authz.native';native_authz.write_text(translated,encoding='utf-8')
+        group_file=folder/'groups';groups=None
+        if state.get('separate_groups') and group_file.exists():groups=group_file.read_text(encoding='utf-8')
+        arguments=['config','publish','id:'+identifier,'--expected-generation',current['generation'],
+                   '--authz',native_authz,'--hooks',hooks,'--settings',settings]
+        if groups is not None:arguments+=['--groups',group_file]
+        result=admin_process(*arguments)
+        if result.returncode:
+            if not policy_boundary.authz_rejection(result):
+                raise svntest.Failure('Native policy publication failed: '+result.stderr.decode('utf-8','replace'))
+            injected=policy_boundary.invalid_file(config,manifest,work,current,translated,groups,state['hooks'],state['settings'])
+            event('invalid-authz-file',**injected)
+        event('authz-namespace',repository_id=identifier,**mapping)
         event('publish',repository_id=identifier)
     def post_create(path,minor_version=None):
         path=full(path);refresh_registry();assert path in repositories and not path.exists()
         policy[path]={'authz':'[/]\n* = rw\n','hooks':{},'settings':{
             'identity_domain':config['identity_domain'],'anonymous_access':'read','authenticated_access':'write'}}
         publish(path)
+        if config['url'].startswith(('http:','https:')) and path.parent==work/'svn-test-work/repositories':
+            current=admin('repo','show','id:'+repositories[path])
+            event('ddt-route',**policy_boundary.route_alias(config,manifest,work,current,path))
     def create(path,minor_version=None):
         if minor_version is not None and minor_version!=14:
             raise svntest.Failure('Native fixture has no historical per-repository disk format: '+str(minor_version))
@@ -215,9 +237,27 @@ def main():
     def authz(sbox,*args,**kwargs):
         original_authz(sbox,*args,**kwargs);repo=full(sbox.repo_dir)
         policy[repo]['authz']=Path(sbox.authz_file).read_text(encoding='utf-8');publish(repo)
+    original_conf_path=main.get_svnserve_conf_file_path
+    def conf_path(repo):
+        refresh_registry();path=full(repo)
+        return str(policy_paths(path)/'svnserve.conf') if path in repositories else original_conf_path(repo)
+    original_restrictive=main.write_restrictive_svnserve_conf
+    def restrictive(repo,anon_access='none',separate_groups_db=False):
+        result=original_restrictive(repo,anon_access,separate_groups_db)
+        path=full(repo)
+        if config['url'].startswith('svn:'):
+            policy[path]['settings']['anonymous_access']=anon_access
+            policy[path]['settings']['authenticated_access']='write'
+        policy[path]['separate_groups']=separate_groups_db
+        publish(path);event('svnserve-config',repository_id=repositories[path],anonymous_access=anon_access,
+                            separate_groups=separate_groups_db,path=conf_path(repo))
+        return result
+    original_groups=main.write_groups_file
+    def groups(sbox,*args,**kwargs):
+        result=original_groups(sbox,*args,**kwargs);publish(sbox.repo_dir);return result
     original_set_name=svntest.sandbox.Sandbox._set_name
     def set_name(sbox,*args,**kwargs):
-        original_set_name(sbox,*args,**kwargs);folder=policy_paths(sbox.repo_dir)
+        original_set_name(sbox,*args,**kwargs);declared.add(full(sbox.repo_dir));folder=policy_paths(sbox.repo_dir)
         sbox.authz_file=str(folder/'authz');sbox.groups_file=str(folder/'groups')
     if native:
         os.environ.update(PGVN_UPSTREAM_DATABASE=config['database'],PGVN_UPSTREAM_ROOT=work.as_posix(),
@@ -225,6 +265,8 @@ def main():
             PGVN_DSN=f"host=127.0.0.1 port=16432 dbname={config['database']} user=pgvn_admin sslmode=disable")
         main.create_repos=create;main._post_create_repos=post_create
         main.safe_rmtree=remove;main.chmod_tree=chmod;main.create_python_hook_script=hook
+        main.get_svnserve_conf_file_path=conf_path;main.write_restrictive_svnserve_conf=restrictive
+        main.write_groups_file=groups
         main.write_authz_file=authz;svntest.sandbox.Sandbox._set_name=set_name
         for kind in ('start-commit','pre-commit','post-commit','pre-revprop-change','pre-lock','pre-unlock'):
             setattr(main,'get_'+kind.replace('-','_')+'_hook_path',lambda repo,k=kind:hook_path(repo,k))
@@ -236,6 +278,15 @@ def main():
     # Upstream's default arglist is captured when its module is imported.
     _,selection=main.parse_options(sys.argv[1:])
     assert not main.options.development and not main.options.list_tests and not main.options.parallel
+    if native:
+        import_source=ROOT/'tests/pgvn/upstream_network_import.py'
+        assert sha(import_source)==manifest['sources']['tests/pgvn/upstream_network_import.py']
+        import_spec=importlib.util.spec_from_file_location('pgvn_upstream_import',import_source)
+        import_boundary=importlib.util.module_from_spec(import_spec);import_spec.loader.exec_module(import_boundary)
+        upgrades=importlib.import_module('upgrade_tests')
+        def legacy_repository(sbox,tar_filename,dir=None):
+            return import_boundary.legacy_repository(sbox,tar_filename,dir,config,snapshot,marker,create,remove,event)
+        upgrades.replace_sbox_repo_with_tarfile=legacy_repository
     module=importlib.import_module(config['suite']);before=list(module.test_list)
     assert all(0<i<len(before) for i in config['cases'])
     status='FAIL';error=None;exit_code=1
@@ -244,7 +295,7 @@ def main():
         if native:refresh_registry()
         assert module.test_list==before,'Original test_list changed'
         assert sorted(r['id'] for r in results)==sorted(config['cases']),'Missing or repeated upstream outcomes'
-        assert all(not path.exists() for path in repositories),'Native alias materialized'
+        assert all(not path.exists() for path in set(repositories)|declared),'Native alias materialized'
         verify_snapshot();status='PASS' if exit_code==0 else 'FAIL'
     except BaseException:error=traceback.format_exc();print(error,file=sys.stderr,flush=True)
     imported={name:Path(value.__file__).resolve().relative_to(snapshot).as_posix()
@@ -254,9 +305,16 @@ def main():
             'suite':config['suite'],'selected':config['cases'],'imported_upstream_modules':imported,
             'original_test_list_preserved':module.test_list==before,
             'native_aliases':{str(k):v for k,v in repositories.items()},
+            'declared_native_aliases':sorted(map(str,declared)),
+            'native_aliases_absent':all(not path.exists() for path in set(repositories)|declared),
             'fixture_boundaries':['tool paths','create/configure repository','logical repository cleanup/chmod',
                                   'hook Python body argv/stdin translation','Sandbox policy file locations','authz publication',
-                                  'local format-file upload sample redirected to byte-identical stock-control data'] if native else ['helper executable paths'],
+                                  'local format-file upload sample redirected to byte-identical stock-control data',
+                                  'svnserve config/groups files relocated to global policy and versioned settings',
+                                  'exact authz repository namespace mapped to canonical ID-fixture name',
+                                  'admin-rejected malformed authz appended as non-superuser fixture file state',
+                                  'historical FSFS archive imported with stock dump and native load, preserving UUID/revisions',
+                                  'DDT Apache parent alias represented by a guarded second catalog route'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',
                                   'Direct physical repository file operations and historical disk formats need case applicability review.'] if native else []}
     if config.get('tls_authority'):
