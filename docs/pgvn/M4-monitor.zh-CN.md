@@ -163,3 +163,11 @@ M5 后续迭代已交付“夜航控制台”：默认跟随系统的明暗主�
 ![暗色监控概览](images/monitor-night-ops-dark.jpg)
 
 ![亮色监控概览](images/monitor-night-ops-light.jpg)
+
+## 多个 DAV 实例的键盘焦点
+
+节点页可同时展开多个 DAV 工作进程的方法和错误表，表格区域可用键盘滚动。自动刷新按完整实例 ID 恢复焦点、展开和滚动位置；原实例失联且内部表格消失时，焦点回到主要内容区域。令牌撤销或过期后，页面清空业务数据并把焦点交回令牌输入。
+
+复验时使用 `python tests/pgvn/monitor_browser_fixture.py --dav --dav-peer`，两组详情展开后聚焦第二个实例的内表，保持页面可见并确认采样时间改变；不能把隐藏页、手动点击后的焦点或未覆盖焦点的截图计为通过。若需要额外签发测试令牌，需按已批准的测试凭据范围执行。本轮可核对记录见 [多实例焦点最终验收](evidence/m4-monitor-focus-acceptance.json)。
+
+执行完整 M4/M5 门禁前，还需按 [M3 测试准备](M3-serve.zh-CN.md) 设置 `PGVN_TEST_JAVA_HOME` 和 `PGVN_TEST_SVNKIT_PLUGINS`，供原版 SVNKit 客户端验证使用；仅配置本次测试进程的环境变量即可。
