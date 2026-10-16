@@ -36,7 +36,7 @@ static svn_error_t *path_argument(const char **path,const char *value,apr_pool_t
 {
     if(!value || !*value) value="/";
     *path=value[0]=='/' ? value : apr_pstrcat(pool,"/",value,NULL);
-    return pgvn_validate_path(*path);
+    return pgvn_validate_fspath(*path);
 }
 
 static svn_error_t *get_root(svn_fs_root_t **root,svn_fs_txn_t **txn,svn_revnum_t *revision,

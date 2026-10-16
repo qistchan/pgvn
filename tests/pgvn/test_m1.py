@@ -102,6 +102,13 @@ def creation_and_routing():
     assert json.loads(probe("resolve", prefix + "/nested/file"))["id"] == nested["id"]
     binding = json.loads(probe("resolve", prefix + "/nestedness/file"))
     assert binding["id"] == repository["id"] and binding["path"] == "/nestedness/file"
+    literal = json.loads(probe("resolve", prefix + "/literal\\component"))
+    assert literal["id"] == repository["id"] and literal["path"] == "/literal\\component"
+    # Backslashes are legal repository name characters, but do not define
+    # route separators or permit a differently spelled registered route.
+    invalid_name = "backslash-route-" + uuid.uuid4().hex[:10]
+    probe("create", invalid_name, prefix + "/bad\\route", role="pgvn_admin", ok=False)
+    assert fixture.sql(f"SELECT count(*) FROM pgvn.repositories WHERE canonical_name='{invalid_name}'") == "0"
     fixture.sql(f"UPDATE pgvn.repositories SET enabled=false WHERE repository_id='{nested['id']}'")
     probe("resolve", prefix + "/nested/file", ok=False)
     # Disabled longest match must not fall through to its parent repository.
@@ -113,6 +120,7 @@ def creation_and_routing():
     assert json.loads(probe("resolve", "/" + TEST_ID + "/cafe\u0301"))["id"] == nfd["id"]
     return {"storage_id_distinct_from_uuid": True, "config_files": 0,
             "longest_segment_routing": True, "disabled_route_does_not_fall_through": True,
+            "literal_backslash_nodes_and_strict_routes": True,
             "case_and_unicode_forms_distinct": True}
 
 

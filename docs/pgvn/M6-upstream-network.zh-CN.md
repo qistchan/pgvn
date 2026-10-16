@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：固定输入、静态目录与源码快照已建立；原版 CLI 命令体的 ID 绑定差分组件通过。PGVN-601 保持未完成，上游 Python 用例执行数为 **0**。
+当前阶段：原版 SVN 网络入口已运行，完整基础套件与一个带到期时间的锁用例在 PgVN/FSFS 两侧结果一致。每侧 67 PASS、1 个原有 XFAIL、4 个原有 SKIP；PGVN-601 仍未完成，HTTP/HTTPS、其余套件和完整适用性矩阵待推进。
 
 ## 可复现入口
 
@@ -41,7 +41,43 @@ python tests/pgvn/test_m6_network_tools.py --execute-plan <plan.json路径>
 
 首轮 `m6-network-tools-299c93399a2d` 在测试适配器中访问未填充的路由字段而崩溃；已改为查询精确路由并核对仓库 ID，FAIL 原样保留。五个生产二进制摘要与网页验收基线相同。固定摘要、结果与边界见 [CLI 组件证据](evidence/m6-network-tools.json)。
 
-本结果仅覆盖上述命令。hotcopy、freeze、pack、recover 的适配代码尚未由此组件验收；recover 等待锁/通知语义待补，旧磁盘格式升级明确不支持。62 个原版 Python 套件尚未执行，SVN/HTTP/HTTPS 适用性和故障/性能出口继续推进。
+本结果仅覆盖上述命令。hotcopy、freeze、pack、recover 的适配代码尚未由此组件验收；recover 等待锁/通知语义待补，旧磁盘格式升级明确不支持。62 个原版 Python 套件的完整协议矩阵、故障/性能出口继续推进。
+
+## SVN 网络入口与本轮结果
+
+```powershell
+python scripts/pgvn/build_upstream_network.py
+python scripts/pgvn/build_upstream_helpers.py
+python tests/pgvn/test_m6_network.py --plan --suite basic_tests --cases 1:71
+python tests/pgvn/test_m6_network.py --execute-plan <上一条生成的plan.json路径>
+python tests/pgvn/test_m6_network.py --plan --suite lock_tests --cases 53
+python tests/pgvn/test_m6_network.py --execute-plan <新的plan.json路径>
+```
+
+每个计划仅执行一次，冻结产品、入口、C 工具、私有 WC DLL、原版客户端及解释器摘要。验证原始归档后创建新源码快照，以 `-I -B` 导入；运行前后复核 234 个原始文件、无字节码缓存和原 `test_list`。用例函数、装饰器、预期输出均未改。入口强制串行，避免上游并行子入口绕过原生 fixture。
+
+先以原版 svnserve + FSFS 执行，再以 pgvnserve 执行相同选择。两侧只监听回环临时端口，使用 Job Object 管理自有进程；结束时确认任务内进程为 0。PgVN 仓库别名始终没有磁盘目录，创建、dump/load、策略发布、外部 Python hook 和清理均进入明确的 fixture 边界。常规工作副本、日志、全局 hook/策略文件仍为真实文件。
+
+原版基础用例 38 将本地仓库 `format` 当任意上传样本。原生工具调用边界只对 `svnmucc put` 的该输入改用全局 fixture 文件，字节来自已完成的 FSFS 对照中的同一文件并记录摘要；仓库 URL、目标名称、协议操作和断言不改，也不生成 PgVN 仓库目录。Hook 桥接执行原帮助函数提供的 Python 体，Windows `cmd_alternative` 尚未覆盖，后续套件须逐项验证。
+
+| 最终候选运行 | PgVN | 原版 FSFS |
+| --- | --- | --- |
+| `m6-network-8bbee1e5274c`，basic 1–71 | 66 PASS、1 XFAIL、4 SKIP | 66 PASS、1 XFAIL、4 SKIP |
+| `m6-network-769bbbc41c57`，lock 53 | 1 PASS | 1 PASS |
+
+XFAIL 为原用例 63；SKIP 为 52、67、70、71，均由原始装饰器/条件产生，没有新增排除。锁用例实际调用原版 lock-helper 的 ID 绑定入口，验证带到期时间的锁信息、工作副本状态、强制解锁和重锁。每侧报告 72 个结果，实际进入 68 个用例；CLI/辅助工具检查与重复尝试不累加为新的上游覆盖。
+
+## 本轮发现与修复
+
+首个完整基础运行 `m6-network-be6b9be8677f` 保留 FAIL：Windows 在 hook 读取期间短暂拒绝上下文文件替换，以及上述本地样本缺失。上下文改为内容未变化时不重写、完整文件替换并有限重试；同时记录样本重定向。
+
+随后 `m6-network-2a1cfc9b9714` 到达真实协议差异：合法节点名称中的反斜杠被路由注册校验拒绝。公共核心现在区分严格路由和逻辑库内路径；目录解析、路径授权及管理查询允许反斜杠字面字符，注册路由仍拒绝它，UTF-8、控制字符及 `/` 路径段约束保留。原用例 38 不经修改完整通过。
+
+`test_m6_catalog_paths.py --database <已有pgvn_m6_net_库>` 在核对所属计划、数据库所有者和真实集群目录后，只运行 M1 的建库/路由契约，不引导或重启集群。`m6-catalog-paths-6a2cf9cb566e` 通过：字面路径保留、非法路由没有部分创建、大小写/Unicode 区分，以及禁用最长路由不回退。原 M1 门禁同时补充相应回归断言。
+
+最终候选还重跑 CLI 差分 19 组、辅助工具 14 组、离线保护 9 组，全部通过。完整运行和组件原始记录、两次失败、当前源/产物摘要及 172 文件冻结基线见 [网络组件证据](evidence/m6-network-entry.json)。测试耗时为功能检查墙钟，不作为性能结论。
+
+这次共享核心修复改变了 pgvnserve、pgvnadmin 和 mod_dav_pgvn 的二进制摘要；网页三个资源未改。既有网页验收和 `m5-57cb4d03584a` 仍绑定旧产品，新候选尚需新的浏览器证据及完整 M5 回归，不能沿用为本次验收。M6 的剩余网络矩阵、维护语义、故障账本、主备隔离和性能，以及 M7 独立环境验收保持未完成。
 
 ## 后续适配边界
 
@@ -56,7 +92,7 @@ python tests/pgvn/test_m6_upstream_helpers.py
 
 `m6-upstream-helpers-b5b75e59dac7` 的 14 组本机检查通过，覆盖真实工作副本条目/目录树、写锁与 cleanup、不完整目录与 update、原子修订属性成功/冲突、FSFS 过期锁及原生保护拒绝。早期两个检查脚本的解析错误保留为 FAIL。私有 WC DLL 追加字节时，身份校验在执行测试之前拒绝，随后恢复原字节；原 SDK 未修改。
 
-lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解析为仓库 ID；FSFS 对照另构建不带该绑定的同一命令体。当前只验收原生入口的缺少连接保护拒绝，真实原生过期锁仍需网络 fixture 验证。扩展后的 CLI 另以新隔离库重跑 19 组差分及 9 组离线检查通过。固定摘要与范围见 [辅助工具证据](evidence/m6-upstream-helpers.json)。上游 Python 用例数仍为 0。
+lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解析为仓库 ID；FSFS 对照另构建不带该绑定的同一命令体。该前置组件只验收原生入口的缺少连接保护拒绝，实际原生锁随后在上文原用例 53 验证。扩展后的 CLI 另以新隔离库重跑 19 组差分及 9 组离线检查通过。该组件的固定摘要与范围见 [辅助工具证据](evidence/m6-upstream-helpers.json)，它自身不运行上游 Python 套件。
 
 | 上游位置（固定 1.14.5） | 观察 | 后续工作 |
 | --- | --- | --- |
@@ -67,4 +103,4 @@ lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解�
 
 仅替换 `run_svnadmin()` 无法覆盖建库帮助函数的直接调用。静态工具操作和 repo 路径提示只是语法线索，间接变量及运行时路径仍需实测，不据此自动跳过测试。
 
-接下来建立原生服务/管理 fixture，在导入测试模块之前绑定必要帮助函数；随后执行未经修改的原断言，按 SVN、HTTP、HTTPS 与 FSFS 对照记录结果和逐项适用性。当前旧 `tests/run_upstream.py`、`tests/upstream_entry.py`、`tests/upstream_http.py` 仍属于 PgFS 目录与 15432 配置，不作为 PgVN 执行入口。
+当前 SVN 入口已在导入用例前绑定服务/管理 fixture，后续扩展剩余帮助函数和 HTTP/HTTPS，并与 FSFS 对照记录逐项适用性。旧 `tests/run_upstream.py`、`tests/upstream_entry.py`、`tests/upstream_http.py` 仍属于 PgFS 目录与 15432 配置，不作为 PgVN 执行入口。

@@ -84,6 +84,7 @@ svn_error_t *pgvn_guard_publish(void *baton, PGconn *connection,
                               const char *txn, apr_pool_t *pool);
 svn_error_t *pgvn_guard_mutation(void *baton,PGconn *connection,const char *path,apr_pool_t *pool);
 svn_error_t *pgvn_validate_path(const char *path);
+svn_error_t *pgvn_validate_fspath(const char *path);
 svn_error_t *pgvn_validate_name(const char *name);
 const char *pgvn_new_uuid(apr_pool_t *pool);
 #endif

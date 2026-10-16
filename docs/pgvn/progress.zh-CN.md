@@ -124,3 +124,11 @@ SVNKit 中文仓库 URL 修改 revision 属性的重复编码失败已在未修�
 从固定源码构建五种原版 C 辅助工具和私有工作副本 DLL，保留 SDK 全部 305 个 WC 导出，标准客户端 DLL 未替换。14 组实际 FSFS/WC 检查通过；私有 DLL 篡改在测试执行前被拒绝并恢复，原检查脚本两次解析 FAIL 保留。扩展后的 CLI 19 组差分和 9 组离线检查重跑通过。
 
 这些是网络入口的前置组件，上游 Python 用例数仍为 0，PGVN-601 未完成。原生 lock-helper 的真实锁路径及原版断言的网络运行继续推进。范围见 [网络入口](M6-upstream-network.zh-CN.md)，摘要见 [辅助工具证据](evidence/m6-upstream-helpers.json)。
+
+## M6 原版 SVN 网络入口：基础套件与锁用例通过（2026-10-16）
+
+原版基础 1–71 与 lock 53 在独立 PgVN 和原版 svnserve + FSFS 上执行，原函数/断言/装饰器不改。最终每侧为 67 PASS、1 个原有 XFAIL、4 个原有 SKIP，未新增排除；仓库别名没有本地目录，测试 Job 内进程结束后均为 0。命令、适配边界和冻结证据见 [网络入口](M6-upstream-network.zh-CN.md) 与 [本轮记录](evidence/m6-network-entry.json)。
+
+本轮修复 hook 上下文的 Windows 文件发布竞态，并将旧用例的任意上传样本放入全局 fixture 目录。随后原用例发现反斜杠节点名被路由规则拒绝；核心已区分严格路由和逻辑路径，授权及管理查询同步支持字面反斜杠。M1 路由边界在已授权 M6 库通过，最终候选的 CLI 19 组、辅助工具 14 组、离线 9 组也通过。原始失败保留。
+
+pgvnserve、pgvnadmin 和 mod_dav_pgvn 产品已变化，网页资源未改；新的浏览器和完整 M5 回归尚待执行，旧验收不作为本构建结果。其余 SVN 套件、HTTP/HTTPS、完整适用性、故障域/确认账本及代表性性能继续推进，PGVN-601 与 M6/M7 均未完成。

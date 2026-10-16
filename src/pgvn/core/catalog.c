@@ -6,7 +6,7 @@
 #include "private/svn_utf_private.h"
 #include "pgfs_native.h"
 
-svn_error_t *pgvn_validate_path(const char *path)
+static svn_error_t *validate_path(const char *path,svn_boolean_t route)
 {
     if(!path || path[0]!='/' || strlen(path)>8192 || !svn_utf__is_valid(path,strlen(path)))
         return svn_error_create(SVN_ERR_FS_PATH_SYNTAX,NULL,"PgVN requires a canonical UTF-8 absolute route");
@@ -14,7 +14,7 @@ svn_error_t *pgvn_validate_path(const char *path)
         return svn_error_create(SVN_ERR_FS_PATH_SYNTAX,NULL,"PgVN route must not end with a separator");
     const char *segment=path+1;
     for(const unsigned char *p=(const unsigned char *)path;*p;++p) {
-        if(*p<32 || *p==127 || *p=='\\')
+        if(*p<32 || *p==127 || (route && *p=='\\'))
             return svn_error_create(SVN_ERR_FS_PATH_SYNTAX,NULL,"Invalid PgVN route character");
         if(*p=='/' && p!=(const unsigned char *)path) {
             apr_size_t size=(const char *)p-segment;
@@ -26,6 +26,19 @@ svn_error_t *pgvn_validate_path(const char *path)
     if(!strcmp(segment,".") || !strcmp(segment,".."))
         return svn_error_create(SVN_ERR_FS_PATH_SYNTAX,NULL,"Invalid PgVN route segment");
     return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_validate_path(const char *path)
+{
+    return validate_path(path,TRUE);
+}
+
+svn_error_t *pgvn_validate_fspath(const char *path)
+{
+    /* Repository node names use Subversion's '/' separators on every OS.
+     * A backslash is a literal name character, never a Windows separator.
+     * Registered routes keep their stricter spelling through the other API. */
+    return validate_path(path,FALSE);
 }
 
 static pgvn_binding *binding_from_result(PGresult *result,apr_pool_t *pool)
@@ -42,7 +55,7 @@ svn_error_t *pgvn_catalog_resolve(pgvn_binding **output,pgvn_context *context,
     const char *path,apr_pool_t *pool)
 {
     *output=NULL;
-    SVN_ERR(pgvn_validate_path(path));
+    SVN_ERR(pgvn_validate_fspath(path));
     const char *values[]={path};
     PGresult *result;
     SVN_ERR(pgvn_control_query(&result,context,

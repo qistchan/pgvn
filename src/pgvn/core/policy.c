@@ -64,7 +64,7 @@ svn_error_t *pgvn_policy_acquire(pgvn_policy **output,pgvn_context *context,
 svn_error_t *pgvn_policy_check(svn_boolean_t *allowed,const pgvn_policy *policy,
     const char *user,const char *path,svn_repos_authz_access_t required,apr_pool_t *pool)
 {
-    SVN_ERR(pgvn_validate_path(path));
+    SVN_ERR(pgvn_validate_fspath(path));
     return svn_repos_authz_check_access(policy->authz,policy->canonical_name,path,user,required,allowed,pool);
 }
 

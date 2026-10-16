@@ -1,0 +1,535 @@
+{
+  "component": "M6 original upstream SVN basic suite and timed lock",
+  "status": "SVN_BASIC_LOCK_PASS_FRESH_M5_PENDING",
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "created_at": "2026-10-16T04:17:03.230678+00:00",
+  "authorized_scope": "127.0.0.1:16432 dedicated cluster, pgvn_m6_net_ isolated databases/owners/accounts/keys and repository runtime; loopback test processes stopped; DBs retained.",
+  "final_runs": {
+    "basic": {
+      "test_id": "m6-network-8bbee1e5274c",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 66,
+          "SKIP": 4,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 66,
+          "SKIP": 4,
+          "XFAIL": 1
+        }
+      },
+      "database": "pgvn_m6_net_8bbee1e5274c",
+      "elapsed_seconds": 183.59399999998277,
+      "upstream_python_tests_executed": 134,
+      "cleanup": [
+        {
+          "pid": 63664,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 43536,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 2428,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 20784,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "timed_lock": {
+      "test_id": "m6-network-769bbbc41c57",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "database": "pgvn_m6_net_769bbbc41c57",
+      "elapsed_seconds": 11.562000000005355,
+      "upstream_python_tests_executed": 2,
+      "cleanup": [
+        {
+          "pid": 32324,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 39492,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 58872,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 31220,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    }
+  },
+  "counts_by_backend": {
+    "pgvn": {
+      "PASS": 67,
+      "SKIP": 4,
+      "XFAIL": 1
+    },
+    "fsfs": {
+      "PASS": 67,
+      "SKIP": 4,
+      "XFAIL": 1
+    }
+  },
+  "reported_upstream_case_outcomes_per_backend": 72,
+  "executed_upstream_cases_per_backend": 68,
+  "count_semantics": "Each backend: basic 1-71 plus lock 53. Existing XFAIL executes; four original SKIPs do not. Components and repeated attempts are not added to upstream coverage.",
+  "original_modes_preserved": [
+    {
+      "id": 52,
+      "name": "meta_correct_library_being_used",
+      "result": "SKIP"
+    },
+    {
+      "id": 63,
+      "name": "peg_rev_on_non_existent_wc_path",
+      "result": "XFAIL"
+    },
+    {
+      "id": 67,
+      "name": "filtered_ls",
+      "result": "SKIP"
+    },
+    {
+      "id": 70,
+      "name": "filtered_ls_top_level_path",
+      "result": "SKIP"
+    },
+    {
+      "id": 71,
+      "name": "argv_with_best_fit_chars",
+      "result": "SKIP"
+    }
+  ],
+  "original_assertions_and_decorators_unchanged": true,
+  "original_test_lists_preserved": true,
+  "native_and_fsfs_outcomes_identical": true,
+  "source_snapshot": {
+    "root": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-8bbee1e5274c",
+    "cmdline": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-8bbee1e5274c\\subversion\\tests\\cmdline",
+    "files": 234,
+    "manifest_sha256": "f669312b3eedd01830e65373cc1d1b209e1eced09eb0549d85439c40c4d2b586",
+    "creation": {
+      "upstream_modules_imported": false,
+      "bytecode_files": 0
+    }
+  },
+  "snapshot_metadata_note": "creation.upstream_modules_imported describes snapshot construction only; actual imported modules are recorded independently in each entry-result.",
+  "actual_upstream_imports_by_run": {
+    "basic": {
+      "fsfs": {
+        "svntest.testcase": "subversion/tests/cmdline/svntest/testcase.py",
+        "svntest.wc": "subversion/tests/cmdline/svntest/wc.py",
+        "svntest.verify": "subversion/tests/cmdline/svntest/verify.py",
+        "svntest.tree": "subversion/tests/cmdline/svntest/tree.py",
+        "svntest.sandbox": "subversion/tests/cmdline/svntest/sandbox.py",
+        "svntest.main": "subversion/tests/cmdline/svntest/main.py",
+        "svntest.actions": "subversion/tests/cmdline/svntest/actions.py",
+        "svntest.factory": "subversion/tests/cmdline/svntest/factory.py",
+        "svntest": "subversion/tests/cmdline/svntest/__init__.py",
+        "basic_tests": "subversion/tests/cmdline/basic_tests.py"
+      },
+      "pgvn": {
+        "svntest.testcase": "subversion/tests/cmdline/svntest/testcase.py",
+        "svntest.wc": "subversion/tests/cmdline/svntest/wc.py",
+        "svntest.verify": "subversion/tests/cmdline/svntest/verify.py",
+        "svntest.tree": "subversion/tests/cmdline/svntest/tree.py",
+        "svntest.sandbox": "subversion/tests/cmdline/svntest/sandbox.py",
+        "svntest.main": "subversion/tests/cmdline/svntest/main.py",
+        "svntest.actions": "subversion/tests/cmdline/svntest/actions.py",
+        "svntest.factory": "subversion/tests/cmdline/svntest/factory.py",
+        "svntest": "subversion/tests/cmdline/svntest/__init__.py",
+        "basic_tests": "subversion/tests/cmdline/basic_tests.py"
+      }
+    },
+    "timed_lock": {
+      "fsfs": {
+        "svntest.testcase": "subversion/tests/cmdline/svntest/testcase.py",
+        "svntest.wc": "subversion/tests/cmdline/svntest/wc.py",
+        "svntest.verify": "subversion/tests/cmdline/svntest/verify.py",
+        "svntest.tree": "subversion/tests/cmdline/svntest/tree.py",
+        "svntest.sandbox": "subversion/tests/cmdline/svntest/sandbox.py",
+        "svntest.main": "subversion/tests/cmdline/svntest/main.py",
+        "svntest.actions": "subversion/tests/cmdline/svntest/actions.py",
+        "svntest.factory": "subversion/tests/cmdline/svntest/factory.py",
+        "svntest": "subversion/tests/cmdline/svntest/__init__.py",
+        "lock_tests": "subversion/tests/cmdline/lock_tests.py"
+      },
+      "pgvn": {
+        "svntest.testcase": "subversion/tests/cmdline/svntest/testcase.py",
+        "svntest.wc": "subversion/tests/cmdline/svntest/wc.py",
+        "svntest.verify": "subversion/tests/cmdline/svntest/verify.py",
+        "svntest.tree": "subversion/tests/cmdline/svntest/tree.py",
+        "svntest.sandbox": "subversion/tests/cmdline/svntest/sandbox.py",
+        "svntest.main": "subversion/tests/cmdline/svntest/main.py",
+        "svntest.actions": "subversion/tests/cmdline/svntest/actions.py",
+        "svntest.factory": "subversion/tests/cmdline/svntest/factory.py",
+        "svntest": "subversion/tests/cmdline/svntest/__init__.py",
+        "lock_tests": "subversion/tests/cmdline/lock_tests.py"
+      }
+    }
+  },
+  "fixture_boundaries": [
+    "tool paths",
+    "create/configure repository",
+    "logical repository cleanup/chmod",
+    "hook Python body argv/stdin translation",
+    "Sandbox policy file locations",
+    "authz publication",
+    "local format-file upload sample redirected to byte-identical stock-control data"
+  ],
+  "native_aliases_verified_absent": {
+    "basic": 50,
+    "timed_lock": 3
+  },
+  "sample_input": "For svnmucc put only, a local alias/format sample is replaced with an external fixture containing identical bytes from the completed stock FSFS control; URL/target/operations/assertions are unchanged.",
+  "preserved_failures": {
+    "first_full": {
+      "test_id": "m6-network-be6b9be8677f",
+      "status": "FAIL",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 66,
+          "SKIP": 4,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 64,
+          "FAIL": 2,
+          "SKIP": 4,
+          "XFAIL": 1
+        }
+      },
+      "database": "pgvn_m6_net_be6b9be8677f",
+      "elapsed_seconds": 188.65700000000652,
+      "upstream_python_tests_executed": 134,
+      "cleanup": [
+        {
+          "pid": 42492,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 64776,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 37884,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 46492,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "causes": [
+        "Windows transient sharing denial while replacing hook context.",
+        "Local format file used as arbitrary upload data."
+      ]
+    },
+    "fixture_fixed": {
+      "test_id": "m6-network-2a1cfc9b9714",
+      "status": "FAIL",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 1,
+          "FAIL": 1
+        }
+      },
+      "database": "pgvn_m6_net_2a1cfc9b9714",
+      "elapsed_seconds": 22.155999999988126,
+      "upstream_python_tests_executed": 4,
+      "cleanup": [
+        {
+          "pid": 37416,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 52836,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 58244,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 51472,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ],
+      "cause": "Real route validator incorrectly rejected literal backslash node names; original basic test 38 failed after the data fixture was repaired."
+    }
+  },
+  "core_fix": {
+    "sources": {
+      "src/pgvn/core/catalog.c": "24c5b1ee07e361b5d8a901d20f3aae49564b332d5672c28f71f0413cd32fdf57",
+      "src/pgvn/core/internal.h": "d4733362ffa4efa6d41f2b0fae8636562e22665a1996046723488cffd7785605",
+      "src/pgvn/core/policy.c": "36968b3f729a99d336e9d3c087e4cf6d28c4722e7df2e0d3e920b0cf78465500",
+      "src/pgvn/admin/history.c": "3b230012aec9b5ac309146bdedcc4c3caa4a0d9cfd38e5d7c7fea4f31ccd3056",
+      "tests/pgvn/test_m1.py": "3b399810973a4621d942d994c000ea7413d264974403e05a3fac4a3d882196c3"
+    },
+    "behavior": "Strict route registration remains unchanged; logical repository path resolution, authorization and admin history accept literal backslashes with UTF-8/control/forward-slash segment validation retained.",
+    "targeted_pass": {
+      "test_id": "m6-network-8c88704406ea",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "database": "pgvn_m6_net_8c88704406ea",
+      "elapsed_seconds": 21.40700000000652,
+      "upstream_python_tests_executed": 4,
+      "cleanup": [
+        {
+          "pid": 26704,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 56896,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 66168,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57964,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "catalog_contract": {
+      "test_id": "m6-catalog-paths-6a2cf9cb566e",
+      "status": "PASS",
+      "database": "pgvn_m6_net_8c88704406ea",
+      "details": {
+        "storage_id_distinct_from_uuid": true,
+        "config_files": 0,
+        "longest_segment_routing": true,
+        "disabled_route_does_not_fall_through": true,
+        "literal_backslash_nodes_and_strict_routes": true,
+        "case_and_unicode_forms_distinct": true
+      }
+    }
+  },
+  "current_components": {
+    "cli": {
+      "test_id": "m6-network-tools-186b4ffb5fbb",
+      "checks": [
+        "ID create without local repository shell",
+        "original load and verify",
+        "stock FSFS comparison: youngest",
+        "stock FSFS comparison: uuid",
+        "stock FSFS comparison: tree",
+        "stock FSFS comparison: tree -r 1",
+        "stock FSFS comparison: changed -r 2",
+        "stock FSFS comparison: dirs-changed -r 2",
+        "stock FSFS comparison: info -r 2",
+        "stock FSFS comparison: author -r 2",
+        "stock FSFS comparison: date -r 2",
+        "stock FSFS comparison: log -r 2",
+        "stock FSFS comparison: filesize A/blob.bin",
+        "stock FSFS comparison: cat A/blob.bin",
+        "stock FSFS comparison: propget test:property A",
+        "stock FSFS comparison: proplist --verbose A",
+        "stock FSFS comparison: history A/readme.txt",
+        "stock FSFS comparison: diff -r 2",
+        "native dump restored to independently verified stock FSFS"
+      ],
+      "status": "PASS"
+    },
+    "helpers": {
+      "test_id": "m6-upstream-helpers-2dc58e1af364",
+      "checks": [
+        "entries-dump real usage branch",
+        "lock-helper real usage branch",
+        "lock-helper-fsfs real usage branch",
+        "atomic-ra-revprop-change real usage branch",
+        "wc-lock-tester real usage branch",
+        "wc-incomplete-tester real usage branch",
+        "entries-dump --entries reads stock working copy",
+        "entries-dump --tree-dump reads stock working copy",
+        "entries-dump subdirectories",
+        "WC helper creates real write lock and stock cleanup releases it",
+        "WC incomplete marker and stock update repair",
+        "atomic revision property helper success and failed compare leave expected value",
+        "original FSFS lock helper creates real expiring lock",
+        "native lock helper rejects missing database guard"
+      ],
+      "status": "PASS"
+    },
+    "offline": {
+      "test_id": "m6-network-tools-offline-d8f037ed3ac9",
+      "checks": [
+        "svnadmin original help/version",
+        "svnlook original help/version",
+        "missing guard rejected before connection",
+        "host rejected before connection",
+        "port rejected before connection",
+        "database rejected before connection",
+        "role rejected before connection",
+        "hostaddr rejected before connection",
+        "service rejected before connection"
+      ],
+      "status": "PASS"
+    }
+  },
+  "build_manifest_sha256": "937534b971dd562a12fb2aca3e1089983971656912956627b74d426317ccf075",
+  "production_products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "5b20529edbcda68494b89967219b186b8031e4be616e8d572bd9bb3e7a29509b",
+    "runtime/pgvn/bin/pgvnadmin.exe": "5a5a5ce3f3860c77601feba947c0aa6bd40daa89e43a98430406d7e2bc417ed7",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "cef59b67b3754074100ba90803348b9a732a61e5b45fd72cd51297b03987230d",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "changed_production_products": {
+    "runtime/pgvn/bin/pgvnserve.exe": {
+      "before": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+      "after": "5b20529edbcda68494b89967219b186b8031e4be616e8d572bd9bb3e7a29509b"
+    },
+    "runtime/pgvn/bin/pgvnadmin.exe": {
+      "before": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+      "after": "5a5a5ce3f3860c77601feba947c0aa6bd40daa89e43a98430406d7e2bc417ed7"
+    },
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": {
+      "before": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+      "after": "cef59b67b3754074100ba90803348b9a732a61e5b45fd72cd51297b03987230d"
+    }
+  },
+  "unchanged_web_assets": {
+    "web/pgvn-monitor/index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+    "web/pgvn-monitor/monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+    "web/pgvn-monitor/monitor.js": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5"
+  },
+  "current_build_full_m5": "PENDING: browser records bind pgvnserve/module bytes, so previous PASS records cannot accept these new products.",
+  "browser_gate_source_rules": [
+    "tests/pgvn/test_m4.py: browser_evidence requires matching pgvnserve_sha256.",
+    "tests/pgvn/test_m5.py: browser requires matching pgvnserve, host and module hashes."
+  ],
+  "frozen_baseline": {
+    "path": "runtime/pgvn/baselines/m6-svn-basic-final-8bbee1e5274c",
+    "index_sha256": "9d1968503bda0af51a3a7c2a12275efbe770a794c0822a5af5b2b03fcae12ea6",
+    "files": 172
+  },
+  "previous_baseline": {
+    "path": "runtime/pgvn/baselines/m6-network-entry-2f8699bb4547",
+    "index_sha256": "9bcc4e09f3c3206c2a9f1443bb2be489be95cdbc81af24d235bcf15576f36bb7",
+    "scope": "Initial 12 basic and one lock cases; original products and fixture version retained."
+  },
+  "cleanup": {
+    "all_recorded_jobs_empty": true,
+    "additional_process_inventory_found_no_run_processes": true,
+    "monitor_tokens_created": 0,
+    "temporary_windows_services_created": 0,
+    "isolated_databases_roles_data_retained": true
+  },
+  "pending": [
+    "Fresh browser evidence and complete M5 on these product bytes.",
+    "Remaining original suites and full SVN/HTTP/HTTPS applicability matrix; no automatic exclusions generated.",
+    "Native hook bridge executes supplied Python bodies; Windows cmd_alternative is not exercised.",
+    "Fixture maintenance semantics beyond the accepted CLI/lock operations.",
+    "M6 confirmed-commit/fault/standby/fencing and representative performance.",
+    "M7 independent Windows/OS-restart/Polarion validation."
+  ],
+  "raw_reports": {
+    "basic": {
+      "path": "artifacts/pgvn/tests/m6-network-8bbee1e5274c.json",
+      "sha256": "ff4de89d8944f26a99351352385e5bea2311023370b13b617040f9452c9d7609",
+      "status": "PASS"
+    },
+    "timed_lock": {
+      "path": "artifacts/pgvn/tests/m6-network-769bbbc41c57.json",
+      "sha256": "41a570e59210f63c0886d3db481771700ae9c021d717f1e9bcdb6fb1c18a9086",
+      "status": "PASS"
+    },
+    "catalog": {
+      "path": "artifacts/pgvn/tests/m6-catalog-paths-6a2cf9cb566e.json",
+      "sha256": "f8a7b7f00e459d91aa7e0023bdfb68c8e58e9eef586a5fc7950e41ce8e528a9a",
+      "status": "PASS"
+    },
+    "cli": {
+      "path": "artifacts/pgvn/tests/m6-network-tools-186b4ffb5fbb.json",
+      "sha256": "adb9f8da2b88a5a08870010c768d358f622c3597c330dba7070758457a5cd11e",
+      "status": "PASS"
+    },
+    "helpers": {
+      "path": "artifacts/pgvn/tests/m6-upstream-helpers-2dc58e1af364.json",
+      "sha256": "478fe526a650adf76067ad1bfb500220e0efeab310f937a7cf2f7b57019891b1",
+      "status": "PASS"
+    },
+    "offline": {
+      "path": "artifacts/pgvn/tests/m6-network-tools-offline-d8f037ed3ac9.json",
+      "sha256": "4ee723d459f52b8c6c3f5c00945e660712c84b193314f9d0c8d08faa2cef2162",
+      "status": "PASS"
+    },
+    "first_full_failure": {
+      "path": "artifacts/pgvn/tests/m6-network-be6b9be8677f.json",
+      "sha256": "ced8705d7648b9c2b59ff3dd53127598fb8621989f9de4f95996cabdf4456ef2",
+      "status": "FAIL"
+    },
+    "fixture_fixed_failure": {
+      "path": "artifacts/pgvn/tests/m6-network-2a1cfc9b9714.json",
+      "sha256": "7c40a4695923e42b03bdb1bf6d2fa80fc7995ea4d02af90be240b3ac22454474",
+      "status": "FAIL"
+    },
+    "targeted_core_fix": {
+      "path": "artifacts/pgvn/tests/m6-network-8c88704406ea.json",
+      "sha256": "af8bfdad7d88b00620e804dcf4304120b093c262f6b92d0527cccb9582bc1345",
+      "status": "PASS"
+    },
+    "initial_basic_subset": {
+      "path": "artifacts/pgvn/tests/m6-network-2f8699bb4547.json",
+      "sha256": "64a99a927a5b43fd92a9341acbf54b28300815008063b1b03cd225f8f715de34",
+      "status": "PASS"
+    },
+    "initial_timed_lock": {
+      "path": "artifacts/pgvn/tests/m6-network-555633207fc4.json",
+      "sha256": "57de8601b15b8c71d4c5d2901ccb028b2b3364bcb9362dcc52a7acadd695a496",
+      "status": "PASS"
+    }
+  }
+}
