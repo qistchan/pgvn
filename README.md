@@ -6,20 +6,20 @@
 
 A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, centralized repository administration and an embedded monitoring console.
 
-![Status: experimental](https://img.shields.io/badge/status-experimental-orange)
-![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4)
-![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9)
-![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1)
+[![Status: experimental](https://img.shields.io/badge/status-experimental-orange?style=flat-square)](#project-status)
+[![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#quick-start)
+[![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#prerequisites)
+[![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#prerequisites)
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Features](#features) · [Web console](#web-console) · [Architecture](#architecture) · [Deploy](#quick-start) · [Usage](#use-pgvn) · [Docs](#documentation)
+[Features](#features) · [Web console](#web-console) · [Architecture](#architecture) · [Deploy](#quick-start) · [Usage](#use-pgvn) · [Build](#build-from-source) · [Status](#project-status) · [Docs](#documentation)
 
 </div>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/pgvn/images/monitor-night-ops-dark.jpg">
-  <source media="(prefers-color-scheme: light)" srcset="docs/pgvn/images/monitor-night-ops-light.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/pgvn/images/m6-copy-prop-overview.jpg">
   <img alt="PgVN console: service health, database sampling, online nodes and request trends" src="docs/pgvn/images/monitor-night-ops-dark.jpg" width="1280">
 </picture>
 
@@ -54,13 +54,13 @@ The console is embedded in `pgvnserve.exe`; running it requires no Node.js, Pyth
 <details>
 <summary>Light theme and mobile node details</summary>
 
-![PgVN light-theme operations console](docs/pgvn/images/monitor-night-ops-light.jpg)
+![PgVN light-theme operations console](docs/pgvn/images/m6-copy-prop-overview.jpg)
 
 <p align="center">
-  <img src="docs/pgvn/images/m6-commit-update-workers.jpg" alt="PgVN node details in a narrow viewport, with independently scrolling tables" width="300">
+  <img src="docs/pgvn/images/m6-copy-prop-workers.jpg" alt="PgVN node details in a narrow viewport, with independently scrolling tables" width="300">
 </p>
 
-*The narrow-screen capture is from the recorded commit/update browser validation. Screenshots illustrate the interface; their sample values are not performance benchmarks.*
+*The light overview and narrow node details come from the latest recorded [copy/prop browser validation](docs/pgvn/M6-network-copy-prop.zh-CN.md#监控输入清理与完整浏览器验收). Screenshots illustrate the interface; their sample values are not performance benchmarks.*
 
 </details>
 
@@ -69,7 +69,7 @@ The console is embedded in `pgvnserve.exe`; running it requires no Node.js, Pyth
 ```mermaid
 flowchart TB
     SVN["Standard SVN clients"] -->|"svn://"| SERVE["pgvnserve<br/>SVN + embedded monitoring"]
-    SVN -->|"HTTP / HTTPS"| DAV["pgvnhttpd<br/>mod_dav_pgvn + mod_authz_pgvn"]
+    SVN -->|"HTTP / HTTPS"| DAV["pgvnhttpd<br/>mod_dav_pgvn<br/>mod_authz_pgvn"]
     ADMIN["pgvnadmin"] --> CORE
     SERVE --> CORE["PgVN core<br/>linked into each process"]
     DAV --> CORE
@@ -89,7 +89,7 @@ flowchart TB
 | `pgvnadmin.exe` | Repository lifecycle, policy publication, credentials, dump/load, verification and maintenance. |
 | PgVN core + PgFS | Repository lookup, authorization/hook policy and PostgreSQL-backed versioned storage; linked into the components above. |
 
-A request resolves its URL route to an internal repository ID, applies the published policy and accesses history through PgFS. Internal IDs are distinct from public SVN UUIDs. One database can contain multiple repositories and URL routes. The shared core is an in-process library; deployment requires no separate repository RPC service.
+A request resolves its URL route to an internal repository ID, applies the published policy and accesses history through PgFS. Internal IDs are distinct from public SVN UUIDs. One database can contain multiple repositories and URL routes. Revision publication and authorization-policy rechecks occur in the same PostgreSQL transaction. The shared core is an in-process library; deployment requires no separate repository RPC service.
 
 | Database schema | Stored state |
 | --- | --- |
@@ -157,6 +157,26 @@ Set role passwords interactively with psql `\password`, and configure database a
 
 Fill in `admin\secrets\pgpass.conf` for administration and `secrets\runtime.pgpass.conf` for service/monitor access. Keep their protected NTFS permissions. For a remote database, configure its CA and hostname-verified TLS using the [deployment guide](deploy/windows/README.zh-CN.md). Re-running initialization preserves existing configuration; new parameters do not overwrite it.
 
+<details>
+<summary>Installation layout and local configuration</summary>
+
+```text
+PgVN-M5-windows-x64-PACKAGE_ID/
+├─ bin/                 pgvnserve, pgvnadmin and matching DLLs
+├─ apache/              Apache host, DAV and authorization modules
+├─ deploy/windows/      Install, check, user and backup/restore scripts
+├─ tools/               Pinned SVN and PostgreSQL clients
+├─ config.local/        Node service configuration (generated)
+├─ admin/               Admin configuration, password file and install records (generated)
+├─ secrets/             Service/monitor password file and deployment keys (fill/create after init)
+├─ hooks/               Global external-hook directory (generated)
+└─ logs/, state/        Node logs, temporary files and service state (generated)
+```
+
+Service configuration lives in `config.local\pgvnserve.ini`; DAV configuration lives in `config.local\pgvn-apache.ini` and `config.local\httpd.conf`. These are node deployment files. Repository history and per-repository configuration live in PostgreSQL.
+
+</details>
+
 ### 3. Initialize permissions, credentials and a repository
 
 ```powershell
@@ -206,6 +226,16 @@ The scripts install `PgVN` and `PgVNDAV` as LocalService services. Default endpo
 
 For remote clients, configure trusted HTTPS and network access. CRAM-MD5 does not encrypt SVN traffic; use a trusted tunnel for remote `svn://` access. Database connections must retain PostgreSQL session semantics; transaction pooling is unsuitable.
 
+### 5. Check health and open the console
+
+```powershell
+Get-Service -Name PgVN, PgVNDAV
+Invoke-RestMethod -Uri 'http://127.0.0.1:14691/health/live'
+Invoke-RestMethod -Uri 'http://127.0.0.1:14691/health/ready'
+```
+
+The default services should be `Running`; the probes return `live: true` and `ready: true`. The deployment check above also verifies the embedded page and that SVN/DAV resolve to the same public repository UUID. Next, follow the [monitor-token instructions](#web-console-and-tokens) to issue a read-only token and open `http://127.0.0.1:14691/monitor/` in your browser.
+
 ## Use PgVN
 
 ### Standard SVN clients
@@ -218,6 +248,7 @@ $svn = "$root\tools\svn\svn.exe"
 Set-Content -LiteralPath .\demo\hello.txt -Value 'Hello from PgVN' -Encoding UTF8
 & $svn add .\demo\hello.txt
 & $svn commit .\demo -m 'Initial commit' --username alice
+& $svn update .\demo --username alice
 & $svn log svn://127.0.0.1:14690/svn/demo --username alice
 & $svn ls http://127.0.0.1:14980/svn/demo --username alice
 ```
@@ -293,7 +324,7 @@ Use `scripts/pgvn` and `tests/pgvn` for testing. Full M5 requires matching real-
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-Recorded compatibility work includes original Subversion network suites with FSFS comparisons over SVN, HTTP and HTTPS; see the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md), [authorization results](docs/pgvn/M6-network-authz.zh-CN.md) and [commit/update results](docs/pgvn/M6-network-commit-update.zh-CN.md). These results bind to the builds identified in each report; they do not establish complete SVN compatibility or representative production performance.
+Recorded compatibility work includes original Subversion network suites with FSFS comparisons over SVN, HTTP and HTTPS; see the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md), [authorization results](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update results](docs/pgvn/M6-network-commit-update.zh-CN.md) and [copy/prop results](docs/pgvn/M6-network-copy-prop.zh-CN.md). These results bind to the builds identified in each report; they do not establish complete SVN compatibility or representative production performance.
 
 Known client boundaries include SVNKit 1.10.1 revision-property changes on Unicode repository URLs and a pinned `svnmucc` Unicode-user issue reproduced against stock FSFS. Use ASCII repository routes for this SVNKit version. See [DAV compatibility](docs/pgvn/M5-DAV.zh-CN.md) and [Windows UTF-8 validation](docs/pgvn/Windows-UTF8.zh-CN.md).
 
@@ -309,5 +340,6 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Monitoring](docs/pgvn/M4-monitor.zh-CN.md) | API, tokens, sampling and console behavior |
 | [Apache DAV](docs/pgvn/M5-DAV.zh-CN.md) | HTTP/HTTPS, authorization, recovery and worker telemetry |
 | [Schema design](docs/pgvn/schema-design.zh-CN.md) | Database structures and storage/control boundaries |
+| [Compatibility validation](docs/pgvn/M6-upstream-network.zh-CN.md) | Original SVN suites, FSFS comparisons and three-protocol results |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |
