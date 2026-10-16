@@ -1,0 +1,204 @@
+{
+  "component": "M6 original SVN CLI command bindings",
+  "status": "CLI_DIFFERENTIAL_PASS_NETWORK_SUITES_PENDING",
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "upstream_python_tests_executed": 0,
+  "authorization": "User authorized M6 isolated regression and repair reruns on 127.0.0.1:16432 and repository runtime; pgvn_m6_net_ databases retained for diagnostics.",
+  "observed_pass": {
+    "test_id": "m6-network-tools-8b32fcd51584",
+    "database": "pgvn_m6_net_8b32fcd51584",
+    "checks": [
+      "ID create without local repository shell",
+      "original load and verify",
+      "stock FSFS comparison: youngest",
+      "stock FSFS comparison: uuid",
+      "stock FSFS comparison: tree",
+      "stock FSFS comparison: tree -r 1",
+      "stock FSFS comparison: changed -r 2",
+      "stock FSFS comparison: dirs-changed -r 2",
+      "stock FSFS comparison: info -r 2",
+      "stock FSFS comparison: author -r 2",
+      "stock FSFS comparison: date -r 2",
+      "stock FSFS comparison: log -r 2",
+      "stock FSFS comparison: filesize A/blob.bin",
+      "stock FSFS comparison: cat A/blob.bin",
+      "stock FSFS comparison: propget test:property A",
+      "stock FSFS comparison: proplist --verbose A",
+      "stock FSFS comparison: history A/readme.txt",
+      "stock FSFS comparison: diff -r 2",
+      "native dump restored to independently verified stock FSFS"
+    ],
+    "elapsed_seconds": 6.39000000001397,
+    "ledger_sha256": "a9dabcfe150c85b12720972d83210aef31eeabed50af4880dad35bfc82c11b59",
+    "ledger_events": 20,
+    "process_code_pages": [
+      65001
+    ]
+  },
+  "offline_pass": {
+    "test_id": "m6-network-tools-offline-65c373e9982e",
+    "checks": [
+      "svnadmin original help/version",
+      "svnlook original help/version",
+      "missing guard rejected before connection",
+      "host rejected before connection",
+      "port rejected before connection",
+      "database rejected before connection",
+      "role rejected before connection",
+      "hostaddr rejected before connection",
+      "service rejected before connection"
+    ],
+    "database_connections_attempted": 0
+  },
+  "preserved_failure": {
+    "test_id": "m6-network-tools-299c93399a2d",
+    "status": "FAIL",
+    "cause": "Test fixture assumed administrative name lookup populated route_prefix; strcmp received NULL before load.",
+    "fix": "Read the exact alias route from pgvn.routes and compare the repository ID, including for disabled maintenance targets.",
+    "production_source_changed": false
+  },
+  "frozen_inputs": {
+    "build_manifest_sha256": "ece47af4a749c0ea99cb549a09adfb2cbffa144a6f592b00f0e07cf44b7f526b",
+    "tool_manifest_sha256": "fd51e3afcd177a90152fef9898ec384c47eaff24a7a14c8c762fe7193d48831c",
+    "component_source_sha256": "d5f666e1f6c1953b92dea6b0b4a422dedcd2312bb112f4317bacc53936b48a64",
+    "tools": {
+      "svnadmin": {
+        "path": "runtime/pgvn/upstream-tools/bin/pgvn-upstream-svnadmin.exe",
+        "sha256": "4cce9477890a008106f2ad2c090379e36d4290565b19b4b30be48e32b0d7cdee",
+        "bytes": 535040
+      },
+      "svnlook": {
+        "path": "runtime/pgvn/upstream-tools/bin/pgvn-upstream-svnlook.exe",
+        "sha256": "a2ff60a3672e1a529fc72eba66af90ca9199cf76b5122a9eb4b045b7c4608b21",
+        "bytes": 458752
+      }
+    },
+    "stock": {
+      "svnadmin": {
+        "path": "runtime/pgvn/bin/svnadmin.exe",
+        "sha256": "8077af69b35e413b232f8af76a379bd564cfb1fb4b18b049787c8a02de1c54ad"
+      },
+      "svnlook": {
+        "path": "runtime/pgvn/bin/svnlook.exe",
+        "sha256": "7b3b2368b484b6b5127e82ff5327e155e00dc85c9a440c2fc37ca596e14ded77"
+      },
+      "svnmucc": {
+        "path": "runtime/pgvn/bin/svnmucc.exe",
+        "sha256": "81c5b68a6570cc46cbeba91db74c1f79283ce634c77d360e48e1b9031708aae3"
+      }
+    },
+    "production_products": {
+      "runtime/pgvn/bin/pgvnserve.exe": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+      "runtime/pgvn/bin/pgvnadmin.exe": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+      "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+      "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+      "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+    }
+  },
+  "source_provenance": {
+    "archive_sha256": "53bd33126d6be42bdd2725f1ee92132e03c291aa4a3fcc910eccde10dad796f4",
+    "lock_sha256": "b249fe4711aa4a21f523561183065d3cfacceadbba11091b3f5b77d1c737f8ac",
+    "command_members_verified": true
+  },
+  "command_sources": {
+    "subversion/svnadmin/svnadmin.c": "0c1186ae4b8ad96b0f4dbb6f496341c7a2a6938a96dbc01c97aff0176c9fc404",
+    "subversion/svnlook/svnlook.c": "d87bd63b58c21c19d6da045614ca5e1751050dc506a64f352367642136e7aeed"
+  },
+  "fixture_sources": {
+    "scripts/pgvn/build_upstream_network.py": "047a174602a8b8f444448ff3c2012140da1273da3628e9d13fd6d1d0b624943a",
+    "tests/pgvn/upstream_network_cli.c": "8f6d436255cfa5c0647988b3ff9de2bcef4cf341310f7350370acd8e6822dd5d",
+    "tests/pgvn/upstream_network_redirect.inc": "e33c2ba5f42aadc5da53e11349a58bee5db84faefd8b5f942d7e057a08403ce0"
+  },
+  "core_archive_sha256": "2c27d9ed7b4393f1be478c947855ed98005b669351a8ee81fefadbb25a2ca7bd",
+  "runtime_dependencies": {
+    "runtime/pgvn/upstream-tools/bin/icudt77.dll": "26c6b5923c814dab36caeabd19ea7b8006786c80215dae270c8444cb528ed3bf",
+    "runtime/pgvn/upstream-tools/bin/icuin77.dll": "e825807402d86307574c88e54ded5845d06b57e010b58b7975a2ab2d07ca7f6a",
+    "runtime/pgvn/upstream-tools/bin/icuio77.dll": "8892f4b00f75524d70e5fa91c122a584d14faef7631fac40afff52f3fcfa6cae",
+    "runtime/pgvn/upstream-tools/bin/icutu77.dll": "08cfa69abde3af84eccc98040653092710026fdfd65f6f3cddb91bffa7a6e62c",
+    "runtime/pgvn/upstream-tools/bin/icuuc77.dll": "465ac249e54de36640d85e084e0039acc4f518eda7ee4a9bbee2826ab5c46829",
+    "runtime/pgvn/upstream-tools/bin/libapr-1.dll": "587bcf93d5bdd1a5774ab271d2002f51baab09d9b9e4615a5751ef8711f691c8",
+    "runtime/pgvn/upstream-tools/bin/libaprutil-1.dll": "7dbc6239fb56681761b6c7438a53182b028f9b89babec9c68a7cf02cb30e4774",
+    "runtime/pgvn/upstream-tools/bin/libcrypto-3-x64.dll": "54c0a88da398559c3daec198d7af8f020ff6fbeead38dbacd97d21ae920c3a00",
+    "runtime/pgvn/upstream-tools/bin/libcurl.dll": "7d756f341091924063baa4f9fd79b5a013125e0d5d876badc1e355310e0857f8",
+    "runtime/pgvn/upstream-tools/bin/libecpg.dll": "16a8bafadb8380d22007713559542414e891f5f74648c8790c8b17be5b4e8361",
+    "runtime/pgvn/upstream-tools/bin/libecpg_compat.dll": "4ff38e031db75f3259fd0021becd4c4ead15b996ddd343cd80be625ee533a2cf",
+    "runtime/pgvn/upstream-tools/bin/libexpat.dll": "ca01642a063b89ee58ea7c383df55cd38ae8776c311150ef3ae3c1cc963dc9e1",
+    "runtime/pgvn/upstream-tools/bin/libiconv-2.dll": "6095b3fad19fff040aeae05865c28fdeb455526fca109c3216f6ca737af60249",
+    "runtime/pgvn/upstream-tools/bin/libintl-9.dll": "1125ac8dc0c4f5c3ed4712e0d8ad29474099fcb55bb0e563a352ce9d03ef1d78",
+    "runtime/pgvn/upstream-tools/bin/liblz4.dll": "096af775241b3bd4b1c3d79c83b103bb8f02da54ec4cd76c5d49eef61a68ad01",
+    "runtime/pgvn/upstream-tools/bin/libpgtypes.dll": "de59a200591d4a58e0b4afaef65603abf99e2ed9dcc01804c30e1ebfd2a8f948",
+    "runtime/pgvn/upstream-tools/bin/libpq.dll": "98d8e12f814ef539ded440195681c0163079dc5871d7fb278de051c2e2d4cba0",
+    "runtime/pgvn/upstream-tools/bin/libssl-3-x64.dll": "0ac3d836a2fa84dee83bd06a4abfaf8ab7ded689420edc76febc185500e2d6e1",
+    "runtime/pgvn/upstream-tools/bin/libsvn_client-1.dll": "5329c826a19053064516c1e724dfa706c93932b2e69e2cdaf7c08e14927f44ea",
+    "runtime/pgvn/upstream-tools/bin/libsvn_delta-1.dll": "f87f50cc8664bf1735eda4c0d6e8222f89b5596991e20d68e480c73081eec0e1",
+    "runtime/pgvn/upstream-tools/bin/libsvn_diff-1.dll": "e5e09e4a4523a3ad2469bfb0fcfe5a30a74875fb21bbf2443e8ae9b8a3934ce6",
+    "runtime/pgvn/upstream-tools/bin/libsvn_fs-1.dll": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+    "runtime/pgvn/upstream-tools/bin/libsvn_fs_fs-1.dll": "1a4bc908659a7179dfbca1142b7434920fbbc2dee72bc11940c972f988f09323",
+    "runtime/pgvn/upstream-tools/bin/libsvn_fs_util-1.dll": "cd1efa62635c3911881538231956c28651ab0b43c17e78e923504298993591fc",
+    "runtime/pgvn/upstream-tools/bin/libsvn_fs_x-1.dll": "a753ac936c66543d1660fdac8369f45c0e509c68fc03f0c63f015f60312c0942",
+    "runtime/pgvn/upstream-tools/bin/libsvn_ra-1.dll": "13b3fe099e2db01209a0318c1b0c5079eb1ff5363e968eb1d86946d301a3155b",
+    "runtime/pgvn/upstream-tools/bin/libsvn_repos-1.dll": "ecbdf6370b98613c17cc31a3f95467e138eca24318c3276adcb888181f1ae5b9",
+    "runtime/pgvn/upstream-tools/bin/libsvn_subr-1.dll": "601dd8e8960d2aad3b7881bddf1355701cd676e2d17a3caef7c3dc72f6e347f8",
+    "runtime/pgvn/upstream-tools/bin/libsvn_wc-1.dll": "2eb812f2d588b77632b7677a09dd0520e366f1289978508b137d2718b06e72db",
+    "runtime/pgvn/upstream-tools/bin/libwinpthread-1.dll": "ffe2d56375bb4e8bdee9037df6befc5016ddd8871d0d85027314dd5792f8fdc9",
+    "runtime/pgvn/upstream-tools/bin/libxml2.dll": "1cb308eb9be9063eda714549bacda541cc711843c3ab45f91ae91d3ae046dba9",
+    "runtime/pgvn/upstream-tools/bin/libxslt.dll": "8226fad0fc6e9b79b14203d4f5263ddec5764c0108aa7c17622dd77f311669a6",
+    "runtime/pgvn/upstream-tools/bin/libzstd.dll": "287e7e474961e8886a3d961e2c07da647a7ac8d60d97023545f3a3ecf604daba",
+    "runtime/pgvn/upstream-tools/bin/sqlite3.dll": "96e2412fb6e72a202700f0c368b8ea64f49c634ee4f3dc7b0e0d6bd2d4a7edf1",
+    "runtime/pgvn/upstream-tools/bin/testplug.dll": "1a8225dcf5a60c719d2ea98f5493fcb706558ac42b118c536e762b40d0f61a99",
+    "runtime/pgvn/upstream-tools/bin/vcruntime140.dll": "d66c3b47091ceb3f8d3cc165a43d285ae919211a0c0fcb74491ee574d8d464f8",
+    "runtime/pgvn/upstream-tools/bin/wxbase3211u_net_vc_x64_custom.dll": "f707ee1d13ed5d3264a6b95dbb6cc4cd79e5d663180a91dca80704b1d97783eb",
+    "runtime/pgvn/upstream-tools/bin/wxbase3211u_vc_x64_custom.dll": "cc6b32bb8cbc1ecd798a8e08144671bb0542e75217ee5b0f9a76fab9146b88be",
+    "runtime/pgvn/upstream-tools/bin/wxbase3211u_xml_vc_x64_custom.dll": "4c716cb9407ed90331d677b55e82b3e31a16ff6f5adf9493321594d01fa200d3",
+    "runtime/pgvn/upstream-tools/bin/wxmsw3211u_adv_vc_x64_custom.dll": "e9b0906ec69d7656228f564596ae882a8d68f37b5021f490ebcf2aae289eb742",
+    "runtime/pgvn/upstream-tools/bin/wxmsw3211u_aui_vc_x64_custom.dll": "ded33cdf2455389eaef3e9c2bd6bca04d3edfbea9e7f53393ee6f8bab2ae124c",
+    "runtime/pgvn/upstream-tools/bin/wxmsw3211u_core_vc_x64_custom.dll": "d658d50d6820d17ac4de22bd66b93799595d63c7469ca6a1d99f479a838b67b8",
+    "runtime/pgvn/upstream-tools/bin/wxmsw3211u_html_vc_x64_custom.dll": "74b2e9f9f4b690b554733f1be1e4412c27ea5e0b0a6cd67d05e3895eafb2946e",
+    "runtime/pgvn/upstream-tools/bin/wxmsw3211u_xrc_vc_x64_custom.dll": "24bb563eaed37c5b87d238fab8183eac8f66dbf4c67b06c2b9fa54a1234e020f",
+    "runtime/pgvn/upstream-tools/bin/zlib1.dll": "890afa7a17fb66308e0026631070409138b157ef2773c0a41d22a76943f7aedf"
+  },
+  "production_products_equal_to_monitor_acceptance": true,
+  "observed_operations": [
+    "create",
+    "load",
+    "verify",
+    "dump",
+    "svnlook (16 argument sets)"
+  ],
+  "pending": [
+    "Original Python assertions through SVN, HTTP, HTTPS and FSFS controls; full applicability ledger.",
+    "Hotcopy/freeze/pack/recover fixture behavior and recover lock-wait/notifications.",
+    "Per-repository on-disk upgrade is unsupported; PgVN schema migration uses pgvnadmin db migrate.",
+    "M6 fault/confirmed-commit ledger, standby/fencing and representative performance.",
+    "Fresh-machine Windows and Polarion validation."
+  ],
+  "cleanup": {
+    "listeners_started": 0,
+    "windows_services_created": 0,
+    "monitor_tokens_created": 0,
+    "databases_and_roles_retained": true
+  },
+  "raw_reports": {
+    "artifacts/pgvn/tests/m6-network-tools-299c93399a2d.json": {
+      "sha256": "8cd9ee7c5e3fc0fe4c788ce6e4423a03b12cd9bda6e9dc8b08dda433d3950067",
+      "bytes": 4762,
+      "status": "FAIL"
+    },
+    "artifacts/pgvn/tests/m6-network-tools-8b32fcd51584.json": {
+      "sha256": "e2dfec9f9f730a10f021b9f2a4d5c44dccc197f8a4ed8ba1f1945959a9e38c09",
+      "bytes": 11051,
+      "status": "PASS"
+    },
+    "artifacts/pgvn/tests/m6-network-tools-offline-65c373e9982e.json": {
+      "sha256": "1673afe331b562ed0bc4d4db2dac3a505e251d32861b69d127fd596af20ba199",
+      "bytes": 2780,
+      "status": "PASS"
+    },
+    "artifacts/pgvn/build/upstream-network-tools.json": {
+      "sha256": "fd51e3afcd177a90152fef9898ec384c47eaff24a7a14c8c762fe7193d48831c",
+      "bytes": 18741,
+      "status": "BUILT_NOT_PROTOCOL_ACCEPTED"
+    }
+  }
+}

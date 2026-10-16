@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：固定输入、静态目录与源码快照已建立。PGVN-601 保持未完成，执行用例数为 **0**。
+当前阶段：固定输入、静态目录与源码快照已建立；原版 CLI 命令体的 ID 绑定差分组件通过。PGVN-601 保持未完成，上游 Python 用例执行数为 **0**。
 
 ## 可复现入口
 
@@ -22,6 +22,26 @@ python scripts/pgvn/catalog_upstream_network.py --require-frozen-inputs --snapsh
 ## 已验证的输入保护
 
 本轮验证三种拒绝条件：脚本/源码锁未登记到冻结构建、隔离副本中的源码被改动、归档副本被追加字节。全部在目录生成前拒绝；原始源码和归档保持一致。五个原生产品与 `77948d7` 焦点修复基线逐字节相同。固定摘要和原始报告见 [目录证据](evidence/m6-network-catalog.json)。
+
+## 已完成的 CLI 差分组件
+
+`build_upstream_network.py` 将原版 `svnadmin.c`、`svnlook.c` 链接到当前生产公共核心，只通过编译时头文件替换仓库构造及维护入口。命令体逐字节核对源码锁指定的原始 ZIP；没有重写命令输出。工具位于私有 `runtime/pgvn/upstream-tools`，不会覆盖原版客户端或生产 `pgvnadmin`。
+
+```powershell
+python scripts/pgvn/build_upstream_network.py
+python tests/pgvn/test_m6_network_tools.py --offline
+python tests/pgvn/test_m6_network_tools.py --plan
+# 将上一条输出的完整 plan.json 路径传入；每个计划仅执行一次。
+python tests/pgvn/test_m6_network_tools.py --execute-plan <plan.json路径>
+```
+
+执行范围为已授权的 `127.0.0.1:16432` 专用集群和仓库 runtime，库名强制为 `pgvn_m6_net_<12位十六进制>`。计划冻结输入摘要，启动前核对真实数据目录，每次创建独立非超级用户所有者和测试库。原版 CLI 适配器在连接前核对 host、port、dbname、user，拒绝 service 重定向。此组件不启动网络服务、不创建监控令牌。
+
+离线 `m6-network-tools-offline-65c373e9982e` 的 9 组检查通过。隔离差分 `m6-network-tools-8b32fcd51584` 的 19 组检查通过：中文及空格仓库别名无磁盘目录、两修订合成历史包含二进制/属性/复制、原版 load/verify、16 组 svnlook 输出与原版 FSFS 一致，原生 dump 恢复到原版 FSFS 后再次 verify 和比对。20 条实际构造/打开账本均为 UTF-8 进程。
+
+首轮 `m6-network-tools-299c93399a2d` 在测试适配器中访问未填充的路由字段而崩溃；已改为查询精确路由并核对仓库 ID，FAIL 原样保留。五个生产二进制摘要与网页验收基线相同。固定摘要、结果与边界见 [CLI 组件证据](evidence/m6-network-tools.json)。
+
+本结果仅覆盖上述命令。hotcopy、freeze、pack、recover 的适配代码尚未由此组件验收；recover 等待锁/通知语义待补，旧磁盘格式升级明确不支持。62 个原版 Python 套件尚未执行，SVN/HTTP/HTTPS 适用性和故障/性能出口继续推进。
 
 ## 后续适配边界
 

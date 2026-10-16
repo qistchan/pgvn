@@ -112,3 +112,9 @@ SVNKit 中文仓库 URL 修改 revision 属性的重复编码失败已在未修�
 ## M6 网络入口输入：目录与快照完成（2026-10-16）
 
 固定 Subversion 1.14.5 归档与 234 个输入文件，解析 62 个上游套件、1,984 个静态测试编号，生成无旧字节码的源码快照。未登记输入、源码副本改动和归档副本改动均被拒绝；实际原生产品摘要保持不变。执行用例数为 0，PGVN-601 未完成。下一步是绑定原生协议/admin fixture 并执行原断言，说明见 [网络测试入口](M6-upstream-network.zh-CN.md)，固定记录见 [目录证据](evidence/m6-network-catalog.json)。
+
+## M6 原版 CLI 命令绑定：差分组件通过（2026-10-16）
+
+将未修改的原版 svnadmin/svnlook 命令体链接当前公共核心，以受限 ID 夹具代替仓库目录构造；构建同时核对原始归档与命令体字节。离线 9 组、隔离差分 19 组通过，包含二进制/属性/复制、原版 load/verify、16 组 svnlook 与 FSFS 对照，以及 dump 回灌原版 FSFS。首轮适配器空指针崩溃的 FAIL 和修复重跑均保留。
+
+五个生产产品摘要不变。该组件尚未执行上游 Python 网络用例，也未验收全部维护入口；PGVN-601 和 M6 保持进行中。命令、隔离范围及证据见 [网络测试入口](M6-upstream-network.zh-CN.md) 和 [CLI 组件记录](evidence/m6-network-tools.json)。
