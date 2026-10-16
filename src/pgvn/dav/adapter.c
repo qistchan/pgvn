@@ -102,6 +102,30 @@ svn_error_t *pgvn_http_resolve(pgvn_binding **binding,request_rec *r,const char 
     return SVN_NO_ERROR;
 }
 
+dav_error *pgvn_http_repository_error(svn_error_t *error,request_rec *r)
+{
+    if(!error) return NULL;
+    /* A catalog miss identifies a repository. ra_serf rewrites FS_NOT_FOUND
+     * into a missing-path diagnostic, so use the repository-open error code.
+     * Missing and disabled routes share this fixed, detail-free response. */
+    if(svn_error_purge_tracing(error)->apr_err==SVN_ERR_FS_NOT_FOUND) {
+        svn_error_clear(error);
+        error=svn_error_create(SVN_ERR_RA_LOCAL_REPOS_OPEN_FAILED,NULL,
+            "Could not find the requested SVN repository");
+        return dav_svn__convert_err(error,HTTP_NOT_FOUND,NULL,r->pool);
+    }
+    return dav_svn__sanitize_error(error,"PgVN repository unavailable",HTTP_SERVICE_UNAVAILABLE,r);
+}
+
+int pgvn_http_error_response(request_rec *r,dav_error *error)
+{
+    if(!error || error->status<HTTP_BAD_REQUEST || error->status>599)
+        return HTTP_INTERNAL_SERVER_ERROR;
+    /* Access checks precede the DAV provider's error hook. Use the pinned
+     * SVN serializer so clients receive its XML error code and safe message. */
+    return dav_svn__error_response_tag(r,error);
+}
+
 static svn_error_t *named_policy(pgvn_policy **policy,request_rec *r,const char *name,apr_pool_t *pool)
 {
     void *data=NULL;

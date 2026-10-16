@@ -68,10 +68,14 @@ def prepare_dav(source, destination, specification):
     replace(module,'if (!conf->fs_path && !conf->fs_parent_path)',
         'if (!dav_get_provider_name(r) || strcmp(dav_get_provider_name(r),"pgvn"))')
     replace(module,'      fs_path = conf->fs_path;','      fs_path = "catalog";')
+    # URI translation precedes authentication and the DAV handler. Preserve
+    # repository errors here as well as in the later access checks.
+    replace(module,'          return err->status;',
+        '          return pgvn_http_error_response(r,err);')
     body(module,'dav_svn_get_repos_path2','''
         pgvn_binding *binding;
         svn_error_t *error=pgvn_http_resolve(&binding,r,r->uri,pool);
-        if(error) return dav_svn__sanitize_error(error,"PgVN route unavailable",HTTP_SERVICE_UNAVAILABLE,r);
+        if(error) return pgvn_http_repository_error(error,r);
         *repos_path=apr_pstrcat(pool,"pgvn:",binding->repository_id,NULL);
         return NULL;
     ''')
@@ -90,14 +94,14 @@ def prepare_dav(source, destination, specification):
     # matching enabled catalog route, then retain upstream special-URI parsing.
     replace(repos,'  /* one of these is NULL, the other non-NULL. */','''  pgvn_binding *pgvn_binding;
   svn_error_t *pgvn_error=pgvn_http_resolve(&pgvn_binding,r,uri_to_split,pool);
-  if(pgvn_error) return dav_svn__sanitize_error(pgvn_error,"PgVN route unavailable",HTTP_SERVICE_UNAVAILABLE,r);
+  if(pgvn_error) return pgvn_http_repository_error(pgvn_error,r);
   root_path=pgvn_binding->route_prefix;
 
   /* one of these is NULL, the other non-NULL. */''')
     replace(repos,'*repos_basename = svn_dirent_basename(root_path, pool);','*repos_basename = pgvn_binding->canonical_name;')
     replace(repos,'  /* This does all the work of interpreting/splitting the request uri. */','''  pgvn_binding *pgvn_binding;
   serr=pgvn_http_resolve(&pgvn_binding,r,r->uri,r->pool);
-  if(serr) return dav_svn__sanitize_error(serr,"PgVN route unavailable",HTTP_SERVICE_UNAVAILABLE,r);
+  if(serr) return pgvn_http_repository_error(serr,r);
   root_path=pgvn_binding->route_prefix;
 
   /* This does all the work of interpreting/splitting the request uri. */''')
@@ -109,7 +113,7 @@ def prepare_dav(source, destination, specification):
     changed[repos]=changed[repos][:a]+'''  /* Request-local binding avoids stale authz and session state across
      keep-alive requests; the shared context only owns the SQL control channel. */
   serr=pgvn_http_open(repos,r);
-  if(serr) return dav_svn__sanitize_error(serr,"PgVN repository unavailable",HTTP_SERVICE_UNAVAILABLE,r);
+  if(serr) return pgvn_http_repository_error(serr,r);
   serr=svn_repos_remember_client_capabilities(repos->repos,
       capabilities_as_list(repos->client_capabilities,r->pool));
   if(serr) return dav_svn__sanitize_error(serr,"PgVN capabilities unavailable",HTTP_SERVICE_UNAVAILABLE,r);
@@ -230,6 +234,11 @@ dav_error *dav_svn__create_txn(dav_svn_repos *repos,const char **name,apr_hash_t
     guard='(conf->access_file || conf->repo_relative_access_file)'
     if changed[authz].count(guard)!=5:raise RuntimeError('Authz activation guard count mismatch')
     changed[authz]=changed[authz].replace(guard,'(dav_get_provider_name(r) && !strcmp(dav_get_provider_name(r),"pgvn"))')
+    # A catalog error is discovered in the access checker before the DAV
+    # handler runs. Keep its sanitized SVN XML instead of a bare HTTP status.
+    # The upstream OK/DECLINED guard still makes every error terminal.
+    replace(authz,'dav_err->status : HTTP_INTERNAL_SERVER_ERROR;',
+        'pgvn_http_error_response(r,dav_err) : HTTP_INTERNAL_SERVER_ERROR;',2)
     body(authz,'get_access_conf','''
         svn_authz_t *policy=NULL;
         svn_error_t *error=pgvn_http_policy(&policy,r,scratch_pool);

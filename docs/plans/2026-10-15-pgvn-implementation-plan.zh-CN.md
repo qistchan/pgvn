@@ -449,3 +449,11 @@ Debug 与 Release 分别记录编译选项和摘要。实际发布的 Release �
 冻结清单`fb66ece247011e7940fdbd991a09397786b04c906204c5587051498ef6387611`下，真实浏览器15+6项及完整M5`m5-ba210e325efc`十组通过，含M4`m4-d4c29065dec3`八组及M0–M3。首轮网页硬编码16的FAIL保留；外层Job即时计数非零的尝试未接纳，以新库重跑后与此前正常关闭的结果核对。后续调度记录PID并最多等待5秒自然排空，关闭前仍须为0。最终runtime进程、临时服务和本轮未撤销监控令牌均为0，库及角色保留。
 
 详见[仓库工作流与容量修复](../pgvn/M6-network-workflows.zh-CN.md)及[结构化证据](../pgvn/evidence/m6-network-workflows.json)，开发包校验由随ZIP单独提供的校验记录说明（`<ZIP_STEM>.validation.json`）。PGVN-601、M6、M7仍未完成；其余套件/适用性、最终构建复跑、维护与真实历史备份、跨故障域/确认账本、代表性性能及独立Windows/Polarion验收继续推进。
+
+## 2026-10-16：工作副本语义与仓库不存在错误
+
+原版 switch 1–39、depth 1–50、revert 1–36 在 SVN、HTTP、HTTPS 完成 FSFS 对照：125 个唯一函数、750 个实际进入结果，714 PASS、36 个原有 XFAIL；18 对 XFAIL 诊断一致，未新增排除。修复 SVN 通用仓库不存在文本及 DAV URI 翻译提前返回，未知/停用仓库现统一为 404 XML/E180001；既有路径与真实数据库故障分类保留，COPY 缺失目标不得产生修订。
+
+冻结清单 `e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997` 下，浏览器 15+6 项和完整 M5 `m5-0587e0a9e03b` 十组通过，耗时 578.641 秒，含 M4 `m4-77ebedd6492f` 八组和 M0–M3。375×812、双详情刷新焦点、故障恢复及令牌撤销清屏均实测；原始网络失败、三个候选、浏览器部分尝试和漏带测试环境变量的一轮 FAIL 保留。最终网络 42/9 个内外层 Job 清空，运行进程、临时服务和本轮有效监控令牌均为零；库与角色保留。
+
+见[工作副本组件](../pgvn/M6-network-wc-workflows.zh-CN.md)和[结构化证据](../pgvn/evidence/m6-network-wc-workflows.json)，匹配开发包校验由随 ZIP 单独提供的 `<ZIP_STEM>.validation.json` 说明。包仍为 development-snapshot。PGVN-601、M6、M7 保持未完成；旧组件绑定各自构建，继续剩余适用性/套件、最终构建复跑、维护与真实历史备份、跨故障域/确认账本、代表性性能及独立 Windows/Polarion 验收。

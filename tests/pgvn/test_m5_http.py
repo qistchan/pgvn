@@ -24,17 +24,17 @@ PASSWORD=secrets.token_urlsafe(24)
 records={}
 
 
-def run(executable,*args,input=None,expected=0,timeout=40):
+def run(executable,*args,input=None,expected=0,timeout=40,error_output=False):
     result=subprocess.run([str(executable),*map(str,args)],input=input,cwd=setup.EMPTY,
         capture_output=True,creationflags=subprocess.CREATE_NO_WINDOW,timeout=timeout)
     if result.returncode!=expected:
         # Do not serialize authentication arguments or the global config.
         raise AssertionError((str(executable),result.returncode,result.stdout[:2000],result.stderr[:4000]))
-    return result.stdout
+    return result.stderr if error_output else result.stdout
 
 
-def svn(*args,user='writer',expected=0):
-    return run(SVN,'--non-interactive','--no-auth-cache','--username',user,'--password',PASSWORD,*args,expected=expected)
+def svn(*args,user='writer',expected=0,error_output=False):
+    return run(SVN,'--non-interactive','--no-auth-cache','--username',user,'--password',PASSWORD,*args,expected=expected,error_output=error_output)
 
 
 def port():
@@ -108,10 +108,40 @@ class Apache:
         finally:connection.close()
 
 
+def check_repository_errors(server, source_route):
+    diagnostics = []
+    before = setup.admin('look', 'youngest', 'name:canonical-http')['youngest']
+    for route in ('/svn/not-registered', '/svn/disabled-repository'):
+        status, headers, body = server.request('OPTIONS', route)
+        assert status == 404 and headers.get('X-PgVN-Request-Id'), (status, headers)
+        assert 'xml' in headers.get('Content-Type', '').lower(), headers
+        detail = ET.fromstring(body).find('{http://apache.org/dav/xmlns}human-readable')
+        assert detail is not None and detail.get('errcode') == '180001', body
+        assert detail.text.strip() == 'Could not find the requested SVN repository', body
+        error = svn('info', server.url(route + '/A'), expected=1, error_output=True)
+        assert b'E180001: Could not find the requested SVN repository' in error, error
+        diagnostics.append(error.splitlines()[-1])
+        # Source translation succeeds; destination lookup fails later in authz.
+        status, _, body = server.request('COPY', source_route, headers={
+            'Destination': server.url(route + '/copied'), 'Depth': 'infinity'})
+        assert status == 404, (status, body)
+        detail = ET.fromstring(body).find('{http://apache.org/dav/xmlns}human-readable')
+        assert detail is not None and detail.get('errcode') == '180001', body
+        assert detail.text.strip() == 'Could not find the requested SVN repository', body
+    assert diagnostics[0] == diagnostics[1], diagnostics
+    assert setup.admin('look', 'youngest', 'name:canonical-http')['youngest'] == before
+    return {'http_status': 404, 'svn_error_code': 180001,
+            'missing_and_disabled_diagnostics_identical': True,
+            'request_ids_present': True, 'svn_xml_error_body': True,
+            'missing_copy_destination_is_xml_404_without_revision': True}
+
+
 def checks():
     setup.setup_database()
     route='/svn/团队/project'
     repo=setup.admin('repo','create','canonical-http','--route',route)
+    disabled=setup.admin('repo','create','disabled-http','--route','/svn/disabled-repository')
+    setup.admin('repo','disable',disabled['id'])
     rules=setup.WORK/'authz.conf';rules.write_text('[canonical-http:/]\nwriter = rw\nother = rw\nreader = r\n测试用户 = rw\n',encoding='utf-8')
     hooks=setup.WORK/'hooks.json';hooks.write_text('{"pre-revprop-change":"allow"}')
     setup.admin('config','publish',repo['id'],'--expected-generation',1,'--authz',rules,'--hooks',hooks)
@@ -120,6 +150,7 @@ def checks():
     with users.open('a',encoding='utf-8') as stream:stream.write('测试用户:'+writer_hash+'\n')
     try:
         server.start();url=server.url(route)
+        repository_errors_v2=check_repository_errors(server, route)
         assert server.request('OPTIONS',route,user=None)[0]==401
         assert 'repository' in svn('info','--xml',url).decode()
         svn('mkdir',url+'/trunk','-m','HTTP r1')
@@ -158,11 +189,13 @@ def checks():
         assert setup.admin('look','youngest',repo['id'])['youngest']==5
         records['http_v2']={'standard_client_binary_history_props_copy_locks_revprops':True,
             'unicode_route_and_percent_filename':True,'canonical_authz_name_distinct_from_route':True,
-            'virtual_owner_and_delete':True,'unicode_authenticated_author_preserved':True}
+            'virtual_owner_and_delete':True,'unicode_authenticated_author_preserved':True,
+            'repository_open_diagnostics':repository_errors_v2}
     finally:server.close()
     legacy=Apache('v1',v2=False)
     try:
         legacy.start();url=legacy.url(route)
+        repository_errors_v1=check_repository_errors(legacy, route)
         svn('mkdir',url+'/v1','-m','HTTP v1 r6')
         assert setup.sql("SELECT count(*) FROM pgvn.dav_bindings WHERE binding_kind='activity'")!='0'
         assert setup.admin('look','youngest',repo['id'])['youngest']==6
@@ -170,7 +203,8 @@ def checks():
         denied=run(SVN,'--non-interactive','--no-auth-cache','--username','reader','--password',PASSWORD,
             'mkdir',url+'/denied','-m','must fail',expected=1)
         assert setup.admin('look','youngest',repo['id'])['youngest']==6
-        records['http_v1']={'standard_client_activity_commit':True,'reader_read_and_write_denial':True}
+        records['http_v1']={'standard_client_activity_commit':True,'reader_read_and_write_denial':True,
+            'repository_open_diagnostics':repository_errors_v1}
     finally:legacy.close()
     setup.admin('verify',repo['id']);records['full_verify']=True
     return records

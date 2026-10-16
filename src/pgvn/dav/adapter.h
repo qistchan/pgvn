@@ -13,6 +13,8 @@
 #define PGVN_HTTP_API __declspec(dllimport)
 #endif
 PGVN_HTTP_API svn_error_t *pgvn_http_resolve(pgvn_binding **binding,request_rec *r,const char *uri,apr_pool_t *pool);
+dav_error *pgvn_http_repository_error(svn_error_t *error,request_rec *r);
+PGVN_HTTP_API int pgvn_http_error_response(request_rec *r,dav_error *error);
 PGVN_HTTP_API svn_error_t *pgvn_http_policy(svn_authz_t **authz,request_rec *r,apr_pool_t *pool);
 PGVN_HTTP_API const char *pgvn_http_mount(request_rec *r);
 PGVN_HTTP_API svn_error_t *pgvn_http_check_access(request_rec *r,const char *repository_name,

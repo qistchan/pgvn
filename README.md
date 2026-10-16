@@ -17,7 +17,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 
 </div>
 
-![PgVN web console: service health, database sampling, online nodes and request trends](docs/pgvn/images/m6-workflows-overview.jpg)
+![PgVN web console: service health, database sampling, online nodes and request trends](docs/pgvn/images/m6-wc-workflows-overview.jpg)
 
 *The embedded monitoring console, captured from a recorded local validation run. [Explore the console](#web-console).*
 
@@ -67,13 +67,13 @@ Access uses expiring, revocable `monitor:read` tokens. The page keeps a token on
 <details>
 <summary>More screenshots: requests and errors · narrow node view</summary>
 
-![PgVN requests and errors, showing the current instance's effective SVN session capacity](docs/pgvn/images/m6-workflows-capacity.jpg)
+![PgVN requests and errors, showing the current instance's effective SVN session capacity](docs/pgvn/images/m6-wc-workflows-capacity.jpg)
 
 <p align="center">
-  <img src="docs/pgvn/images/m6-workflows-nodes.jpg" alt="PgVN node overview in a narrow viewport: freshness, online nodes and worker counts" width="300">
+  <img src="docs/pgvn/images/m6-wc-workflows-nodes.jpg" alt="PgVN node overview in a narrow viewport: freshness, online nodes and worker counts" width="300">
 </p>
 
-*These screenshots and the overview above come from the same recorded [workflow/capacity browser validation](docs/pgvn/M6-network-workflows.zh-CN.md#冻结构建与完整回归). They contain isolated test data; displayed samples are not performance benchmarks.*
+*These screenshots and the overview above come from the same recorded [working-copy browser validation](docs/pgvn/M6-network-wc-workflows.zh-CN.md#冻结构建与完整回归). They contain isolated test data; displayed samples are not performance benchmarks.*
 
 </details>
 
@@ -436,9 +436,9 @@ docs/pgvn/            Architecture, guides and validation evidence
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-The latest recorded [repository-workflow acceptance](docs/pgvn/M6-network-workflows.zh-CN.md) covers original export, import, cat, blame, history and info suites plus checkout network cases 1–13, each compared with FSFS over SVN, HTTP and HTTPS. Its browser checks and full M5 gate use the same frozen build. The drive-based `file:///` checkout case is documented separately.
+The latest recorded [working-copy acceptance](docs/pgvn/M6-network-wc-workflows.zh-CN.md) covers all 125 original switch, depth and revert functions, compared with FSFS over SVN, HTTP and HTTPS: 750 outcomes, with 714 PASS and 36 original XFAIL. Its 15+6 browser checks and full M5 gate use the same frozen build.
 
-Earlier recorded work includes [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
+Earlier recorded work includes [repository workflows](docs/pgvn/M6-network-workflows.zh-CN.md), [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
 
 Known client boundaries include SVNKit 1.10.1 revision-property changes on Unicode repository URLs and a pinned `svnmucc` Unicode-user issue reproduced against stock FSFS. Use ASCII repository routes for this SVNKit version. See [DAV compatibility](docs/pgvn/M5-DAV.zh-CN.md) and [Windows UTF-8 validation](docs/pgvn/Windows-UTF8.zh-CN.md).
 

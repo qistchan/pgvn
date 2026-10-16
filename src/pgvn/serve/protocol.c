@@ -89,7 +89,7 @@ svn_error_t *pgvn_svn_find(repository_t *repository,const char *url,svn_boolean_
     svn_error_t *error=pgvn_catalog_resolve(&binding,repository->pgvn_context,decoded,scratch_pool);
     if(error && error->apr_err==SVN_ERR_FS_NOT_FOUND) {
         svn_error_clear(error);
-        return svn_error_create(SVN_ERR_RA_SVN_REPOS_NOT_FOUND,NULL,"PgVN repository route is unavailable");
+        return svn_error_create(SVN_ERR_RA_SVN_REPOS_NOT_FOUND,NULL,"No repository found at the requested URL");
     }
     SVN_ERR(error);
     SVN_ERR(pgvn_repos_open(&repository->pgvn,repository->pgvn_context,binding->repository_id,pool));

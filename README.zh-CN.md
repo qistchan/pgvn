@@ -17,7 +17,7 @@
 
 </div>
 
-![PgVN 监控网页：服务健康、数据库采样、在线节点和请求趋势](docs/pgvn/images/m6-workflows-overview.jpg)
+![PgVN 监控网页：服务健康、数据库采样、在线节点和请求趋势](docs/pgvn/images/m6-wc-workflows-overview.jpg)
 
 *内置监控控制台，截图来自已记录的本机验证。[查看网页功能](#监控网页)。*
 
@@ -67,13 +67,13 @@ PgVN 面向希望保留 SVN 客户端工作流、通过统一 PostgreSQL 后端�
 <details>
 <summary>更多截图：请求与错误 · 窄屏节点页</summary>
 
-![PgVN 请求与错误视图，显示当前实例实际生效的 SVN 会话容量](docs/pgvn/images/m6-workflows-capacity.jpg)
+![PgVN 请求与错误视图，显示当前实例实际生效的 SVN 会话容量](docs/pgvn/images/m6-wc-workflows-capacity.jpg)
 
 <p align="center">
-  <img src="docs/pgvn/images/m6-workflows-nodes.jpg" alt="PgVN 窄屏节点概览：样本新鲜度、在线节点和工作进程数量" width="300">
+  <img src="docs/pgvn/images/m6-wc-workflows-nodes.jpg" alt="PgVN 窄屏节点概览：样本新鲜度、在线节点和工作进程数量" width="300">
 </p>
 
-*以上截图及首页概览图来自同一次已记录的[工作流与容量浏览器验收](docs/pgvn/M6-network-workflows.zh-CN.md#冻结构建与完整回归)。图中为隔离环境测试数据，采样数值不代表性能基准。*
+*以上截图及首页概览图来自同一次已记录的[工作副本浏览器验收](docs/pgvn/M6-network-wc-workflows.zh-CN.md#冻结构建与完整回归)。图中为隔离环境测试数据，采样数值不代表性能基准。*
 
 </details>
 
@@ -436,9 +436,9 @@ docs/pgvn/            架构、指南和验证证据
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-最近记录的[仓库工作流验收](docs/pgvn/M6-network-workflows.zh-CN.md)覆盖原版 export、import、cat、blame、history、info 套件及 checkout 网络用例 1–13，分别在 SVN、HTTP、HTTPS 上与 FSFS 对照；浏览器检查和完整 M5 门禁使用同一冻结构建。依赖盘符的 `file:///` checkout 用例单独记录适用边界。
+最新记录的[工作副本语义验收](docs/pgvn/M6-network-wc-workflows.zh-CN.md)覆盖 switch、depth、revert 的全部 125 个原版函数，分别在 SVN、HTTP、HTTPS 与 FSFS 差分比较，共 750 个结果：714 PASS、36 个原有 XFAIL。浏览器 15+6 项与完整 M5 门禁使用同一冻结构建。
 
-此前已记录[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
+此前已记录[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 

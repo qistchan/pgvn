@@ -30,14 +30,14 @@ def port():
         return sock.getsockname()[1]
 
 
-def client(tool, *args, user="writer", password=PASSWORD, expected=0, timeout=45):
+def client(tool, *args, user="writer", password=PASSWORD, expected=0, timeout=45, error_output=False):
     result = subprocess.run([str(SVN / (tool + ".exe")), *map(str, args), "--non-interactive",
         "--no-auth-cache", "--config-dir", str(WORK / "svn-client-config"), "--username", user,
         "--password-from-stdin"], input=password + b"\r\n", cwd=EMPTY, capture_output=True,
         creationflags=subprocess.CREATE_NO_WINDOW, timeout=timeout)
     allowed = expected if isinstance(expected, tuple) else (expected,)
     assert result.returncode in allowed, (tool, args, result.returncode, result.stderr[:2500])
-    return result.stdout
+    return result.stderr if error_output else result.stdout
 
 
 class Node:
@@ -176,7 +176,14 @@ def checks():
         connection_capacity = check_capacity(a, route, repository["uuid"])
         first, second = a.url(route), b.url(route)
         client("svn", "info", "--xml", first, password=b"wrong-password", expected=1)
-        client("svn", "info", "--xml", a.url("/missing"), expected=1)
+        missing = client("svn", "info", "--xml", a.url("/missing"), expected=1, error_output=True)
+        assert b"E210005: No repository found at the requested URL" in missing, missing
+        disabled = setup.admin("repo", "create", "disabled-protocol", "--route", "/disabled")
+        setup.admin("repo", "disable", disabled["id"])
+        for node in (a, b):
+            unavailable = client("svn", "info", "--xml", node.url("/disabled/A"),
+                expected=1, error_output=True)
+            assert unavailable.splitlines()[-1] == missing.splitlines()[-1], unavailable
         info = client("svn", "info", "--xml", first)
         assert repository["uuid"].encode() in info
         content = WORK / "payload.bin"
@@ -343,6 +350,7 @@ def checks():
         assert list(EMPTY.iterdir()) == []
         return {"two_process_nodes": True, "original_svn_and_svnmucc": True,
             "database_routes_and_uuid": True, "cram_md5_success_and_failure": True,
+            "missing_and_disabled_repositories_share_not_found_diagnostic": True,
             "path_authz_and_read_only_user": True, "binary_roundtrip_and_working_copy_update": True,
             "cross_node_lock_conflict_and_unlock": True, "node_loss_and_restart": True,
             "explicit_hook_required_for_revprops": True, "cross_node_revprops": True,
