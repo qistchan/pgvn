@@ -1,0 +1,746 @@
+{
+  "component": "M6 original upstream HTTP/HTTPS basic and timed-lock entry",
+  "status": "HTTP_HTTPS_BASIC_LOCK_PASS_FRESH_M5_PENDING",
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "created_at": "2026-10-16T05:14:49.073924+00:00",
+  "authorized_scope": "127.0.0.1:16432 dedicated cluster, new pgvn_m6_net_ databases and non-superuser owners; standard SVN accounts/keys, repository runtime and loopback SVN/HTTP/HTTPS processes.",
+  "final_runs": {
+    "http-basic": {
+      "test_id": "m6-network-45d58c9702e0",
+      "protocol": "http",
+      "suite": "basic_tests",
+      "status": "PASS",
+      "database": "pgvn_m6_net_45d58c9702e0",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        },
+        "pgvn": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        }
+      },
+      "elapsed_seconds": 455.48499999998603,
+      "upstream_python_tests_executed": 136,
+      "report_sha256": "210ddd30c66848a6509cf9044f57ec483843ca52552caff3c2a8eb88851523ea",
+      "plan_sha256": "7483802cdb9f1280d08a8b711755bc31f94a3e722bb4637c7636090fd6b54898",
+      "cleanup": [
+        {
+          "pid": 35596,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 11508,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 47348,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 53212,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "https-basic": {
+      "test_id": "m6-network-cb9cb744cb1f",
+      "protocol": "https",
+      "suite": "basic_tests",
+      "status": "PASS",
+      "database": "pgvn_m6_net_cb9cb744cb1f",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        },
+        "pgvn": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        }
+      },
+      "elapsed_seconds": 463.35899999999674,
+      "upstream_python_tests_executed": 136,
+      "report_sha256": "52a4e929da90f3caecfaa64510baa6424d984ba15aeb17d2d3036bbb8f956035",
+      "plan_sha256": "17428872f3feafaa275cb7163127d1d3c0511b905d6553732cc496ca15dd67d2",
+      "cleanup": [
+        {
+          "pid": 58588,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 62572,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 8804,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 66360,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "http-lock": {
+      "test_id": "m6-network-a538be4fd8b1",
+      "protocol": "http",
+      "suite": "lock_tests",
+      "status": "PASS",
+      "database": "pgvn_m6_net_a538be4fd8b1",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "elapsed_seconds": 44.51600000000326,
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "3c2abd8e2ce19b7ffc77faaec0b9e8d7407336a06c96473dd19c1d763f27e500",
+      "plan_sha256": "fe424ca86fa5e90f71f8d3ee4372550bfa06ebf667ef53a2de50d53b5a906335",
+      "cleanup": [
+        {
+          "pid": 52904,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 42900,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57408,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 60292,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "https-lock": {
+      "test_id": "m6-network-3fe9574d5f70",
+      "protocol": "https",
+      "suite": "lock_tests",
+      "status": "PASS",
+      "database": "pgvn_m6_net_3fe9574d5f70",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "elapsed_seconds": 33.796999999991385,
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "bb32b626c7e8a57438395a61f214569338a69b55cbf38339fcee6a20a925c127",
+      "plan_sha256": "057e1cd303c7473d11f532a8952b9dc8825211c120bb94d27854a9cfaaf6fce2",
+      "cleanup": [
+        {
+          "pid": 65480,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 18348,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 62120,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 57552,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    },
+    "svn-smoke": {
+      "test_id": "m6-network-10ac65e10d63",
+      "protocol": "svn",
+      "suite": "basic_tests",
+      "status": "PASS",
+      "database": "pgvn_m6_net_10ac65e10d63",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "elapsed_seconds": 12.64100000000326,
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "facf517c55707d3411be6806f9364bbe069843c7344f737bd446118d5c123e1d",
+      "plan_sha256": "916da38428783e00aa5f5b7b184bf692192994a564907dca7385a70cab0bcfbd",
+      "cleanup": [
+        {
+          "pid": 46228,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 63344,
+          "exit_code": 1,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 27580,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        {
+          "pid": 61576,
+          "exit_code": 1,
+          "job_active_processes": 0
+        }
+      ]
+    }
+  },
+  "build_manifest_sha256": "26b5c59cb7d86dbb620851ef748c6d9312bd3e9337bc1d6b724e3986a01f677e",
+  "production_products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "5b20529edbcda68494b89967219b186b8031e4be616e8d572bd9bb3e7a29509b",
+    "runtime/pgvn/bin/pgvnadmin.exe": "5a5a5ce3f3860c77601feba947c0aa6bd40daa89e43a98430406d7e2bc417ed7",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "cef59b67b3754074100ba90803348b9a732a61e5b45fd72cd51297b03987230d",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "production_products_unchanged_from": "492cced / evidence/m6-network-entry.json",
+  "source_sha256": {
+    "tests/pgvn/test_m6_network.py": "af4b7c757ecc976f34d9848b393c2b293e5f07976890fad53d029c535f27d118",
+    "tests/pgvn/upstream_network_entry.py": "59fff1f5ac97133040e084c430c5f14006714113039dbf949c2ae7879777c027",
+    "tests/pgvn/upstream_network_http.py": "93cb440ef867242364ec1a4f8524df0897598516f9462aa3e3adf15d4d6233c4",
+    "tests/pgvn/upstream_hook_bridge.py": "4b474714e29f763135fb5f3406bb437be838f89e4c4fbb312533a21e3ad71e44"
+  },
+  "input_guards": [
+    {
+      "test_id": "m6-http-registration-guard-69e44aa91e98",
+      "status": "INPUT_REJECTED_AS_EXPECTED",
+      "report_sha256": "bf62b399a3e2864afbdab2b10e8e55c8aef2bec8433cef389febfea5505b6275",
+      "upstream_python_tests_executed": 0
+    },
+    {
+      "test_id": "m6-network-http-stale-plan-8244762e1a18",
+      "status": "REJECTED_BEFORE_SIDE_EFFECTS",
+      "report_sha256": "7a78bf393aa33bd57e4c69568c1a4948a966b2d50094af789a48e3c851bd4478",
+      "upstream_python_tests_executed": 0
+    }
+  ],
+  "reported_unique_outcomes_per_backend_per_http_protocol": 73,
+  "executed_unique_cases_per_backend_per_http_protocol": 70,
+  "counts_per_backend_per_http_protocol": {
+    "PASS": 69,
+    "XFAIL": 1,
+    "SKIP": 3
+  },
+  "count_semantics": "HTTP and HTTPS each cover basic 1:71 plus lock 53:54. Repeats, SVN smoke, TLS probes and component checks do not add distinct upstream cases.",
+  "original_assertions_decorators_test_lists_unchanged": true,
+  "native_and_fsfs_outcomes_identical": true,
+  "original_basic_xfail": [
+    63
+  ],
+  "original_basic_skips": [
+    67,
+    70,
+    71
+  ],
+  "http_applicable_case_52": "Original RA-library selection check passes over DAV; SVN transport skipped it.",
+  "http_inputs": {
+    "source_sha256": "93cb440ef867242364ec1a4f8524df0897598516f9462aa3e3adf15d4d6233c4",
+    "stock_providers": {
+      "mod_dav_svn.so": {
+        "path": "C:\\Polarion\\bundled\\apache\\modules\\mod_dav_svn.so",
+        "sha256": "f7c580dfc0c41cc9a3655c1e03688731dfdbabd00cf55971aede51b5472a9121"
+      },
+      "mod_authz_svn.so": {
+        "path": "C:\\Polarion\\bundled\\apache\\modules\\mod_authz_svn.so",
+        "sha256": "3633412c666240517a7e4205bfa1b77b0b28c08948acd20033d6ba0d6f824d48"
+      }
+    },
+    "apache_dependencies": {
+      "apache/bin/ab.exe": "3356e3ce8a0abd73e34807c4ab91c193b4ba6ee093e58fdd836a2a05d8604e6e",
+      "apache/bin/abs.exe": "86dfcefc26621a14c795b31986ec35f4f304643a6e20d25b49e073d03e0cf1d6",
+      "apache/bin/ApacheMonitor.exe": "c1c7482f85ac1964896630fb06d75be832c0e266aaddf51aacbde56a28dff3cd",
+      "apache/bin/apr_crypto_openssl-1.dll": "c16ec80d28a4bea7db3cadfc52798179faf6c90c8ea8c3c759cb33e7d55408fb",
+      "apache/bin/apr_dbd_odbc-1.dll": "a37c1b007bb607db93d7d74939314339e3e62e88cb23842bff71f39d6fa6c7d7",
+      "apache/bin/apr_dbd_pgsql-1.dll": "aba5a30851b6115ddef427ef4ee7f781b79af3a47821c41bf973f1a81e212e06",
+      "apache/bin/apr_ldap-1.dll": "addc755bbf33121dd30e7ab59fbbda66cfa34e9205db84d5f808d7adc814dafe",
+      "apache/bin/htcacheclean.exe": "bf9383a548e2498c79b2bd82c3c10c8205e26373b84a408c6b858b8d3958180d",
+      "apache/bin/htdbm.exe": "1da0badfae92879d620db79786c902deb6d29fbe22b6c4cbf9113fb700b23666",
+      "apache/bin/htdigest.exe": "ed14b31638f93597ab89f8d2303372ec33eb3d23bdd791921114646e94019756",
+      "apache/bin/htpasswd.exe": "f31c98278f3eb74b503a9a7cb50711e4253c731f80cd018f113459ab08ca559e",
+      "apache/bin/httpd.exe": "b85df9a28ddf0625d04402a8dad333f7770934f32c117b276e78c9424809fb11",
+      "apache/bin/httxt2dbm.exe": "fe3448747e8ca778f76a910a94805d9892960ff83f4a5ee216e7f1355af7867a",
+      "apache/bin/icudt77.dll": "26c6b5923c814dab36caeabd19ea7b8006786c80215dae270c8444cb528ed3bf",
+      "apache/bin/icuin77.dll": "e825807402d86307574c88e54ded5845d06b57e010b58b7975a2ab2d07ca7f6a",
+      "apache/bin/icuio77.dll": "8892f4b00f75524d70e5fa91c122a584d14faef7631fac40afff52f3fcfa6cae",
+      "apache/bin/icutu77.dll": "08cfa69abde3af84eccc98040653092710026fdfd65f6f3cddb91bffa7a6e62c",
+      "apache/bin/icuuc77.dll": "465ac249e54de36640d85e084e0039acc4f518eda7ee4a9bbee2826ab5c46829",
+      "apache/bin/libapr-1.dll": "587bcf93d5bdd1a5774ab271d2002f51baab09d9b9e4615a5751ef8711f691c8",
+      "apache/bin/libaprutil-1.dll": "7dbc6239fb56681761b6c7438a53182b028f9b89babec9c68a7cf02cb30e4774",
+      "apache/bin/libcrypto-3-x64.dll": "54c0a88da398559c3daec198d7af8f020ff6fbeead38dbacd97d21ae920c3a00",
+      "apache/bin/libcurl.dll": "7d756f341091924063baa4f9fd79b5a013125e0d5d876badc1e355310e0857f8",
+      "apache/bin/libecpg.dll": "16a8bafadb8380d22007713559542414e891f5f74648c8790c8b17be5b4e8361",
+      "apache/bin/libecpg_compat.dll": "4ff38e031db75f3259fd0021becd4c4ead15b996ddd343cd80be625ee533a2cf",
+      "apache/bin/libexpat.dll": "ca01642a063b89ee58ea7c383df55cd38ae8776c311150ef3ae3c1cc963dc9e1",
+      "apache/bin/libhttpd.dll": "ef92c6e04dc0e938a16a939a4c71241f6e6901db22e553bee74ab3f5146106be",
+      "apache/bin/libiconv-2.dll": "6095b3fad19fff040aeae05865c28fdeb455526fca109c3216f6ca737af60249",
+      "apache/bin/libintl-9.dll": "1125ac8dc0c4f5c3ed4712e0d8ad29474099fcb55bb0e563a352ce9d03ef1d78",
+      "apache/bin/liblz4.dll": "096af775241b3bd4b1c3d79c83b103bb8f02da54ec4cd76c5d49eef61a68ad01",
+      "apache/bin/libpgtypes.dll": "de59a200591d4a58e0b4afaef65603abf99e2ed9dcc01804c30e1ebfd2a8f948",
+      "apache/bin/libpq.dll": "98d8e12f814ef539ded440195681c0163079dc5871d7fb278de051c2e2d4cba0",
+      "apache/bin/libssl-3-x64.dll": "0ac3d836a2fa84dee83bd06a4abfaf8ab7ded689420edc76febc185500e2d6e1",
+      "apache/bin/libsvn_client-1.dll": "5329c826a19053064516c1e724dfa706c93932b2e69e2cdaf7c08e14927f44ea",
+      "apache/bin/libsvn_delta-1.dll": "f87f50cc8664bf1735eda4c0d6e8222f89b5596991e20d68e480c73081eec0e1",
+      "apache/bin/libsvn_diff-1.dll": "e5e09e4a4523a3ad2469bfb0fcfe5a30a74875fb21bbf2443e8ae9b8a3934ce6",
+      "apache/bin/libsvn_fs-1.dll": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+      "apache/bin/libsvn_fs_fs-1.dll": "1a4bc908659a7179dfbca1142b7434920fbbc2dee72bc11940c972f988f09323",
+      "apache/bin/libsvn_fs_util-1.dll": "cd1efa62635c3911881538231956c28651ab0b43c17e78e923504298993591fc",
+      "apache/bin/libsvn_fs_x-1.dll": "a753ac936c66543d1660fdac8369f45c0e509c68fc03f0c63f015f60312c0942",
+      "apache/bin/libsvn_ra-1.dll": "13b3fe099e2db01209a0318c1b0c5079eb1ff5363e968eb1d86946d301a3155b",
+      "apache/bin/libsvn_repos-1.dll": "ecbdf6370b98613c17cc31a3f95467e138eca24318c3276adcb888181f1ae5b9",
+      "apache/bin/libsvn_subr-1.dll": "601dd8e8960d2aad3b7881bddf1355701cd676e2d17a3caef7c3dc72f6e347f8",
+      "apache/bin/libsvn_wc-1.dll": "2eb812f2d588b77632b7677a09dd0520e366f1289978508b137d2718b06e72db",
+      "apache/bin/libwinpthread-1.dll": "ffe2d56375bb4e8bdee9037df6befc5016ddd8871d0d85027314dd5792f8fdc9",
+      "apache/bin/libxml2.dll": "1cb308eb9be9063eda714549bacda541cc711843c3ab45f91ae91d3ae046dba9",
+      "apache/bin/libxslt.dll": "8226fad0fc6e9b79b14203d4f5263ddec5764c0108aa7c17622dd77f311669a6",
+      "apache/bin/libzstd.dll": "287e7e474961e8886a3d961e2c07da647a7ac8d60d97023545f3a3ecf604daba",
+      "apache/bin/logresolve.exe": "aa6b379123ee77e496dfd0716cd99f1743967c4da495597cf3910ee127a71c1f",
+      "apache/bin/openssl.exe": "35e9fed2ff43eb121c7c6f2b23d2c33e34b5a5571cca600f0ef5569017c4041a",
+      "apache/bin/pcre.dll": "488e482e4e43d01825997820f0df355c43634c57920027b5f4098fc18601162e",
+      "apache/bin/pcreposix.dll": "06c07320b40c089b590c0054cc91158ec312625823af0f6b28bbfb7cb54bdb8f",
+      "apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+      "apache/bin/rotatelogs.exe": "7d474313a1effef0db181c015becb14b823c43c4aa272b1c02f9bef72575aa0b",
+      "apache/bin/sqlite3.dll": "96e2412fb6e72a202700f0c368b8ea64f49c634ee4f3dc7b0e0d6bd2d4a7edf1",
+      "apache/bin/sqlite3.exe": "d4edb84c3c72da379395b60347c8c3ab52ca3c9e77de4883a9c2e30083b130aa",
+      "apache/bin/testplug.dll": "1a8225dcf5a60c719d2ea98f5493fcb706558ac42b118c536e762b40d0f61a99",
+      "apache/bin/vcruntime140.dll": "d66c3b47091ceb3f8d3cc165a43d285ae919211a0c0fcb74491ee574d8d464f8",
+      "apache/bin/wxbase3211u_net_vc_x64_custom.dll": "f707ee1d13ed5d3264a6b95dbb6cc4cd79e5d663180a91dca80704b1d97783eb",
+      "apache/bin/wxbase3211u_vc_x64_custom.dll": "cc6b32bb8cbc1ecd798a8e08144671bb0542e75217ee5b0f9a76fab9146b88be",
+      "apache/bin/wxbase3211u_xml_vc_x64_custom.dll": "4c716cb9407ed90331d677b55e82b3e31a16ff6f5adf9493321594d01fa200d3",
+      "apache/bin/wxmsw3211u_adv_vc_x64_custom.dll": "e9b0906ec69d7656228f564596ae882a8d68f37b5021f490ebcf2aae289eb742",
+      "apache/bin/wxmsw3211u_aui_vc_x64_custom.dll": "ded33cdf2455389eaef3e9c2bd6bca04d3edfbea9e7f53393ee6f8bab2ae124c",
+      "apache/bin/wxmsw3211u_core_vc_x64_custom.dll": "d658d50d6820d17ac4de22bd66b93799595d63c7469ca6a1d99f479a838b67b8",
+      "apache/bin/wxmsw3211u_html_vc_x64_custom.dll": "74b2e9f9f4b690b554733f1be1e4412c27ea5e0b0a6cd67d05e3895eafb2946e",
+      "apache/bin/wxmsw3211u_xrc_vc_x64_custom.dll": "24bb563eaed37c5b87d238fab8183eac8f66dbf4c67b06c2b9fa54a1234e020f",
+      "apache/bin/xmlwf.exe": "3d1e72c15750eb110dd7f91402531a4d3c9e3617c74dd4abdbfdfbbbc9e9750b",
+      "apache/bin/z.dll": "70bde905611ad54a0ac3cb3ba2c76ce4406a52c0d122f13c3af6a098c0fb5ceb",
+      "apache/bin/zlib.dll": "70bde905611ad54a0ac3cb3ba2c76ce4406a52c0d122f13c3af6a098c0fb5ceb",
+      "apache/bin/zlib1.dll": "890afa7a17fb66308e0026631070409138b157ef2773c0a41d22a76943f7aedf",
+      "apache/modules/mod_authz_core.so": "521849eb38e9d5510ff77ac891b9e2b006161af9604568d71751c9119163264e",
+      "apache/modules/mod_dav.so": "a8ed4cec75826b9ab67d25ae87ac77928390302ed2986ce465be8f5fc8e7917f",
+      "apache/modules/mod_authn_core.so": "f7d9bd7deb30c94c804bfdbc4aa41f50003522390e7f1394ce258c889cf730ad",
+      "apache/modules/mod_auth_basic.so": "7ef4f5ae1fda0524bde88d4e605956bb4abe16da836a16a3a6e2b0c1a311617c",
+      "apache/modules/mod_authn_file.so": "d59f5f1b78f083a42086a9622c22b140968a716f5d5f1b54e4697d752bf2292a",
+      "apache/modules/mod_authz_user.so": "2ee1151d05ba39167b0c99fad4697e022af2c52cf98b66e0baa58216f4993589",
+      "apache/modules/mod_log_config.so": "af0ad192a0a1db3d59e5ff730fe4f96bd8bd0b928dbbf197b74d25fe8f79954a",
+      "apache/modules/mod_headers.so": "b4c45d0e366b2ad108cacbee16d1c4890f9fb4c5791233eccf5249454234e532",
+      "apache/modules/mod_ssl.so": "7fbd6c0b6b72737585db407058c297fe866ea7071d5742b2b8d7a26d865c2102",
+      "apache/modules/mod_socache_shmcb.so": "bad1cfbe8e6f4d8666794410c761e11fb75fce728939b50f27d07831ca5a1e5d",
+      "apache/modules/mod_proxy.so": "40b25acb3bfaca48180f309a2eb22c21dc66e053c48018851e7da1656cb2a13a",
+      "apache/modules/mod_proxy_http.so": "2d57038efed436768a68f496da065d3241b83c9d8b5f2dd31baa9d26d8f3897c",
+      "apache/modules/mod_proxy_balancer.so": "13a750b6b24a96dc5269ae36d48fb762b0fded704d0e2f8599e4d6cfb926f8f0",
+      "apache/modules/mod_slotmem_shm.so": "cb253400509450e7fc5830a5d79ae5b73e77f18f741797526df20b8d81653a4b",
+      "apache/modules/mod_lbmethod_byrequests.so": "24e8b5311017fe540b72a113f4b8086259e1b875aef73ef2a67c320150f49727"
+    },
+    "apache_version": "2.4.68",
+    "native_products": {
+      "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "cef59b67b3754074100ba90803348b9a732a61e5b45fd72cd51297b03987230d",
+      "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+      "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+    }
+  },
+  "tls": {
+    "https-basic": {
+      "fsfs": {
+        "verification": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "0a8ee84090cdcd80da2fd845ae073a51c63f7c475390d230d47032d6fa279e60",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.032
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "certificate_exception_cache_files": [],
+        "authority_sha256": "df01ed963c3aa661f480d3f673a43238d6ad03e4323a7c2c8458b535fc4ab809"
+      },
+      "pgvn": {
+        "verification": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "0a8ee84090cdcd80da2fd845ae073a51c63f7c475390d230d47032d6fa279e60",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.031
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.032
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "certificate_exception_cache_files": [],
+        "authority_sha256": "df01ed963c3aa661f480d3f673a43238d6ad03e4323a7c2c8458b535fc4ab809"
+      }
+    },
+    "https-lock": {
+      "fsfs": {
+        "verification": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "3e07a998331d579dbd484a68bd21dc267c690e1bec388484751d0d2a40bea05e",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.016
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.016
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.016
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "certificate_exception_cache_files": [],
+        "authority_sha256": "d2b6e8b1b80180a9b594699f028ec72320b7dc7730ce21bbf865d4c091ea03b4"
+      },
+      "pgvn": {
+        "verification": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "3e07a998331d579dbd484a68bd21dc267c690e1bec388484751d0d2a40bea05e",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.016
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.015
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.016
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "certificate_exception_cache_files": [],
+        "authority_sha256": "d2b6e8b1b80180a9b594699f028ec72320b7dc7730ce21bbf865d4c091ea03b4"
+      }
+    }
+  },
+  "preserved_attempts": [
+    {
+      "test_id": "m6-network-d6fcfa3b95ef",
+      "status": "PASS",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "46c766bfd58f435ba89996210b91af384c459887972ec346559986e93c917248",
+      "build_manifest_sha256": "b9b5b457c76be7889e7391c7a5497b827c08163eac14b56e4f2426bd0dff2b60"
+    },
+    {
+      "test_id": "m6-network-d7923ff331af",
+      "status": "FAIL",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {},
+        "pgvn": {}
+      },
+      "upstream_python_tests_executed": 0,
+      "report_sha256": "a17d692291af6fd34f1edb20792c69ff0f98b55e619e0fda4eb0f360e0e9f11a",
+      "build_manifest_sha256": "b9b5b457c76be7889e7391c7a5497b827c08163eac14b56e4f2426bd0dff2b60"
+    },
+    {
+      "test_id": "m6-network-db31d5cc66a7",
+      "status": "PASS",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "6ecd8193a4a7ff8c129b9aed3ec0ea5cee262bc085318f4340d76876a233ffe4",
+      "build_manifest_sha256": "b9b5b457c76be7889e7391c7a5497b827c08163eac14b56e4f2426bd0dff2b60"
+    },
+    {
+      "test_id": "m6-network-561cc791fbf7",
+      "status": "PASS",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 12
+        },
+        "pgvn": {
+          "PASS": 12
+        }
+      },
+      "upstream_python_tests_executed": 24,
+      "report_sha256": "6c657ff27739120f59457bf5a574258abe03a66f8390620057c26c1e86ae82b8",
+      "build_manifest_sha256": "5f97eda47e105411219c8dcb5fdb1019aa0764f1568ef5e07d44409e8c3677d4"
+    },
+    {
+      "test_id": "m6-network-23b8e0ec6a58",
+      "status": "PASS",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 12
+        },
+        "pgvn": {
+          "PASS": 12
+        }
+      },
+      "upstream_python_tests_executed": 24,
+      "report_sha256": "720e530f8735fad4cc3d4657dd2b20278ead32d69ce307fbabdb60c0e09b80c0",
+      "build_manifest_sha256": "5f97eda47e105411219c8dcb5fdb1019aa0764f1568ef5e07d44409e8c3677d4"
+    },
+    {
+      "test_id": "m6-network-72f9dc6ebdc7",
+      "status": "PASS",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "8c9b74371b71935bf4f28ef762f1543500c7abe39aa26be21cc1922adab91957",
+      "build_manifest_sha256": "5f97eda47e105411219c8dcb5fdb1019aa0764f1568ef5e07d44409e8c3677d4"
+    },
+    {
+      "test_id": "m6-network-e72fd150a4ad",
+      "status": "PASS",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "upstream_python_tests_executed": 4,
+      "report_sha256": "5f9558d85ad2078cc6ecfc65460764ae79fc3a752adf189af379bc0d9287552b",
+      "build_manifest_sha256": "5f97eda47e105411219c8dcb5fdb1019aa0764f1568ef5e07d44409e8c3677d4"
+    },
+    {
+      "test_id": "m6-network-474c2341d2fb",
+      "status": "PASS",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        },
+        "pgvn": {
+          "PASS": 67,
+          "XFAIL": 1,
+          "SKIP": 3
+        }
+      },
+      "upstream_python_tests_executed": 136,
+      "report_sha256": "abf46a02c3509bd7734aed26164b31d0958f0719956e916208a648d77c46fda9",
+      "build_manifest_sha256": "5f97eda47e105411219c8dcb5fdb1019aa0764f1568ef5e07d44409e8c3677d4"
+    }
+  ],
+  "fixture_fixes": [
+    "Use localhost for original Serf DNS-name matching; retain private CA chain/hostname validation.",
+    "Listen on IPv4 and IPv6 loopback for TLS after a measured 2.062-second localhost TCP fallback versus 0.016 seconds for 127.0.0.1 in the IPv4-only fixture.",
+    "Override the original direct HTTPS helper at its fixture boundary to verify chain and hostname."
+  ],
+  "tls_scope": "Two-day private CA and server certificate; private client configuration; no machine trust-store writes.",
+  "native_aliases_verified_absent": true,
+  "frozen_baseline": {
+    "path": "runtime/pgvn/baselines/m6-http-final-cb9cb744cb1f",
+    "index_sha256": "0dcb9ce52717eea39cbb60784be82dd8b231fd68cb1cba747cf0636d1f80cb98",
+    "files": 208
+  },
+  "previous_baselines": [
+    {
+      "path": "runtime/pgvn/baselines/m6-http-first-attempt-d7923ff331af",
+      "index_sha256": "288f7e38c1524a1e1279f72dbfeb0693cf6d7c0c4146afcd22fd9bbf32d524e1",
+      "files": 39
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-http-ipv4-474c2341d2fb",
+      "index_sha256": "dec43f2a0b6b7962b7b5dbb175a6ffbfbe342c450c6ee08325e3eadd398c73e1",
+      "files": 105
+    }
+  ],
+  "cleanup": {
+    "all_job_active_processes_zero": true,
+    "monitor_tokens_created": 0,
+    "temporary_windows_services_created": 0,
+    "databases_and_roles_retained": true
+  },
+  "current_build_full_m5": "Pending fresh browser evidence and explicit authorization for the broader M5 fixture scope.",
+  "pending": [
+    "Remaining original suites and complete per-case applicability ledger.",
+    "Special HTTP authz mounts and Windows cmd_alternative hook coverage.",
+    "Fresh full M5/browser regression on core 492cced products.",
+    "Maintenance semantics, final-product history/backup, fault ledger, standby fencing and performance.",
+    "Clean Windows host/reboot and isolated Polarion application acceptance."
+  ]
+}

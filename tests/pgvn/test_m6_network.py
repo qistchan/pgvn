@@ -1,7 +1,7 @@
-"""Isolated original upstream assertions over native SVN and stock FSFS.
+"""Isolated original upstream assertions over SVN/HTTP/HTTPS and stock FSFS.
 
 --plan prepares a single-use frozen-input run. --execute-plan executes only
-that run. The initial transport is svn; HTTP/HTTPS remain separate work.
+that run. Every transport uses only private loopback service processes.
 """
 from pathlib import Path
 from collections import Counter
@@ -27,13 +27,18 @@ from catalog_upstream_network import read_lock,verify_inputs,materialize_snapsho
 
 OWN=('tests/pgvn/test_m6_network.py','tests/pgvn/upstream_network_entry.py','tests/pgvn/upstream_hook_bridge.py')
 
-def identity():
+def identity(protocol='svn'):
+    assert protocol in ('svn','http','https')
     manifest_path=ROOT/'artifacts/pgvn/build/manifest.json';manifest=read(manifest_path)
     for name in OWN:assert sha(ROOT/name)==manifest['sources'][name],'Unregistered network input: '+name
     stock=RUNTIME/'bin/svnserve.exe';assert sha(stock)==manifest['runtime_dependencies']['bin/svnserve.exe']
-    return {'manifest_sha256':sha(manifest_path),'sources':{n:sha(ROOT/n) for n in OWN},
+    result={'manifest_sha256':sha(manifest_path),'sources':{n:sha(ROOT/n) for n in OWN},
             'tools':tools_identity(),'helpers':helpers_identity(),
             'stock_svnserve_sha256':sha(stock),'python_sha256':sha(Path(sys.executable))}
+    if protocol!='svn':
+        import upstream_network_http as http
+        result['http']=http.identity(manifest)
+    return result
 
 def upstream_inputs():
     manifest=read(ROOT/'artifacts/pgvn/build/manifest.json');source=Path(manifest['inputs']['subversion'])
@@ -54,22 +59,24 @@ def plan(args):
     assert re.fullmatch('[a-z_]+_tests',args.suite)
     source,archive,lock=upstream_inputs();suite=suite_catalog(source,source/'subversion/tests/cmdline'/(args.suite+'.py'))
     selected=numbers(args.cases);assert max(selected)<=suite['test_count']
+    frozen=identity(args.protocol)
     suffix=uuid.uuid4().hex[:12];test_id='m6-network-'+suffix
     work=RUNTIME/'tests'/test_id;work.mkdir(parents=True)
     value={'format':1,'test_id':test_id,'work':work.relative_to(ROOT).as_posix(),
            'database':'pgvn_m6_net_'+suffix,'owner':'pgvn_migrate_'+suffix,
            'endpoint':'127.0.0.1:16432','cluster_data_directory':str(RUNTIME/'pg-primary'),
-           'inputs':identity(),'suite':args.suite,'cases':selected,'protocol':'svn',
+           'inputs':frozen,'suite':args.suite,'cases':selected,'protocol':args.protocol,
            'upstream_cases':[case for case in suite['tests'] if case['id'] in selected],
            'prepared_at':dt.datetime.now(dt.timezone.utc).isoformat(),'milestone_complete':False,
            'actions':['Create one new pgvn_m6_net_ database and non-superuser migration owner in the dedicated cluster.',
                       'Create standard SVN fixture accounts and a key; no monitor tokens.',
-                      'Run unchanged selected Python assertions serially through stock svnserve+FSFS and native pgvnserve on loopback ephemeral ports.',
+                      'Run unchanged selected Python assertions serially through stock FSFS and native PgVN over '+args.protocol+' on loopback ephemeral ports.',
+                      'HTTPS uses a private two-day CA and verifies hostname/chain in private client configuration; no machine trust-store changes.',
                       'Bind native admin/configuration/hook/lifecycle fixtures; retain all original assertions and decorators.',
                       'Stop owned servers and child jobs; retain database, roles, synthetic data and logs for diagnosis.']}
     path=work/'plan.json';path.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({'status':'PREPARED_NOT_EXECUTED','plan':str(path),'database':value['database'],
-                      'suite':args.suite,'cases':selected,'plan_sha256':sha(path)}))
+                      'suite':args.suite,'cases':selected,'protocol':args.protocol,'plan_sha256':sha(path)}))
     return 0
 
 class BasicLimits(ctypes.Structure):
@@ -135,7 +142,8 @@ def listen(process,number):
 
 def execute(path):
     path=Path(path).resolve();assert path.name=='plan.json' and path.is_relative_to((RUNTIME/'tests').resolve())
-    value=read(path);assert value['format']==1 and value['inputs']==identity() and value['protocol']=='svn'
+    value=read(path);protocol=value['protocol']
+    assert value['format']==1 and protocol in ('svn','http','https') and value['inputs']==identity(protocol)
     match=re.fullmatch('m6-network-([0-9a-f]{12})',value['test_id']);assert match
     suffix=match[1];work=(ROOT/value['work']).resolve()
     assert work==path.parent==(RUNTIME/'tests'/value['test_id']).resolve()
@@ -145,7 +153,7 @@ def execute(path):
     assert not (work/'started.json').exists(),'Never reuse or silently restart an executed fixture plan'
     (work/'started.json').write_text(json.dumps({'started_at':dt.datetime.now(dt.timezone.utc).isoformat(),'plan_sha256':sha(path)}),encoding='utf-8')
     database=value['database'];owner=value['owner'];fixture=Fixture();start=time.monotonic()
-    processes=[];cleanup=[];rounds=[];snapshot=None;error=None;status='FAIL'
+    processes=[];cleanup=[];rounds=[];snapshot=None;error=None;status='FAIL';tls=None
     dsn=lambda role:f'host=127.0.0.1 port=16432 dbname={database} user={role} sslmode=disable'
     def admin(*args,role='pgvn_admin',input=None):
         result=invoke(RUNTIME/'bin/pgvnadmin.exe',[*args,'--json'],work,environment(PGVN_DSN=dsn(role)),input=input)
@@ -167,10 +175,20 @@ def execute(path):
         domain='upstream-'+suffix
         for user in ('jrandom','jconstant'):
             admin('user','set',domain,user,'--key-file',key,input=b'rayjandom')
+        if protocol=='https':
+            import upstream_network_http as http
+            temporary=work/'tls-tmp';temporary.mkdir()
+            tls=http.tls_material(work,environment(TEMP=str(temporary),TMP=str(temporary)))
         for backend in ('fsfs','pgvn'):
             area=work/backend;area.mkdir();temporary=area/'tmp';temporary.mkdir()
             number=port();env=environment(TEMP=str(temporary),TMP=str(temporary))
-            if backend=='fsfs':
+            server_inputs=None;tls_check=None
+            if protocol!='svn':
+                import upstream_network_http as http
+                server_inputs=http.configure(area,backend,number,database,domain,
+                    read(ROOT/'artifacts/pgvn/build/manifest.json'),env,tls)
+                command=server_inputs['command']
+            elif backend=='fsfs':
                 command=[RUNTIME/'bin/svnserve.exe','--daemon','--foreground','--root',area,'--listen-host','127.0.0.1','--listen-port',number]
             else:
                 config=area/'server.ini';config.write_text('[pgvn]\nconnection = '+dsn('pgvn_service')+
@@ -179,22 +197,26 @@ def execute(path):
                     '\nlisten-host = 127.0.0.1\nlisten-port = '+str(number)+'\n',encoding='utf-8')
                 command=[RUNTIME/'bin/pgvnserve.exe','--config',config,'--monitor-disabled']
             server=OwnedProcess(command,area,env,area/'server.log');processes.append(server);listen(server,number)
+            if tls:tls_check=http.verify_tls(number,tls)
             context={'work':str(area),'backend':backend,'database':database,'identity_domain':domain,
                      'fsfs_control_work':str(work/'fsfs'),
                      'manifest_sha256':value['inputs']['manifest_sha256'],'snapshot':snapshot['root'],
                      'snapshot_manifest_sha256':snapshot['manifest_sha256'],'suite':value['suite'],
-                     'cases':value['cases'],'url':f'svn://127.0.0.1:{number}'}
+                     'cases':value['cases'],'url':f'{protocol}://'+('localhost' if tls else '127.0.0.1')+f':{number}',
+                     'httpd_version':value['inputs'].get('http',{}).get('apache_version'),
+                     'tls_authority':tls['authority'] if tls else None}
             configuration=area/'entry.json';configuration.write_text(json.dumps(context,indent=2)+'\n',encoding='utf-8')
             child=OwnedProcess([sys.executable,'-I','-B',ROOT/'tests/pgvn/upstream_network_entry.py',configuration],
                                area,env,area/'upstream.log');processes.append(child)
             child.process.wait(timeout=1800);child_cleanup=child.stop();cleanup.append(child_cleanup)
             result_path=area/'entry-result.json'
             round_result={'backend':backend,'child_exit_code':child_cleanup['exit_code'],
-                          'log':str(area/'upstream.log'),'log_sha256':sha(area/'upstream.log')}
+                          'log':str(area/'upstream.log'),'log_sha256':sha(area/'upstream.log'),
+                          'server_inputs':server_inputs,'tls_verification':tls_check}
             if result_path.exists():round_result.update(read(result_path));round_result['result_sha256']=sha(result_path)
             else:round_result.update(status='FAIL',error='Entry terminated before producing an outcome')
             rounds.append(round_result);cleanup.append(server.stop())
-        assert identity()==value['inputs'],'Frozen network inputs changed during execution'
+        assert identity(protocol)==value['inputs'],'Frozen network inputs changed during execution'
         assert all(r['status']=='PASS' for r in rounds),'At least one original upstream round failed'
         assert len(rounds)==2
         status='PASS'
@@ -205,7 +227,7 @@ def execute(path):
                 try:cleanup.append(process.stop())
                 except BaseException:
                     status='FAIL';error=(error or '')+'\nCleanup: '+traceback.format_exc()
-    report={'test_id':value['test_id'],'status':status,'component':'M6 original upstream SVN network entry',
+    report={'test_id':value['test_id'],'status':status,'component':'M6 original upstream network entry','protocol':protocol,
             'milestone_complete':False,'pgvn_601_complete':False,'database':database,'work':str(work),
             'created_at':dt.datetime.now(dt.timezone.utc).isoformat(),'inputs':value['inputs'],'plan_sha256':sha(path),
             'suite':value['suite'],'selected_cases':value['upstream_cases'],'snapshot':snapshot,'rounds':rounds,
@@ -213,7 +235,7 @@ def execute(path):
             'upstream_python_case_outcomes':sum(len(r.get('cases',[])) for r in rounds),
             'upstream_python_tests_executed':sum(c['result']!='SKIP' for r in rounds for c in r.get('cases',[])),
             'cleanup':cleanup,'error':error,'elapsed_seconds':time.monotonic()-start,
-            'scope':'Explicit original assertions and decorators over svn only, with a stock FSFS network control. HTTP/HTTPS and the full 62-suite applicability ledger remain pending.',
+            'scope':'Explicit original assertions and decorators over '+protocol+' with a stock FSFS control; remaining protocol/suite matrix and full applicability ledger are pending.',
             'monitor_tokens_created':0,'temporary_windows_services_created':0,'databases_and_roles_retained':True}
     save(report,'m6-network');return 0 if status=='PASS' else 1
 
@@ -221,6 +243,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);modes=parser.add_mutually_exclusive_group(required=True)
     modes.add_argument('--plan',action='store_true');modes.add_argument('--execute-plan')
     parser.add_argument('--suite',default='basic_tests');parser.add_argument('--cases',default='1:12')
+    parser.add_argument('--protocol',choices=('svn','http','https'),default='svn')
     args=parser.parse_args()
     return plan(args) if args.plan else execute(args.execute_plan)
 

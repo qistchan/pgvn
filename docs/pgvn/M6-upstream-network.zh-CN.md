@@ -1,6 +1,6 @@
 # M6 上游网络测试入口
 
-当前阶段：原版 SVN 网络入口已运行，完整基础套件与一个带到期时间的锁用例在 PgVN/FSFS 两侧结果一致。每侧 67 PASS、1 个原有 XFAIL、4 个原有 SKIP；PGVN-601 仍未完成，HTTP/HTTPS、其余套件和完整适用性矩阵待推进。
+当前阶段：原版 SVN、HTTP、HTTPS 网络入口已有实际断言覆盖。SVN 基础套件与 lock 53 每侧 67 PASS、1 XFAIL、4 SKIP；HTTP 和 HTTPS 的基础套件与 lock 53–54，各协议每侧 69 PASS、1 XFAIL、3 SKIP，PgVN 与原版 FSFS 结果一致。PGVN-601 仍未完成，其余套件和完整适用性矩阵继续推进。
 
 ## 可复现入口
 
@@ -67,7 +67,36 @@ python tests/pgvn/test_m6_network.py --execute-plan <新的plan.json路径>
 
 XFAIL 为原用例 63；SKIP 为 52、67、70、71，均由原始装饰器/条件产生，没有新增排除。锁用例实际调用原版 lock-helper 的 ID 绑定入口，验证带到期时间的锁信息、工作副本状态、强制解锁和重锁。每侧报告 72 个结果，实际进入 68 个用例；CLI/辅助工具检查与重复尝试不累加为新的上游覆盖。
 
-## 本轮发现与修复
+## HTTP/HTTPS 网络入口与结果
+
+同一入口通过 `--protocol` 选择传输，默认仍为 `svn`。HTTP 对照使用固定摘要的原版 mod_dav_svn/mod_authz_svn 与 FSFS；原生侧使用生产 mod_dav_pgvn/mod_authz_pgvn 和专用 pgvnhttpd。Apache 配置、工作副本和日志全部在本轮 runtime 目录。
+
+```powershell
+python tests/pgvn/test_m6_network.py --plan --protocol http --suite basic_tests --cases 1:71
+python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
+python tests/pgvn/test_m6_network.py --plan --protocol https --suite basic_tests --cases 1:71
+python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
+python tests/pgvn/test_m6_network.py --plan --protocol https --suite lock_tests --cases 53:54
+python tests/pgvn/test_m6_network.py --execute-plan <新计划路径>
+# HTTP 锁测试将上一条计划的 --protocol 改为 http，另行生成计划。
+```
+
+| 最终运行 | 传输/选择 | PgVN 与原版 FSFS 各侧结果 |
+| --- | --- | --- |
+| `m6-network-45d58c9702e0` | HTTP / basic 1–71 | 67 PASS、1 XFAIL、3 SKIP |
+| `m6-network-cb9cb744cb1f` | HTTPS / basic 1–71 | 67 PASS、1 XFAIL、3 SKIP |
+| `m6-network-a538be4fd8b1` | HTTP / lock 53–54 | 2 PASS |
+| `m6-network-3fe9574d5f70` | HTTPS / lock 53–54 | 2 PASS |
+
+XFAIL 63 和 SKIP 67、70、71 均由原版条件产生；没有新增排除。原用例 52 在 HTTP/HTTPS 下适用并通过，比 SVN 组少一个跳过。每个 HTTP 协议各侧为 73 个不同用例结果，实际进入 70 个用例（含原有 XFAIL）。重复运行、TLS 探测及 SVN 烟测不累加为新覆盖。两项锁用例包含原版 C lock-helper 和直接 DAV `LOCK` 请求，验证到期时间与工作副本锁状态。
+
+HTTPS 每轮生成两天有效的私有 CA 与服务证书，通过私有 SVN 客户端配置提供 CA，保留链和主机名验证，不写系统信任库。直接 HTTPS 帮助函数也在 fixture 边界使用验证证书的上下文。两侧均通过未知 CA、错误主机名的拒绝检查；最终证书异常缓存为空。TLS 分别验证 IPv4、IPv6 与 `localhost` 的回环连接，原始报告记录证书摘要和连接耗时。
+
+首轮 `m6-network-d7923ff331af` 使用 IP URL 时，固定原版客户端在两侧均于初始化阶段报告证书主机名不符，尚未执行原用例；同一证书的 Python/OpenSSL IP 校验通过。改用证书 DNS SAN 中的 `localhost` 后，两侧原用例通过，证书校验保持开启。随后实测 IPv4 单独监听时 `localhost` TCP 连接为 2.062 秒、直接 IPv4 为 0.016 秒；夹具补充 IPv6 回环监听并统一 TLS ServerName。原 FAIL、IPv4 夹具通过记录及对应源文件均冻结保留，最终选集在新输入上重跑。上述时间是夹具诊断，不是 PgVN 性能测量。
+
+本轮只修改测试入口，五个生产产品与 `492cced` 的核心修复候选逐字节相同。全部测试 Job 清空，隔离库及所有者保留；未创建监控令牌或 Windows 临时服务。固定报告、源/产物摘要和三组历史/最终基线见 [HTTP/HTTPS 组件证据](evidence/m6-network-http.json)。HTTP 特殊授权挂载、完整套件及逐项适用性、Windows cmd_alternative hook 等边界仍待验证；新的浏览器与完整 M5 回归仍待单独授权和执行。
+
+## SVN 入口发现与修复
 
 首个完整基础运行 `m6-network-be6b9be8677f` 保留 FAIL：Windows 在 hook 读取期间短暂拒绝上下文文件替换，以及上述本地样本缺失。上下文改为内容未变化时不重写、完整文件替换并有限重试；同时记录样本重定向。
 

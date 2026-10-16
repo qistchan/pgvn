@@ -7,14 +7,17 @@ from pathlib import Path
 import configparser
 import hashlib
 import importlib
+import http.client
 import json
 import os
 import re
+import ssl
 import subprocess
 import sys
 import threading
 import time
 import traceback
+from urllib.parse import urlparse
 
 ROOT=Path(__file__).resolve().parents[2]
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
@@ -61,8 +64,32 @@ def main():
                 setattr(main,name+'_binary',str(ROOT/'runtime/pgvn/upstream-tools/bin'/('pgvn-upstream-'+name+'.exe')))
     bind_tools()
     original_config=main.create_config_dir
-    def create_config(*args,**kwargs):bind_tools();return original_config(*args,**kwargs)
+    def create_config(*args,**kwargs):
+        bind_tools();result=original_config(*args,**kwargs)
+        supplied_servers=kwargs.get('server_contents',args[2] if len(args)>2 else None)
+        if isinstance(supplied_servers,bytes):supplied_servers=supplied_servers.decode('utf-8','replace')
+        explicit_tls=supplied_servers is not None and re.search(r'^\s*ssl-[a-z-]+\s*=',supplied_servers,re.M|re.I)
+        if config.get('tls_authority') and not explicit_tls:
+            authority=Path(config['tls_authority']).resolve()
+            assert authority.is_relative_to(work.parent/'tls') and authority.is_file()
+            # Upstream --ssl-cert caches an accepted certificate exception.
+            # Give the normal SVN TLS verifier a private CA instead. Repeated
+            # [global] sections preserve caller settings using SVN's INI rules.
+            directory=args[0] if args else kwargs['cfgdir']
+            with (Path(directory)/'servers').open('a',encoding='utf-8') as stream:
+                stream.write('\n[global]\nssl-authority-files = '+authority.as_posix()+'\nssl-trust-default-ca = no\n')
+        return result
     main.create_config_dir=create_config
+    original_http=main.create_http_connection
+    def create_http_connection(url,debuglevel=9):
+        parsed=urlparse(url)
+        if parsed.scheme=='https' and config.get('tls_authority'):
+            assert parsed.hostname in ('localhost','127.0.0.1'),'TLS helper target is outside the loopback fixture'
+            connection=http.client.HTTPSConnection(parsed.hostname,parsed.port,
+                context=ssl.create_default_context(cafile=config['tls_authority']))
+            connection.set_debuglevel(debuglevel);return connection
+        return original_http(url,debuglevel)
+    main.create_http_connection=create_http_connection
     original_open=main.open_pipe
     def open_pipe(command,*args,**kwargs):
         if native:
@@ -205,6 +232,7 @@ def main():
               '--bin='+str(ROOT/'runtime/pgvn/bin'),'--fs-type='+('pg' if native else 'fsfs'),
               '--server-minor-version=14','--keep-local-tmp','--srcdir='+str(snapshot),
               *map(str,config['cases'])]
+    if config.get('httpd_version'):sys.argv.append('--httpd-version='+config['httpd_version'])
     # Upstream's default arglist is captured when its module is imported.
     _,selection=main.parse_options(sys.argv[1:])
     assert not main.options.development and not main.options.list_tests and not main.options.parallel
@@ -231,6 +259,12 @@ def main():
                                   'local format-file upload sample redirected to byte-identical stock-control data'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',
                                   'Direct physical repository file operations and historical disk formats need case applicability review.'] if native else []}
+    if config.get('tls_authority'):
+        result['fixture_boundaries']+=['private CA in default client configuration; explicit caller TLS settings retained',
+                                      'direct HTTPS helper verifies certificate chain and hostname']
+        result['tls_authority_sha256']=sha(Path(config['tls_authority']))
+        result['certificate_exception_cache_files']=[str(p.relative_to(work)) for p in work.rglob('*')
+            if p.is_file() and 'svn.ssl.server' in p.parts]
     (work/'entry-result.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
     return 0 if status=='PASS' else 1
 
