@@ -57,7 +57,7 @@
   function table(columns, rows, title = "数据表") {
     const wrap = element("div", "table-wrap"), t = element("table"), head = element("thead"), tr = element("tr");
     wrap.dataset.scrollKey = JSON.stringify([state.view, state.repository, state.search, state.cursor, columns.map(c => typeof c === "string" ? c : c.label)]);
-    wrap.tabIndex = 0; wrap.dataset.focusKey = `table-${encodeURIComponent(wrap.dataset.scrollKey)}`;
+    wrap.tabIndex = 0;
     wrap.setAttribute("role", "region"); wrap.setAttribute("aria-label", `${title}，可滚动表格`);
     const caption = element("caption", "sr-only", `${title}。可聚焦表格区域，使用方向键滚动。`); t.append(caption);
     for (const column of columns) { const th = element("th", column.align === "end" ? "align-end" : "", typeof column === "string" ? column : column.label); th.scope = "col"; tr.append(th); } head.append(tr); t.append(head);
@@ -320,7 +320,7 @@
     const label = `${node.node_id} / ${node.instance_id.slice(0, 8)}`;
     if (node.component !== "dav") return mono(label);
     const box = element("details", "node-details"), summary = element("summary", "mono"); summary.append(icon("caret-down"), element("span", "", label)); summary.title = node.instance_id;
-    box.dataset.chart = `node-${node.instance_id}`; box.append(summary); const body = element("div", "dav-detail-body");
+    box.dataset.chart = `node-${node.instance_id}`; box.append(summary); const body = element("div", "dav-detail-body"); body.setAttribute("role", "group"); body.setAttribute("aria-label", `${label} · DAV 工作进程详情`);
     if (["状态未知", "心跳失联", "已停止"].includes(nodeInfo(node).text)) { body.append(element("p", "muted", "当前工作进程指标不可用。")); box.append(body); return box; }
     const info = element("div"); info.append(details([["HTTP 请求 / 失败", `${nodeValue(node, "requests")} / ${nodeValue(node, "request_errors")}`], ["正在处理请求", nodeValue(node, "requests_active")], ["SQL 调用 / 失败", `${nodeValue(node, "sql_calls")} / ${nodeValue(node, "sql_errors")}`], ["新修订 / 回执确认", `${nodeValue(node, "published_revisions")} / ${nodeValue(node, "receipt_confirmations")}`], ["遥测失败批次", nodeValue(node, "telemetry_failures")]])); body.append(info);
     const methods = Array.isArray(node.metrics?.methods) ? node.metrics.methods.slice(0, 17).filter(row => row && row.requests > 0) : [], max = Math.max(1, ...methods.map(row => row.requests));
@@ -394,7 +394,7 @@
       const monitor = panel("监控入口", "与业务命令分别计数"), body = element("div", "panel-body"); body.append(details([["已完成 HTTP 请求", number(p.monitor_requests)], ["错误响应 / 取消", number(p.monitor_errors)], ["正在处理", number(p.monitor_active)]])); monitor.append(body); columns.append(box, monitor); root.append(columns, eventPanel(state.events?.items));
     }
     for (const key of expanded) { const item = root.querySelector(`details[data-chart="${key}"]`); if (item) { item.open = true; if (item.pgvnExpandedRow) item.pgvnExpandedRow.hidden = false; } }
-    for (const e of root.querySelectorAll(".table-wrap")) { const at = scrolls.get(scrollKey(e)); if (at) { e.scrollLeft = at[0]; e.scrollTop = at[1]; } }
+    for (const e of root.querySelectorAll(".table-wrap")) { const key = scrollKey(e); e.dataset.focusKey = `table-${encodeURIComponent(key)}`; const at = scrolls.get(key); if (at) { e.scrollLeft = at[0]; e.scrollTop = at[1]; } }
     if (focused) { const target = searchFocused ? focused : focusedPage ? root.querySelector(`[data-page="${focusedPage}"]:not(:disabled)`) || root.querySelector("[data-page]:not(:disabled)") : focusedKey ? root.querySelector(`[data-focus-key="${focusedKey}"]`) : focusedChart ? root.querySelector(`details[data-chart="${focusedChart}"] summary`) : null; (target || $("main")).focus({ preventScroll: true }); }
     state.nodeStatusKey = nodeStatusKey(); healthStrip();
   }

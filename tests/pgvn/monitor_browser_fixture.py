@@ -4,6 +4,7 @@ Prints a newly generated monitor token once. It is not written to the session
 file. Write {"sequence":1,"action":"stop-peer"} to the reported control file.
 Actions: stop-peer, start-peer, block-db, restore-db, revoke-token, stop.
 The fixture expires after fifteen minutes and always restores DB access.
+Use --dav --dav-peer for two simultaneously live DAV instances.
 """
 import hashlib
 import argparse
@@ -16,7 +17,9 @@ from test_m4_smoke import ready_status, until
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--dav',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--dav',action='store_true')
+    parser.add_argument('--dav-peer',action='store_true');args=parser.parse_args()
+    if args.dav_peer and not args.dav:parser.error('--dav-peer requires --dav')
     setup.setup_database(); setup.fixture.assert_ours()
     key=setup.WORK/"browser.key"; setup.admin("key","create",key,"browser-v1")
     setup.admin("user","set","pg vn test","writer","--key-file",key,input=PASSWORD)
@@ -28,11 +31,14 @@ def main():
     for i in range(51): setup.admin("repo","create",f"分页仓库 {i:02}","--route",f"/page-{i}")
     issued=setup.admin("monitor-token","create","--label","disposable browser fixture","--expires-in",1800)
     a,b=Node("browser-main",key),Node("browser-peer",key)
-    dav=None
+    dav=None;dav_peer=None
     if args.dav:
         import test_m5_http as dav_test
         dav=dav_test.Apache('browser-dav')
         dav.config.write_text(dav.config.read_text(encoding='utf-8').replace('<Location /svn>','<Location />'),encoding='utf-8')
+        if args.dav_peer:
+            dav_peer=dav_test.Apache('browser-dav-peer')
+            dav_peer.config.write_text(dav_peer.config.read_text(encoding='utf-8').replace('<Location /svn>','<Location />'),encoding='utf-8')
     for n in (a,b):
         with n.config.open("a",encoding="utf-8") as out: out.write("node-id = "+n.name+"\n")
     state={"url":f"http://127.0.0.1:{a.monitor_port}/monitor/","database":setup.DATABASE,
@@ -59,6 +65,12 @@ def main():
                 dav_modules={name:hashlib.sha256((dav_test.APACHE/'modules'/name).read_bytes()).hexdigest() for name in ('mod_dav_pgvn.so','mod_authz_pgvn.so')})
             state['dav_host_sha256']=hashlib.sha256(dav.executable.read_bytes()).hexdigest()
             state['dav_host_runtime']=json.loads(dav_test.run(dav.executable,'--pgvn-runtime'))
+        if dav_peer:
+            dav_peer.start();dav_test.svn('info',dav_peer.url('/ui-demo'))
+            status,headers,body=dav_peer.request('POST','/ui-demo/!svn/me',b'( create-txn )',{'Content-Type':'application/vnd.svn-skel'},user='reader')
+            assert status==403,(status,body)
+            until(lambda:len(__import__('test_m4_smoke').request(a,'/api/monitor/v1/nodes',issued['token'])[0]['items'])==4)
+            state['dav_peer']={'pid':dav_peer.process.pid,'node_id':'dav-browser-dav-peer','error_request_id':headers['X-PgVN-Request-Id']}
         state.update(pid=a.process.pid,peer_pid=b.process.pid,sequence=0,action="started",status="running")
         (setup.WORK/"browser-session.json").write_text(json.dumps(state),encoding="utf-8")
         print(json.dumps(dict(state,token=issued["token"])),flush=True)
@@ -90,6 +102,7 @@ def main():
                     (setup.WORK/"browser-session.json").write_text(json.dumps(state),encoding="utf-8")
             time.sleep(.2)
     finally:
+        if dav_peer:dav_peer.close()
         if dav:dav.close()
         if blocked: setup.fixture.sql(f"ALTER DATABASE {setup.DATABASE} ALLOW_CONNECTIONS true",database="postgres")
         a.stop(); b.stop(); setup.admin("monitor-token","revoke",issued["id"])

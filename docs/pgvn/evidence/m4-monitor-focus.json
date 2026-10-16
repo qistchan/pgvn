@@ -1,0 +1,1166 @@
+{
+  "status": "FOCUS_FIX_PASS_ACCEPTANCE_PARTIAL",
+  "milestone_complete": false,
+  "created_at": "2026-10-16T02:04:42.816153+00:00",
+  "build_manifest_sha256": "4d1895f461ef9d7e9c8dca83bf11d0151c9d12810b24f7c208ad851d22d126ba",
+  "source_changes": [
+    "tests/pgvn/monitor_browser_fixture.py",
+    "web/pgvn-monitor/monitor.js"
+  ],
+  "product_changes": [
+    "runtime/pgvn/bin/pgvnserve.exe"
+  ],
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+    "runtime/pgvn/bin/pgvnadmin.exe": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "assets": {
+    "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+    "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+    "monitor.js": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5"
+  },
+  "baseline": {
+    "native_build": "c728e7f",
+    "manifest_sha256": "e9695fbad78a4070aecee53eafdbbb3b0f53b99d730dea2c21c322a41f7496c7",
+    "scope": "Unmodified c728e7f native products and assets; the new optional two-DAV fixture setup was used to reproduce the bug. This was not a fresh full baseline gate.",
+    "observation": {
+      "keys": [
+        {
+          "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+          "owner": "dav-detail-node-6bf7cbd2-fd35-6a4e-847f-b608c55f7358"
+        },
+        {
+          "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+          "owner": "dav-detail-node-632d8a37-cd29-4d42-a03a-98feed146189"
+        }
+      ],
+      "before": {
+        "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+        "meta": "采样于 2026/10/16 09:39:23 · 0.2 秒前",
+        "owner": "dav-detail-node-632d8a37-cd29-4d42-a03a-98feed146189",
+        "visibility": "visible"
+      },
+      "after": {
+        "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+        "meta": "采样于 2026/10/16 09:39:28 · 0.2 秒前",
+        "owner": "dav-detail-node-6bf7cbd2-fd35-6a4e-847f-b608c55f7358",
+        "visibility": "visible"
+      },
+      "reproduced": true
+    }
+  },
+  "focus_checks": {
+    "same_instance_after_actual_refresh": 5,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "viewports": [
+      1280,
+      375
+    ],
+    "historical_instances_retained": true,
+    "disappearing_table_falls_back_to_main": true,
+    "expected_old_shared_key_failure_retained": true
+  },
+  "m4_browser": {
+    "created_at": "2026-10-16T02:02:08.389862+00:00",
+    "fixture_stopped": true,
+    "fixture_session": "runtime/pgvn/tests/m3-credentials-ada58a65c6f2/browser-session.json",
+    "pgvnserve_sha256": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+    "assets": {
+      "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+      "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+      "monitor.js": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5"
+    },
+    "dav_host_sha256": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+    "dav_host_runtime": {
+      "product": "PgVNHTTPD",
+      "apache_base": "2.4.68",
+      "process_code_page": 65001
+    },
+    "build_manifest_sha256": "4d1895f461ef9d7e9c8dca83bf11d0151c9d12810b24f7c208ad851d22d126ba",
+    "observations": {
+      "baseline": {
+        "keys": [
+          {
+            "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "owner": "dav-detail-node-6bf7cbd2-fd35-6a4e-847f-b608c55f7358"
+          },
+          {
+            "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "owner": "dav-detail-node-632d8a37-cd29-4d42-a03a-98feed146189"
+          }
+        ],
+        "before": {
+          "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+          "meta": "采样于 2026/10/16 09:39:23 · 0.2 秒前",
+          "owner": "dav-detail-node-632d8a37-cd29-4d42-a03a-98feed146189",
+          "visibility": "visible"
+        },
+        "after": {
+          "key": "table-%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+          "meta": "采样于 2026/10/16 09:39:28 · 0.2 秒前",
+          "owner": "dav-detail-node-6bf7cbd2-fd35-6a4e-847f-b608c55f7358",
+          "visibility": "visible"
+        },
+        "reproduced": true
+      },
+      "m4_checks": {
+        "authentication": true,
+        "narrow_layout": true,
+        "lost_peer_and_recovery": true,
+        "all_views": true,
+        "repository_pagination": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "text_only_hostile_name": true,
+        "keyboard_focus_and_refresh": true,
+        "configurable_refresh": true,
+        "paused_refresh": true,
+        "stale_database_and_unknown_nodes": true,
+        "reload_requires_token": true,
+        "token_revocation_clears_data": true,
+        "no_persistent_token": true
+      },
+      "m5_checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "refresh_retains_open_and_focus": true,
+        "narrow_details_layout": true,
+        "lost_worker_and_new_instance": true
+      },
+      "views": [
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "服务概览",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "节点状态",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "仓库状态",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "数据库状态",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "请求与错误",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "服务概览",
+          "width": 1280,
+          "theme": "dark"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "节点状态",
+          "width": 1280,
+          "theme": "dark"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "仓库状态",
+          "width": 1280,
+          "theme": "dark"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "数据库状态",
+          "width": 1280,
+          "theme": "dark"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "请求与错误",
+          "width": 1280,
+          "theme": "dark"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "仓库详情",
+          "width": 1280,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 1265,
+          "error": false,
+          "height": 900,
+          "inlineStyles": 0,
+          "kpis": 4,
+          "pageWidth": 1265,
+          "statusRegions": 1,
+          "title": "仓库详情",
+          "width": 1280,
+          "theme": "dark"
+        }
+      ],
+      "focus_cases": [
+        {
+          "theme": "light",
+          "width": 1280,
+          "kind": "DAV 方法计数",
+          "keys": [
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            }
+          ],
+          "before": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:03 · 0 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          },
+          "after": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:08 · 0 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          }
+        },
+        {
+          "theme": "dark",
+          "width": 1280,
+          "kind": "DAV 近期错误",
+          "keys": [
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            }
+          ],
+          "before": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:08 · 0 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          },
+          "after": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:13 · 0 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          }
+        },
+        {
+          "theme": "light",
+          "width": 375,
+          "kind": "DAV 方法计数",
+          "keys": [
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            }
+          ],
+          "before": {
+            "clientWidth": 360,
+            "height": 812,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:23 · 0.1 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 360,
+            "visibility": "visible",
+            "width": 375
+          },
+          "after": {
+            "clientWidth": 360,
+            "height": 812,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:28 · 0.1 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 360,
+            "visibility": "visible",
+            "width": 375
+          }
+        },
+        {
+          "theme": "dark",
+          "width": 375,
+          "kind": "DAV 近期错误",
+          "keys": [
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav / 0080fc2c · DAV 工作进程详情",
+              "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            }
+          ],
+          "before": {
+            "clientWidth": 360,
+            "height": 812,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:28 · 0.1 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 360,
+            "visibility": "visible",
+            "width": 375
+          },
+          "after": {
+            "clientWidth": 360,
+            "height": 812,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:45:38 · 0.1 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 360,
+            "visibility": "visible",
+            "width": 375
+          }
+        },
+        {
+          "theme": "dark",
+          "width": 1280,
+          "kind": "DAV 方法计数",
+          "keys": [
+            {
+              "group": "dav-browser-dav / fa75615f · DAV 工作进程详情",
+              "key": "table-dav-detail-node-fa75615f-af67-de4b-952f-841af7ae2453%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-fa75615f-af67-de4b-952f-841af7ae2453"
+            },
+            {
+              "group": "dav-browser-dav / fa75615f · DAV 工作进程详情",
+              "key": "table-dav-detail-node-fa75615f-af67-de4b-952f-841af7ae2453%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-fa75615f-af67-de4b-952f-841af7ae2453"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            },
+            {
+              "group": "dav-browser-dav-peer / 3e910a37 · DAV 工作进程详情",
+              "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+              "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+            }
+          ],
+          "before": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:47:59 · 0.1 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          },
+          "after": {
+            "clientWidth": 1265,
+            "height": 900,
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "meta": "采样于 2026/10/16 09:48:04 · 0.2 秒前",
+            "open": true,
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+            "pageWidth": 1265,
+            "visibility": "visible",
+            "width": 1280
+          }
+        }
+      ],
+      "narrow": [
+        {
+          "clientWidth": 360,
+          "height": 812,
+          "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+          "meta": "采样于 2026/10/16 09:45:28 · 0.1 秒前",
+          "open": true,
+          "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+          "pageWidth": 360,
+          "visibility": "visible",
+          "width": 375,
+          "theme": "light"
+        },
+        {
+          "clientWidth": 360,
+          "height": 812,
+          "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+          "meta": "采样于 2026/10/16 09:45:38 · 0.1 秒前",
+          "open": true,
+          "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208",
+          "pageWidth": 360,
+          "visibility": "visible",
+          "width": 375,
+          "theme": "dark"
+        }
+      ],
+      "repository": [
+        {
+          "theme": "light",
+          "first": 50,
+          "last": 3,
+          "retained": 3,
+          "detail": {
+            "focus": "main",
+            "revisions": [
+              "r1",
+              "r0"
+            ],
+            "text": "最新修订\n\nr1\n\n数据库仓库历史\n\n配置代数\n\n2\n\n当前发布版本\n\n活动事务\n\n1\n\n未完成的 SVN 事务\n\n业务锁\n\n1\n\n有效 SVN 锁\n\n返回仓库列表\n工程文档\n启用\n6b5361e2-fad0-754a-b282-fa96c13053d6\n近期修订\n2 条 / 当前样本\nr1\n2026/10/16 09:42:24\nr0\n2026/10/16 09:42:16\n活动事务\n1 条 / 当前样本\n活动事务。可聚焦表格区域，使用方向键滚动。\n事务 ID\t基础修订\t创建时间\nff35a987-5c38-7048-8df4-c60d538d4fdb\tr1\t2026/10/16 09:42:25\n业务锁\n1 条 / 当前样本\n业务锁。可聚焦表格区域，使用方向键滚动。\n路径\t所有者\t创建时间\n/readme.txt\twriter\t2026/10/16 09:42:24\n仓库信息\n数据库目录\n仓库 ID\ne59f5197-a713-3a46-b77b-432c22ffb5f2\n公开 UUID\n6b5361e2-fad0-754a-b282-fa96c13053d6\n启用状态\n启用\n最近提交\n2026/10/16 09:42:24\n本机近期相关错误\n当前实例 · 最多 200 条\n命令被权限规则拒绝\n2026/10/16 09:42:24\nsvn / commit\nsvn-000000000000000a"
+          }
+        },
+        {
+          "theme": "dark",
+          "first": 50,
+          "last": 3,
+          "retained": 3,
+          "detail": {
+            "focus": "main",
+            "revisions": [
+              "r1",
+              "r0"
+            ],
+            "text": "最新修订\n\nr1\n\n数据库仓库历史\n\n配置代数\n\n2\n\n当前发布版本\n\n活动事务\n\n1\n\n未完成的 SVN 事务\n\n业务锁\n\n1\n\n有效 SVN 锁\n\n返回仓库列表\n工程文档\n启用\n6b5361e2-fad0-754a-b282-fa96c13053d6\n近期修订\n2 条 / 当前样本\nr1\n2026/10/16 09:42:24\nr0\n2026/10/16 09:42:16\n活动事务\n1 条 / 当前样本\n活动事务。可聚焦表格区域，使用方向键滚动。\n事务 ID\t基础修订\t创建时间\nff35a987-5c38-7048-8df4-c60d538d4fdb\tr1\t2026/10/16 09:42:25\n业务锁\n1 条 / 当前样本\n业务锁。可聚焦表格区域，使用方向键滚动。\n路径\t所有者\t创建时间\n/readme.txt\twriter\t2026/10/16 09:42:24\n仓库信息\n数据库目录\n仓库 ID\ne59f5197-a713-3a46-b77b-432c22ffb5f2\n公开 UUID\n6b5361e2-fad0-754a-b282-fa96c13053d6\n启用状态\n启用\n最近提交\n2026/10/16 09:42:24\n本机近期相关错误\n当前实例 · 最多 200 条\n命令被权限规则拒绝\n2026/10/16 09:42:24\nsvn / commit\nsvn-000000000000000a"
+          }
+        }
+      ],
+      "observations": [
+        "两个 UX 查询没有直接匹配刷新后焦点保留的条目；采用现有实例滚动键，并以真实浏览器刷新前后对照验证。",
+        "自动刷新检查要求页面可见且 sample-meta 确实变化，不把单纯等待或原地保留当作刷新通过。",
+        "原令牌撤销后内容已清空，随后手动刷新将焦点移到 refresh；再次用同一已撤销令牌重连，401 分支返回 token 焦点。未将此合并声称为自动撤销瞬间的直接焦点观察。",
+        "手动刷新可能干扰撤销时的焦点观察，保留原始结果；已撤销令牌的重连焦点单独验证，不据此声称自动撤销瞬间已直接通过。"
+      ],
+      "worker_text": [
+        "HTTP 请求 / 失败8 / 2正在处理请求0SQL 调用 / 失败111 / 0新修订 / 回执确认0 / 0遥测失败批次0HTTP 方法DAV 方法计数。可聚焦表格区域，使用方向键滚动。方法完成失败OPTIONS51PROPFIND20POST11近期错误DAV 近期错误。可聚焦表格区域，使用方向键滚动。时间HTTP 状态请求 ID2026/10/16 09:42:294010080fc2c-12026/10/16 09:42:304030080fc2c-8",
+        "HTTP 请求 / 失败8 / 2正在处理请求0SQL 调用 / 失败111 / 0新修订 / 回执确认0 / 0遥测失败批次0HTTP 方法DAV 方法计数。可聚焦表格区域，使用方向键滚动。方法完成失败OPTIONS51PROPFIND20POST11近期错误DAV 近期错误。可聚焦表格区域，使用方向键滚动。时间HTTP 状态请求 ID2026/10/16 09:42:344013e910a37-12026/10/16 09:42:354033e910a37-8"
+      ],
+      "disappearing_before": {
+        "key": "table-dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+        "meta": "采样于 2026/10/16 09:46:18 · 0.2 秒前",
+        "owner": "dav-detail-node-0080fc2c-cbef-6b47-92c3-895ac86246d9",
+        "visibility": "visible"
+      },
+      "disappearing_after": {
+        "focus": "main",
+        "innerTables": [
+          {
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%96%B9%E6%B3%95%22%2C%22%E5%AE%8C%E6%88%90%22%2C%22%E5%A4%B1%E8%B4%A5%22%5D%5D",
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+          },
+          {
+            "key": "table-dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208%7C%5B%22nodes%22%2C%22%22%2C%22%22%2C%22%22%2C%5B%22%E6%97%B6%E9%97%B4%22%2C%22HTTP%20%E7%8A%B6%E6%80%81%22%2C%22%E8%AF%B7%E6%B1%82%20ID%22%5D%5D",
+            "owner": "dav-detail-node-3e910a37-7bed-1640-bcc7-b10e3cf08208"
+          }
+        ],
+        "meta": "采样于 2026/10/16 09:46:53 · 0.3 秒前",
+        "rows": [
+          "心跳失联\n\tbrowser-peer / 22387063\tSVN\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:46:29",
+          "心跳失联\n\t\ndav-browser-dav / 0080fc2c\n\tDAV\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:46:29",
+          "就绪\n\tbrowser-main / 649ffe3c\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:46:48",
+          "就绪\n\t\ndav-browser-dav-peer / 3e910a37\n\tDAV\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:46:49"
+        ]
+      },
+      "history_rows": [
+        "心跳失联\n\tbrowser-peer / 22387063\tSVN\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:46:29",
+        "心跳失联\n\t\ndav-browser-dav / 0080fc2c\n\tDAV\t0.1.0-dev/M5\t未知\t未知\t2026/10/16 09:46:29",
+        "就绪\n\tbrowser-main / 649ffe3c\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:47:54",
+        "就绪\n\tbrowser-peer / 6c8c2a21\tSVN\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:47:57",
+        "就绪\n\t\ndav-browser-dav / fa75615f\n\tDAV\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:47:56",
+        "就绪\n\t\ndav-browser-dav-peer / 3e910a37\n\tDAV\t0.1.0-dev/M5\t1\t2\t2026/10/16 09:47:54"
+      ],
+      "paused": {
+        "before": {
+          "meta": "采样于 2026/10/16 09:49:24 · 1.3 秒前",
+          "visibility": "visible"
+        },
+        "after": {
+          "meta": "采样于 2026/10/16 09:49:24 · 1.3 秒前",
+          "visibility": "visible"
+        },
+        "stale": {
+          "nodeStates": [
+            "状态未知",
+            "状态未知",
+            "状态未知",
+            "状态未知",
+            "状态未知",
+            "状态未知"
+          ],
+          "readiness": "状态未知"
+        },
+        "manual": "采样于 2026/10/16 09:49:39 · 4.4 秒前"
+      },
+      "database_failure": [
+        {
+          "rows": [
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            }
+          ],
+          "sample": "样本过期 · 31.8 秒前",
+          "theme": "light",
+          "writer": "未知"
+        },
+        {
+          "rows": [
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            },
+            {
+              "connections": "未知",
+              "generation": "未知",
+              "state": "状态未知"
+            }
+          ],
+          "sample": "样本过期 · 32.8 秒前",
+          "theme": "dark",
+          "writer": "未知"
+        }
+      ],
+      "revocation_manual_observation": {
+        "children": 0,
+        "focus": "refresh",
+        "hidden": true,
+        "invalid": "true"
+      },
+      "revoked_reconnect": {
+        "children": 0,
+        "focus": "token",
+        "hidden": true,
+        "invalid": "true"
+      },
+      "pending_checks": [
+        "direct automatic-revocation focus observation requires separately authorized temporary token"
+      ],
+      "status": "PARTIAL",
+      "approval": {
+        "action": "Create one additional 10-minute read-only monitor token in pgvn_m3c_ada58a65c6f2 for a direct automatic-revocation focus observation",
+        "automatic_review": "rejected: new access credential requires explicit authorization",
+        "request_pending": true,
+        "new_token_created": false
+      }
+    },
+    "static_audit": {
+      "status": "PASS",
+      "static_contracts": true,
+      "contrast": [
+        {
+          "theme": "light",
+          "front": "text",
+          "back": "bg",
+          "ratio": 16.074,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "text-2",
+          "back": "surface-1",
+          "ratio": 7.189,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "text-3",
+          "back": "bg",
+          "ratio": 4.779,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "text-3",
+          "back": "surface-2",
+          "ratio": 4.945,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "on-primary",
+          "back": "primary",
+          "ratio": 6.16,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "nav-text",
+          "back": "nav",
+          "ratio": 14.759,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "nav-muted",
+          "back": "nav",
+          "ratio": 8.001,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "nav-good",
+          "back": "nav",
+          "ratio": 9.046,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "border-strong",
+          "back": "surface-2",
+          "ratio": 3.016,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "focus",
+          "back": "surface-1",
+          "ratio": 6.16,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "series-1",
+          "back": "surface-1",
+          "ratio": 6.16,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "series-2",
+          "back": "surface-1",
+          "ratio": 5.801,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "series-3",
+          "back": "surface-1",
+          "ratio": 5.628,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "series-4",
+          "back": "surface-1",
+          "ratio": 5.358,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "good",
+          "back": "good-bg",
+          "ratio": 4.71,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "warn",
+          "back": "warn-bg",
+          "ratio": 5.132,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "bad",
+          "back": "bad-bg",
+          "ratio": 5.521,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "info",
+          "back": "info-bg",
+          "ratio": 5.14,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "light",
+          "front": "neutral",
+          "back": "neutral-bg",
+          "ratio": 5.469,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "text",
+          "back": "bg",
+          "ratio": 15.979,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "text-2",
+          "back": "surface-1",
+          "ratio": 7.978,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "text-3",
+          "back": "bg",
+          "ratio": 6.06,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "text-3",
+          "back": "surface-2",
+          "ratio": 5.096,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "on-primary",
+          "back": "primary",
+          "ratio": 6.794,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "nav-text",
+          "back": "nav",
+          "ratio": 16.458,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "nav-muted",
+          "back": "nav",
+          "ratio": 8.923,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "nav-good",
+          "back": "nav",
+          "ratio": 10.088,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "border-strong",
+          "back": "surface-2",
+          "ratio": 3.266,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "focus",
+          "back": "surface-1",
+          "ratio": 8.823,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "series-1",
+          "back": "surface-1",
+          "ratio": 6.257,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "series-2",
+          "back": "surface-1",
+          "ratio": 6.443,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "series-3",
+          "back": "surface-1",
+          "ratio": 6.372,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "series-4",
+          "back": "surface-1",
+          "ratio": 9.595,
+          "minimum": 3,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "good",
+          "back": "good-bg",
+          "ratio": 6.867,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "warn",
+          "back": "warn-bg",
+          "ratio": 7.8,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "bad",
+          "back": "bad-bg",
+          "ratio": 5.172,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "info",
+          "back": "info-bg",
+          "ratio": 5.39,
+          "minimum": 4.5,
+          "pass": true
+        },
+        {
+          "theme": "dark",
+          "front": "neutral",
+          "back": "neutral-bg",
+          "ratio": 5.361,
+          "minimum": 4.5,
+          "pass": true
+        }
+      ],
+      "assets": {
+        "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+        "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+        "monitor.js": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5"
+      },
+      "scope": "Source and computed contrast only; not a claim of forced-colors/reduced-motion browser emulation."
+    },
+    "screenshots": {
+      "multi_focus": {
+        "path": "docs/pgvn/images/monitor-multi-focus.jpg",
+        "bytes": 18819,
+        "sha256": "ccc8b86d7352efb4491aa645520094d0ce960f6695312980c80c6becce00720a"
+      }
+    },
+    "additional_manual_acceptance_pending": [
+      "Windows forced-colors actual visual acceptance."
+    ],
+    "test_id": "m4-browser-focus-ada58a65c6f2",
+    "status": "PARTIAL",
+    "checks": {
+      "all_views": true,
+      "repository_pagination": true,
+      "repository_search": true,
+      "repository_detail": true,
+      "text_only_hostile_name": true,
+      "keyboard_focus_and_refresh": true,
+      "configurable_refresh": true,
+      "narrow_layout": true,
+      "paused_refresh": true,
+      "stale_database_and_unknown_nodes": true,
+      "lost_peer_and_recovery": true,
+      "token_revocation_clears_data": false,
+      "reload_requires_token": true,
+      "no_persistent_token": true,
+      "authentication": true
+    },
+    "scope": "Instance-scoped nested-table focus verified in five cases plus fallback. M4 combined revocation check remains incomplete: clearing and revoked-token reconnect were observed, but the direct automatic-revocation focus moment was not. Extra token creation was rejected and awaits explicit user authorization. M5 PASS covers its six DAV-browser checks only."
+  },
+  "m5_browser": {
+    "created_at": "2026-10-16T02:02:08.389862+00:00",
+    "fixture_stopped": true,
+    "fixture_session": "runtime/pgvn/tests/m3-credentials-ada58a65c6f2/browser-session.json",
+    "pgvnserve_sha256": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+    "assets": {
+      "index.html": "6525449cdde76141a25c0fa565874c6fb794215d7cfee3479874bb01634e2d2b",
+      "monitor.css": "c7ca05cbbca7263f3d3d7bf4dee7b27c8951ab194e1116875b4247369b15915a",
+      "monitor.js": "19df977d75f50be181c5686735929a2733299db135ed021855d4dd6816fbb9f5"
+    },
+    "dav_host_sha256": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96",
+    "dav_host_runtime": {
+      "product": "PgVNHTTPD",
+      "apache_base": "2.4.68",
+      "process_code_page": 65001
+    },
+    "build_manifest_sha256": "4d1895f461ef9d7e9c8dca83bf11d0151c9d12810b24f7c208ad851d22d126ba",
+    "additional_manual_acceptance_pending": [
+      "Windows forced-colors actual visual acceptance."
+    ],
+    "test_id": "m5-browser-focus-ada58a65c6f2",
+    "status": "PASS",
+    "checks": {
+      "worker_details": true,
+      "http_method_counts": true,
+      "request_error_id": true,
+      "refresh_retains_open_and_focus": true,
+      "lost_worker_and_new_instance": true,
+      "narrow_details_layout": true
+    },
+    "scope": "Instance-scoped nested-table focus verified in five cases plus fallback. M4 combined revocation check remains incomplete: clearing and revoked-token reconnect were observed, but the direct automatic-revocation focus moment was not. Extra token creation was rejected and awaits explicit user authorization. M5 PASS covers its six DAV-browser checks only.",
+    "modules": {
+      "mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+      "mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5"
+    }
+  },
+  "m4_gate": {
+    "test_id": "m4-fc47598817fb",
+    "raw_status": "FAIL",
+    "interpretation": "Expected acceptance refusal for incomplete browser evidence; no server suites started.",
+    "report_sha256": "85f962fbd852d7a967b3527d9526e996ad56baa488f07b03f8e0ef3599471713",
+    "server_suites_started": 0
+  },
+  "runtime_cleanup": {
+    "fixture_stopped": true,
+    "owned_browser_fixture_processes_remaining": 0,
+    "original_token_revoked": true,
+    "rejected_extra_token_created": false
+  },
+  "screenshot": {
+    "path": "docs/pgvn/images/monitor-multi-focus.jpg",
+    "bytes": 18819,
+    "sha256": "ccc8b86d7352efb4491aa645520094d0ce960f6695312980c80c6becce00720a",
+    "visual_acceptance": false,
+    "note": "Raw capture retained as a diagnostic. The bitmap after a viewport transition does not cover the focused region; not used as proof of focus behavior."
+  },
+  "approval": {
+    "action": "Create one additional 10-minute read-only monitor token in pgvn_m3c_ada58a65c6f2 for a direct automatic-revocation focus observation",
+    "automatic_review": "rejected: new access credential requires explicit authorization",
+    "request_pending": true,
+    "new_token_created": false
+  },
+  "pending": [
+    "Explicit authorization for the additional temporary read-only token and direct automatic-revocation focus observation.",
+    "Fresh complete M4/M5 acceptance after the browser record is complete; previous c728e7f full gates stay bound to their original build.",
+    "Usable focus screenshot and actual Windows forced-colors visual acceptance.",
+    "M6 upstream network entry, history/fault/performance budgets and M7 clean Windows/reboot/cross-host/Polarion acceptance."
+  ]
+}
