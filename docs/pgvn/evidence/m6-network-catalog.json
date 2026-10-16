@@ -1,0 +1,757 @@
+{
+  "status": "CATALOG_ONLY",
+  "milestone_complete": false,
+  "tests_executed": 0,
+  "generated_exclusions": [],
+  "created_at": "2026-10-16T02:26:40.611076+00:00",
+  "build_manifest_sha256": "f8930c17a91ec29b572b04ab498685fb48b4274e329e0bb3743eae105b4609bc",
+  "catalog": {
+    "test_id": "m6-network-catalog-98e95c1790d4",
+    "report_sha256": "1bdf7b369879d77af72a94aa4e812579e3a37e658cc9a5b4d96ce63f9dd2beb5",
+    "suite_count": 62,
+    "test_count": 1984,
+    "source_identity_verified": true,
+    "frozen_catalog_inputs": true,
+    "frozen_input_scope": [
+      "scripts/pgvn/catalog_upstream_network.py",
+      "tests/pgvn/upstream_network_lock.py"
+    ],
+    "source_lock_sha256": "b249fe4711aa4a21f523561183065d3cfacceadbba11091b3f5b77d1c737f8ac",
+    "archive_sha256": "53bd33126d6be42bdd2725f1ee92132e03c291aa4a3fcc910eccde10dad796f4",
+    "locked_files": 234,
+    "version": "1.14.5",
+    "provenance": "Configured local Git archive; contents compared byte-for-byte with the vendor tree. No upstream signature verification is claimed.",
+    "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "snapshot": {
+      "root": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-catalog-98e95c1790d4",
+      "cmdline": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-catalog-98e95c1790d4\\subversion\\tests\\cmdline",
+      "files": 234,
+      "manifest_sha256": "f669312b3eedd01830e65373cc1d1b209e1eced09eb0549d85439c40c4d2b586",
+      "upstream_modules_imported": false,
+      "bytecode_files": 0
+    },
+    "fixture_anchors": [
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "run_command",
+        "line": 437,
+        "arguments": [
+          "command",
+          "error_expected",
+          "binary_mode"
+        ],
+        "calls": {
+          "helper_calls": {
+            "run_command_stdin": 1
+          },
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "run_command_stdin",
+        "line": 599,
+        "arguments": [
+          "command",
+          "error_expected",
+          "bufsize",
+          "binary_mode",
+          "stdin_lines"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "run_svnadmin",
+        "line": 821,
+        "arguments": [],
+        "calls": {
+          "helper_calls": {
+            "run_command": 1
+          },
+          "tool_operation_syntax": {
+            "svnadmin": {
+              "<dynamic>": 1
+            }
+          },
+          "tool_call_examples": [
+            {
+              "line": 828,
+              "call": "run_command",
+              "tool": "svnadmin",
+              "operation": "<dynamic>"
+            }
+          ],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "run_svnlook",
+        "line": 837,
+        "arguments": [],
+        "calls": {
+          "helper_calls": {
+            "run_command": 1
+          },
+          "tool_operation_syntax": {
+            "svnlook": {
+              "<dynamic>": 1
+            }
+          },
+          "tool_call_examples": [
+            {
+              "line": 840,
+              "call": "run_command",
+              "tool": "svnlook",
+              "operation": "<dynamic>"
+            }
+          ],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "run_svnrdump",
+        "line": 842,
+        "arguments": [
+          "stdin_input"
+        ],
+        "calls": {
+          "helper_calls": {
+            "run_command": 1,
+            "run_command_stdin": 1
+          },
+          "tool_operation_syntax": {
+            "svnrdump": {
+              "<dynamic>": 2
+            }
+          },
+          "tool_call_examples": [
+            {
+              "line": 846,
+              "call": "run_command_stdin",
+              "tool": "svnrdump",
+              "operation": "<dynamic>"
+            },
+            {
+              "line": 849,
+              "call": "run_command",
+              "tool": "svnrdump",
+              "operation": "<dynamic>"
+            }
+          ],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "_post_create_repos",
+        "line": 1051,
+        "arguments": [
+          "path",
+          "minor_version"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "unpack_greek_repos",
+        "line": 1151,
+        "arguments": [
+          "path"
+        ],
+        "calls": {
+          "helper_calls": {
+            "_post_create_repos": 1
+          },
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "create_repos",
+        "line": 1157,
+        "arguments": [
+          "path",
+          "minor_version"
+        ],
+        "calls": {
+          "helper_calls": {
+            "_post_create_repos": 1,
+            "run_command": 2
+          },
+          "tool_operation_syntax": {
+            "svnadmin": {
+              "create": 1,
+              "setuuid": 1
+            }
+          },
+          "tool_call_examples": [
+            {
+              "line": 1174,
+              "call": "run_command",
+              "tool": "svnadmin",
+              "operation": "create"
+            },
+            {
+              "line": 1181,
+              "call": "run_command",
+              "tool": "svnadmin",
+              "operation": "setuuid"
+            }
+          ],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "copy_repos",
+        "line": 1213,
+        "arguments": [
+          "src_path",
+          "dst_path",
+          "head_revision",
+          "ignore_uuid",
+          "minor_version"
+        ],
+        "calls": {
+          "helper_calls": {
+            "create_repos": 1
+          },
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "write_restrictive_svnserve_conf",
+        "line": 1350,
+        "arguments": [
+          "repo_dir",
+          "anon_access",
+          "separate_groups_db"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/main.py",
+        "name": "write_authz_file",
+        "line": 1382,
+        "arguments": [
+          "sbox",
+          "rules",
+          "sections",
+          "prefixed_rules"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/sandbox.py",
+        "name": "clone_dependent",
+        "line": 137,
+        "arguments": [
+          "self",
+          "copy_wc"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/sandbox.py",
+        "name": "build",
+        "line": 155,
+        "arguments": [
+          "self",
+          "name",
+          "create_wc",
+          "read_only",
+          "empty",
+          "minor_version",
+          "tree"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/sandbox.py",
+        "name": "add_repo_path",
+        "line": 195,
+        "arguments": [
+          "self",
+          "suffix",
+          "remove"
+        ],
+        "calls": {
+          "helper_calls": {},
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/sandbox.py",
+        "name": "cleanup_test_paths",
+        "line": 251,
+        "arguments": [
+          "self"
+        ],
+        "calls": {
+          "helper_calls": {
+            "sbox.cleanup_test_paths": 1
+          },
+          "tool_operation_syntax": {},
+          "tool_call_examples": [],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      },
+      {
+        "file": "subversion/tests/cmdline/svntest/sandbox.py",
+        "name": "simple_repo_copy",
+        "line": 448,
+        "arguments": [
+          "self",
+          "source",
+          "dest"
+        ],
+        "calls": {
+          "helper_calls": {
+            "svntest.main.run_svn": 1
+          },
+          "tool_operation_syntax": {
+            "svn": {
+              "copy": 1
+            }
+          },
+          "tool_call_examples": [
+            {
+              "line": 452,
+              "call": "svntest.main.run_svn",
+              "tool": "svn",
+              "operation": "copy"
+            }
+          ],
+          "direct_repo_path_io_syntax_hints": [],
+          "hint_scope": "Syntactic call sites only; indirect aliases and runtime paths are not inferred. These are neither exclusions nor compatibility verdicts."
+        }
+      }
+    ],
+    "suites": {
+      "authz": {
+        "file": "subversion/tests/cmdline/authz_tests.py",
+        "sha256": "c74d7e4817f77c5df89eaaafebdbee0b29a699710c44f55a78b4047f19027f52",
+        "test_count": 35
+      },
+      "autoprop": {
+        "file": "subversion/tests/cmdline/autoprop_tests.py",
+        "sha256": "31c5e39ac0c8cea322e6f6ae31decfba790481e23835a0c2cb0cfa4570d36488",
+        "test_count": 30
+      },
+      "basic": {
+        "file": "subversion/tests/cmdline/basic_tests.py",
+        "sha256": "bca23f084925ee6be3304678f2e594ca90652c1d1c14909130a313207564672f",
+        "test_count": 71
+      },
+      "blame": {
+        "file": "subversion/tests/cmdline/blame_tests.py",
+        "sha256": "20244dfb33a3ce5b809c78c885a553802ef6ac592d781ceb31243933ca67b44d",
+        "test_count": 19
+      },
+      "cat": {
+        "file": "subversion/tests/cmdline/cat_tests.py",
+        "sha256": "881bac8ce48bdaa4672500e41a48efc8127d6cd482e8f82bba7018d0035a1793",
+        "test_count": 9
+      },
+      "changelist": {
+        "file": "subversion/tests/cmdline/changelist_tests.py",
+        "sha256": "ca1314bf632cdab2dcbfd30f16957d6ed31239398aa8ab5c25e9d25cd705db68",
+        "test_count": 18
+      },
+      "checkout": {
+        "file": "subversion/tests/cmdline/checkout_tests.py",
+        "sha256": "7441fd6bdb4757790963e57e04657c67960442ebfeb077508faa92c3cc858885",
+        "test_count": 14
+      },
+      "commit": {
+        "file": "subversion/tests/cmdline/commit_tests.py",
+        "sha256": "f5ceabeb227a3ffe125ca6b99d22d2df4d28019c3995c881b2e24a257aa87f52",
+        "test_count": 74
+      },
+      "copy": {
+        "file": "subversion/tests/cmdline/copy_tests.py",
+        "sha256": "538bb016086889e349df5e75ca2f625fe313328e682d6edb138b844bea29db3a",
+        "test_count": 118
+      },
+      "dav": {
+        "file": "subversion/tests/cmdline/dav_tests.py",
+        "sha256": "8a68f5f07ba194b0fe9567f700967335c31b407bf129a0067ae14a7186e60c55",
+        "test_count": 3
+      },
+      "depth": {
+        "file": "subversion/tests/cmdline/depth_tests.py",
+        "sha256": "15436103dc3279f6c4699ca80a4c42e76dfd6462030aba51d33f77fa808a0542",
+        "test_count": 50
+      },
+      "diff": {
+        "file": "subversion/tests/cmdline/diff_tests.py",
+        "sha256": "e81cb771ceb863b6d290db529b32a63ec049c2657d4c4247550b2606ad5d095f",
+        "test_count": 96
+      },
+      "entries": {
+        "file": "subversion/tests/cmdline/entries_tests.py",
+        "sha256": "1f0628fc6534fbb079a60eceb8b9fc32fbde24c2222826245de5c7196e1528aa",
+        "test_count": 3
+      },
+      "export": {
+        "file": "subversion/tests/cmdline/export_tests.py",
+        "sha256": "052d1e5a41195160f926ecdcfc1d5662af2cc4a38d8964215623a393196a1867",
+        "test_count": 31
+      },
+      "externals": {
+        "file": "subversion/tests/cmdline/externals_tests.py",
+        "sha256": "157a61ea0306119f0a503a7d1cdfcf1e11b300d5b8fb884ae56393bc2602871f",
+        "test_count": 71
+      },
+      "getopt": {
+        "file": "subversion/tests/cmdline/getopt_tests.py",
+        "sha256": "9a02bbd96b07d10f9741f77114a6a8c295eead227a9bbd2246df7d16ddc6cd8f",
+        "test_count": 9
+      },
+      "history": {
+        "file": "subversion/tests/cmdline/history_tests.py",
+        "sha256": "16543a29fb444cdfb2d03186c1ca4a6d15049a765a4d9977725cfa31ad26adc3",
+        "test_count": 2
+      },
+      "import": {
+        "file": "subversion/tests/cmdline/import_tests.py",
+        "sha256": "61330894c008fad5126e48f625ca9b3fbe9663aa6e11f3609b79b35efd141362",
+        "test_count": 7
+      },
+      "info": {
+        "file": "subversion/tests/cmdline/info_tests.py",
+        "sha256": "300b7f3401f49b985c3d12d003244f3a3ef1408511fe9850d554399c3f40c970",
+        "test_count": 21
+      },
+      "input_validation": {
+        "file": "subversion/tests/cmdline/input_validation_tests.py",
+        "sha256": "74a48ad007444ead5ab930961c48369b19eaa385c9731dc9ce3ee8103d1fc61d",
+        "test_count": 25
+      },
+      "iprop_authz": {
+        "file": "subversion/tests/cmdline/iprop_authz_tests.py",
+        "sha256": "6d2312d499a0ed60979145d9a5ece597510ab1a192ae5e284a19ddfc0e9c4a86",
+        "test_count": 1
+      },
+      "iprop": {
+        "file": "subversion/tests/cmdline/iprop_tests.py",
+        "sha256": "5b91e5d8193a9854ee2ecd8929ac84e9d63b0be2173b9b96a876d864a35f6a2f",
+        "test_count": 9
+      },
+      "lock": {
+        "file": "subversion/tests/cmdline/lock_tests.py",
+        "sha256": "0f4d89e577c01fb40f09e6f3e8f2a0761715e9e1afbd29048c46965c5f787cbd",
+        "test_count": 63
+      },
+      "log": {
+        "file": "subversion/tests/cmdline/log_tests.py",
+        "sha256": "e40e4a187fcc73fbf61c0552bf7309816c38a159b8536da0d31a155f36d5f7e4",
+        "test_count": 46
+      },
+      "merge_authz": {
+        "file": "subversion/tests/cmdline/merge_authz_tests.py",
+        "sha256": "6a7f095fa7579c59e4d924291a5081428300e0e95bbf8d527246b991db2feec7",
+        "test_count": 4
+      },
+      "merge_automatic": {
+        "file": "subversion/tests/cmdline/merge_automatic_tests.py",
+        "sha256": "1e29ac93a11929a494c0a0c175f769e51d0ccd5f8dd8bf16c4e94306dca67a4a",
+        "test_count": 25
+      },
+      "merge_reintegrate": {
+        "file": "subversion/tests/cmdline/merge_reintegrate_tests.py",
+        "sha256": "2833ccc10b7e3940d19afa75fdb68d46a4b205a7e3024d6d31c8e8ebbd76bde7",
+        "test_count": 22
+      },
+      "merge": {
+        "file": "subversion/tests/cmdline/merge_tests.py",
+        "sha256": "44fc33f06236e774208b369285f28e42e12dc965ff9b79faf081131f49a527f4",
+        "test_count": 143
+      },
+      "merge_tree_conflict": {
+        "file": "subversion/tests/cmdline/merge_tree_conflict_tests.py",
+        "sha256": "fbdbd9ecc95beb307b74a1b04d122b2930fc4bb830d9abd4a82ad2f147b082c0",
+        "test_count": 29
+      },
+      "mergeinfo": {
+        "file": "subversion/tests/cmdline/mergeinfo_tests.py",
+        "sha256": "eb615109e68f5038b7ab2bee5c3ef8bd7e849680d4530323692e94cd29806ce0",
+        "test_count": 13
+      },
+      "mod_authz_svn": {
+        "file": "subversion/tests/cmdline/mod_authz_svn_tests.py",
+        "sha256": "ebf7f01dc3c4124587df838e2019d3c7f9572ccc59675f2ac0125d1c54d4423d",
+        "test_count": 11
+      },
+      "mod_dav_svn": {
+        "file": "subversion/tests/cmdline/mod_dav_svn_tests.py",
+        "sha256": "af164eaa6ac96db9c39ff79e51d2a9bf978b48855882b921e3b516d6547151a5",
+        "test_count": 8
+      },
+      "move": {
+        "file": "subversion/tests/cmdline/move_tests.py",
+        "sha256": "c3abc6bc7bee8776ba3cf7a324b3c2cee4a55931e478ff9413aed2ca1779d7c2",
+        "test_count": 15
+      },
+      "patch": {
+        "file": "subversion/tests/cmdline/patch_tests.py",
+        "sha256": "d8d3350b69da6217cb56385f4400c4bda43b0129a8e4be74a77f9654af21427d",
+        "test_count": 82
+      },
+      "pegrev_parse": {
+        "file": "subversion/tests/cmdline/pegrev_parse_tests.py",
+        "sha256": "4c3f590ba0707ce94168bcd2e4e84f782c291b287fe1e923eac0ae4464730136",
+        "test_count": 84
+      },
+      "prop": {
+        "file": "subversion/tests/cmdline/prop_tests.py",
+        "sha256": "f6a5499b7e3dc930527b6c4a17f19bb636ab24ac0e54c647d5773a99202a4f34",
+        "test_count": 46
+      },
+      "redirect": {
+        "file": "subversion/tests/cmdline/redirect_tests.py",
+        "sha256": "f9b95ca917b79e34f3994cd65eb0537d7ec74737f68dfce30ff8de99ccecd773",
+        "test_count": 7
+      },
+      "relocate": {
+        "file": "subversion/tests/cmdline/relocate_tests.py",
+        "sha256": "1d6b1c4c2060c770b86515bd9c797cbfa7a7bc272a92b6e4042efa51fd89c26b",
+        "test_count": 7
+      },
+      "resolve": {
+        "file": "subversion/tests/cmdline/resolve_tests.py",
+        "sha256": "294a74681c1cb610820056af74fe117aee5f1edbdf7fd220a455394c52aab235",
+        "test_count": 8
+      },
+      "revert": {
+        "file": "subversion/tests/cmdline/revert_tests.py",
+        "sha256": "75a9f0d8c0370c0c44470ce7172cf0d4a46e21af0f77899a82a7d6df6fe71506",
+        "test_count": 36
+      },
+      "schedule": {
+        "file": "subversion/tests/cmdline/schedule_tests.py",
+        "sha256": "3656836cc3260c67dfe87b8932f23b76b6b953c84505a59eec60bc94a0a0169e",
+        "test_count": 16
+      },
+      "shelf2": {
+        "file": "subversion/tests/cmdline/shelf2_tests.py",
+        "sha256": "4a3cafa045137a56b2f3564104ad7d92a4c0aba8bdb370e35cf0c3d6df59ba13",
+        "test_count": 31
+      },
+      "shelf": {
+        "file": "subversion/tests/cmdline/shelf_tests.py",
+        "sha256": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+        "test_count": 32
+      },
+      "special": {
+        "file": "subversion/tests/cmdline/special_tests.py",
+        "sha256": "18490c4c5aec557cf1a2f8263d7339b5cbbc6039f7d0f0a3fb076150a5487919",
+        "test_count": 27
+      },
+      "stat": {
+        "file": "subversion/tests/cmdline/stat_tests.py",
+        "sha256": "d8453dc19dd4711cbf869204711367fcdb8a4c39c5e43f6fa511d8cdcfd9e6b0",
+        "test_count": 45
+      },
+      "svnadmin": {
+        "file": "subversion/tests/cmdline/svnadmin_tests.py",
+        "sha256": "4be7f0092845c70247f8b3ff35c775348e004ef8fb75b9d8bc582122cb5970a6",
+        "test_count": 74
+      },
+      "svnauthz": {
+        "file": "subversion/tests/cmdline/svnauthz_tests.py",
+        "sha256": "e452ffb66ca9808f7aabe1bb90c4e533eb992c6ce6de5a679951401f7d01b8da",
+        "test_count": 14
+      },
+      "svndumpfilter": {
+        "file": "subversion/tests/cmdline/svndumpfilter_tests.py",
+        "sha256": "b627cfe25483082af455fb3cd1e6d19406e1a40c0c35f44576c70244eba77af5",
+        "test_count": 10
+      },
+      "svnfsfs": {
+        "file": "subversion/tests/cmdline/svnfsfs_tests.py",
+        "sha256": "37ae30751cbcdfabc713fcdbb42fc0c3f897f2bc17dd2acdb1f79875c9f646b9",
+        "test_count": 3
+      },
+      "svnlook": {
+        "file": "subversion/tests/cmdline/svnlook_tests.py",
+        "sha256": "9ccf15139eaadefffa71bff976e1a1c6da0582112bd567e2035d75b5fbcf6cee",
+        "test_count": 13
+      },
+      "svnmover": {
+        "file": "subversion/tests/cmdline/svnmover_tests.py",
+        "sha256": "6e5cda7274bf0c81127648f66d766e87ac0f24540aa49631e048f9ff30282c68",
+        "test_count": 28
+      },
+      "svnmucc": {
+        "file": "subversion/tests/cmdline/svnmucc_tests.py",
+        "sha256": "7e2a8e6905c1dcf2a489ece800a19811d5f5a0bd6c497eb2af395d8b1ea66b0f",
+        "test_count": 9
+      },
+      "svnrdump": {
+        "file": "subversion/tests/cmdline/svnrdump_tests.py",
+        "sha256": "1dab0ab1caee75b4221bf5f6d4546a6aaa54d2b056128a5da86ea87130eaf355",
+        "test_count": 57
+      },
+      "svnsync_authz": {
+        "file": "subversion/tests/cmdline/svnsync_authz_tests.py",
+        "sha256": "f8f3cb4092cbbd45e2e5a6a288811a7ef8ec2d3498b2f691c5f5623a85b5593b",
+        "test_count": 7
+      },
+      "svnsync": {
+        "file": "subversion/tests/cmdline/svnsync_tests.py",
+        "sha256": "11f6342762a311113b47a4336dffec729d2ab5899a5c7b108ff882e33bb17f5e",
+        "test_count": 31
+      },
+      "svnversion": {
+        "file": "subversion/tests/cmdline/svnversion_tests.py",
+        "sha256": "d7384f28a2cccffca29e5f91da38cde992a7c74bcf7e00daa23a48878a75716c",
+        "test_count": 7
+      },
+      "switch": {
+        "file": "subversion/tests/cmdline/switch_tests.py",
+        "sha256": "0902ce96672ff69d2011fa7a6d6f8c5749d0b9d61cdfb9528922f9b1f11ebac6",
+        "test_count": 39
+      },
+      "trans": {
+        "file": "subversion/tests/cmdline/trans_tests.py",
+        "sha256": "1748fdda50c90a158334acb404a172e4aafb3f229db2f428773ce4194cddcf62",
+        "test_count": 11
+      },
+      "tree_conflict": {
+        "file": "subversion/tests/cmdline/tree_conflict_tests.py",
+        "sha256": "405ea4ad299ca9aa2e878fc4b4d6c0e358ac4fc418cde13b2783807373e5f84a",
+        "test_count": 26
+      },
+      "update": {
+        "file": "subversion/tests/cmdline/update_tests.py",
+        "sha256": "3dd88ccacb712bd85305b65a33ea6a7659d949804f51bf8439e11955bb7c1fc0",
+        "test_count": 86
+      },
+      "upgrade": {
+        "file": "subversion/tests/cmdline/upgrade_tests.py",
+        "sha256": "8f8b83f7258681bd0ca1400b086358b0efb5481ee9970b01a5778208e16d8310",
+        "test_count": 35
+      },
+      "wc": {
+        "file": "subversion/tests/cmdline/wc_tests.py",
+        "sha256": "2e697013c28f478d3dcc526b1a6a900b325c08bf017295fccfbcdd5032828f5e",
+        "test_count": 18
+      }
+    }
+  },
+  "input_guards": {
+    "status": "INPUT_GUARDS_VERIFIED_CATALOG_ONLY",
+    "positive_test_id": "m6-network-catalog-98e95c1790d4",
+    "positive_report_sha256": "1bdf7b369879d77af72a94aa4e812579e3a37e658cc9a5b4d96ce63f9dd2beb5",
+    "records": [
+      {
+        "case": "vendor",
+        "test_id": "m6-network-catalog-49b4a426f6ca",
+        "report_sha256": "234980d43d41f71239d11fd286d9c5736ccfcf62638d5dddf1effcdb869e59f3",
+        "error": "InputRejected: Vendor file differs from source lock: subversion/tests/cmdline/basic_tests.py",
+        "upstream_tests_executed": 0
+      },
+      {
+        "case": "archive",
+        "test_id": "m6-network-catalog-d2e72ed655aa",
+        "report_sha256": "55e7d5ab88fc950d0803d7f3c01217b0590a1eed165932d1aa653c9c80353693",
+        "error": "InputRejected: Archive SHA-256 differs from the committed source lock",
+        "upstream_tests_executed": 0
+      }
+    ],
+    "unregistered": {
+      "test_id": "m6-network-catalog-42ee84d36308",
+      "status": "INPUT_REJECTED",
+      "milestone_complete": false,
+      "tests_executed": 0,
+      "generated_exclusions": [],
+      "created_at": "2026-10-16T02:16:29.855968+00:00",
+      "scope": "Source identity and static catalog only. No test assertions executed, no protocol/FSFS/HA/performance compatibility conclusion.",
+      "script_sha256": "019a3b5e871e24385e821a9bbfd5451a59406db7810de1222c19bcb71b027318",
+      "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+      "frozen_input_scope": [
+        "scripts/pgvn/catalog_upstream_network.py",
+        "tests/pgvn/upstream_network_lock.py"
+      ],
+      "future_execution_requirement": "Run upstream code from a fresh verified source snapshot without consuming vendor bytecode caches. This catalog never imports upstream modules.",
+      "source_lock_sha256": "b249fe4711aa4a21f523561183065d3cfacceadbba11091b3f5b77d1c737f8ac",
+      "error": "InputRejected: Catalog script/source lock not registered in this frozen build"
+    },
+    "original_archive_and_vendor_unchanged": true,
+    "snapshot_files_verified": 234,
+    "native_products_identical_to_focus_baseline": true,
+    "upstream_tests_executed": 0
+  },
+  "native_products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "ef2821e57a097f3e4f4e7333e95ab652cc6f88a400753ca89c13b70820c2f9bc",
+    "runtime/pgvn/bin/pgvnadmin.exe": "bb9a38a5e2cad42ed2b1e75a687a6180a10f2bec436dcce5d6c82d94058d6bde",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "a43b385b75edbeac5fa5708c64c9316e2a938f8db3d4ed2d0449a09ae3e507b3",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "62875a3234fb9b15a423e110d91f2df0caa01d7ea02d5abaca5598cbb602a7b5",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "scope": "Pinned source catalog and cache-free source snapshot only. Protocol fixture, original test execution, FSFS control, applicability review and complete PGVN-601 acceptance remain pending.",
+  "remaining": [
+    "Replace repository-creation/config helpers without materializing PgVN repository directories.",
+    "Handle direct run_command/run_command_stdin admin/look calls, not just run_svnadmin/run_svnlook wrappers.",
+    "Run unmodified test assertions over SVN, HTTP and HTTPS with FSFS controls and explicit case-level applicability.",
+    "Complete M6 history/fault/performance budgets and M7 acceptance; retain pending monitoring-token authorization separately."
+  ]
+}

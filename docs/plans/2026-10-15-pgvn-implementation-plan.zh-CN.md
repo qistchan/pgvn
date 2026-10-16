@@ -34,7 +34,7 @@ PgVN 在现有 PgFS 存储核心上构建专用 SVN 服务端，交付 `pgvnserv
 | 官方命令与协议回归 | 51 组完整适用套件，1891 PASS、69 SKIP、54 XFAIL，无非预期失败 |
 | 真实 Polarion 历史 | r0–r637，共 638 个修订版本完整性校验通过；全部变更路径和修订属性一致；5 个完整历史快照一致 |
 
-基线模块 SHA-256：`a06a79ba5efb9cf9bace026fdda1dfe820e3df13f23ae1f3f08403a2b121bb5c`。证据见[兼容性记录](../../artifacts/tests/compatibility-evidence.json)，现状见[实现状态](../implementation-status.md)。这些结果属于当前 PgFS 构建，PgVN 各产物单独记录构建身份、测试 ID、跳过项和结果。
+基线模块 SHA-256：`a06a79ba5efb9cf9bace026fdda1dfe820e3df13f23ae1f3f08403a2b121bb5c`。旧 PgFS 兼容性记录位于工作区外的 `C:\Project\PgFS\artifacts\tests\compatibility-evidence.json`，旧实现背景见[实现状态](../implementation-status.md)。这些结果不随 PgVN 发布，属于旧 PgFS 基线；PgVN 各产物单独记录构建身份、测试 ID、跳过项和结果。
 
 继续复用版本树、目录 COW、内容分块、历史关系、事务暂存、原子发布、修订属性 CAS、锁和提交回执。现有源码仍存在的目录入口包括 PgFS 创建与打开配置、FS 加载器后端识别、仓库层格式检查、hooks 路径，以及 Apache DAV activity 文件。
 
@@ -317,7 +317,7 @@ M0–M4 的首个可用版本约 29–45 人日；完整本轮约 55–84 人日
 - [ ] PGVN-701 生成可校验的离线运行包、依赖清单、Windows 服务与 HTTP URL 权限安装脚本。
 - [ ] PGVN-702 在干净 Windows 机器完成部署、重启和恢复；执行隔离 Polarion 应用演练并形成切换条件。
 
-当前组件进展：固定 638 个修订的历史对照与跨所有者逻辑备份恢复已通过，见 [M6 记录](../pgvn/M6-validation.zh-CN.md)。PGVN-701 已生成开发快照，并完成中文、emoji 和组合字符安装路径、中文账号配合标准 svn 的本机服务、双协议与备份恢复检查，见 [部署记录](../pgvn/M7-package-local.zh-CN.md) 和 [UTF-8 记录](../pgvn/Windows-UTF8.zh-CN.md)；正式包仍等待 M6 完整验收。固定 SDK svnmucc 的中文账号差异仍保留，窄屏已在前一轮完成复验；本轮多实例焦点组件通过，完整浏览器验收仍有授权待验项，见 [焦点记录](../pgvn/evidence/m4-monitor-focus.json)。新增原生上游 C 入口完成 PgVN 87 PASS/4 SKIP 与 FSFS 对照，11 项架构边界逐项记录，见 [原生验证](../pgvn/M6-native.zh-CN.md)；PGVN-601 的完整上游网络协议入口仍待完成。上述任务未据组件结果提前勾选完成。
+当前组件进展：固定 638 个修订的历史对照与跨所有者逻辑备份恢复已通过，见 [M6 记录](../pgvn/M6-validation.zh-CN.md)。PGVN-701 已生成开发快照，并完成中文、emoji 和组合字符安装路径、中文账号配合标准 svn 的本机服务、双协议与备份恢复检查，见 [部署记录](../pgvn/M7-package-local.zh-CN.md) 和 [UTF-8 记录](../pgvn/Windows-UTF8.zh-CN.md)；正式包仍等待 M6 完整验收。固定 SDK svnmucc 的中文账号差异仍保留，窄屏已在前一轮完成复验；本轮多实例焦点组件通过，完整浏览器验收仍有授权待验项，见 [焦点记录](../pgvn/evidence/m4-monitor-focus.json)。新增原生上游 C 入口完成 PgVN 87 PASS/4 SKIP 与 FSFS 对照，11 项架构边界逐项记录，见 [原生验证](../pgvn/M6-native.zh-CN.md)；PGVN-601 的完整上游网络协议入口仍待完成。 已锁定 62 个上游套件、1,984 个静态测试编号并生成无旧字节码快照，见 [网络入口记录](../pgvn/M6-upstream-network.zh-CN.md)；当前执行数为 0，未自动生成排除项。上述任务未据组件结果提前勾选完成。
 
 ## 8 测试与测量方案
 
