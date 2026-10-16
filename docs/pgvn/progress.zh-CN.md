@@ -118,3 +118,9 @@ SVNKit 中文仓库 URL 修改 revision 属性的重复编码失败已在未修�
 将未修改的原版 svnadmin/svnlook 命令体链接当前公共核心，以受限 ID 夹具代替仓库目录构造；构建同时核对原始归档与命令体字节。离线 9 组、隔离差分 19 组通过，包含二进制/属性/复制、原版 load/verify、16 组 svnlook 与 FSFS 对照，以及 dump 回灌原版 FSFS。首轮适配器空指针崩溃的 FAIL 和修复重跑均保留。
 
 五个生产产品摘要不变。该组件尚未执行上游 Python 网络用例，也未验收全部维护入口；PGVN-601 和 M6 保持进行中。命令、隔离范围及证据见 [网络测试入口](M6-upstream-network.zh-CN.md) 和 [CLI 组件记录](evidence/m6-network-tools.json)。
+
+## M6 上游辅助工具：本机组件通过（2026-10-16）
+
+从固定源码构建五种原版 C 辅助工具和私有工作副本 DLL，保留 SDK 全部 305 个 WC 导出，标准客户端 DLL 未替换。14 组实际 FSFS/WC 检查通过；私有 DLL 篡改在测试执行前被拒绝并恢复，原检查脚本两次解析 FAIL 保留。扩展后的 CLI 19 组差分和 9 组离线检查重跑通过。
+
+这些是网络入口的前置组件，上游 Python 用例数仍为 0，PGVN-601 未完成。原生 lock-helper 的真实锁路径及原版断言的网络运行继续推进。范围见 [网络入口](M6-upstream-network.zh-CN.md)，摘要见 [辅助工具证据](evidence/m6-upstream-helpers.json)。

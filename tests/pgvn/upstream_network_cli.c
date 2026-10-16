@@ -169,6 +169,20 @@ svn_error_t *pgvn_network_repos_create(svn_repos_t **repos,const char *path,cons
     *repos=pgvn_repo_svn(repository);return SVN_NO_ERROR;
 }
 
+/* The original lock-helper opens an FS directly instead of a repos object. */
+svn_error_t *pgvn_network_fs_open2(svn_fs_t **fs,const char *path,apr_hash_t *config,
+    apr_pool_t *result_pool,apr_pool_t *scratch_pool)
+{
+    /* lock-helper's original body appends "db". This is a virtual FS alias,
+     * not a directory to create or open. */
+    if(strcmp(svn_dirent_basename(path,result_pool),"db"))
+        return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Direct FS fixture requires the virtual db alias");
+    path=svn_dirent_dirname(path,result_pool);
+    svn_repos_t *repos;
+    SVN_ERR(pgvn_network_repos_open3(&repos,path,config,result_pool,scratch_pool));
+    *fs=svn_repos_fs(repos);return SVN_NO_ERROR;
+}
+
 svn_error_t *pgvn_network_repos_hotcopy3(const char *source,const char *destination,
     svn_boolean_t clean_logs,svn_boolean_t incremental,svn_repos_notify_func_t notify,void *notify_baton,
     svn_cancel_func_t cancel,void *cancel_baton,apr_pool_t *pool)

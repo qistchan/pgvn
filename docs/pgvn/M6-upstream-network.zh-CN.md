@@ -45,6 +45,19 @@ python tests/pgvn/test_m6_network_tools.py --execute-plan <plan.json路径>
 
 ## 后续适配边界
 
+### 上游辅助工具已具备本机组件验证
+
+```powershell
+python scripts/pgvn/build_upstream_helpers.py
+python tests/pgvn/test_m6_upstream_helpers.py
+```
+
+构建原版 entries-dump、lock-helper、atomic-ra-revprop-change、wc-lock-tester、wc-incomplete-tester。SDK 缺少部分工作副本私有导出，因此从固定归档对应的 WC C/头文件/SQL 和 SQL 生成器构建测试私有 DLL，保留原 SDK 的 305 个导出；原版客户端仍从其原目录加载原 SDK DLL。所有额外文件均在 `runtime/pgvn/upstream-helpers`，原安装及 vendor 未改。
+
+`m6-upstream-helpers-b5b75e59dac7` 的 14 组本机检查通过，覆盖真实工作副本条目/目录树、写锁与 cleanup、不完整目录与 update、原子修订属性成功/冲突、FSFS 过期锁及原生保护拒绝。早期两个检查脚本的解析错误保留为 FAIL。私有 WC DLL 追加字节时，身份校验在执行测试之前拒绝，随后恢复原字节；原 SDK 未修改。
+
+lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解析为仓库 ID；FSFS 对照另构建不带该绑定的同一命令体。当前只验收原生入口的缺少连接保护拒绝，真实原生过期锁仍需网络 fixture 验证。扩展后的 CLI 另以新隔离库重跑 19 组差分及 9 组离线检查通过。固定摘要与范围见 [辅助工具证据](evidence/m6-upstream-helpers.json)。上游 Python 用例数仍为 0。
+
 | 上游位置（固定 1.14.5） | 观察 | 后续工作 |
 | --- | --- | --- |
 | `svntest/main.py` 437、599 | 底层 `run_command` / `run_command_stdin` | 在明确的 admin/look 工具调用边界适配 argv、标准流及退出码 |
