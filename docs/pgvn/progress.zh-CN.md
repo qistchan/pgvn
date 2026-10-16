@@ -148,3 +148,13 @@ pgvnserve、pgvnadmin 和 mod_dav_pgvn 产品已变化，网页资源未改；�
 生产只修复无效 authz 被归为 HTTP 503 的分类：现返回 403，真实数据库故障仍返回 503。新浏览器 15+6 项和完整 M5 `m5-7e3dbdd48f38`（含 M4 `m4-0041b28dd2df` 八组、M0–M3 七组）通过，均绑定清单 `612a8df7a539a427294e49a6b089c5577e082a56dc04d5be2a9234a2af5329ce`；本轮令牌已撤销，自有夹具已停止。详见[授权套件与回归](M6-network-authz.zh-CN.md)和[冻结证据](evidence/m6-network-authz.json)。
 
 此前记录中的“当前核心的新浏览器/完整 M5 待执行”已由本轮完成；各早期结果仍保留原构建身份。PGVN-601 的剩余协议矩阵、维护语义、最终核心的真实历史/备份复核、跨故障域和确认账本、代表性性能继续推进。M6/M7 仍未完成，实际 Windows 高对比度视觉、干净机器、重启和 Polarion 应用验收待独立环境。
+
+## 2026-10-16：原版 commit/update 三协议及匹配构建完整回归
+
+原版 commit 1–74 在 SVN、HTTP、HTTPS 各侧 71 PASS/2 原有 XFAIL/1 原有 SKIP；update 1–86 各侧 84 PASS/2 原有 XFAIL，与原版 FSFS 对照逐项一致。全量共 960 个结果、954 次实际进入用例，未新增排除；原有 XFAIL 的诊断在消除工作目录差异后也一致。修复标准 hook 退出文本与 DAV start-commit 反馈覆盖；hooks.log 临时文件及 Windows file:// 准备写入仅作夹具适配，原断言和被测 HTTP/HTTPS 更新保持不变。
+
+冻结构建 `8f094d1e6502bc53fd099e989b8b004e3b236a8ef101e892bbd1cb9d7dd5faa5` 上，新浏览器 15+6 项及完整 M5 `m5-d2be426ed5d1`（10 组，600.047 秒，内含 M4 `m4-e1bac01cdf67` 八组及 M3 `m3-dbc36e7240ca` 七组）通过。六轮全量和六轮定点各 28 个 Job 已清理，门禁 22 个隔离库的 7 枚令牌均已撤销，自有运行进程与临时服务均为 0；数据库保留。
+
+同步生成开发包 `7ed4abd2a273bd16`，203 个文件、ZIP 205 个条目及 95 个 x64 原生镜像位数核对通过，三个主入口、svn 和 pg_dump 通过清空 PATH 后的版本启动检查。该包仍为 development-snapshot，不宣告干净机器或 Polarion 验收。原始 FAIL、修复确认、全部源代码与产物及浏览器/M5/清理/部署包证据均已冻结，见[组件记录](M6-network-commit-update.zh-CN.md)与[结构化证据](evidence/m6-network-commit-update.json)。
+
+PGVN-601 与 M6/M7 保持未完成。剩余套件/适用性、维护语义、最终构建的早期套件与真实历史/备份复核、跨故障域与确认账本、代表性持续性能及独立环境验收继续推进。较早结果保留其原构建身份，网络用例执行耗时不作为性能基准。

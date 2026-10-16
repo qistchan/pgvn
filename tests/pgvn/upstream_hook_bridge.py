@@ -39,7 +39,9 @@ def main():
     env.update(PGVN_DSN=f"host=127.0.0.1 port=16432 dbname={config['database']} user=pgvn_admin sslmode=disable",
                PGVN_UPSTREAM_DATABASE=config['database'],PGVN_UPSTREAM_ROOT=work.as_posix(),
                PGVN_UPSTREAM_LEDGER=(work/'native-commands.jsonl').as_posix(),LC_ALL='C')
-    result=subprocess.run([sys.executable,'-I','-B',str(script),*args],cwd=work,env=env,input=stdin,
+    runner=Path(__file__).with_name('upstream_hook_output.py')
+    assert hashlib.sha256(runner.read_bytes()).hexdigest()==config['hook_output_sha256']
+    result=subprocess.run([sys.executable,'-I','-B',str(runner),str(config_path),str(script),*args],cwd=work,env=env,input=stdin,
                           creationflags=subprocess.CREATE_NO_WINDOW,timeout=25)
     return result.returncode
 

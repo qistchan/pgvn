@@ -277,7 +277,16 @@ cleanup:
     if(exit_code) {
         const char *message=io[2].output;
         if(strlen(message)!=io[2].output_size || !svn_utf__is_valid(message,io[2].output_size)) message="(non-text output omitted)";
-        return svn_error_createf(SVN_ERR_REPOS_HOOK_FAILURE,NULL,"PgVN %s hook exited with code %lu: %s",pgvn_hook_name(event->event),(unsigned long)exit_code,message);
+        const char *name=pgvn_hook_name(event->event),*action=NULL;
+        if(event->event==PGVN_HOOK_START_COMMIT || event->event==PGVN_HOOK_PRE_COMMIT) action="Commit";
+        else if(event->event==PGVN_HOOK_PRE_REVPROP) action="Revprop change";
+        else if(event->event==PGVN_HOOK_PRE_LOCK) action="Lock";
+        else if(event->event==PGVN_HOOK_PRE_UNLOCK) action="Unlock";
+        const char *description=action ?
+            apr_psprintf(pool,"%s blocked by %s hook (exit code %d)",action,name,(int)exit_code) :
+            apr_psprintf(pool,"%s hook failed (exit code %d)",name,(int)exit_code);
+        return svn_error_createf(SVN_ERR_REPOS_HOOK_FAILURE,NULL,"%s%s%s",description,
+            *message ? " with output:\n" : " with no output.",message);
     }
     if(event->lock_token_result) {
         size_t start=0,end=io[1].output_size;

@@ -160,6 +160,14 @@ svn_error_t *pgvn_http_open(dav_svn_repos *repos,request_rec *r)
 static dav_error *convert(svn_error_t *error,const dav_svn_repos *repos)
 {
     if(!error) return NULL;
+    svn_error_t *hook=svn_error_find_cause(error,SVN_ERR_REPOS_HOOK_FAILURE);
+    if(hook) {
+        /* Hook diagnostics are part of the SVN protocol. Copy only this
+         * public cause; cleanup failures may contain private backend data. */
+        svn_error_t *visible=svn_error_create(hook->apr_err,NULL,hook->message);
+        svn_error_clear(error);
+        return dav_svn__convert_err(visible,HTTP_INTERNAL_SERVER_ERROR,NULL,repos->pool);
+    }
     pgvn_exit_code code=pgvn_error_exit_code(error);
     int status=code==PGVN_EXIT_NOT_FOUND ? HTTP_NOT_FOUND : code==PGVN_EXIT_DENIED ? HTTP_FORBIDDEN :
         code==PGVN_EXIT_USAGE ? HTTP_BAD_REQUEST : code==PGVN_EXIT_CONFLICT ? HTTP_CONFLICT : HTTP_SERVICE_UNAVAILABLE;

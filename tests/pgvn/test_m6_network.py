@@ -26,7 +26,7 @@ sys.path.insert(0,str(ROOT/'scripts/pgvn'))
 from catalog_upstream_network import read_lock,verify_inputs,materialize_snapshot,suite_catalog
 
 OWN=('tests/pgvn/test_m6_network.py','tests/pgvn/upstream_network_entry.py','tests/pgvn/upstream_hook_bridge.py',
-     'tests/pgvn/upstream_network_policy.py','tests/pgvn/upstream_network_import.py')
+     'tests/pgvn/upstream_network_policy.py','tests/pgvn/upstream_network_import.py','tests/pgvn/upstream_hook_output.py')
 
 def identity(protocol='svn'):
     assert protocol in ('svn','http','https')
@@ -159,6 +159,12 @@ def execute(path):
     def admin(*args,role='pgvn_admin',input=None):
         result=invoke(RUNTIME/'bin/pgvnadmin.exe',[*args,'--json'],work,environment(PGVN_DSN=dsn(role)),input=input)
         return json.loads(result.stdout)
+    def native_config(area,name,number):
+        path=area/name;path.write_text('[pgvn]\nconnection = '+dsn('pgvn_service')+
+            '\nmonitor-connection = '+dsn('pgvn_monitor')+'\ncredential-key-file = '+key.as_posix()+
+            '\nidentity-domain = '+domain+'\nhook-root = '+Path(sys.executable).parent.as_posix()+
+            '\nlisten-host = 127.0.0.1\nlisten-port = '+str(number)+'\n',encoding='utf-8')
+        return path
     try:
         fixture.assert_ours();source,archive,lock=upstream_inputs()
         suite=suite_catalog(source,source/'subversion/tests/cmdline'/(value['suite']+'.py'))
@@ -183,7 +189,7 @@ def execute(path):
         for backend in ('fsfs','pgvn'):
             area=work/backend;area.mkdir();temporary=area/'tmp';temporary.mkdir()
             number=port();env=environment(TEMP=str(temporary),TMP=str(temporary))
-            server_inputs=None;tls_check=None
+            server_inputs=None;tls_check=None;local_server=None;local_inputs=None
             if protocol!='svn':
                 import upstream_network_http as http
                 server_inputs=http.configure(area,backend,number,database,domain,
@@ -192,19 +198,24 @@ def execute(path):
             elif backend=='fsfs':
                 command=[RUNTIME/'bin/svnserve.exe','--daemon','--foreground','--root',area,'--listen-host','127.0.0.1','--listen-port',number]
             else:
-                config=area/'server.ini';config.write_text('[pgvn]\nconnection = '+dsn('pgvn_service')+
-                    '\nmonitor-connection = '+dsn('pgvn_monitor')+'\ncredential-key-file = '+key.as_posix()+
-                    '\nidentity-domain = '+domain+'\nhook-root = '+Path(sys.executable).parent.as_posix()+
-                    '\nlisten-host = 127.0.0.1\nlisten-port = '+str(number)+'\n',encoding='utf-8')
+                config=native_config(area,'server.ini',number)
                 command=[RUNTIME/'bin/pgvnserve.exe','--config',config,'--monitor-disabled']
             server=OwnedProcess(command,area,env,area/'server.log');processes.append(server);listen(server,number)
             if tls:tls_check=http.verify_tls(number,tls)
+            if backend=='pgvn' and protocol!='svn':
+                local_port=port();local_config=native_config(area,'local-fixture-svn.ini',local_port)
+                local_server=OwnedProcess([RUNTIME/'bin/pgvnserve.exe','--config',local_config,'--monitor-disabled'],
+                                          area,env,area/'local-fixture-svn.log')
+                processes.append(local_server);listen(local_server,local_port)
+                local_inputs={'url':f'svn://127.0.0.1:{local_port}','config_sha256':sha(local_config),
+                              'purpose':'Only legacy file:// svnmucc setup writes use SVN; update commands keep their HTTP/HTTPS URLs.'}
             context={'work':str(area),'backend':backend,'database':database,'identity_domain':domain,
                      'fsfs_control_work':str(work/'fsfs'),
                      'manifest_sha256':value['inputs']['manifest_sha256'],'snapshot':snapshot['root'],
                      'snapshot_manifest_sha256':snapshot['manifest_sha256'],'suite':value['suite'],
                      'cases':value['cases'],'url':f'{protocol}://'+('localhost' if tls else '127.0.0.1')+f':{number}',
                      'httpd_version':value['inputs'].get('http',{}).get('apache_version'),
+                     'local_fixture_url':local_inputs['url'] if local_inputs else None,
                      'tls_authority':tls['authority'] if tls else None}
             configuration=area/'entry.json';configuration.write_text(json.dumps(context,indent=2)+'\n',encoding='utf-8')
             child=OwnedProcess([sys.executable,'-I','-B',ROOT/'tests/pgvn/upstream_network_entry.py',configuration],
@@ -213,10 +224,12 @@ def execute(path):
             result_path=area/'entry-result.json'
             round_result={'backend':backend,'child_exit_code':child_cleanup['exit_code'],
                           'log':str(area/'upstream.log'),'log_sha256':sha(area/'upstream.log'),
-                          'server_inputs':server_inputs,'tls_verification':tls_check}
+                          'server_inputs':server_inputs,'tls_verification':tls_check,'local_fixture_server':local_inputs}
             if result_path.exists():round_result.update(read(result_path));round_result['result_sha256']=sha(result_path)
             else:round_result.update(status='FAIL',error='Entry terminated before producing an outcome')
-            rounds.append(round_result);cleanup.append(server.stop())
+            rounds.append(round_result)
+            if local_server:cleanup.append(local_server.stop())
+            cleanup.append(server.stop())
         assert identity(protocol)==value['inputs'],'Frozen network inputs changed during execution'
         assert all(r['status']=='PASS' for r in rounds),'At least one original upstream round failed'
         assert len(rounds)==2
@@ -236,6 +249,7 @@ def execute(path):
             'upstream_python_case_outcomes':sum(len(r.get('cases',[])) for r in rounds),
             'upstream_python_tests_executed':sum(c['result']!='SKIP' for r in rounds for c in r.get('cases',[])),
             'cleanup':cleanup,'error':error,'elapsed_seconds':time.monotonic()-start,
+            'expected_job_count':len(processes),'all_owned_jobs_closed':all(p.closed for p in processes),
             'scope':'Explicit original assertions and decorators over '+protocol+' with a stock FSFS control; remaining protocol/suite matrix and full applicability ledger are pending.',
             'monitor_tokens_created':0,'temporary_windows_services_created':0,'databases_and_roles_retained':True}
     save(report,'m6-network');return 0 if status=='PASS' else 1

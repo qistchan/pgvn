@@ -18,7 +18,8 @@ import sys
 import threading
 import time
 import traceback
-from urllib.parse import urlparse
+from urllib.parse import urlparse,quote
+from urllib.request import url2pathname
 
 ROOT=Path(__file__).resolve().parents[2]
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
@@ -33,6 +34,10 @@ def main():
     assert sha(policy_source)==manifest['sources']['tests/pgvn/upstream_network_policy.py']
     policy_spec=importlib.util.spec_from_file_location('pgvn_upstream_policy',policy_source)
     policy_boundary=importlib.util.module_from_spec(policy_spec);policy_spec.loader.exec_module(policy_boundary)
+    output_source=ROOT/'tests/pgvn/upstream_hook_output.py'
+    assert sha(output_source)==manifest['sources']['tests/pgvn/upstream_hook_output.py']
+    output_spec=importlib.util.spec_from_file_location('pgvn_upstream_hook_output',output_source)
+    output_boundary=importlib.util.module_from_spec(output_spec);output_spec.loader.exec_module(output_boundary)
     work=Path(config['work']).resolve();os.chdir(work)
     assert work.is_relative_to((ROOT/'runtime/pgvn/tests').resolve()) and configuration.is_relative_to(work)
     native=config['backend']=='pgvn';assert config['backend'] in ('pgvn','fsfs')
@@ -106,6 +111,17 @@ def main():
             # completed FSFS control, outside every native repository alias.
             if str(command[0])==main.svnmucc_binary:
                 command=list(command)
+                for index in range(1,len(command)-1):
+                    if command[index]!='-U' or urlparse(str(command[index+1])).scheme!='file':continue
+                    local=urlparse(str(command[index+1]));assert local.netloc in ('','localhost')
+                    alias=full(url2pathname(local.path));assert alias in repositories and not alias.exists()
+                    assert policy[alias]['authz']=='[/]\n* = rw\n' and not policy[alias]['hooks']
+                    assert policy[alias]['settings']['authenticated_access']=='write'
+                    target=config.get('local_fixture_url');assert target and re.fullmatch(r'svn://127\.0\.0\.1:[0-9]+',target)
+                    original_url=command[index+1]
+                    command[index+1]=target+'/'+quote(alias.relative_to(work).as_posix(),safe='/')
+                    event('local-fixture-write',repository_id=repositories[alias],original_url=original_url,
+                          url=command[index+1],method='Actual native SVN write replaces legacy file:// setup; the update under test retains its original URL.')
                 for index in range(1,len(command)-2):
                     if command[index]!='put':continue
                     source=full(command[index+1])
@@ -148,7 +164,8 @@ def main():
                     if not alias.startswith('pgvn:') and record['repository_id'] not in purged:
                         repositories[full(alias)]=record['repository_id']
             content=json.dumps({'work':str(work),'database':config['database'],
-                'bridge_sha256':sha(bridge),'repositories':{v:str(k) for k,v in repositories.items()}})
+                'bridge_sha256':sha(bridge),'hook_output_sha256':sha(output_source),
+                'manifest_sha256':config['manifest_sha256'],'repositories':{v:str(k) for k,v in repositories.items()}})
             if bridge_config.exists() and bridge_config.read_text(encoding='utf-8')==content:return
             temporary=bridge_config.with_suffix('.tmp');temporary.write_text(content,encoding='utf-8')
             deadline=time.monotonic()+3
@@ -260,6 +277,7 @@ def main():
         original_set_name(sbox,*args,**kwargs);declared.add(full(sbox.repo_dir));folder=policy_paths(sbox.repo_dir)
         sbox.authz_file=str(folder/'authz');sbox.groups_file=str(folder/'groups')
     if native:
+        output_boundary.install(work,lambda:repositories)
         os.environ.update(PGVN_UPSTREAM_DATABASE=config['database'],PGVN_UPSTREAM_ROOT=work.as_posix(),
             PGVN_UPSTREAM_LEDGER=(work/'native-commands.jsonl').as_posix(),
             PGVN_DSN=f"host=127.0.0.1 port=16432 dbname={config['database']} user=pgvn_admin sslmode=disable")
@@ -314,7 +332,9 @@ def main():
                                   'exact authz repository namespace mapped to canonical ID-fixture name',
                                   'admin-rejected malformed authz appended as non-superuser fixture file state',
                                   'historical FSFS archive imported with stock dump and native load, preserving UUID/revisions',
-                                  'DDT Apache parent alias represented by a guarded second catalog route'] if native else ['helper executable paths'],
+                                  'DDT Apache parent alias represented by a guarded second catalog route',
+                                  'only hooks.log scratch I/O relocated to global hook output with an operation audit',
+                                  'legacy file:// svnmucc setup uses a same-database loopback SVN writer; tested updates retain their URLs'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',
                                   'Direct physical repository file operations and historical disk formats need case applicability review.'] if native else []}
     if config.get('tls_authority'):
