@@ -96,6 +96,13 @@ void pgvn_telemetry_session(int change)
     else totals.sessions_rejected++;
     ReleaseSRWLockExclusive(&metrics_lock);
 }
+void pgvn_telemetry_session_limit(unsigned limit)
+{
+    if(DISABLED()) return;
+    AcquireSRWLockExclusive(&metrics_lock);
+    totals.sessions_limit=(LONG)limit;
+    ReleaseSRWLockExclusive(&metrics_lock);
+}
 void pgvn_process_snapshot(pgvn_process_metrics *result)
 {
     AcquireSRWLockShared(&metrics_lock); *result=totals; ReleaseSRWLockShared(&metrics_lock);

@@ -180,3 +180,13 @@ PGVN-601、M6、M7 保持未完成。继续其余套件和完整适用性、最�
 冻结清单 `7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4` 含 154 项本仓库输入，改动为五个测试文件。五个生产产物、三份网页资源、67 项运行依赖和 84 项 Apache 依赖与此前 copy/prop 产品验收构建相同。浏览器和完整 M5 复用其产品层验收，原记录仍绑定原清单；本轮没有把它们改写为新运行。原生仓库别名均未生成目录，最终 28 个 Job 已关闭，未创建监控令牌或临时 Windows 服务；库及角色保留。
 
 详细结果与修复边界见[log/diff 组件](M6-network-log-diff.zh-CN.md)和[结构化证据](evidence/m6-network-log-diff.json)，开发包的完整性与最小 PATH 检查见[包旁记录](evidence/m7-package-log-diff.json)。包为 development-snapshot。PGVN-601、M6、M7 保持未完成；剩余套件/适用性、最终构建复跑、维护、真实历史/备份复核、跨故障域/确认账本、代表性性能和独立环境验收继续推进。
+
+## 2026-10-16：仓库工作流、会话容量与监控一致性
+
+原版 export、import、cat、blame、history、info 六组完整套件及 checkout1–13 网络用例在 SVN、HTTP、HTTPS 完成 FSFS 对照，共612个结果、606次实际进入、102个唯一被选函数。6对原有XFAIL输出一致；原有Windows SKIP保留。checkout14的物理file://提供器边界保留首轮stockPASS/nativeFAIL记录，未改成SKIP或PASS，也不据此自动排除其他用例。
+
+修复原版info21暴露的固定16会话接纳问题：`max-connections`缺省64，可设1–64；接纳、排空和取消使用相同上限。网页容量来自监听器实际值，API、心跳及Prometheus一致；配置改2→8而未重启时仍报告并执行2，重启后才为8。默认64/显式1、2、额外连接拒绝、释放后认证及7类非法配置均通过；64空闲会话的LocalService排空为12.250秒。
+
+冻结清单`fb66ece247011e7940fdbd991a09397786b04c906204c5587051498ef6387611`下，真实浏览器15+6项及完整M5`m5-ba210e325efc`十组通过，含M4`m4-d4c29065dec3`八组及M0–M3。首轮网页硬编码16的FAIL保留；外层Job即时计数非零的尝试未接纳，以新库重跑后与此前正常关闭的结果核对。后续调度记录PID并最多等待5秒自然排空，关闭前仍须为0。最终runtime进程、临时服务和本轮未撤销监控令牌均为0，库及角色保留。
+
+详见[仓库工作流与容量修复](M6-network-workflows.zh-CN.md)及[结构化证据](evidence/m6-network-workflows.json)，开发包校验见[包旁记录](evidence/m7-package-workflows.json)。PGVN-601、M6、M7仍未完成；其余套件/适用性、最终构建复跑、维护与真实历史备份、跨故障域/确认账本、代表性性能及独立Windows/Polarion验收继续推进。

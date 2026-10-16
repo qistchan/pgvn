@@ -1,0 +1,2392 @@
+{
+  "status": "PASS_COMPONENT_ONLY",
+  "created_at": "2026-10-16T13:51:17.071708+00:00",
+  "build_manifest_sha256": "fb66ece247011e7940fdbd991a09397786b04c906204c5587051498ef6387611",
+  "build_git_base_commit": "59afef09f4d20af15a989b616b0312ac43dcbc8e",
+  "build_worktree_dirty": true,
+  "registered_source_inputs": 154,
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "4dbfbc0c9a052f18ce72156c646c84a410ff31fb0e723e516b27b414f5d2b448",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "81a82b85af2b44222889d1cba81e95640310b0c7b12dcf10cdf138f954fa130a",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c2a140302b552fe7603d3ed01fc3d149c1e5cc921e780b74f60e6571701c27d2",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "scope": {
+    "complete_original_suites": 6,
+    "checkout_network_cases": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "original_outcomes": 612,
+    "entered_including_original_xfail": 606,
+    "unique_selected_functions": 102,
+    "unique_static_functions_in_group": 103,
+    "unique_entered_per_backend_protocol": 101,
+    "extra_original_skips_or_assertion_changes": false
+  },
+  "runs": [
+    {
+      "test_id": "m6-network-b605936379d8",
+      "suite": "checkout_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "report_sha256": "da2eab34908c13513e137d23d56fae8be626b921572c63e0cd6cba972601c043",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 57512,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-bb41c7140caf",
+      "suite": "export_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 30,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "report_sha256": "99af09d5c280cf389e98331dc4190b4c976a74912868d154334473a0da26e09f",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 57852,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-ee705fe7e4ad",
+      "suite": "import_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 1,
+          "PASS": 6
+        },
+        "pgvn": {
+          "SKIP": 1,
+          "PASS": 6
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "report_sha256": "b4fffad4afaccd991cc3a81241ae93c7aa75d5683d583177d20828d32fa46e2b",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 60892,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-fc81c33031aa",
+      "suite": "cat_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "report_sha256": "b7ce11ce7c4d480d3d17866eb019ee731e04ed4ce7413185ab27d1c7f1267c15",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 61832,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-f68468a5eee4",
+      "suite": "blame_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 18,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "report_sha256": "c178e451a8cfb3ed3cb21b6dfd2eaa1d746965f8757bb6cbfb324d7ac17a5c9b",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 62544,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-8663b8dcc583",
+      "suite": "history_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2
+      ],
+      "report_sha256": "767a1b948d0eba16a85c4fd8c8d34bb5880b70333c45c4584ce17151f4e299d4",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 33508,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-caafa2dfc4ff",
+      "suite": "info_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21
+        },
+        "pgvn": {
+          "PASS": 21
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "report_sha256": "af031201dfccda7ed6d8f1c74ff04b2b5f1439c5386cfc0e3b98cae5829fe852",
+      "inner_jobs_closed": 4,
+      "outer_job_cleanup": {
+        "pid": 66280,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-2971b05ad763",
+      "suite": "checkout_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "report_sha256": "d2aec860f02f6816ccdc1c4cc58d2822ab52adbe2807ec7d77c22f728e1d34e3",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 43096,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "initial"
+    },
+    {
+      "test_id": "m6-network-f3a484e0d561",
+      "suite": "export_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 30,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "report_sha256": "03a185c25906a14d77198cbeb6a3b5250345169989aca999a77428cfa5ebe979",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 27236,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-91aa538a30d0",
+      "suite": "import_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 1,
+          "PASS": 6
+        },
+        "pgvn": {
+          "SKIP": 1,
+          "PASS": 6
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "report_sha256": "f1979dfe6c01c1fdd8d02adb99046a2082c08c680f7218ecb793893517f606b1",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 61372,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-da72363ffcc0",
+      "suite": "cat_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "report_sha256": "f3410ddebbbc75250dd39768846695403e5f009872d6d07c3f03baf62e48233a",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 39564,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-cc0cc5d90b16",
+      "suite": "blame_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 18,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "report_sha256": "1d9bc8f3179aecde4789b7b7cf6bae0138abfea04d50070a5d97a2b44af7ce9e",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 33804,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-1ce7a37db0be",
+      "suite": "history_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2
+      ],
+      "report_sha256": "47e0c6872b28b2a7c5447d8a0c3ab1641e438195fd1fc41572f2ffbf5be16178",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 19176,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-bf5e8177cae4",
+      "suite": "info_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21
+        },
+        "pgvn": {
+          "PASS": 21
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "report_sha256": "bf2f5720cf971ef333a2e6029a09aff1a55e1dac87fa7932c6cfc54bf6e9228b",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 27240,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-57f9f4d15f5e",
+      "suite": "checkout_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "report_sha256": "5e951747387159156211fe413d77bc70ac2192f32d50b7aaf88bbc2f9cbab77e",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 11364,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-8a53982b378c",
+      "suite": "export_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 30,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "report_sha256": "6ea5ac3af78f403c04e2db64f208856b609f3b497b09d73d33b383fbc49669a7",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 7988,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-832deb6d86b9",
+      "suite": "import_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 1,
+          "PASS": 6
+        },
+        "pgvn": {
+          "SKIP": 1,
+          "PASS": 6
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "report_sha256": "8198bf56ef04cdf054314fe4a6f575436f92f1c25d05446d7d29bd8b987453ba",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 31500,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-157cfd38aa82",
+      "suite": "cat_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "report_sha256": "c20e7416a1fdf5dd136c4b4b783400da1b19226adc5bc670e8307aab8715b7ea",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 64736,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-06c4087005cb",
+      "suite": "blame_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 18,
+          "XFAIL": 1
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "report_sha256": "972cc6902d2156b0b75653eaa4cdb1938ed3b6547eb9733d09f17b16c15e44e9",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 30416,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-ba79c9edc855",
+      "suite": "history_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 2
+        },
+        "pgvn": {
+          "PASS": 2
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2
+      ],
+      "report_sha256": "b82b647ab0693713075a3a5d127d1f937314c6b612aa8fc49299e18a7851afd7",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 39128,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    },
+    {
+      "test_id": "m6-network-724db0d0482c",
+      "suite": "info_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21
+        },
+        "pgvn": {
+          "PASS": 21
+        }
+      },
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "report_sha256": "c1bcdca161207d495c1e8b3193592c2a6072c0beb37a911a4aa2cd4564bd52a4",
+      "inner_jobs_closed": 5,
+      "outer_job_cleanup": {
+        "pid": 40176,
+        "exit_code": 0,
+        "job_active_processes": 0
+      },
+      "origin_phase": "remaining"
+    }
+  ],
+  "checkout_file_provider_boundary": {
+    "status": "LOCAL_FILE_REPOSITORY_BOUNDARY",
+    "suite": "checkout_tests",
+    "case": {
+      "id": 14,
+      "name": "checkout_wc_from_drive",
+      "line": 1048,
+      "decorators": [
+        "SkipUnless(svntest.main.is_os_windows)"
+      ]
+    },
+    "source_sha256": "7441fd6bdb4757790963e57e04657c67960442ebfeb077508faa92c3cc858885",
+    "source_archive_sha256": "53bd33126d6be42bdd2725f1ee92132e03c291aa4a3fcc910eccde10dad796f4",
+    "source_lines": {
+      "function": 1048,
+      "end": 1186,
+      "mount": 1084,
+      "unmount": 1186,
+      "checkout_calls": [
+        1113,
+        1154,
+        1180
+      ]
+    },
+    "asserted_url_scheme": "file",
+    "asserted_sources": [
+      "drive root",
+      "drive root/A",
+      "drive root/A/D"
+    ],
+    "uses_configured_network_url_for_asserted_checkouts": false,
+    "reason": "The original case SUBSTs the physical repository and uses the client local file provider. A native PgVN repository has no directory to mount; svn:// and DAV do not implement a file:// provider.",
+    "architecture_references": [
+      "docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md",
+      "docs/pgvn/M3-serve.zh-CN.md"
+    ],
+    "original_run": {
+      "test_id": "m6-network-6a76fb31932b",
+      "report_sha256": "4253d7ebe31846bb649a4aa5868cd1644f8501b302d4b791d647d813d09d29d7",
+      "manifest_sha256": "7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4",
+      "stock_fsfs_case_14": "PASS",
+      "native_case_14": "FAIL",
+      "native_log_sha256": "d60aa33002a37118ed07ee9435eec3c17ffc01a7509fe6ee306de3c9906ff505",
+      "native_alias_absent": true,
+      "all_owned_jobs_closed": true
+    },
+    "network_case_selection": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "original_case_14_pass_claimed": false,
+    "original_case_14_rewritten_or_marked_skip": false,
+    "native_corresponding_invariants": "The original network checkout cases verify content and working-copy behavior; the fixture verifies every catalog repository alias stays absent. This does not certify the local file-provider case.",
+    "post_run_subst_output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "post_run_subst_output": "",
+    "milestone_complete": false
+  },
+  "xfail_comparison": {
+    "status": "PASS",
+    "normalization": "Only each backend work directory and its exact configured URL endpoint; all repository routes, expected/actual diff text and exceptions retained",
+    "command_outputs_rewritten": false,
+    "pairs": [
+      {
+        "test_id": "m6-network-bb41c7140caf",
+        "suite": "export_tests",
+        "protocol": "svn",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "93c82425f829202ff7a6e0ecd7adeb037b5e49c2fe315b4641cb503f3b424b27",
+        "pgvn_sha256": "93c82425f829202ff7a6e0ecd7adeb037b5e49c2fe315b4641cb503f3b424b27"
+      },
+      {
+        "test_id": "m6-network-f68468a5eee4",
+        "suite": "blame_tests",
+        "protocol": "svn",
+        "case_id": 15,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "50f078008a09e26f46aa936e78bb21f1b9091dd26f50dbaadcbaf46fbfdcec85",
+        "pgvn_sha256": "50f078008a09e26f46aa936e78bb21f1b9091dd26f50dbaadcbaf46fbfdcec85"
+      },
+      {
+        "test_id": "m6-network-f3a484e0d561",
+        "suite": "export_tests",
+        "protocol": "http",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "88904e20338a24521bf0ff28a85d8445a8f33bca493adb14d3a739e1d77b31e4",
+        "pgvn_sha256": "88904e20338a24521bf0ff28a85d8445a8f33bca493adb14d3a739e1d77b31e4"
+      },
+      {
+        "test_id": "m6-network-cc0cc5d90b16",
+        "suite": "blame_tests",
+        "protocol": "http",
+        "case_id": 15,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "1eedbc4864ecc70d37fe50a4373589ab4289ea48234f6e4f72a8ccb32e1a7a4b",
+        "pgvn_sha256": "1eedbc4864ecc70d37fe50a4373589ab4289ea48234f6e4f72a8ccb32e1a7a4b"
+      },
+      {
+        "test_id": "m6-network-8a53982b378c",
+        "suite": "export_tests",
+        "protocol": "https",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "573363e500b146d45d77245e41fce6f57f62e4bde33cde9481efbd094120b635",
+        "pgvn_sha256": "573363e500b146d45d77245e41fce6f57f62e4bde33cde9481efbd094120b635"
+      },
+      {
+        "test_id": "m6-network-06c4087005cb",
+        "suite": "blame_tests",
+        "protocol": "https",
+        "case_id": 15,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "500a21a3103ae27cf0bed78b2abcb58a5f0ba91a9996c44e46cdda8243a303cd",
+        "pgvn_sha256": "500a21a3103ae27cf0bed78b2abcb58a5f0ba91a9996c44e46cdda8243a303cd"
+      }
+    ]
+  },
+  "historical_connection_diagnostics": {
+    "comparison": {
+      "407deac2a6a5": {
+        "path": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\info21-connection-probe-407deac2a6a5.json",
+        "sha256": "1ea3551ac359182c368b8cbfbd336ea3ec78d9c2e5d68404dcbf4626ccd9cba4",
+        "original_report_status": "FAIL",
+        "peak_established_server_tcp": 15,
+        "peak_service_database_sessions": 15
+      },
+      "9874e4f7e96a": {
+        "path": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\info21-connection-probe-9874e4f7e96a.json",
+        "sha256": "882b1194fe32f21d3ead075585eb47e273380d40ccd780a6550771df5cade300",
+        "original_report_status": "PASS",
+        "peak_established_server_tcp": 18,
+        "peak_service_database_sessions": 18
+      }
+    },
+    "admission": [
+      {
+        "probe_id": "m6-svn-admission-probe-475b111644ce",
+        "source_sha256": "ec4c5091f854566cd726482e70f0ec225a5a7373ad89face0663be2a7c4935c9",
+        "report_sha256": "fa0fa7f3ff9ed588831db13ec0b72b0e7b38fbd2d29f10f6dbae42aa46a40bf5",
+        "manifest_sha256": "7b98c639a5b70e9d6ef7ae8e46aef6422f108b89eed51809f3e7eb11a15a98f4",
+        "requested": 17,
+        "received": 16,
+        "configured_limit": null
+      },
+      {
+        "probe_id": "m6-svn-admission-probe-0e47dcd061b6",
+        "source_sha256": "ec4c5091f854566cd726482e70f0ec225a5a7373ad89face0663be2a7c4935c9",
+        "report_sha256": "7eb6af5ae4b0aaa4a93f30555f9f23917ef405c5eb24bafb347e5a7f71c78c8a",
+        "manifest_sha256": "d4286827af94faec7085680647f1877302dd7b6d8beb50cc91cb93f2ea67b921",
+        "requested": 65,
+        "received": 64,
+        "configured_limit": 64
+      },
+      {
+        "probe_id": "m6-svn-admission-probe-ff5c3ff91c2f",
+        "source_sha256": "ec4c5091f854566cd726482e70f0ec225a5a7373ad89face0663be2a7c4935c9",
+        "report_sha256": "536b1f67df733250c56823422db8a952a68886f5f1956d5ced9a39a6ae98aa2d",
+        "manifest_sha256": "d4286827af94faec7085680647f1877302dd7b6d8beb50cc91cb93f2ea67b921",
+        "requested": 3,
+        "received": 2,
+        "configured_limit": 2
+      }
+    ],
+    "scope": "Historical candidates; not final-build throughput or connection measurements."
+  },
+  "queue_reconciliation": {
+    "status": "PASS",
+    "kind": "ACCEPTED_RUN_RECONCILIATION",
+    "build_manifest_sha256": "fb66ece247011e7940fdbd991a09397786b04c906204c5587051498ef6387611",
+    "plans_sha256": "722c26b88891e2e6ce577064744af8398c406631a8a0796672d1c8af8936ed55",
+    "completed": [
+      {
+        "test_id": "m6-network-b605936379d8",
+        "suite": "checkout_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 57512,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "da2eab34908c13513e137d23d56fae8be626b921572c63e0cd6cba972601c043",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-bb41c7140caf",
+        "suite": "export_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 57852,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "99af09d5c280cf389e98331dc4190b4c976a74912868d154334473a0da26e09f",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 30,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 30,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-ee705fe7e4ad",
+        "suite": "import_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 60892,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "b4fffad4afaccd991cc3a81241ae93c7aa75d5683d583177d20828d32fa46e2b",
+        "counts_by_backend": {
+          "fsfs": {
+            "SKIP": 1,
+            "PASS": 6
+          },
+          "pgvn": {
+            "SKIP": 1,
+            "PASS": 6
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-fc81c33031aa",
+        "suite": "cat_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 61832,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "b7ce11ce7c4d480d3d17866eb019ee731e04ed4ce7413185ab27d1c7f1267c15",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-f68468a5eee4",
+        "suite": "blame_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 62544,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "c178e451a8cfb3ed3cb21b6dfd2eaa1d746965f8757bb6cbfb324d7ac17a5c9b",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 18,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 18,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-8663b8dcc583",
+        "suite": "history_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 33508,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "767a1b948d0eba16a85c4fd8c8d34bb5880b70333c45c4584ce17151f4e299d4",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 2
+          },
+          "pgvn": {
+            "PASS": 2
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-caafa2dfc4ff",
+        "suite": "info_tests",
+        "protocol": "svn",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 66280,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "af031201dfccda7ed6d8f1c74ff04b2b5f1439c5386cfc0e3b98cae5829fe852",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 21
+          },
+          "pgvn": {
+            "PASS": 21
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-2971b05ad763",
+        "suite": "checkout_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 43096,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "d2aec860f02f6816ccdc1c4cc58d2822ab52adbe2807ec7d77c22f728e1d34e3",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        },
+        "origin_phase": "initial"
+      },
+      {
+        "test_id": "m6-network-f3a484e0d561",
+        "suite": "export_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 27236,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "03a185c25906a14d77198cbeb6a3b5250345169989aca999a77428cfa5ebe979",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 30,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 30,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-91aa538a30d0",
+        "suite": "import_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 61372,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "f1979dfe6c01c1fdd8d02adb99046a2082c08c680f7218ecb793893517f606b1",
+        "counts_by_backend": {
+          "fsfs": {
+            "SKIP": 1,
+            "PASS": 6
+          },
+          "pgvn": {
+            "SKIP": 1,
+            "PASS": 6
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-da72363ffcc0",
+        "suite": "cat_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 39564,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "f3410ddebbbc75250dd39768846695403e5f009872d6d07c3f03baf62e48233a",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-cc0cc5d90b16",
+        "suite": "blame_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 33804,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "1d9bc8f3179aecde4789b7b7cf6bae0138abfea04d50070a5d97a2b44af7ce9e",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 18,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 18,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-1ce7a37db0be",
+        "suite": "history_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 19176,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "47e0c6872b28b2a7c5447d8a0c3ab1641e438195fd1fc41572f2ffbf5be16178",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 2
+          },
+          "pgvn": {
+            "PASS": 2
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-bf5e8177cae4",
+        "suite": "info_tests",
+        "protocol": "http",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 27240,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "bf2f5720cf971ef333a2e6029a09aff1a55e1dac87fa7932c6cfc54bf6e9228b",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 21
+          },
+          "pgvn": {
+            "PASS": 21
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-57f9f4d15f5e",
+        "suite": "checkout_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 11364,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "5e951747387159156211fe413d77bc70ac2192f32d50b7aaf88bbc2f9cbab77e",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-8a53982b378c",
+        "suite": "export_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 7988,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "6ea5ac3af78f403c04e2db64f208856b609f3b497b09d73d33b383fbc49669a7",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 30,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 30,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-832deb6d86b9",
+        "suite": "import_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 31500,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "8198bf56ef04cdf054314fe4a6f575436f92f1c25d05446d7d29bd8b987453ba",
+        "counts_by_backend": {
+          "fsfs": {
+            "SKIP": 1,
+            "PASS": 6
+          },
+          "pgvn": {
+            "SKIP": 1,
+            "PASS": 6
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-157cfd38aa82",
+        "suite": "cat_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 64736,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "c20e7416a1fdf5dd136c4b4b783400da1b19226adc5bc670e8307aab8715b7ea",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-06c4087005cb",
+        "suite": "blame_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 30416,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "972cc6902d2156b0b75653eaa4cdb1938ed3b6547eb9733d09f17b16c15e44e9",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 18,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 18,
+            "XFAIL": 1
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-ba79c9edc855",
+        "suite": "history_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 39128,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "b82b647ab0693713075a3a5d127d1f937314c6b612aa8fc49299e18a7851afd7",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 2
+          },
+          "pgvn": {
+            "PASS": 2
+          }
+        },
+        "origin_phase": "remaining"
+      },
+      {
+        "test_id": "m6-network-724db0d0482c",
+        "suite": "info_tests",
+        "protocol": "https",
+        "status": "PASS",
+        "driver_exit_code": 0,
+        "initial_active_processes_after_driver_exit": 0,
+        "natural_exit_wait_ms": 0.0,
+        "job_exit_observations": [
+          {
+            "elapsed_ms": 0,
+            "active": 0,
+            "process_ids": [],
+            "driver_exit_code": 0
+          }
+        ],
+        "active_processes_before_outer_job_close": 0,
+        "outer_job_cleanup": {
+          "pid": 40176,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "c1bcdca161207d495c1e8b3193592c2a6072c0beb37a911a4aa2cd4564bd52a4",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 21
+          },
+          "pgvn": {
+            "PASS": 21
+          }
+        },
+        "origin_phase": "remaining"
+      }
+    ],
+    "not_dispatched": [],
+    "interrupted_cleanup": [],
+    "restarted_plans": 0,
+    "milestone_complete": false,
+    "phases": [
+      {
+        "path": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\full-queue-effective\\report.json",
+        "sha256": "596dbc21656d9a7323d36ec938b82e4662a29de6bafe01553c9e37915d55d297",
+        "status": "FAIL",
+        "accepted_groups": 7
+      },
+      {
+        "path": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\remaining-queue-effective\\report.json",
+        "sha256": "f9f9b15e24cfee6dabaced65e8000f550075bea247adf438b388ef851ab17ac8",
+        "status": "PASS",
+        "accepted_groups": 14
+      }
+    ],
+    "excluded_attempts": [
+      {
+        "test_id": "m6-network-25d388e58395",
+        "suite": "info_tests",
+        "protocol": "svn",
+        "status": "FAIL",
+        "driver_exit_code": 0,
+        "active_processes_before_outer_job_close": 1,
+        "outer_job_cleanup": {
+          "pid": 1920,
+          "exit_code": 0,
+          "job_active_processes": 0
+        },
+        "report_sha256": "f8e0b2458d780e266210a6c7688b9f8735cf2b6b505ee37ec0cb38a36a1d492e",
+        "counts_by_backend": {
+          "fsfs": {
+            "PASS": 21
+          },
+          "pgvn": {
+            "PASS": 21
+          }
+        }
+      }
+    ],
+    "journal_paths": [
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\full-queue-effective\\dispatch.jsonl",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\remaining-queue-effective\\dispatch.jsonl"
+    ],
+    "scope": "Seven passing, closed initial runs plus fourteen passing, naturally closed continuation runs. One original canonical PASS with failed outer cleanup is retained and excluded; its full SVN info suite ran again in a new database. The original failed queue report remains FAIL. No original assertions or frozen production inputs changed."
+  },
+  "job_exit_diagnostic": {
+    "path": "job-exit-observation.json",
+    "sha256": "d71ab7707d121f9647c7f9444e3157ee7ee7b52e6763174cd7988977e7a76060"
+  },
+  "browser": {
+    "m4": {
+      "test_id": "m4-browser-workflows-1c96e7bd0640",
+      "checks": {
+        "all_views": true,
+        "repository_pagination": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "text_only_hostile_name": true,
+        "keyboard_focus_and_refresh": true,
+        "configurable_refresh": true,
+        "narrow_layout": true,
+        "paused_refresh": true,
+        "stale_database_and_unknown_nodes": true,
+        "lost_peer_and_recovery": true,
+        "token_revocation_clears_data": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "authentication": true
+      },
+      "report_sha256": "679f6e296892259f7cbba42530438a77ea60ac52427884b78f9bcc02fdefa734"
+    },
+    "m5": {
+      "test_id": "m5-browser-workflows-1c96e7bd0640",
+      "checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "refresh_retains_open_and_focus": true,
+        "lost_worker_and_new_instance": true,
+        "narrow_details_layout": true
+      },
+      "report_sha256": "41ae06215e3e2643a7b912da4510f329fcc40253ffd11e78b1cbf88a0fa2bc9e"
+    }
+  },
+  "browser_notes_sha256": "19967cdd766dc066e58e986f7ac188a4086b2ebe4a0a78e1dd61049440578928",
+  "images": {
+    "m6-workflows-overview.jpg": {
+      "source": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\run-5b6883a2f3f2\\overview.jpg",
+      "sha256": "b4fc80f8d5659d93cb5521eafda8209c78e57b81a24dabbf4f2149e7fdfbf1d7",
+      "bytes": 62992,
+      "subject": "Light desktop overview"
+    },
+    "m6-workflows-capacity.jpg": {
+      "source": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\run-5b6883a2f3f2\\capacity.jpg",
+      "sha256": "a2fdc1066ac83a8f822be4081126147be2e592f99abf4de6ba7766a52335aaa9",
+      "bytes": 66108,
+      "subject": "Actual effective SVN session limit64"
+    },
+    "m6-workflows-nodes.jpg": {
+      "source": "C:\\Program Files\\PostgreSQL\\pgfs-work\\repo-workflows\\run-5b6883a2f3f2\\workers.jpg",
+      "sha256": "03b145a0933ea82dd79930f8b9fe22b41f3f3fda704e2015e0dd4bd8d89e8fd4",
+      "bytes": 31246,
+      "subject": "Light375px node-page summary; wide tables scroll within their own regions"
+    }
+  },
+  "full_m5": {
+    "test_id": "m5-ba210e325efc",
+    "status": "PASS",
+    "groups": 10,
+    "elapsed_seconds": 587.5939999999828,
+    "report_sha256": "e8d7478bfd72eb503328805d60b2b22b72d287c421d2a75d6874df3e949a820a",
+    "nested_m4_test_id": "m4-d4c29065dec3",
+    "nested_m4_groups": 8,
+    "capacity_protocol_test": {
+      "test_id": "m3-protocol-smoke-552ae870e027",
+      "checks": {
+        "default": {
+          "greetings_received": 64,
+          "next_connection_refused": true
+        },
+        "configured": {
+          "1": {
+            "greetings_received": 1,
+            "next_connection_refused": true
+          },
+          "2": {
+            "greetings_received": 2,
+            "next_connection_refused": true
+          }
+        },
+        "invalid_configurations_rejected_at_startup": 7,
+        "authenticated_commands_after_slot_reclamation": true
+      }
+    },
+    "capacity_api_test": {
+      "test_id": "m4-api-73493a87da29",
+      "checks": {
+        "default": 64,
+        "configured": 2,
+        "after_restart": 8,
+        "default_instance": "b2a296d3-8a27-e44f-b72c-45104201ec28",
+        "configured_instance": "c84a5fb6-f152-8047-b134-c0fb502e5b4a",
+        "restarted_instance": "5e2f7740-bebd-324e-a23d-a580af9e592f",
+        "default_admission": {
+          "greetings_received": 64,
+          "next_connection_refused": true
+        },
+        "configured_admission": {
+          "greetings_received": 2,
+          "next_connection_refused": true
+        },
+        "restarted_admission": {
+          "greetings_received": 8,
+          "next_connection_refused": true
+        },
+        "pending_config_keeps_effective_limit": true,
+        "api_prometheus_and_heartbeat_agree": true,
+        "database_lease_limit_unchanged": 32
+      }
+    },
+    "service_capacity_test": {
+      "test_id": "m3-service-449b66b57035",
+      "idle_sessions": 64,
+      "drain_seconds": 12.25,
+      "stop_checkpoints": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        5,
+        6,
+        6,
+        6,
+        6,
+        6,
+        7,
+        7,
+        7,
+        7,
+        7,
+        8,
+        8,
+        8,
+        8,
+        8,
+        9,
+        9,
+        9,
+        9,
+        9,
+        10,
+        10,
+        10,
+        10,
+        10,
+        11,
+        11,
+        11,
+        11,
+        11,
+        12,
+        12,
+        12,
+        12,
+        12,
+        0
+      ]
+    }
+  },
+  "runtime_cleanup": {
+    "status": "PASS",
+    "checked_at": "2026-10-16T13:51:16.963408+00:00",
+    "gate_id": "m5-ba210e325efc",
+    "accepted_network_inner_jobs_closed": 98,
+    "target_network_inner_jobs_closed": 14,
+    "excluded_network_inner_jobs_closed": 4,
+    "accepted_outer_driver_jobs_closed": 21,
+    "target_outer_driver_jobs_closed": 3,
+    "excluded_outer_driver_jobs_closed": 1,
+    "remaining_runtime_processes": 0,
+    "remaining_temporary_services": 0,
+    "browser_stopped": true,
+    "browser_and_standalone_api_active_tokens": 0,
+    "gate_tokens_unrevoked_remaining": 0,
+    "gate_tokens_revoked_now": 5,
+    "databases_and_roles_retained": true,
+    "installed_services_modified": false,
+    "source_records": {
+      "approved-runtime-cleanup.json": "988cbfb08be7b3eb751d7b1d1506ec88e5cb0965eabc9654d119dc2014d5f162",
+      "gate-token-cleanup.json": "3b27a4986acaf120bf5bc041147253dad742b0dea515ab269b9f36de5a07e796",
+      "network-effective-runtime-cleanup.json": "f491c4755f38e110ecb56a054d78b5cd8d7ad652437199ffac6cba0b593ff486",
+      "browser-effective-cleanup.json": "3c07c75b422b8218dfaf8fae348aad835dea7581f5d03fd0a54f64fdf1b7910b",
+      "m4-api-77c5577e647b-token-cleanup.json": "f536e18bbd94eb73e5ce06332053e1ca4340e5b2b39a304ff21111da867a34e8",
+      "info21-queue-effective/report.json": "3276b7e2fdb59d34c94c392f606acf40d09608cd4718d3c8351691375695e7f3"
+    },
+    "method": "Actual ended queue/job results, read-only Win32 process/service observations, and scoped token revocation verification."
+  },
+  "token_cleanup": {
+    "report_sha256": "3b27a4986acaf120bf5bc041147253dad742b0dea515ab269b9f36de5a07e796",
+    "tokens_revoked_now": 5,
+    "unrevoked_tokens_remaining": 0
+  },
+  "baselines": {
+    "network": {
+      "path": "runtime/pgvn/baselines/m6-repo-workflows-effective-full-724db0d0482c",
+      "index_sha256": "c3265024c5e20d6f2252783138757003b18f6e3b4e48579c76428b079bf33bfa",
+      "files": 683,
+      "reports": [
+        {
+          "test_id": "m6-network-b605936379d8",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 13
+            },
+            "pgvn": {
+              "PASS": 13
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-bb41c7140caf",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 30,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 30,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-ee705fe7e4ad",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "SKIP": 1,
+              "PASS": 6
+            },
+            "pgvn": {
+              "SKIP": 1,
+              "PASS": 6
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-fc81c33031aa",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 9
+            },
+            "pgvn": {
+              "PASS": 9
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-f68468a5eee4",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 18,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 18,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-8663b8dcc583",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 2
+            },
+            "pgvn": {
+              "PASS": 2
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-caafa2dfc4ff",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 21
+            },
+            "pgvn": {
+              "PASS": 21
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-2971b05ad763",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 13
+            },
+            "pgvn": {
+              "PASS": 13
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-f3a484e0d561",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 30,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 30,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-91aa538a30d0",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "SKIP": 1,
+              "PASS": 6
+            },
+            "pgvn": {
+              "SKIP": 1,
+              "PASS": 6
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-da72363ffcc0",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 9
+            },
+            "pgvn": {
+              "PASS": 9
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-cc0cc5d90b16",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 18,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 18,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-1ce7a37db0be",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 2
+            },
+            "pgvn": {
+              "PASS": 2
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-bf5e8177cae4",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 21
+            },
+            "pgvn": {
+              "PASS": 21
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-57f9f4d15f5e",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 13
+            },
+            "pgvn": {
+              "PASS": 13
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-8a53982b378c",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 30,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 30,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-832deb6d86b9",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "SKIP": 1,
+              "PASS": 6
+            },
+            "pgvn": {
+              "SKIP": 1,
+              "PASS": 6
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-157cfd38aa82",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 9
+            },
+            "pgvn": {
+              "PASS": 9
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-06c4087005cb",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 18,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 18,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-ba79c9edc855",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 2
+            },
+            "pgvn": {
+              "PASS": 2
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-724db0d0482c",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 21
+            },
+            "pgvn": {
+              "PASS": 21
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "path": "runtime/pgvn/baselines/m6-repo-workflows-effective-target-310f1379d00b",
+      "index_sha256": "c09c4dc4eeade10f4e70da96dcad8e5966ed14ea568bb3308eb5683bf3017237",
+      "files": 323,
+      "reports": [
+        {
+          "test_id": "m6-network-cd9bde7d4e43",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 1
+            },
+            "pgvn": {
+              "PASS": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-49b9e5832d9a",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 1
+            },
+            "pgvn": {
+              "PASS": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-310f1379d00b",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 1
+            },
+            "pgvn": {
+              "PASS": 1
+            }
+          }
+        }
+      ]
+    },
+    "first_phase": {
+      "path": "runtime/pgvn/baselines/m6-repo-workflows-effective-first-2971b05ad763",
+      "index_sha256": "5b13a7cef3e95706de3df4ca3e9c46362571cc9136c43cafeb4a730f1740bdd1",
+      "files": 382,
+      "reports": [
+        {
+          "test_id": "m6-network-ee705fe7e4ad",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "SKIP": 1,
+              "PASS": 6
+            },
+            "pgvn": {
+              "SKIP": 1,
+              "PASS": 6
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-b605936379d8",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 13
+            },
+            "pgvn": {
+              "PASS": 13
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-fc81c33031aa",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 9
+            },
+            "pgvn": {
+              "PASS": 9
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-bb41c7140caf",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 30,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 30,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-8663b8dcc583",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 2
+            },
+            "pgvn": {
+              "PASS": 2
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-25d388e58395",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 21
+            },
+            "pgvn": {
+              "PASS": 21
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-f68468a5eee4",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 18,
+              "XFAIL": 1
+            },
+            "pgvn": {
+              "PASS": 18,
+              "XFAIL": 1
+            }
+          }
+        },
+        {
+          "test_id": "m6-network-2971b05ad763",
+          "status": "PASS",
+          "counts": {
+            "fsfs": {
+              "PASS": 13
+            },
+            "pgvn": {
+              "PASS": 13
+            }
+          }
+        }
+      ]
+    },
+    "browser": {
+      "status": "BROWSER_COMPONENT_PASS_NOT_FULL_M6",
+      "path": "runtime/pgvn/baselines/m6-repo-workflows-browser-1c96e7bd0640",
+      "index_sha256": "5fab42f28a93d4f2bf97f3637f63d3f83c43cf05969d846872b247872a061204",
+      "files": 14
+    }
+  },
+  "previous_browser_failure": {
+    "test_id": "m4-browser-workflows-failed-2f5c6c39f13f",
+    "report_sha256": "4ab986c50099e4758bda5bb2877ae8a2efe94ce76e97e4a55e74c1481c566151",
+    "scope": "Capacity label16 failed on d428; partial browser checks were not promoted; token revoked and fixture stopped."
+  },
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "m6_complete": false,
+  "m7_complete": false,
+  "limitations": [
+    "Other original suites and full applicability ledger pending.",
+    "Final-product replay of earlier components pending.",
+    "Representative sustained performance and monitor budgets pending.",
+    "Cross-host failover, fencing and acknowledged-commit ledger pending.",
+    "Final real-history/backup audit pending.",
+    "Native Windows high-contrast visual, clean-machine/reboot and Polarion application acceptance pending."
+  ]
+}

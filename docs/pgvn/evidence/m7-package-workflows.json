@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "validation_kind": "package_integrity_and_clean_path_startup_only",
+  "created_at": "2026-10-16T13:56:03.855890+00:00",
+  "build_manifest_sha256": "fb66ece247011e7940fdbd991a09397786b04c906204c5587051498ef6387611",
+  "package_id": "52cbf89ba4b78cf2",
+  "archive": "runtime/pgvn/packages/PgVN-M5-windows-x64-52cbf89ba4b78cf2.zip",
+  "archive_sha256": "2887462ef6968806a257ca40585899433ab76c61e94c3743bd601d0f3009ca59",
+  "archive_bytes": 23721114,
+  "payload_files": 219,
+  "zip_entries": 221,
+  "native_images": 95,
+  "five_products_match": true,
+  "zip_payloads_match_staged_files": true,
+  "file_hashes_and_sizes_match": true,
+  "clean_path_check": {
+    "Status": "PASS",
+    "PackageId": "52cbf89ba4b78cf2",
+    "NativeImages": 95,
+    "ValidationStatus": "development-snapshot",
+    "TestScope": "Hashes, x64 PE headers and clean-PATH version startup; no clean-machine claim"
+  },
+  "clean_path_check_sha256": "028af931211adeace482f370adb0e4087602b99928b362cd089b2a21a5527ffc",
+  "validation_status": "development-snapshot",
+  "clean_machine_acceptance": false,
+  "polarion_application_acceptance": false,
+  "milestone_complete": false,
+  "additional_files_since_prior_package": [
+    "docs/pgvn/M6-network-workflows.zh-CN.md",
+    "docs/pgvn/evidence/m6-network-workflows.json",
+    "docs/pgvn/images/m6-workflows-capacity.jpg",
+    "docs/pgvn/images/m6-workflows-nodes.jpg",
+    "docs/pgvn/images/m6-workflows-overview.jpg"
+  ],
+  "changed_files_since_prior_package": [
+    "apache/modules/mod_dav_pgvn.so",
+    "bin/pgvnadmin.exe",
+    "bin/pgvnserve.exe",
+    "build-manifest.json",
+    "config.templates/pgvnserve.ini.example",
+    "config/pgvnserve.example.ini",
+    "docs/pgvn/M3-serve.zh-CN.md",
+    "docs/pgvn/M6-network-log-diff.zh-CN.md",
+    "docs/pgvn/M6-upstream-network.zh-CN.md",
+    "docs/pgvn/M7-package-local.zh-CN.md",
+    "docs/pgvn/Windows-UTF8.zh-CN.md",
+    "docs/pgvn/progress.zh-CN.md",
+    "docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md",
+    "embedded-web-reference/monitor.js"
+  ],
+  "self_reference_policy": "This validation is an external ZIP sidecar; m7-package evidence is excluded by the existing packager."
+}

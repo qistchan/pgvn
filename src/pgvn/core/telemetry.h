@@ -13,7 +13,7 @@ typedef struct pgvn_process_metrics {
     LONG64 sql_calls,sql_errors,sql_microseconds;
     LONG64 published_revisions,receipt_confirmations;
     LONG64 sessions_started,sessions_rejected;
-    LONG sessions_active;
+    LONG sessions_active,sessions_limit;
     LONG commands_active,sql_active,connections_active,control_waiters,writers_active;
     LONG64 connection_rejections,connection_failures,bytes_received,bytes_sent;
     LONG64 sql_latency[PGVN_BUCKET_COUNT],sql_classes[PGVN_SQL_CLASS_COUNT];
@@ -39,6 +39,7 @@ void pgvn_command_finish(const char *operation,apr_time_t start,const svn_error_
 void pgvn_telemetry_query(const char *state,apr_interval_time_t elapsed);
 void pgvn_telemetry_publication(svn_boolean_t receipt);
 void pgvn_telemetry_session(int change);
+void pgvn_telemetry_session_limit(unsigned limit);
 void pgvn_process_snapshot(pgvn_process_metrics *result);
 void pgvn_telemetry_event(const char *source,const char *code,apr_status_t error_code);
 void pgvn_events_snapshot(pgvn_event_snapshot *result);

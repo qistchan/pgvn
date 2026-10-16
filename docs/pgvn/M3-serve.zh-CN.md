@@ -1,6 +1,6 @@
 # M3：PgVN 原生 SVN 服务指南
 
-PgVN M3 提供无本地仓库目录的 svn 协议服务、数据库凭据/配置、外部 hooks 和 Windows 服务生命周期。最终构建和七组完整门禁见 [M3 证据](evidence/m3.json)。完整中文监控、Apache DAV、扩展故障/性能及 Polarion 应用验收按 M4–M7 继续实施。
+本文覆盖原生 SVN 服务、数据库凭据/配置、外部 hooks、Windows 服务生命周期及后续会话容量修复。M3 首次验收见 [M3 证据](evidence/m3.json)，当前容量与完整回归见[仓库工作流验收](M6-network-workflows.zh-CN.md)。M0–M5 已有本机验收记录；完整部署以 [Windows 部署指南](../../deploy/windows/README.zh-CN.md) 为准，M6 的剩余兼容/故障/性能及 M7 的独立环境和 Polarion 验收继续推进。
 
 ## 边界与数据库
 
@@ -8,7 +8,7 @@ PgVN M3 提供无本地仓库目录的 svn 协议服务、数据库凭据/配置
 
 已验证 Windows x64、SVN 1.14.5、SVNKit 1.10.1、APR 1.7.6 和 PostgreSQL 18.6。双节点验收是同机两个独立进程，不代表跨主机网络分区或 PostgreSQL 自动选主已验收。传统 PgFS 文件入口不执行 PgVN 的策略检查，切换后不要让旧入口继续对同一存储库写入。
 
-控制 schema 当前为 4，存储仍为 pgfs 1–4。版本 3 增加密文凭据和发布检查，版本 4 固定身份键的 C 排序规则并验证 hooks/协议设置。迁移及摘要嵌入 pgvnadmin，不依赖执行目录。
+M3 首次验收时控制 schema 为 4；当前部署控制 schema 为 6，存储仍为 pgfs 1–4。版本 3 增加密文凭据和发布检查，版本 4 固定身份键的 C 排序规则并验证 hooks/协议设置。迁移及摘要嵌入 pgvnadmin，不依赖执行目录。
 
 先创建数据库与数据库角色，再用数据库所有者/迁移角色执行：
 
@@ -56,6 +56,7 @@ listen-host = 127.0.0.1
 listen-port = 14690
 hook-root = C:/PgVN/hooks
 read-only = false
+max-connections = 64
 max-request-bytes = 67108864
 max-response-bytes = 67108864
 ```
@@ -66,7 +67,7 @@ previous-key 和 hook-root 可以省略；使用外部 hooks 的节点必须部�
 .\pgvnserve.exe --config C:\PgVN\config\server.local.ini --monitor-url http://127.0.0.1:14691/
 ```
 
-默认每进程最多 16 个 SVN 会话，监听 backlog 32；连接数据库超时 3 秒，SQL 超时 5 秒，网络空闲超时 30 秒。每命令收发默认各限 64 MiB，max-*-bytes 的 0 表示显式不设字节限制。验收覆盖小预算拒绝及 68,157,441 字节文件的无限额完整往返；扩大预算仍需按负载配置资源。
+默认每进程最多 64 个 SVN 会话，`max-connections` 可设为 1–64，监听 backlog 为 64。该值限制同时保持的协议连接，同一客户端的合并等命令可能使用多个连接；它不是客户端数量或吞吐承诺。超出上限的新连接会被关闭，已有会话继续执行；释放后可重新接纳连接。配置在连接数据库前校验，修改后重启服务生效。监控 API 的 `process.sessions_limit`、节点心跳和 Prometheus `pgvn_sessions_limit` 反映当前实例实际生效的 SVN 会话上限；它与业务数据库连接租约上限分别计量。监听器尚未启动时，API 返回 `null`，Prometheus 不输出该指标样本；网页显示未知，不用默认值填充。连接数据库超时 3 秒，SQL 超时 5 秒，网络空闲超时 30 秒。每命令收发默认各限 64 MiB，max-*-bytes 的 0 表示显式不设字节限制。验收覆盖小预算拒绝及 68,157,441 字节文件的无限额完整往返；扩大预算仍需按负载配置资源。
 
 config publish 新增 --settings FILE，仍需预期代数和 authz。未提供 settings、groups 或 hooks 时分别保留上一版内容：
 

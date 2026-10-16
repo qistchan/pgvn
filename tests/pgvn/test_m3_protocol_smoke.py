@@ -86,6 +86,78 @@ class Node:
         return f"svn://127.0.0.1:{self.svn_port}" + quote(route, safe="/")
 
 
+def check_admission(node, count):
+    connections = []
+    def greeting(connection):
+        data = b""
+        while len(data) < 10:
+            chunk = connection.recv(4096)
+            if not chunk:
+                break
+            data += chunk
+        return data
+    try:
+        for _ in range(count):
+            connection = socket.create_connection(("127.0.0.1", node.svn_port), timeout=3)
+            connection.settimeout(3)
+            connections.append(connection)
+            assert greeting(connection).startswith(b"( success ")
+        with socket.create_connection(("127.0.0.1", node.svn_port), timeout=3) as extra:
+            extra.settimeout(3)
+            try:
+                response = greeting(extra)
+            except (ConnectionResetError, ConnectionAbortedError):
+                response = b""
+            assert not response, response
+        assert node.process.poll() is None
+        return {"greetings_received": count, "next_connection_refused": True}
+    finally:
+        for connection in connections:
+            connection.close()
+
+
+def check_capacity(node, route, public_uuid):
+    results = {"default": check_admission(node, 64), "configured": {}}
+    original = node.config.read_text(encoding="utf-8")
+    def reclaimed():
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            info = client("svn", "info", "--xml", node.url(route), expected=(0, 1))
+            if public_uuid.encode() in info:
+                return
+            time.sleep(.02)
+        raise AssertionError("SVN session slots were not reclaimed")
+    reclaimed()
+    try:
+        for limit in (1, 2):
+            node.stop()
+            node.config.write_text(original + "max-connections = " + str(limit) + "\n", encoding="utf-8")
+            node.start()
+            results["configured"][str(limit)] = check_admission(node, limit)
+            reclaimed()
+    finally:
+        node.stop()
+        node.config.write_text(original, encoding="utf-8")
+        node.start()
+    reclaimed()
+    invalid_values = ("0", "65", "-1", "1.5", "18446744073709551616", "invalid", "")
+    for index, value in enumerate(invalid_values):
+        path = WORK / ("invalid-connection-limit-" + str(index) + ".ini")
+        # Keep the other settings valid and reserve a fresh address. If the
+        # option were ignored, this process would stay up and fail the timeout
+        # check instead of passing because of an unrelated startup error.
+        marker = "\nlisten-port = " + str(node.svn_port) + "\n"
+        assert original.count(marker) == 1
+        configuration = original.replace(marker, "\nlisten-port = " + str(port()) + "\n")
+        path.write_text(configuration + "max-connections = " + value + "\n", encoding="utf-8")
+        result = subprocess.run([str(SERVER), "--config", str(path), "--monitor-disabled"],
+            cwd=EMPTY, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW, timeout=10)
+        assert result.returncode == 2 and result.stderr.startswith(b"PgVN SVN startup failed (code "), (value, result.returncode, result.stderr)
+    results["invalid_configurations_rejected_at_startup"] = len(invalid_values)
+    results["authenticated_commands_after_slot_reclamation"] = True
+    return results
+
+
 def checks():
     setup.setup_database()
     key = WORK / "protocol.key"
@@ -101,6 +173,7 @@ def checks():
     try:
         a.start()
         b.start()
+        connection_capacity = check_capacity(a, route, repository["uuid"])
         first, second = a.url(route), b.url(route)
         client("svn", "info", "--xml", first, password=b"wrong-password", expected=1)
         client("svn", "info", "--xml", a.url("/missing"), expected=1)
@@ -283,6 +356,7 @@ def checks():
             "process_read_only_overrides_repository":True,
             "command_byte_limits_and_explicit_unlimited":True,"large_blob_bytes":large_bytes,
             "direct_protocol_nul_rejected_and_percent_decoded_once":True,"idle_timeout_seconds":idle_seconds,
+            "svn_connection_capacity": connection_capacity,
             "parallel_reads": 24, "credential_revocation_visible_on_both_nodes": True,
             "full_verify": True, "youngest": 4, "pathless_working_directory_empty": True}
     finally:

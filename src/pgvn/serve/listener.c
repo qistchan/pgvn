@@ -12,7 +12,7 @@
 #include "logger.h"
 #include "telemetry.h"
 
-#define PGVN_SVN_CONNECTIONS 16
+#define PGVN_SVN_MAX_CONNECTIONS MAXIMUM_WAIT_OBJECTS
 typedef struct pgvn_client_slot {
     struct pgvn_listener *owner;
     HANDLE thread;
@@ -27,7 +27,8 @@ struct pgvn_listener {
     HANDLE stop;
     HANDLE io_cancel;
     CRITICAL_SECTION mutex;
-    pgvn_client_slot clients[PGVN_SVN_CONNECTIONS];
+    unsigned connection_limit;
+    pgvn_client_slot clients[PGVN_SVN_MAX_CONNECTIONS];
     serve_params_t parameters;
 };
 
@@ -78,7 +79,7 @@ static DWORD WINAPI accept_main(void *baton)
         apr_socket_opt_set(socket,APR_SO_KEEPALIVE,1);
         EnterCriticalSection(&listener->mutex);
         pgvn_client_slot *available=NULL;
-        for(int i=0;i<PGVN_SVN_CONNECTIONS;++i) {
+        for(unsigned i=0;i<listener->connection_limit;++i) {
             pgvn_client_slot *slot=&listener->clients[i];
             if(slot->thread && WaitForSingleObject(slot->thread,0)==WAIT_OBJECT_0) {
                 CloseHandle(slot->thread); slot->thread=NULL;
@@ -96,6 +97,25 @@ static DWORD WINAPI accept_main(void *baton)
         if(pool) { pgvn_telemetry_session(0); svn_pool_destroy(pool); }
     }
     return 0;
+}
+
+/* Keep the configured limit within one Win32 wait set so a full listener
+ * can still drain every worker without forced thread termination. */
+static svn_error_t *connection_limit(unsigned *output,svn_config_t *config)
+{
+    const char *text; svn_config_get(config,&text,"pgvn","max-connections","64");
+    unsigned value=0;
+    if(!text || !*text) goto invalid;
+    for(const unsigned char *p=(const unsigned char *)text;*p;++p) {
+        if(*p<'0' || *p>'9') goto invalid;
+        value=value*10+(*p-'0');
+        if(value>PGVN_SVN_MAX_CONNECTIONS) goto invalid;
+    }
+    if(!value) goto invalid;
+    *output=value; return SVN_NO_ERROR;
+invalid:
+    return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,
+        "PgVN SVN max-connections must be an integer between 1 and 64");
 }
 
 static svn_error_t *byte_limit(apr_uint64_t *output,svn_config_t *config,const char *option)
@@ -130,6 +150,7 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     if(!*port_text || !end || *end || port<1024 || port>65535 || !*host)
         return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN listener address or port is invalid");
     SVN_ERR(pgvn_credential_identity(domain,"startup-check"));
+    SVN_ERR(connection_limit(&listener->connection_limit,config));
     SVN_ERR(byte_limit(&listener->parameters.max_request_size,config,"max-request-bytes"));
     SVN_ERR(byte_limit(&listener->parameters.max_response_size,config,"max-response-bytes"));
     pgvn_context_options options={dsn,3,5000};
@@ -158,7 +179,7 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     /* SO_RCVTIMEO does not bound Win32 accept(). Poll a nonblocking listener. */
     if(!status) status=apr_socket_timeout_set(listener->socket,0);
     if(!status) status=apr_socket_bind(listener->socket,address);
-    if(!status) status=apr_socket_listen(listener->socket,32);
+    if(!status) status=apr_socket_listen(listener->socket,PGVN_SVN_MAX_CONNECTIONS);
     if(status) return svn_error_wrap_apr(status,"PgVN SVN listener could not bind");
     listener->io_cancel=CreateEventW(NULL,TRUE,FALSE,NULL);
     if(!listener->io_cancel) return svn_error_create(SVN_ERR_IO_WRITE_ERROR,NULL,"PgVN I/O cancellation event creation failed");
@@ -167,6 +188,7 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     listener->thread=CreateThread(NULL,0,accept_main,listener,0,NULL);
     if(!listener->thread) { DeleteCriticalSection(&listener->mutex); pgvn_svn_set_io_cancel(NULL); CloseHandle(listener->io_cancel);
         return svn_error_create(SVN_ERR_IO_WRITE_ERROR,NULL,"PgVN listener thread creation failed"); }
+    pgvn_telemetry_session_limit(listener->connection_limit);
     *output=listener; return SVN_NO_ERROR;
 }
 
@@ -179,8 +201,8 @@ void pgvn_listener_stop(pgvn_listener *listener,void (*progress)(void))
     apr_socket_close(listener->socket);
     /* Stop accepting, allow ten seconds for active commands, then cancel I/O.
      * No forced thread termination: SQL transactions retain normal cleanup. */
-    HANDLE threads[PGVN_SVN_CONNECTIONS]; DWORD count=0;
-    for(int i=0;i<PGVN_SVN_CONNECTIONS;++i) if(listener->clients[i].thread) threads[count++]=listener->clients[i].thread;
+    HANDLE threads[PGVN_SVN_MAX_CONNECTIONS]; DWORD count=0;
+    for(unsigned i=0;i<listener->connection_limit;++i) if(listener->clients[i].thread) threads[count++]=listener->clients[i].thread;
     ULONGLONG deadline=GetTickCount64()+10000;
     DWORD state=WAIT_OBJECT_0;
     while(count && (state=WaitForMultipleObjects(count,threads,TRUE,1000))==WAIT_TIMEOUT) {
@@ -190,12 +212,13 @@ void pgvn_listener_stop(pgvn_listener *listener,void (*progress)(void))
     if(count && state==WAIT_TIMEOUT) {
         SetEvent(listener->io_cancel);
         EnterCriticalSection(&listener->mutex);
-        for(int i=0;i<PGVN_SVN_CONNECTIONS;++i)
+        for(unsigned i=0;i<listener->connection_limit;++i)
             if(listener->clients[i].socket) apr_socket_shutdown(listener->clients[i].socket,APR_SHUTDOWN_READWRITE);
         LeaveCriticalSection(&listener->mutex);
         while(WaitForMultipleObjects(count,threads,TRUE,1000)==WAIT_TIMEOUT) if(progress) progress();
     }
     for(DWORD i=0;i<count;++i) CloseHandle(threads[i]);
+    pgvn_telemetry_session_limit(0);
     pgvn_svn_set_io_cancel(NULL); CloseHandle(listener->io_cancel);
     DeleteCriticalSection(&listener->mutex);
 }

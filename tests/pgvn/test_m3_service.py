@@ -106,7 +106,7 @@ def checks():
         cli("svnmucc","-m","restart-service","mkdir",first+"/after-restart")
         # Fill all session slots with clients that never send a protocol tuple.
         # HTTP stays responsive; STOP must report progress then cancel sockets.
-        for _ in range(16):
+        for _ in range(64):
             connection=socket.create_connection(("127.0.0.1",a.svn_port),timeout=3)
             connection.settimeout(3)
             assert connection.recv(4096)
@@ -128,7 +128,7 @@ def checks():
         return {"account":"NT AUTHORITY\\LocalService","database_role":"pgvn_service","real_svn_commit":True,
             "server_startup_exit_classes":[2,4,5],"service_binary_checkout_delta_update":True,
             "peer_stays_available":True,"hook_cancel_seconds":cancelled_seconds,"hook_descendants_killed":True,
-            "idle_svn_sessions":16,"drain_seconds":drain_seconds,"stop_checkpoints":observed,
+            "idle_svn_sessions":64,"drain_seconds":drain_seconds,"stop_checkpoints":observed,
             "same_port_restart_cycles":3,"final_idle_stop_seconds":final_stop_seconds,"full_verify":True,"active_transactions":0}
     finally:
         for connection in sockets: connection.close()

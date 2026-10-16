@@ -9,12 +9,23 @@ import traceback
 import uuid
 from urllib.parse import quote
 import test_m3_credentials as setup
-from test_m3_protocol_smoke import Node,client,PASSWORD
+from test_m3_protocol_smoke import Node,client,PASSWORD,check_admission
 from test_m4_smoke import request,ready_status,until
 from fixture import ROOT,RUNTIME
 from tcp_proxy import TcpProxy
 
 TEST_ID=setup.TEST_ID.replace("m3-credentials","m4-api")
+
+
+def capacity(node,token,expected):
+    overview,_=request(node,token=token)
+    assert overview["process"]["sessions_limit"]==expected,overview["process"]
+    # Business database leases and SVN transport sessions have different bounds.
+    assert overview["process"]["connection_limit"]==32
+    metrics,_=request(node,"/metrics",token)
+    sample=f'pgvn_sessions_limit{{instance_id="{overview["instance_id"]}"}} {expected}'
+    assert sample in metrics.decode("utf-8").splitlines(),sample
+    return overview["instance_id"]
 
 
 def checks():
@@ -26,12 +37,16 @@ def checks():
     setup.admin("config","publish",repo["id"],"--expected-generation",1,"--authz",rules)
     token=setup.admin("monitor-token","create","--label","api","--expires-in",300)["token"]
     a,b=Node("api-a",key),Node("api-b",key);proxy=TcpProxy(a.svn_port)
+    with b.config.open("a",encoding="utf-8") as out:out.write("max-connections = 2\nnode-id = api-b\n")
     try:
         a.start();b.start();until(lambda:ready_status(a)==200)
         overview,_=request(a,token=token)
         assert overview["database"]["reader_restricted"] and overview["database"]["reader_read_only"]
         assert overview["process"]["commands"]==0 and overview["process"]["command_p95_upper_bound_ms"] is None
         assert setup.sql("SELECT count(*) FROM pg_stat_activity WHERE application_name='pgvn-monitor-read' AND usename='pgvn_monitor'")=="2"
+        default_instance=capacity(a,token,64);default_admission=check_admission(a,64)
+        until(lambda:ready_status(b)==200)
+        configured_instance=capacity(b,token,2);configured_admission=check_admission(b,2)
         for search in ("api", "工程", repo["id"].upper(),repo["uuid"]):
             page,_=request(a,"/api/monitor/v1/repos?q="+quote(search,safe=""),token)
             assert [r["id"] for r in page["items"]]==[repo["id"]],search
@@ -113,13 +128,31 @@ def checks():
         capped,_=request(a,"/api/monitor/v1/events?limit=200",token)
         assert len(capped["items"])==200
         request(a,"/api/monitor/v1/events?cursor="+older["next_cursor"],token,expected=409)
+        # Editing the file does not alter a running listener. Only a new
+        # instance may advertise and enforce the changed capacity.
+        config=b.config.read_text(encoding="utf-8")
+        assert config.count("max-connections = 2\n")==1
+        b.config.write_text(config.replace("max-connections = 2\n","max-connections = 8\n"),encoding="utf-8")
+        assert capacity(b,token,2)==configured_instance
+        check_admission(b,2)
+        b.stop();b.start();until(lambda:ready_status(b)==200)
+        restarted_instance=capacity(b,token,8);assert restarted_instance!=configured_instance
+        restarted_admission=check_admission(b,8)
+        def heartbeat_capacity():
+            nodes,_=request(a,"/api/monitor/v1/nodes",token)
+            return any(n["instance_id"]==restarted_instance and n["metrics"].get("sessions_limit")==8 for n in nodes["items"])
+        until(heartbeat_capacity)
         setup.admin("verify",repo["id"])
         return {"reader_role":"pgvn_monitor","readonly_connection":True,"search_and_repository_detail":True,
             "bounded_series_and_validation":True,"http_count_delta":51,"no_business_sql_on_http_refresh":True,
             "wire_bytes_received":proxy.received,"wire_bytes_sent":proxy.sent,"exact_socket_byte_accounting":True,
             "sql_result_classes_balance":True,"repository_error_correlation":True,"malformed_metadata_is_unknown":True,
             "configuration_readiness":True,"windows_resources":True,"event_ring_and_evicted_cursor":True,
-            "overprivileged_reader_rejected":True,"full_verify":True}
+            "overprivileged_reader_rejected":True,"full_verify":True,
+            "session_capacity":{"default":64,"configured":2,"after_restart":8,
+                "default_instance":default_instance,"configured_instance":configured_instance,"restarted_instance":restarted_instance,
+                "default_admission":default_admission,"configured_admission":configured_admission,"restarted_admission":restarted_admission,
+                "pending_config_keeps_effective_limit":True,"api_prometheus_and_heartbeat_agree":True,"database_lease_limit_unchanged":32}}
     finally:proxy.close();a.stop();b.stop()
 
 

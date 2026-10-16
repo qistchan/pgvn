@@ -69,7 +69,7 @@ The console is embedded in `pgvnserve.exe`; running it requires no Node.js, Pyth
   <img src="docs/pgvn/images/m6-copy-prop-workers.jpg" alt="PgVN node details in a narrow viewport, with independently scrolling tables" width="300">
 </p>
 
-*The light overview and narrow node details come from the latest recorded [copy/prop browser validation](docs/pgvn/M6-network-copy-prop.zh-CN.md#监控输入清理与完整浏览器验收). Screenshots illustrate the interface; their sample values are not performance benchmarks.*
+*The light overview and narrow node details come from the recorded [copy/prop browser validation](docs/pgvn/M6-network-copy-prop.zh-CN.md#监控输入清理与完整浏览器验收). Screenshots illustrate the interface; their sample values are not performance benchmarks.*
 
 </details>
 
@@ -386,7 +386,7 @@ Use `scripts/pgvn` and `tests/pgvn` for testing. Full M5 requires matching real-
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-Recorded compatibility work includes original Subversion network suites with FSFS comparisons over SVN, HTTP and HTTPS; see the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md), [authorization results](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update results](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop results](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff results](docs/pgvn/M6-network-log-diff.zh-CN.md). These results bind to the builds identified in each report; they do not establish complete SVN compatibility or representative production performance.
+Recorded compatibility work includes original Subversion network suites with FSFS comparisons over SVN, HTTP and HTTPS; see the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md), [authorization results](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update results](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop results](docs/pgvn/M6-network-copy-prop.zh-CN.md), [log/diff results](docs/pgvn/M6-network-log-diff.zh-CN.md) and [repository workflows/capacity results](docs/pgvn/M6-network-workflows.zh-CN.md). These results bind to the builds identified in each report; they do not establish complete SVN compatibility or representative production performance.
 
 Known client boundaries include SVNKit 1.10.1 revision-property changes on Unicode repository URLs and a pinned `svnmucc` Unicode-user issue reproduced against stock FSFS. Use ASCII repository routes for this SVNKit version. See [DAV compatibility](docs/pgvn/M5-DAV.zh-CN.md) and [Windows UTF-8 validation](docs/pgvn/Windows-UTF8.zh-CN.md).
 

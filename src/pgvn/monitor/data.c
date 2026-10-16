@@ -315,10 +315,11 @@ static void resources(pgvn_monitor_data *data)
 static int heartbeat(PGconn *connection,pgvn_monitor_data *data,const pgvn_process_metrics *metrics,const monitor_sample *sample,apr_pool_t *pool)
 {
     svn_stringbuf_t *body=svn_stringbuf_create_empty(pool);
-    append(body,pool,"{\"commands\":%lld,\"errors\":%lld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,"
+    append(body,pool,"{\"commands\":%lld,\"errors\":%lld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,\"sessions_limit\":%s,"
         "\"sql_calls\":%lld,\"connections\":%ld,\"configuration_generation\":",
         (long long)total_commands(metrics,0),(long long)total_commands(metrics,1),(long long)metrics->published_revisions,
-        (long long)metrics->receipt_confirmations,(long)metrics->sessions_active,(long long)metrics->sql_calls,(long)metrics->connections_active);
+        (long long)metrics->receipt_confirmations,(long)metrics->sessions_active,
+        metrics->sessions_limit>0 ? apr_psprintf(pool,"%ld",(long)metrics->sessions_limit) : "null",(long long)metrics->sql_calls,(long)metrics->connections_active);
     if(sample->configuration_generation>=0) append(body,pool,"%lld",(long long)sample->configuration_generation); else svn_stringbuf_appendcstr(body,"null");
     append(body,pool,",\"ready\":%s,\"stopped\":%s,\"cpu_percent\":",pgvn_monitor_live(data) && data->writer_ok && sample->configuration_healthy && InterlockedCompareExchange(&data->business_ready,0,0) ? "true" : "false",InterlockedCompareExchange(&data->stopping,0,0) ? "true" : "false");
     AcquireSRWLockShared(&data->lock);
@@ -494,12 +495,13 @@ static void process_json(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_t
     pgvn_process_metrics m; pgvn_process_snapshot(&m);
     LONG64 count=total_commands(&m,0); int p95=p95_bound(m.latency,count);
     append(out,pool,"{\"source\":\"process\",\"version\":\"%s/%s\",\"started_at\":\"%s\",\"uptime_seconds\":%.3f,\"pid\":%lu,\"commands\":%lld,\"errors\":%lld,"
-        "\"commands_active\":%ld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,\"sessions_started\":%lld,\"sessions_rejected\":%lld,"
+        "\"commands_active\":%ld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,\"sessions_limit\":%s,\"sessions_started\":%lld,\"sessions_rejected\":%lld,"
         "\"sql_calls\":%lld,\"sql_errors\":%lld,\"sql_milliseconds\":%.3f,\"sql_active\":%ld,\"connections_leased\":%ld,\"connection_limit\":32,"
         "\"connection_rejections\":%lld,\"connection_failures\":%lld,\"control_waiters\":%ld,\"writers_active\":%ld,\"bytes_received\":%lld,\"bytes_sent\":%lld,"
         "\"byte_source\":\"svn_ra_svn_socket\",\"monitor_requests\":%lld,\"monitor_errors\":%lld,\"monitor_active\":%ld,\"command_mean_milliseconds\":",
         PGVN_VERSION,PGVN_MILESTONE,data->started_at,(GetTickCount64()-data->started_tick)/1000.0,(unsigned long)GetCurrentProcessId(),(long long)count,(long long)total_commands(&m,1),
-        (long)m.commands_active,(long long)m.published_revisions,(long long)m.receipt_confirmations,(long)m.sessions_active,(long long)m.sessions_started,(long long)m.sessions_rejected,
+        (long)m.commands_active,(long long)m.published_revisions,(long long)m.receipt_confirmations,(long)m.sessions_active,
+        m.sessions_limit>0 ? apr_psprintf(pool,"%ld",(long)m.sessions_limit) : "null",(long long)m.sessions_started,(long long)m.sessions_rejected,
         (long long)m.sql_calls,(long long)m.sql_errors,m.sql_microseconds/1000.0,(long)m.sql_active,(long)m.connections_active,
         (long long)m.connection_rejections,(long long)m.connection_failures,(long)m.control_waiters,(long)m.writers_active,(long long)m.bytes_received,(long long)m.bytes_sent,
         (long long)m.monitor_requests,(long long)m.monitor_errors,(long)m.monitor_active);
@@ -767,6 +769,8 @@ const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
     append(out,pool,"pgvn_sql_errors_total{instance_id=\"%s\"} %lld\n",data->instance,(long long)m.sql_errors);
     metric_type(out,"pgvn_sessions_active","gauge","Active SVN transport sessions.",pool);
     append(out,pool,"pgvn_sessions_active{instance_id=\"%s\"} %lld\n",data->instance,(long long)m.sessions_active);
+    metric_type(out,"pgvn_sessions_limit","gauge","Effective SVN transport session capacity; absent when no listener is running.",pool);
+    if(m.sessions_limit>0) append(out,pool,"pgvn_sessions_limit{instance_id=\"%s\"} %ld\n",data->instance,(long)m.sessions_limit);
     metric_type(out,"pgvn_commands_active","gauge","SVN commands in progress.",pool);
     append(out,pool,"pgvn_commands_active{instance_id=\"%s\"} %lld\n",data->instance,(long long)m.commands_active);
     metric_type(out,"pgvn_sql_active","gauge","Business libpq execution calls in progress.",pool);

@@ -8,5 +8,6 @@ listen-host = 127.0.0.1
 listen-port = @SVN_PORT@
 node-id = @NODE_ID@
 read-only = false
+max-connections = 64
 max-request-bytes = 67108864
 max-response-bytes = 67108864

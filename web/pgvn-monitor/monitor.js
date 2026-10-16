@@ -9,7 +9,7 @@
   const element = (tag, className, text) => { const e = document.createElement(tag); if (className) e.className = className; if (text != null) e.textContent = text; return e; };
   const searchForm = $("search-form");
   const SVG = "http://www.w3.org/2000/svg";
-  const limits = { errorWarn: 0, errorBad: 5, latencyGood: 500, latencyTick: 1000, latencyMax: 2000, leaseWarn: .8, sessionWarn: 12, sampleAge: 15 };
+  const limits = { errorWarn: 0, errorBad: 5, latencyGood: 500, latencyTick: 1000, latencyMax: 2000, leaseWarn: .8, sessionWarn: .75, sampleAge: 15 };
   const scheme = matchMedia("(prefers-color-scheme: dark)");
   const svgElement = (tag, attributes = {}) => { const e = document.createElementNS(SVG, tag); for (const [key, value] of Object.entries(attributes)) e.setAttribute(key, String(value)); return e; };
   function icon(name) { const svg = svgElement("svg", { "aria-hidden": "true", class: "icon", viewBox: "0 0 256 256" }); svg.append(svgElement("use", { href: `#i-${name}` })); return svg; }
@@ -363,7 +363,12 @@
     } else if (state.view === "database") {
       const scale = d?.database_bytes >= 1073741824 ? 1073741824 : 1048576, leaseRatio = p.connection_limit ? p.connections_leased / p.connection_limit : null, tone = leaseRatio >= 1 ? "danger" : leaseRatio >= limits.leaseWarn ? "warning" : "neutral";
       stats.append(kpi("数据库容量", d?.database_bytes == null ? null : number(d.database_bytes / scale), "整个数据库，包含遥测", { stale, unit: scale === 1073741824 ? "GiB" : "MiB", icon: "database" }), kpi("业务连接租约", `${number(p.connections_leased)} / ${number(p.connection_limit)}`, "本实例，采样连接另计", { tone, meter: [p.connections_leased, p.connection_limit, { tone }] }), kpi("控制连接等待", number(p.control_waiters), "本实例 · 等待连接互斥锁", { tone: p.control_waiters ? "warning" : "neutral" }), kpi("采样耗时", number(o.sampler_milliseconds), "独立连接与状态查询", { stale, unit: "ms", tone: o.sampler_milliseconds > 1000 ? "warning" : "neutral", icon: "clock" }));
-    } else stats.append(kpi("完成的命令", number(p.commands), "当前实例 · SVN 顶层命令", { icon: "pulse" }), kpi("当前会话", number(p.sessions_active), "当前实例 · 上限 16", { tone: p.sessions_active >= limits.sessionWarn ? "warning" : "neutral", meter: [p.sessions_active, 16] }), kpi("新发布修订", number(p.published_revisions), `回执确认 ${number(p.receipt_confirmations)} 次`, { icon: "git-branch" }), kpi("活动事务", number(d?.active_transactions), "数据库样本 · 全部仓库", { stale }));
+    } else {
+      const sessionLimit = Number.isSafeInteger(p.sessions_limit) && p.sessions_limit > 0 ? p.sessions_limit : null;
+      const sessionRatio = sessionLimit == null || p.sessions_active == null ? null : p.sessions_active / sessionLimit;
+      const sessionTone = sessionRatio == null ? "neutral" : sessionRatio >= 1 ? "danger" : sessionRatio >= limits.sessionWarn ? "warning" : "neutral";
+      stats.append(kpi("完成的命令", number(p.commands), "当前实例 · SVN 顶层命令", { icon: "pulse" }), kpi("当前会话", number(p.sessions_active), `当前实例 · 上限 ${number(sessionLimit)}`, { tone: sessionTone, meter: sessionLimit == null ? null : [p.sessions_active, sessionLimit, { tone: sessionTone }] }), kpi("新发布修订", number(p.published_revisions), `回执确认 ${number(p.receipt_confirmations)} 次`, { icon: "git-branch" }), kpi("活动事务", number(d?.active_transactions), "数据库样本 · 全部仓库", { stale }));
+    }
     root.append(stats);
     if (state.view === "overview") {
       const columns = element("div", "columns"), info = panel("本机状态", "进程实时指标"), body = element("div", "panel-body");
