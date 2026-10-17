@@ -40,12 +40,13 @@ svn_error_t *admin_repo(admin_command *command)
 svn_error_t *admin_diagnose(admin_command *command)
 {
     SVN_ERR(admin_db_check(command->context,TRUE,command->pool));
+    const char *values[]={PGVN_VERSION,PGVN_SVN_BASE,PGVN_CAPABILITIES_JSON};
     return admin_emit_query(command,
-        "SELECT json_build_object('product','PgVN','version','0.1.0-dev','svn_base','1.14.5',"
+        "SELECT json_build_object('product','PgVN','version',$1,'svn_base',$2,"
         "'server_version_num',current_setting('server_version_num')::integer,'database',current_database(),"
-        "'schema',json_build_object('pgfs',4,'pgvn',2,'checksums','match'),"
+        "'schema',json_build_object('pgfs',4,'pgvn',(SELECT max(version) FROM pgvn.schema_versions),'checksums','match'),"
         "'privileges',json_build_object('admin',has_table_privilege(current_user,'pgvn.configurations','INSERT'),"
         "'storage_read',has_table_privilege(current_user,'pgfs.revisions','SELECT'),"
         "'storage_write',has_table_privilege(current_user,'pgfs.revisions','INSERT')),"
-        "'capabilities',json_build_object('repository_by_id',true,'svn_protocol',false,'dav_protocol',false,'monitor','bootstrap'))",0,NULL);
+        "'capabilities',$3::json)",3,values);
 }

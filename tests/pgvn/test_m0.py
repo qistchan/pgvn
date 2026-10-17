@@ -113,6 +113,8 @@ def build_identity():
         diagnosis = json.loads(command([RUNTIME / "bin" / (product + ".exe"), "--version"]))
         assert diagnosis["milestone"] == manifest["milestone"] and diagnosis["svn_base"] == "1.14.5"
         assert diagnosis["apr_runtime"] == "1.7.6" and diagnosis["libpq_version"] == 180006
+        for name,expected in manifest["build_identity"].items():
+            assert name in diagnosis and diagnosis[name]==expected,(product,name)
         assert diagnosis["ready"] is False
         assert diagnosis["process_code_page"] == 65001
         assert diagnosis["capabilities"]["svn_protocol"]==manifest["capabilities"]["svn_protocol"]

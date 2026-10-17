@@ -93,9 +93,12 @@ static svn_error_t *publish_body(pgvn_context *context,const char *id,
     PQclear(result);
     if(!current) return svn_error_create(SVN_ERR_FS_TXN_OUT_OF_DATE,NULL,"PgVN configuration generation conflict");
     if(context->catalog_version>=4) {
-        SVN_ERR(pgvn_exec(&result,context,context->control,
-            "SELECT pgvn.valid_hooks($5::jsonb) AND pgvn.valid_settings(COALESCE($7::jsonb,settings)) "
-            "FROM pgvn.configurations WHERE repository_id=$1::uuid AND generation=$2::bigint",7,values));
+        const char *validator=context->catalog_version>=7
+            ? "pgvn.valid_settings(COALESCE($7::jsonb,settings),true)"
+            : "pgvn.valid_settings(COALESCE($7::jsonb,settings))";
+        SVN_ERR(pgvn_exec(&result,context,context->control,apr_pstrcat(pool,
+            "SELECT ",context->catalog_version>=8 ? "pgvn.valid_hooks($5::jsonb,true)" : "pgvn.valid_hooks($5::jsonb)"," AND ",validator,
+            " FROM pgvn.configurations WHERE repository_id=$1::uuid AND generation=$2::bigint",NULL),7,values));
     } else {
         if(settings) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN protocol settings require catalog schema 4");
         SVN_ERR(pgvn_exec(&result,context,context->control,
@@ -179,8 +182,16 @@ svn_error_t *pgvn_repos_hook_context(void *baton,const char *event,const char *u
     return pgvn_hook_dispatch(repository->policy,&context,pool);
 }
 
+svn_boolean_t pgvn_repository_svn_bypass(const pgvn_repository *repository)
+{
+    return repository->native_svn && !repository->administrative && repository->policy->svn_authz_bypass;
+}
+
 static svn_error_t *guard_current_policy(pgvn_repository *repository,PGconn *connection,apr_pool_t *pool)
 {
+    if(pgvn_repository_svn_bypass(repository) &&
+       (!repository->credential_user || !*repository->credential_user || repository->credential_generation<1))
+        return svn_error_create(SVN_ERR_AUTHN_FAILED,NULL,"PgVN SVN bypass requires a current authenticated identity");
     if(repository->credential_user)
         SVN_ERR(pgvn_credential_guard(repository->context,connection,repository->credential_domain,
             repository->credential_user,repository->credential_generation,pool));
@@ -204,6 +215,7 @@ svn_error_t *pgvn_guard_mutation(void *baton,PGconn *connection,const char *path
     /* Revprop visibility and the explicit pre hook are checked by libsvn_repos.
      * A NULL path is not a repository-root write request. */
     if(!path) return SVN_NO_ERROR;
+    if(pgvn_repository_svn_bypass(repository)) return pgvn_validate_fspath(path);
     const char *user=repository->credential_user;
     if(!user) {
         svn_fs_access_t *access;
@@ -224,6 +236,11 @@ svn_error_t *pgvn_guard_publish(void *baton,PGconn *connection,const char *txn,a
     const char *user=NULL;
     SVN_ERR(svn_fs_get_access(&access,repository->fs));
     if(access) SVN_ERR(svn_fs_access_get_username(&user,access));
+    if(pgvn_repository_svn_bypass(repository)) {
+        if(!user || strcmp(user,repository->credential_user))
+            return svn_error_create(SVN_ERR_AUTHN_FAILED,NULL,"PgVN commit author does not match the authenticated identity");
+        return SVN_NO_ERROR;
+    }
     SVN_ERR(pgvn_exec(&result,repository->context,connection,
         "SELECT path,node_kind,change_kind,copyfrom_path FROM pgfs.transaction_changes "
         "WHERE repository_id=$1::uuid AND txn_id=$2",2,values));

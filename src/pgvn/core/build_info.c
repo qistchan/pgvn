@@ -1,16 +1,22 @@
 #include <stdio.h>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 #include <apr_version.h>
+#include <apu_version.h>
 #include <libpq-fe.h>
-#include "pgvn.h"
+#include "build_info.h"
 
 int pgvn_build_json(char *buffer, size_t size)
 {
+#ifdef _WIN32
+    unsigned int process_code_page = GetACP();
+#else
+    /* Windows code pages do not apply to POSIX processes. */
+    unsigned int process_code_page = 0;
+#endif
     return snprintf(buffer, size,
-        "{\"product\":\"PgVN\",\"version\":\"%s\",\"milestone\":\"%s\","
-        "\"svn_base\":\"%s\",\"apr_runtime\":\"%s\",\"libpq_version\":%d,\"process_code_page\":%u,"
-        "\"ready\":false,\"capabilities\":{\"repository_by_id\":true,"
-        "\"svn_protocol\":true,\"dav_protocol\":true,\"monitor\":\"full\"}}\n",
-        PGVN_VERSION, PGVN_MILESTONE, PGVN_SVN_BASE,
-        apr_version_string(), PQlibVersion(),GetACP());
+        PGVN_BUILD_JSON_PREFIX
+        ",\"apr_runtime\":\"%s\",\"apu_runtime\":\"%s\",\"libpq_version\":%d,\"process_code_page\":%u,\"ready\":false}\n",
+        apr_version_string(), apu_version_string(), PQlibVersion(), process_code_page);
 }

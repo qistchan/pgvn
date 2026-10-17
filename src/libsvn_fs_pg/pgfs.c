@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef _WIN32
+#include <pthread.h>
+#endif
 #include <apr_hash.h>
 #include <apr_strings.h>
 #include <apr_thread_mutex.h>
@@ -54,9 +57,9 @@ static apr_status_t pgfs_cleanup(void *baton)
     return APR_SUCCESS;
 }
 
-static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char *sql,
+static svn_error_t *pgfs_query_format(PGresult **result, svn_fs_t *fs, const char *sql,
                                    int count, const char *const *values,
-                                   const int *lengths, const int *formats)
+                                   const int *lengths, const int *formats, int result_format)
 {
     pgfs_data_t *data = fs->fsap_data;
     apr_status_t status = apr_thread_mutex_lock(data->mutex);
@@ -71,7 +74,7 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
     for (int i = 0; i < count; ++i) types[i] = formats && formats[i] ? 17 : 25;
     apr_time_t started = data->observer.query ? apr_time_now() : 0;
     if(data->observer.query_started) data->observer.query_started(data->observer.baton);
-    *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, 0);
+    *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, result_format);
     free(types);
     svn_error_t *error = NULL;
     char sqlstate[6] = "00000";
@@ -89,6 +92,15 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
         data->observer.query(data->observer.baton, sqlstate, apr_time_now() - started);
     if (status && !error) error = svn_error_wrap_apr(status, "PgFS connection unlock failed");
     return error;
+}
+
+/* Text remains the default for metadata and every existing mixed-column SQL.
+ * Only the bytea content query explicitly requests a binary result. */
+static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char *sql,
+                                   int count, const char *const *values,
+                                   const int *lengths, const int *formats)
+{
+    return pgfs_query_format(result, fs, sql, count, values, lengths, formats, 0);
 }
 
 static svn_error_t *pgfs_query(PGresult **result, svn_fs_t *fs, const char *sql,
@@ -360,9 +372,7 @@ static const char *pgfs_description(void)
     return "PostgreSQL filesystem provider (PgFS), storage format 1.";
 }
 
-static INIT_ONCE pgfs_vtables_once = INIT_ONCE_STATIC_INIT;
-
-static BOOL CALLBACK pgfs_initialize_vtables(PINIT_ONCE once, PVOID parameter, PVOID *context)
+static void pgfs_initialize_vtables(void)
 {
     pgfs_initialize_fs_library_stubs();
     pgfs_initialize_fs_stubs();
@@ -449,11 +459,25 @@ static BOOL CALLBACK pgfs_initialize_vtables(PINIT_ONCE once, PVOID parameter, P
     pgfs_fs_library_vtable.ioctl = pgfs_library_ioctl;
     pgfs_fs_library_vtable.hotcopy = pgfs_hotcopy;
     pgfs_fs_library_vtable.delete_fs = pgfs_delete_fs;
-    return TRUE;
 }
 
+#ifdef _WIN32
+static INIT_ONCE pgfs_vtables_once = INIT_ONCE_STATIC_INIT;
+static BOOL CALLBACK pgfs_initialize_vtables_win(PINIT_ONCE once, PVOID parameter, PVOID *context)
+{
+    pgfs_initialize_vtables();
+    return TRUE;
+}
+#else
+static pthread_once_t pgfs_vtables_once = PTHREAD_ONCE_INIT;
+#endif
+
 #ifndef PGVN_STATIC
+#ifdef _WIN32
 __declspec(dllexport)
+#else
+__attribute__((visibility("default")))
+#endif
 #endif
 svn_error_t *svn_fs_pg__init(const svn_version_t *loader_version,
                             fs_library_vtable_t **vtable, apr_pool_t *common_pool)
@@ -461,8 +485,13 @@ svn_error_t *svn_fs_pg__init(const svn_version_t *loader_version,
     if (loader_version->major != 1 || loader_version->minor != 14 || loader_version->patch != 5)
         return svn_error_create(SVN_ERR_VERSION_MISMATCH, NULL,
                                 "PgFS was built for Subversion 1.14.5");
-    if (!InitOnceExecuteOnce(&pgfs_vtables_once, pgfs_initialize_vtables, NULL, NULL))
+#ifdef _WIN32
+    if (!InitOnceExecuteOnce(&pgfs_vtables_once, pgfs_initialize_vtables_win, NULL, NULL))
         return svn_error_wrap_apr(GetLastError(), "PgFS vtable initialization failed");
+#else
+    int status = pthread_once(&pgfs_vtables_once, pgfs_initialize_vtables);
+    if (status) return svn_error_wrap_apr(status, "PgFS vtable initialization failed");
+#endif
     *vtable = &pgfs_fs_library_vtable;
     return SVN_NO_ERROR;
 }

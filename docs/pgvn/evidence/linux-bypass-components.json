@@ -1,0 +1,337 @@
+{
+  "component": "PX-B01/02/03 sources and PX-L01 POSIX foundations",
+  "status": "PASS",
+  "milestone_complete": false,
+  "created_at": "2026-10-17T13:06:41.603819+00:00",
+  "build_identity": {
+    "product": "PgVN",
+    "version": "0.1.0-dev",
+    "milestone": "M5",
+    "upstream": {
+      "subversion": "1.14.5",
+      "apr": "1.7.6",
+      "apr_util": "1.6.3",
+      "httpd": "2.4.68",
+      "postgresql": "18.6"
+    },
+    "schemas": {
+      "catalog": 7,
+      "fs": 4
+    },
+    "api_version": 1,
+    "cache_format_version": 0,
+    "capabilities": {
+      "repository_by_id": true,
+      "svn_protocol": true,
+      "dav_protocol": true,
+      "monitor": "full",
+      "svn_authz_bypass": true,
+      "cache_local": false,
+      "cache_redis": false
+    },
+    "identity_format": 1,
+    "svn_base": "1.14.5",
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "configuration": "Release",
+    "git_commit": "d6ded91998d3a64500a3450a3646304c41fa1b08",
+    "git_worktree_dirty": true,
+    "source_manifest_sha256": "2c71c6f0a894a1c9dc49376302bf76c09fd977dc1b578180babeca180d05d07f",
+    "migrations_sha256": "3e06a286df5f9ee64ba8b1733cfd00036b53d69553d7d84a8e4988f53420ac45"
+  },
+  "user_instruction": "先跳过windows的验收",
+  "windows_acceptance": "DEFERRED_BY_USER",
+  "native_component": {
+    "test_id": "bypass-3024419a3ea4",
+    "status": "PASS",
+    "milestone_complete": false,
+    "created_at": "2026-10-17T13:06:03.660997+00:00",
+    "checks": [
+      "pinned SVN protocol patch prepared with all 32 command guards",
+      "PostgreSQL target version",
+      "migration pgfs/001_initial.sql",
+      "migration pgfs/002_version_tree.sql",
+      "migration pgfs/003_locks.sql",
+      "migration pgfs/004_hotcopy.sql",
+      "migration pgvn/001_catalog.sql",
+      "migration pgvn/002_admin.sql",
+      "migration pgvn/003_credentials.sql",
+      "migration pgvn/004_protocol.sql",
+      "migration pgvn/005_monitor.sql",
+      "migration pgvn/006_dav_state.sql",
+      "migration pgvn/007_svn_authz_mode.sql",
+      "all migrations applied by a non-superuser",
+      "protocol settings case 1",
+      "protocol settings case 2",
+      "protocol settings case 3",
+      "protocol settings case 4",
+      "protocol settings case 5",
+      "protocol settings case 6",
+      "protocol settings case 7",
+      "protocol settings case 8",
+      "protocol settings case 9",
+      "protocol settings case 10",
+      "protocol settings case 11",
+      "protocol settings case 12",
+      "old validator rejects both explicit modes",
+      "old validator retains legacy defaults",
+      "null capability cannot enable a mode",
+      "monitor accepts the supported mode",
+      "monitor exposes the native mode",
+      "production policy/protocol C component",
+      "mode publication reached generation 2",
+      "guard checks created no revisions",
+      "mode restored to enforce",
+      "build inputs unchanged during validation"
+    ],
+    "error": null,
+    "build_identity": {
+      "product": "PgVN",
+      "version": "0.1.0-dev",
+      "milestone": "M5",
+      "upstream": {
+        "subversion": "1.14.5",
+        "apr": "1.7.6",
+        "apr_util": "1.6.3",
+        "httpd": "2.4.68",
+        "postgresql": "18.6"
+      },
+      "schemas": {
+        "catalog": 7,
+        "fs": 4
+      },
+      "api_version": 1,
+      "cache_format_version": 0,
+      "capabilities": {
+        "repository_by_id": true,
+        "svn_protocol": true,
+        "dav_protocol": true,
+        "monitor": "full",
+        "svn_authz_bypass": true,
+        "cache_local": false,
+        "cache_redis": false
+      },
+      "identity_format": 1,
+      "svn_base": "1.14.5",
+      "target_os": "linux",
+      "target_arch": "x86_64",
+      "configuration": "Release",
+      "git_commit": "d6ded91998d3a64500a3450a3646304c41fa1b08",
+      "git_worktree_dirty": true,
+      "source_manifest_sha256": "2c71c6f0a894a1c9dc49376302bf76c09fd977dc1b578180babeca180d05d07f",
+      "migrations_sha256": "3e06a286df5f9ee64ba8b1733cfd00036b53d69553d7d84a8e4988f53420ac45"
+    },
+    "images": {
+      "postgres:18.6": "sha256:29754c7520f4b9654cf8ff98e19ac73b88e255c3a53f6236ebe9d52249bb6df3",
+      "pgvn-bypass-builder:ubuntu24": "sha256:8f316f109be3510218098629229e7dfca71732509b24170ef2a2fcd14653d033"
+    },
+    "container_removed": true,
+    "raw_directory": "/workspace/pgvn/artifacts/pgvn/tests/bypass-3024419a3ea4",
+    "scope": "Isolated SQL migrations and production POSIX platform/context/policy/protocol components; no SVN wire client, full Linux runtime, real credential crypto or Windows acceptance."
+  },
+  "probe": {
+    "status": "PASS",
+    "checks": 96,
+    "wire_protocol_exercised": false,
+    "apr_runtime": "1.7.2",
+    "apu_runtime": "1.6.3",
+    "libpq_version": 160015,
+    "svn_runtime": "1.14.3",
+    "binary_sha256": "59b351af9e34ef421a4b60071e9c676f52c6775cdb8ef3bd2e266566c1239c83"
+  },
+  "metadata_tests": {
+    "metadata_tests": 20,
+    "metadata_errors": 0,
+    "metadata_failures": 0,
+    "metadata_skipped": 0
+  },
+  "powershell_component": {
+    "checks": [
+      "parse Build-PgVNManager.ps1",
+      "parse Write-PgVNVersion.ps1",
+      "parse Invoke-PgVNManager.ps1",
+      "parse Test-PgVNManager.ps1",
+      "generated assembly and product version",
+      "generated process manifest version",
+      "matching backend accepted",
+      "incompatible backend rejected: version",
+      "incompatible backend rejected: api",
+      "incompatible backend rejected: schema",
+      "incompatible backend rejected: fs",
+      "incompatible backend rejected: platform",
+      "incompatible backend rejected: architecture",
+      "incompatible backend rejected: capability",
+      "incompatible backend rejected: capability_type",
+      "incompatible backend rejected: missing",
+      "bypass settings preserve domain/access and require authentication",
+      "mode merge preserves the original read snapshot",
+      "enforce restore keeps anonymous access closed",
+      "unknown SVN mode rejected before publication"
+    ],
+    "scope": "Portable version generation and backend compatibility component; Windows W1/W2 acceptance not run",
+    "status": "PASS",
+    "powershell": "7.4.6"
+  },
+  "additional_checks": {
+    "common_admin_sources_GCC_syntax": "PASS: repositories.c, policy.c, db.c",
+    "monitor_javascript_syntax": "PASS: node --check",
+    "gui_xml_and_csproj_parse": "PASS",
+    "python_syntax": [
+      "scripts/pgvn/build.py",
+      "scripts/pgvn/build_metadata.py",
+      "scripts/pgvn/check_pair.py",
+      "scripts/pgvn/embed_migrations.py",
+      "scripts/pgvn/package.py",
+      "tests/pgvn/fixture.py",
+      "tests/pgvn/run_bypass_components.py",
+      "tests/pgvn/test_build_metadata.py",
+      "tests/pgvn/test_m0.py",
+      "tests/pgvn/test_m2.py",
+      "tests/pgvn/test_m3_credentials.py",
+      "tests/pgvn/test_m4.py",
+      "tests/pgvn/test_m5_upgrade.py"
+    ],
+    "diff_whitespace": "PASS with cr-at-eol; original CRLF preserved",
+    "no_Win32_test_header": "PASS: production POSIX platform functions used"
+  },
+  "historical_migrations_unchanged": {
+    "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+    "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+    "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+    "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+    "sql/pgvn/001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+    "sql/pgvn/002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+    "sql/pgvn/003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+    "sql/pgvn/004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945",
+    "sql/pgvn/005_monitor.sql": "37cdce515bcf8508ef8f4f2b1b2fc18c5c347040975f14523067b7cf103a6cbd",
+    "sql/pgvn/006_dav_state.sql": "48b73740f2af1602ad7d54ab64b32ca61f85d430adb7939f155bba05131825df"
+  },
+  "validation_inputs": {
+    "scripts/pgvn/build.py": "6c827442851a7abda9ef56d0f3ed868df4918d0698705909b7e4186570a52995",
+    "scripts/pgvn/build_metadata.py": "c5ceab6c42c21637eabd7667a7e9f10d77271d217d7f8471720cbb147de4af19",
+    "scripts/pgvn/check_pair.py": "6b254a93ef701fe1a34fc9500061fe61601536cd7c5ba3fa26f5a0e4e83d9b63",
+    "scripts/pgvn/embed_migrations.py": "aefc1c5317ab0052d7e1477aa6e54d9e206aec0d3912f494a87b9bc956930b0d",
+    "scripts/pgvn/package.py": "62b77b710fdaf27f8dd119904be9309f4f1c6817270f25ddef1d7f6ce6799c55",
+    "sql/pgvn/007_svn_authz_mode.sql": "a2352272f085d32acac33611c4295f10fb924539a39c4072d984ac27d469fdc7",
+    "src/pgvn/admin/db.c": "0ba81f5a22919f42eabadae610065f9d430ed4dd1a785429e42b4bc448777bc5",
+    "src/pgvn/admin/main.c": "c311ceefa0764a357a6e17262095be5322de340ed03afae293a3858680b7f6da",
+    "src/pgvn/admin/policy.c": "b4a01534a2910a31434a33a3c1ae5150b82dc9ee9c50dcd54342b13dc2f05b4c",
+    "src/pgvn/admin/repositories.c": "a07742f73ca754030aac1b427f892589c6f5a4aba8b02ae6e9aae4c174b207f5",
+    "src/pgvn/core/build_info.c": "8ee083b4dd65c8698129c4eb2adc6f2901bdcc420fe082afc56c5c3b3f985382",
+    "src/pgvn/core/build_info.h": "3580ad3c9f1b91ee39f189d5fb5ee4e1fd3fec283973e47628132da8a643ca8d",
+    "src/pgvn/core/context.c": "5fd035a8140c13ce03aa04eb292ec6779aedbea3d0017a2e8d4ac7c3825ca1c0",
+    "src/pgvn/core/internal.h": "765e631ae5ae8db9c8ec6b90cf18d99adbf8c24cbb54b751d83cfc9044873d4e",
+    "src/pgvn/core/pgvn.h": "52c3626d098b63c8be404c8a1c703168a9baa9d8a9a24e8864aa9cc4a37734fa",
+    "src/pgvn/core/policy.c": "c3365c6df225f6a5005dc3c4223a4a700d6623f7a4c77497e7ea76586e3b2ff5",
+    "src/pgvn/core/policy_protocol.c": "6d51296160077775e848b475a64841aec70409aaf240a618c07191251d121665",
+    "src/pgvn/core/repository.c": "9fbf1b78036e39bf61f23a9b2a5ab828e567d826b8eb0460adb2daeff01b2035",
+    "src/pgvn/core/telemetry.h": "02f5dcffe684aa662b95b21666a913b4f9cfc3ded75e174a5a27bcbaf0151a3e",
+    "src/pgvn/dav/bootstrap.c": "80e8e4e4a4fd395c028d5d9ca9055949e8220a9132afea049a0c88fb425be421",
+    "src/pgvn/httpd/entry.c": "0c8a3f3046fb98d3b5c0206cf52943b1f166f3645e76eb4648b7b0b2a6738218",
+    "src/pgvn/monitor/data.c": "f8b99abf44c05bb0f76e80acc47807c9aae9f2bcd7ce8c487b7089dfcc46ec81",
+    "src/pgvn/platform/platform.h": "61df76606b637d5767accacc0c276df4e9197cd87ee76099b8084dba9ee89299",
+    "src/pgvn/serve/main.c": "22af2cb81415df2c75022772cbab41c9baad33b6ae8cc2427f7d70753e954359",
+    "src/pgvn/serve/pgvn_protocol.h": "676c9e9f3bcc37d346d46f5461373208de7ad3946ff835d3459b3a3a6f2588f9",
+    "src/pgvn/serve/protocol.c": "dd64cac8fff80234042a114a1f5da8658a0b770a9205cbd7e6f7e8e6dddc8240",
+    "src/pgvn/version.json": "97e52df639fee0716e6d9f199aa5d3bff491f4c66c3a0d254896431cefcd30fa",
+    "tests/pgvn/Test-VersionMetadata.ps1": "5dcfe32b88b821f7ee101553891a9b0de2f8d4897c92edb5cdf233770b23b4a3",
+    "tests/pgvn/bypass-builder.Dockerfile": "fc28a204dffe6375c00309f253fab0bf29acbca8a2c9f6d9ff6948b2aa60cda3",
+    "tests/pgvn/bypass_probe.c": "c728d91154e213f1abcf7f198b5d4c2affb2b64c675c60135dec7e9011265831",
+    "tests/pgvn/fixture.py": "5e25610d5bbf0bdf901b276ffa413b0060941ac448e244fa384b35a57fff9b40",
+    "tests/pgvn/run_bypass_components.py": "aadbb0f0a6db1672ead866eba62f57ae7a7c80a7e31e34a4b4905cd67fbb0440",
+    "tests/pgvn/test_build_metadata.py": "d100ac894656a13d7916c5292c694210b9ee81e179db93c0de832dd08fcc1f75",
+    "tests/pgvn/test_m0.py": "981e46b08ab38fb18800a84a718abf025a6071727a336de1aeb5b6e2cc3dda21",
+    "tests/pgvn/test_m2.py": "3871374097b380d45d5154348584df5989f8918ac6dcfea97e5a680204a2f6fd",
+    "tests/pgvn/test_m3_credentials.py": "a0ddf05b1a226556a8369674d316d8ae09f23b1f595f65a69e76a4c29811f1e0",
+    "tests/pgvn/test_m4.py": "f1d1b699e2e2506ce01f316d38366fce22775881e546564b98d60abf27ec6781",
+    "tests/pgvn/test_m5_upgrade.py": "034af1c3f937b966666d3fa2562f7bd909931058f630218528b8aab8065e54fc",
+    "tools/pgvn-manager/App.cs": "b01ae841201f0c1361a00cddd606b9024252e0ca167d82136e4d34430b513608",
+    "tools/pgvn-manager/Build-PgVNManager.ps1": "e563fed7084242c6f1962fe05c7014e400c47ca1392c370981b2238f61349b18",
+    "tools/pgvn-manager/Invoke-PgVNManager.ps1": "161142d7c4216ec830b36e69706d73e488387426efd696c3d369c27460bdb2c3",
+    "tools/pgvn-manager/MainWindow.xaml": "6c79c7fb1659a608ab16e050a93e98c12fc0aff210e465b427b1619cb0fdfac7",
+    "tools/pgvn-manager/PgVN.Manager.csproj": "88b2f279bd8a5cee22ec59306a01a0c833c1f4fbdf08020e9bb2551d4c61e705",
+    "tools/pgvn-manager/Test-PgVNManager.ps1": "1604cc9e6f859c90250f54f97089fcc318f850e1592aff7a165d9d1e467ea73a",
+    "tools/pgvn-manager/Write-PgVNVersion.ps1": "2cea0473c0f269e95ea3930c200ec6dce9815862f82b948deb3fc65dca8afb3e",
+    "web/pgvn-monitor/monitor.js": "d3b1170290b9dd3e250eec158930226dcb16410e2b89f187cd2763ccfe83f478"
+  },
+  "raw_outputs": {
+    "artifacts/pgvn/tests/bypass-3024419a3ea4/report.json": "eb2cf977de570a58b4a1661a55cfedad6cd67db7c834de4dd4384e10b76291cf",
+    "artifacts/pgvn/tests/bypass-3024419a3ea4/commands.jsonl": "e1e2c8a485b37326127e95982fd341e8a464c2ad858561b576a7967ce566322b",
+    "artifacts/pgvn/tests/bypass-3024419a3ea4/probe.json": "82b59db11a4a022b4f4fc996bcf4a42c392a8ce84ec9045690d4bcfb831825d6",
+    "artifacts/pgvn/tests/bypass-3024419a3ea4/postgres.log": "e1a59bc37040f7e7ca52fedb4bd96c6362f1946c059f996af85c6e582aaeea04",
+    "artifacts/pgvn/tests/bypass-3024419a3ea4/prepared-protocol.json": "58e598b971894706edad798b9c94e2f4591b6526018258fd717c533ec60478c8",
+    "artifacts/pgvn/tests/bypass-final-3980243d/metadata.log": "22b7d2641b9495763edd5c1f013de9044b57417b4f69bb0c0cfcd3f36009b7e9",
+    "artifacts/pgvn/tests/bypass-final-3980243d/powershell.log": "d2ddc04a5e0977d09f6e6f514cc1ee7303b24811161e2014fb3f49e971082b57"
+  },
+  "source_archive": {
+    "source": "https://codeload.github.com/apache/subversion/tar.gz/refs/tags/1.14.5",
+    "sha256": "e6396e99a08ad5a7d944f285340821ce0acbaa8a40f1c82dc79715ac94c927a8",
+    "protocol_specification_sha256": "17cfd5f40c3576be8d6993bcb235790d31a5bcd2ba8a22fe1546cf42f8957af7"
+  },
+  "previous_failed_attempts": [
+    {
+      "test_id": "bypass-4f6b000e1edf",
+      "status": "FAIL",
+      "report": "artifacts/pgvn/tests/bypass-4f6b000e1edf/report.json",
+      "sha256": "37a0413cf398afb4ab81843fe1eb4f0315280d5e6e55c94bda5741c75b6f062a",
+      "container_removed": true
+    },
+    {
+      "test_id": "bypass-737d78076e78",
+      "status": "FAIL",
+      "report": "artifacts/pgvn/tests/bypass-737d78076e78/report.json",
+      "sha256": "21a14b0e4e5a1ef8c496ff05a0174ccd39640c2b4861a05237b7252735d728c0",
+      "container_removed": true
+    },
+    {
+      "test_id": "bypass-c97d67b060b2",
+      "status": "FAIL",
+      "report": "artifacts/pgvn/tests/bypass-c97d67b060b2/report.json",
+      "sha256": "75b19d8742f8270adc7fd7dbcff8a04758b545bcb8c99646293e62c62777b522",
+      "container_removed": true
+    },
+    {
+      "test_id": "bypass-ca7a88bb39b7",
+      "status": "FAIL",
+      "report": "artifacts/pgvn/tests/bypass-ca7a88bb39b7/report.json",
+      "sha256": "3041fbf7143763784658febed86cbfca5d053c58ea07ff8a827250ecdcfb97a8",
+      "container_removed": true
+    }
+  ],
+  "failure_notes": [
+    "Removed an unused C probe helper rejected by -Werror.",
+    "Added the APR-util library to the component link command.",
+    "Changed image readiness from the initialization Unix socket to the final TCP server.",
+    "Corrected the temporary test driver to pass explicit text parameter OIDs; the final POSIX probe uses the production driver instead."
+  ],
+  "scope": {
+    "actual_database_server": "PostgreSQL 18.6 in a private, network-none, tmpfs test container",
+    "actual_C_execution": "Ubuntu 24.04 x86_64; production context, policy, policy_protocol, catalog and protocol source files plus platform inline functions",
+    "test_adapters": [
+      "FS repository binding and access identity",
+      "credential adapter delegating to the real SQL guard",
+      "telemetry output sinks"
+    ],
+    "component_dependency_versions": {
+      "apr_runtime": "1.7.2",
+      "apu_runtime": "1.6.3",
+      "libpq_version": 160015,
+      "svn_runtime": "1.14.3"
+    },
+    "dependency_limit": "Ubuntu distribution test libraries are not the pinned product SDK. Full SVN/APR/private ABI validation remains pending.",
+    "not_exercised": [
+      "SVN/SVNKit wire command matrices",
+      "complete PgFS transaction publication and history comparison",
+      "credential crypto and real key permissions",
+      "Windows PowerShell 5.1/WPF/native runtime",
+      "complete Linux service/CLI/Apache product build and deployment"
+    ],
+    "production_services_or_databases_changed": false,
+    "test_container_removed": true,
+    "original_M6_M7_and_known_FAILURES": "UNCHANGED"
+  },
+  "source_inventory_snapshot": {
+    "path": "build/pgvn/tests/bypass-3024419a3ea4/generated/build-inputs.json",
+    "sha256": "79afcf8c22634239563898ab7ca398a92f9ce35f8a93d2d82c1326fa2e561cb4"
+  }
+}

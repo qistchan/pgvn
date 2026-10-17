@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include "ap_release.h"
+#include "pgvn_build_info.h"
 
 /* The pinned Apache main.c is compiled with main=pgvn_httpd_main and linked
  * to the unchanged SDK libhttpd/APR. The process owns its UTF-8 manifest. */
@@ -16,7 +17,8 @@ int wmain(int argc,wchar_t **wide)
         return 2;
     }
     if(argc==2 && !wcscmp(wide[1],L"--pgvn-runtime")) {
-        printf("{\"product\":\"PgVNHTTPD\",\"apache_base\":\"%s\",\"process_code_page\":%u}\n",AP_SERVER_BASEREVISION,GetACP());
+        printf("{\"product\":\"PgVNHTTPD\",\"apache_base\":\"%s\",\"process_code_page\":%u,"
+               "\"build_identity\":" PGVN_BUILD_JSON_PREFIX "}}\n",AP_SERVER_BASEREVISION,GetACP());
         return 0;
     }
     char **arguments=calloc((size_t)argc+1,sizeof(*arguments));

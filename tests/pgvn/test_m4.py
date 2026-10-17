@@ -10,6 +10,8 @@ import traceback
 import uuid
 from fixture import ROOT,RUNTIME
 from test_m3 import build_identity as prior_identity
+sys.path.insert(0,str(ROOT/"scripts/pgvn"))
+from build_metadata import collect
 
 TEST_ID="m4-"+uuid.uuid4().hex[:12]
 WORK=RUNTIME/"tests"/TEST_ID
@@ -36,12 +38,10 @@ def digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def build_identity():
     manifest=prior_identity()
     assert manifest["milestone"] in ("M4","M5-dev","M5") and manifest["capabilities"]["monitor"]=="full"
-    actual={}
-    for root,suffixes in (("web",None),("src",None),("sql",None),
-        ("scripts/pgvn",{".py",".ps1"}),("tests/pgvn",{".py",".c",".inc",".java"})):
-        for path in sorted((ROOT/root).rglob("*")):
-            if path.is_file() and (suffixes is None or path.suffix in suffixes): actual[path.relative_to(ROOT).as_posix()]=digest(path)
-    assert actual==manifest["sources"],"Source inventory changed after the frozen Release build"
+    current=collect(ROOT,"windows",manifest["configuration"])
+    assert current["sources"]==manifest["sources"],"Source inventory changed after the frozen Release build"
+    assert current["build_identity"]==manifest["build_identity"],"Build metadata changed after the frozen Release build"
+    assert current["migrations"]==manifest["migrations"],"Migration inventory changed after the frozen Release build"
     for path,expected in manifest["runtime_dependencies"].items(): assert digest(RUNTIME/path)==expected,path
     host=manifest['apache_host']
     assert digest(ROOT/'src/pgvn/httpd/source-lock.json')==host['source_lock_sha256']

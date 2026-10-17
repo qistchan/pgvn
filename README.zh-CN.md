@@ -544,6 +544,25 @@ python scripts/pgvn/package.py --development
 
 `fetch_httpd.py` 用于显式下载并校验锁定哈希的 Apache 宿主源码；离线构建可预先准备对应源码包并通过 `apache_source` 指定本地目录（详见 [Windows UTF-8 构建说明](docs/pgvn/Windows-UTF8.zh-CN.md)），构建脚本不会隐式访问网络。编译产物输出至 `runtime/pgvn`，构建清单记录在 `artifacts/pgvn/build/manifest.json`，打包归档位于 `runtime/pgvn/packages`。
 
+产品版本、依赖版本、schema 和能力统一来自 `src/pgvn/version.json`。源码中新增的 CLI/Apache 运行信息、包清单和 GUI 版本生成共用该来源；实际 APR/APR-util/libpq 与声明不符时拒绝冻结。新 GUI 加载时核对产品版本、API、schema 与后端能力，需要配套重建的运行包；上文历史组合包保持原有构建身份。
+
+Linux 开发的首个前置组件可在无 SDK 环境运行：
+
+```sh
+python scripts/pgvn/build.py --metadata-only --target linux --configuration Release
+python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
+```
+
+`--metadata-only` 仅生成 `build/pgvn/metadata/linux/` 下的版本头和源码/迁移清单，尚不构建 Linux 服务端或模块。完整推进顺序、包配对命令及 Windows 待验项目见[计划执行检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata)。
+
+Linux 开发已推进到原生组件阶段：schema 7 新增仅限原生 SVN 的 bypass 配置，公共上下文与协议 I/O 已接入 POSIX 计数、取消和单调时钟接口，并在 Ubuntu 24.04 + PostgreSQL 18.6 隔离组件验证。Windows 验收按本轮要求暂缓；完整 Linux 主机程序及客户端协议矩阵仍待完成；现已新增固定版本 FS SDK 和 ELF 开发构建，用于隔离验证及内容传输实验，历史运行包不支持新配置。详见[本轮执行记录与复现入口](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components)。
+
+固定 FS SDK、ELF 检查、内容二进制传输实验及复现命令见[Linux FS 与性能检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)。这些 FS 产物尚不构成完整 Linux 服务端或安装包。
+
+Linux 凭据组件已接入 OpenSSL EVP 和基于描述符的密钥文件校验，Release 与 ASan/UBSan 的向量、权限、真实 SQL 和轮换检查通过。[凭据检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)记录了权限策略、产物及跨 OS 待验项；正式 Linux 管理/服务主程序仍待完成。
+
+Catalog schema 8 新增版本化逻辑 Hook 声明与节点本地文件名映射。[Hook 配置检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)记录了旧节点兼容、缺实现拒绝及原生组件验证；POSIX 子进程执行仍待完成。
+
 验证测试统一通过 `scripts/pgvn` 与 `tests/pgvn` 执行。运行完整的 M5 门禁需要真实浏览器验证环境、配置好的 JDK/SVNKit 以及专用测试 PostgreSQL 集群，详见[浏览器与测试准备](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径)和 [M5 开发记录](docs/pgvn/M5-development.zh-CN.md)。由于测试门禁会创建隔离数据库、注册临时服务，且部分故障测试会重启**测试数据库集群**，请切勿将测试脚本指向业务部署库。仓库中保留的早期 PgFS 脚本与记录仅供历史参考，不作为当前 PgVN 构建的验收依据。
 
 <details>

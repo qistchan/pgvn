@@ -20,6 +20,7 @@ from prepare_protocol import prepare_protocol
 from prepare_dav import prepare_dav
 from embed_migrations import embed
 from embed_web import embed_web
+from build_metadata import collect, write_metadata, check_runtime
 from httpd_host import verify_sources,compile_resource,compile_host
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -86,9 +87,33 @@ def import_library(tools, dll):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--config", type=Path)
+    parser.add_argument("--target", choices=("windows", "linux"), default="windows" if os.name == "nt" else "linux")
+    parser.add_argument("--metadata-only", action="store_true", help="prepare shared version/source inputs without SDKs or product compilation")
     parser.add_argument("--configuration", choices=("Debug", "Release"), default="Debug")
+    parser.add_argument("--components", choices=("all", "fs", "credentials", "hook-config"), default="all")
+    parser.add_argument("--linux-sdk", type=Path, help="verified SDK from prepare_linux_sdk.py")
+    parser.add_argument("--fs-content-transfer", choices=("binary", "hex"), default="binary",
+                        help="FS experiment control: binary bytea or legacy hex baseline")
+    parser.add_argument("--sanitize", action="store_true", help="ASan/UBSan for Linux development components")
     args = parser.parse_args()
+    if args.metadata_only:
+        output = BUILD / "metadata" / args.target
+        metadata = write_metadata(ROOT, output, args.target, args.configuration)
+        print(json.dumps({"output": str(output), "build_identity": metadata["build_identity"], "products_built": False}))
+        return
+    if args.target == "linux" and args.components in ("fs", "credentials", "hook-config"):
+        if args.linux_sdk is None:
+            parser.error("--linux-sdk is required for native component builds")
+        from build_linux import build_component
+        print(json.dumps(build_component(args.linux_sdk, args.configuration, args.components, args.fs_content_transfer, args.sanitize)))
+        return
+    if args.components != "all":
+        parser.error("--components fs/credentials/hook-config currently applies to Linux only")
+    if args.target != "windows" or os.name != "nt":
+        parser.error("Complete native Linux hosts are not implemented yet (PX-L01–PX-L06); use --components fs --linux-sdk PATH or --metadata-only")
+    if args.config is None:
+        parser.error("--config is required for product compilation")
     config = json.loads(args.config.read_text(encoding="utf-8"))
     required = ("toolchain", "subversion", "apr_include", "apu_include", "svn_bin", "apache", "postgres")
     paths = {k: Path(config[k]).resolve(strict=True) for k in required}
@@ -101,12 +126,14 @@ def main():
                  RUNTIME / "bin", RUNTIME / "apache/bin", RUNTIME / "apache/modules",
                  RUNTIME / "apache/logs", ARTIFACTS):
         path.mkdir(parents=True, exist_ok=True)
-    if "1.14.5" not in (svn / "include/svn_version.h").read_text(encoding="utf-8"):
+    metadata = write_metadata(ROOT, BUILD / "generated", args.target, args.configuration)
+    identity = metadata["build_identity"]
+    if identity["svn_base"] not in (svn / "include/svn_version.h").read_text(encoding="utf-8"):
         # SVN_VER_NUMBER may be assembled from individual components.
         version = (svn / "include/svn_version.h").read_text(encoding="utf-8")
-        for key, value in (("MAJOR", "1"), ("MINOR", "14"), ("PATCH", "5")):
+        for key, value in zip(("MAJOR", "MINOR", "PATCH"), identity["svn_base"].split(".")):
             if not re.search(r"#define SVN_VER_" + key + r"\s+" + value + r"\b", version):
-                raise RuntimeError("Subversion headers must be pinned to 1.14.5")
+                raise RuntimeError("Subversion headers must match src/pgvn/version.json")
     shutil.copy2(apr / "apr.hw", BUILD / "generated/apr.h")
     shutil.copy2(apu / "apu.hw", BUILD / "generated/apu.h")
     shutil.copy2(svn / "svn_private_config.hw", BUILD / "generated/svn_private_config.h")
@@ -165,7 +192,7 @@ def main():
     compiler = tools / "clang.exe"
     utf8_resource=compile_resource(ROOT,BUILD,tools,run)
     objects = []
-    for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c"]:
+    for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c", ROOT / "src/pgvn/platform/credentials_win.c"]:
         output = BUILD / "objects" / ("core-" + source.stem + ".o")
         run([compiler, *options, "-DPGVN_STATIC", "-c", source, "-o", output])
         objects.append(output)
@@ -243,7 +270,7 @@ def main():
     host=RUNTIME/'apache/bin/pgvnhttpd.exe'
     compile_host(ROOT,paths['apache_source'],BUILD,tools,options,libraries,utf8_resource,host,run)
     host_runtime=json.loads(run([host,'--pgvn-runtime']))
-    if host_runtime!={'product':'PgVNHTTPD','apache_base':'2.4.68','process_code_page':65001}:
+    if host_runtime!={'product':'PgVNHTTPD','apache_base':identity['upstream']['httpd'],'process_code_page':65001,'build_identity':identity}:
         raise RuntimeError('Unexpected source-built HTTP host runtime')
     host_metadata.update(product=host.relative_to(ROOT).as_posix(),runtime=host_runtime,
         process_manifest_sha256=digest(ROOT/'src/pgvn/windows/utf8.manifest'),
@@ -268,10 +295,18 @@ def main():
         binary_evidence[product.relative_to(ROOT).as_posix()] = {
             "sha256": digest(product),
             "pe": run([tools / "llvm-readobj.exe", "--file-headers", "--coff-imports", "--coff-exports", product])}
+    runtime_build_info = {}
+    for name in ("pgvnserve", "pgvnadmin"):
+        diagnosis = json.loads(run([RUNTIME / "bin" / (name + ".exe"), "--version"]))
+        check_runtime(diagnosis, identity)
+        runtime_build_info[name] = diagnosis
+    if collect(ROOT, args.target, args.configuration) != metadata:
+        raise RuntimeError("Build inputs changed during compilation; rebuild before generating evidence")
     manifest = {
         "created_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "milestone": re.search(r'#define PGVN_MILESTONE "([^"]+)"', (ROOT / "src/pgvn/core/pgvn.h").read_text()).group(1), "configuration": args.configuration,
-        "capabilities": {"repository_by_id": True, "svn_protocol": True, "dav_protocol": True, "monitor": "full"},
+        "milestone": identity["milestone"], "version": identity["version"], "configuration": args.configuration,
+        "build_identity": identity, "migrations": metadata["migrations"], "runtime_build_info": runtime_build_info,
+        "capabilities": identity["capabilities"],
         "compiler": run([compiler, "--version"]).strip(),
         "compiler_sha256": digest(compiler), "flags": [str(o) for o in options],
         "inputs": {k: str(v) for k, v in paths.items()},
@@ -284,18 +319,15 @@ def main():
                         "applied_sha256": digest(dav_source / "applied-dav.patch"),"outputs":dav_patched,
                         "namespace_sha256":digest(dav_source / "pgvn_dav_namespace.h"),
                         "provider":"pgvn","public_exports":dav_exports},
-        "sources": {**{"web/" + k: v for k, v in inventory(ROOT / "web").items()}, **{"src/" + k: v for k, v in inventory(ROOT / "src").items()},
-                    **{"sql/" + k: v for k, v in inventory(ROOT / "sql").items()},
-                    **{"scripts/pgvn/" + k: v for k, v in inventory(ROOT / "scripts/pgvn", {".py", ".ps1"}).items()},
-                    **{"tests/pgvn/" + k: v for k, v in inventory(ROOT / "tests/pgvn", {".py", ".c", ".inc", ".java"}).items()}},
+        "sources": metadata["sources"],
         "upstream": {"subversion": inventory(paths["subversion"], {".c", ".h", ".inc", ".hw"}),
                      "apr": inventory(apr), "apu": inventory(apu), "apache_include": inventory(apache / "include")},
         "sdk_binaries": {str(d): digest(d) for d in dlls + [pg / "lib/libpq.lib", pg / "bin/libpq.dll"]},
         "products": binary_evidence,
         "core_archive_sha256":digest(static_core),
         "apache_host":host_metadata,
-        "git_base_commit": run(["git", "rev-parse", "HEAD"]).strip(),
-        "git_worktree_dirty": bool(run(["git", "status", "--porcelain"]).strip()),
+        "git_base_commit": identity["git_commit"],
+        "git_worktree_dirty": identity["git_worktree_dirty"],
         "runtime_dependencies": {"bin/" + k: v for k, v in inventory(RUNTIME / "bin").items()},
         "apache_dependencies": {**{"apache/bin/"+k:v for k,v in inventory(RUNTIME / "apache/bin",{".exe",".dll"}).items()},
                                 **{"apache/modules/"+name:digest(RUNTIME / "apache/modules" / name) for name in APACHE_MODULES}},
@@ -310,7 +342,7 @@ def main():
     manifest_path = ARTIFACTS / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     build_id = hashlib.sha256(json.dumps({key: manifest[key] for key in (
-        "sources", "upstream_patches", "protocol_patches", "dav_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
+        "build_identity", "sources", "upstream_patches", "protocol_patches", "dav_patches", "upstream", "compiler_sha256", "sdk_binaries", "configuration")},
         sort_keys=True).encode()).hexdigest()[:16]
     archive = ARTIFACTS / (manifest["milestone"] + "-" + build_id + ".json")
     if not archive.exists():

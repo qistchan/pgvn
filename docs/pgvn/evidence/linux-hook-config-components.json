@@ -1,0 +1,342 @@
+{
+  "format": 1,
+  "checkpoint": "PX-L05 hook declaration and node mapping component; process execution pending",
+  "status": "PASS",
+  "milestone_complete": false,
+  "client_date": "2026-10-17",
+  "build_identity": {
+    "product": "PgVN",
+    "version": "0.1.0-dev",
+    "milestone": "M5",
+    "upstream": {
+      "subversion": "1.14.5",
+      "apr": "1.7.6",
+      "apr_util": "1.6.3",
+      "httpd": "2.4.68",
+      "postgresql": "18.6"
+    },
+    "schemas": {
+      "catalog": 8,
+      "fs": 4
+    },
+    "api_version": 1,
+    "cache_format_version": 0,
+    "capabilities": {
+      "repository_by_id": true,
+      "svn_protocol": true,
+      "dav_protocol": true,
+      "monitor": "full",
+      "svn_authz_bypass": true,
+      "cache_local": false,
+      "cache_redis": false
+    },
+    "identity_format": 1,
+    "svn_base": "1.14.5",
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "configuration": "Release",
+    "git_commit": "55f199691e5c0d22914a890bf1f7d87e1ef1ee5c",
+    "git_worktree_dirty": true,
+    "source_manifest_sha256": "727c40bdf6ebdeab640b013915900f1faf049f14f5c2fcb5433ec38a65d5838b",
+    "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+  },
+  "source_files": 185,
+  "images": {
+    "pgvn-linux-builder:ubuntu24": "sha256:1cdc47c866521d0d6c8d50a3bc04db50b00971534aaa1e12297a7910a4c1875e",
+    "postgres:18.6": "sha256:29754c7520f4b9654cf8ff98e19ac73b88e255c3a53f6236ebe9d52249bb6df3"
+  },
+  "sdk_manifest_sha256": "811d3084d7c6292a0c48608a335dbacc09e3e7cf2bc54eeb9eabe7b05ee8365c",
+  "scope": "Hook declaration/mapping and production policy loading/publication; process dispatcher is a failing adapter",
+  "report": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/report.json",
+  "report_sha256": "28d84d125fe10d60e0d1f561ee6a5006b11b2b464debb71b5d1108cafe8a5cd9",
+  "inputs": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/inputs",
+  "inputs_sha256": "77c96d011b0dcf42cbe2c3f5a0e4c48ff3338af8b8058e3e1a5ba3e6344778b9",
+  "commands": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/commands.jsonl",
+  "commands_sha256": "8c16bce4f37b496808d3dab8a16f570000a4a5fcf97bb24d69b7c453248111df",
+  "checks_passed": 69,
+  "checks": [
+    "release frozen product hashes",
+    "sanitized frozen product hashes",
+    "PostgreSQL 18.6",
+    "migration 001_initial.sql",
+    "migration 002_version_tree.sql",
+    "migration 003_locks.sql",
+    "migration 004_hotcopy.sql",
+    "migration 001_catalog.sql",
+    "migration 002_admin.sql",
+    "migration 003_credentials.sql",
+    "migration 004_protocol.sql",
+    "migration 005_monitor.sql",
+    "migration 006_dav_state.sql",
+    "migration 007_svn_authz_mode.sql",
+    "migration 008_hook_declarations.sql",
+    "schema 8 migrated by non-superuser",
+    "SQL declaration case 1",
+    "SQL declaration case 2",
+    "SQL declaration case 3",
+    "SQL declaration case 4",
+    "SQL declaration case 5",
+    "SQL declaration case 6",
+    "SQL declaration case 7",
+    "SQL declaration case 8",
+    "SQL declaration case 9",
+    "SQL declaration case 10",
+    "SQL declaration case 11",
+    "SQL declaration case 12",
+    "SQL declaration case 13",
+    "SQL declaration case 14",
+    "SQL declaration case 15",
+    "SQL declaration case 16",
+    "SQL declaration case 17",
+    "SQL declaration case 18",
+    "SQL declaration case 19",
+    "SQL declaration case 20",
+    "SQL declaration case 21",
+    "SQL declaration case 22",
+    "SQL declaration case 23",
+    "SQL declaration case 24",
+    "SQL declaration case 25",
+    "SQL declaration case 26",
+    "SQL declaration case 27",
+    "SQL declaration case 28",
+    "SQL declaration case 29",
+    "SQL declaration case 30",
+    "SQL declaration case 31",
+    "SQL declaration case 32",
+    "SQL declaration case 33",
+    "SQL declaration case 34",
+    "SQL declaration case 35",
+    "SQL declaration case 36",
+    "SQL declaration case 37",
+    "SQL declaration case 38",
+    "unsupported declaration capability false",
+    "unsupported declaration capability NULL",
+    "old validator fails closed for new declarations",
+    "legacy validator remains unchanged",
+    "release production policy/configuration probe",
+    "release frozen runtime identity",
+    "release frozen runtime uses pinned principal libraries",
+    "release monitor accepts declaration schema",
+    "release monitor rejects unknown declaration version",
+    "sanitized production policy/configuration probe",
+    "sanitized frozen runtime identity",
+    "sanitized frozen runtime uses pinned principal libraries",
+    "sanitized monitor accepts declaration schema",
+    "sanitized monitor rejects unknown declaration version",
+    "source and migrations unchanged during verification"
+  ],
+  "products": {
+    "release": {
+      "path": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/products/release",
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "runtime": {
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "cache_local": false,
+          "cache_redis": false,
+          "dav_protocol": true,
+          "monitor": "full",
+          "repository_by_id": true,
+          "svn_authz_bypass": true,
+          "svn_protocol": true
+        },
+        "configuration": "Release",
+        "git_commit": "55f199691e5c0d22914a890bf1f7d87e1ef1ee5c",
+        "git_worktree_dirty": true,
+        "identity_format": 1,
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2",
+        "milestone": "M5",
+        "product": "PgVN",
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "source_manifest_sha256": "727c40bdf6ebdeab640b013915900f1faf049f14f5c2fcb5433ec38a65d5838b",
+        "svn_base": "1.14.5",
+        "target_arch": "x86_64",
+        "target_os": "linux",
+        "upstream": {
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6",
+          "subversion": "1.14.5"
+        },
+        "version": "0.1.0-dev",
+        "apr_runtime": "1.7.6",
+        "apu_runtime": "1.6.3",
+        "libpq_version": 180006,
+        "process_code_page": 0,
+        "ready": false
+      },
+      "sanitizers": [],
+      "probe_sha256": "b1a6e233960ca024509af387e1242b8cdb409e239ec1e6a51e8e8b21cc8d23a9",
+      "archive_sha256": "34006beaeb41c70c7cdcf1044f74828bb681035b06cd24d13b41604a389842b3",
+      "manifest_sha256": "4b30d723cc3609f7d5480a399e530618a501033a1460b6f0fa1469534484499b",
+      "ldd_sha256": "59a04f602ead0d7a33fbd1800c254a90dc82a4cc817fb8ee0e2ab6b6968f3fe2",
+      "assertions": 114,
+      "process_adapter_calls": 1
+    },
+    "sanitized": {
+      "path": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/products/sanitized",
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "runtime": {
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "cache_local": false,
+          "cache_redis": false,
+          "dav_protocol": true,
+          "monitor": "full",
+          "repository_by_id": true,
+          "svn_authz_bypass": true,
+          "svn_protocol": true
+        },
+        "configuration": "Debug",
+        "git_commit": "55f199691e5c0d22914a890bf1f7d87e1ef1ee5c",
+        "git_worktree_dirty": true,
+        "identity_format": 1,
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2",
+        "milestone": "M5",
+        "product": "PgVN",
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "source_manifest_sha256": "727c40bdf6ebdeab640b013915900f1faf049f14f5c2fcb5433ec38a65d5838b",
+        "svn_base": "1.14.5",
+        "target_arch": "x86_64",
+        "target_os": "linux",
+        "upstream": {
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6",
+          "subversion": "1.14.5"
+        },
+        "version": "0.1.0-dev",
+        "apr_runtime": "1.7.6",
+        "apu_runtime": "1.6.3",
+        "libpq_version": 180006,
+        "process_code_page": 0,
+        "ready": false
+      },
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "probe_sha256": "e5906531dcd4b375ea1f46002765ca780a9afa166e2b2bf3a94a8173de0adc02",
+      "archive_sha256": "9358aa0851c157eaf54ee2699ef0fa96d6498e7abd07ea3f4ff2be4ae403e474",
+      "manifest_sha256": "4609fcdd9cbe8d6ff97c25f4a0b421435529d22f92fcda505a3d44e95ca03c23",
+      "ldd_sha256": "c53be683f96ef97a84de16298ef9691a38707a670b9b01290cc2e1c6337ebb6c",
+      "assertions": 114,
+      "process_adapter_calls": 1
+    }
+  },
+  "metadata": {
+    "status": "PASS",
+    "tests": 20,
+    "log": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/metadata-final.log",
+    "sha256": "d6137e1dcd2428b3c562fad2e16edb3a0ca70d0cb94605f77abfd4ff57010a85"
+  },
+  "portable_powershell": {
+    "status": "PASS",
+    "version": "7.4.6",
+    "checks": 20,
+    "scope": "Portable version generation and backend compatibility component; Windows W1/W2 acceptance not run",
+    "log": "artifacts/pgvn/tests/linux-hook-config-d29cdd5458c6/powershell.log",
+    "sha256": "249266f3a72532f3116944cd0e316f9b940576f6ae1df9edf99d75a96cc097a1"
+  },
+  "bypass_regression": {
+    "status": "PASS",
+    "checks": 37,
+    "c_assertions": 96,
+    "build_identity": {
+      "product": "PgVN",
+      "version": "0.1.0-dev",
+      "milestone": "M5",
+      "upstream": {
+        "subversion": "1.14.5",
+        "apr": "1.7.6",
+        "apr_util": "1.6.3",
+        "httpd": "2.4.68",
+        "postgresql": "18.6"
+      },
+      "schemas": {
+        "catalog": 8,
+        "fs": 4
+      },
+      "api_version": 1,
+      "cache_format_version": 0,
+      "capabilities": {
+        "repository_by_id": true,
+        "svn_protocol": true,
+        "dav_protocol": true,
+        "monitor": "full",
+        "svn_authz_bypass": true,
+        "cache_local": false,
+        "cache_redis": false
+      },
+      "identity_format": 1,
+      "svn_base": "1.14.5",
+      "target_os": "linux",
+      "target_arch": "x86_64",
+      "configuration": "Release",
+      "git_commit": "55f199691e5c0d22914a890bf1f7d87e1ef1ee5c",
+      "git_worktree_dirty": true,
+      "source_manifest_sha256": "b1d80390f7f90ad3698b52be7c9f5f1235baf00672444c37d45098c78cb90f5b",
+      "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+    },
+    "report": "artifacts/pgvn/tests/bypass-c9a9f5c8f4ad/report.json",
+    "report_sha256": "5595d476dd139d5c2e0859d2b95dbae5cc4227b0a564ef769b80458945204d57",
+    "inputs": "artifacts/pgvn/tests/bypass-c9a9f5c8f4ad/inputs",
+    "inputs_sha256": "07fb0d41a47f796482b4962dbad00a5813ea51840fef2228de85130144ff825f",
+    "runtime": {
+      "apr_runtime": "1.7.2",
+      "apu_runtime": "1.6.3",
+      "libpq_version": 160015,
+      "svn_runtime": "1.14.3"
+    },
+    "scope": "Isolated SQL migrations and production POSIX platform/context/policy/protocol components; no SVN wire client, full Linux runtime, real credential crypto or Windows acceptance.",
+    "container_removed": true
+  },
+  "preflight_runs": [
+    {
+      "report": "artifacts/pgvn/tests/linux-hook-config-5b13b1a96c17/report.json",
+      "sha256": "efcfc6b93055591c37b8a6f6cf6c52ca4b4a5a4b27ad9e94dc829cec119d39e2",
+      "status": "FAIL",
+      "resolution": "Fixture needed an explicit transaction for the deferred configuration FK"
+    },
+    {
+      "report": "artifacts/pgvn/tests/linux-hook-config-2959fe180123/report.json",
+      "sha256": "06923364f32f908b47ae35d4750628e23cc4b9dce75140ecd1263877742a3154",
+      "status": "FAIL",
+      "resolution": "Fixture executable availability correctly refused a noexec tmpfs"
+    },
+    {
+      "report": "artifacts/pgvn/tests/linux-hook-config-bdb200f88dc0/report.json",
+      "sha256": "0e48cb1cb7e63fd59d3dfe053a61c9f216578a00a78c94b331fe46d9be711308",
+      "status": "FAIL",
+      "resolution": "Probe needed explicit SVN UTF-8 native-path initialization"
+    },
+    {
+      "report": "artifacts/pgvn/tests/linux-hook-config-83ceff1fa064/report.json",
+      "sha256": "a9a208ed1d808fb2d032a1ceca5e0d0b0b7bc24ef1a8abaf4e6bd2a54b1d3fb7",
+      "status": "FAIL",
+      "resolution": "Docker tmpfs required explicit exec for X_OK availability fixtures"
+    },
+    {
+      "report": "artifacts/pgvn/tests/linux-hook-config-4984226fef33/report.json",
+      "sha256": "e658191fe307d295418a0aa89afb6e6f2109092ce9ededaa17fd654190b72787",
+      "status": "FAIL",
+      "resolution": "Frozen dependency path comparison needed normalization of bin/../lib"
+    }
+  ],
+  "historical_migrations_unchanged": 11,
+  "container_removed": true,
+  "limitations": [
+    "No POSIX hook process, argv/environment, output, timeout, cancellation or descendant containment acceptance",
+    "Availability preflight is not the launch-time executable validation; no complete Linux service or Windows W1/W2 acceptance"
+  ]
+}

@@ -51,7 +51,8 @@ svn_error_t *admin_policy(admin_command *command)
     const char *values[]={binding->repository_id};
     return admin_emit_query(command,
         "SELECT json_build_object('id',r.repository_id,'name',r.canonical_name,'enabled',r.enabled,'generation',r.generation,"
-        "'authz',c.authz_text,'groups',c.groups_text,'settings',c.settings,'hooks',c.hooks,'published_at',c.published_at,'published_by',c.published_by) "
+        "'authz',c.authz_text,'groups',c.groups_text,'settings',c.settings,'hooks',c.hooks,"
+        "'svn_authz_mode',COALESCE(c.settings->>'svn_authz_mode','enforce'),'published_at',c.published_at,'published_by',c.published_by) "
         "FROM pgvn.repositories r JOIN pgvn.configurations c ON c.repository_id=r.repository_id AND c.generation=r.generation "
         "WHERE r.repository_id=$1::uuid",1,values);
 }

@@ -14,7 +14,7 @@ import time
 import traceback
 import uuid
 import xml.etree.ElementTree as ET
-from fixture import Fixture, ROOT, RUNTIME
+from fixture import Fixture, ROOT, RUNTIME, CATALOG_VERSION
 
 TEST_ID = "m2-" + uuid.uuid4().hex[:12]
 DATABASE = "pgvn_" + TEST_ID.replace("-", "_")
@@ -105,7 +105,7 @@ def migration_and_privileges():
         results = list(executor.map(lambda _: meta("db", "init", role=migration_role), range(4)))
     assert all(r["ok"] for r in results)
     check = meta("db", "check", role="pgvn_owner")
-    assert check["schema"] == {"pgfs": 4, "pgvn": 6, "checksums": "match"}
+    assert check["schema"] == {"pgfs": 4, "pgvn": CATALOG_VERSION, "checksums": "match"}
     installed = sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v")
     meta("db", "migrate", role=migration_role)
     assert sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v") == installed
@@ -120,7 +120,7 @@ def migration_and_privileges():
         sql("INSERT INTO pgfs.schema_versions(version) VALUES(99)")
         meta("db", "check", role="pgvn_owner", expected=4)
         meta("db", "migrate", role="pgvn_owner", expected=4)
-        assert sql("SELECT count(*) FROM pgvn.schema_versions") == "6"
+        assert sql("SELECT count(*) FROM pgvn.schema_versions") == str(CATALOG_VERSION)
     finally:
         sql("DELETE FROM pgfs.schema_versions WHERE version=99")
     meta("db", "grant", "--admin-role", "pgvn_admin", "--service-role", "pgvn_service", "--monitor-role", "pgvn_monitor", role=migration_role)
@@ -459,7 +459,7 @@ def portable_binary():
     shutil.copy2(ADMIN, portable / ADMIN.name)
     for dll in (RUNTIME / "bin").glob("*.dll"):
         shutil.copy2(dll, portable / dll.name)
-    assert meta("db", "check", executable=portable / ADMIN.name)["schema"]["pgvn"] == 6
+    assert meta("db", "check", executable=portable / ADMIN.name)["schema"]["pgvn"] == CATALOG_VERSION
     assert meta("look", "youngest", state["repository"]["id"], executable=portable / ADMIN.name)["youngest"] == 6
     return {"standalone_binary_and_dll_directory": True, "runtime_python_node_not_required": True}
 

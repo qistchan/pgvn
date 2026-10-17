@@ -91,6 +91,14 @@ svn_error_t *pgvn_repos_open(pgvn_repository **output,pgvn_context *context,
     return repos_open(output,context,id,FALSE,pool);
 }
 
+svn_error_t *pgvn_repos_open_svn(pgvn_repository **output,pgvn_context *context,
+    const char *id,apr_pool_t *pool)
+{
+    SVN_ERR(repos_open(output,context,id,FALSE,pool));
+    (*output)->native_svn=TRUE;
+    return SVN_NO_ERROR;
+}
+
 svn_error_t *pgvn_repos_open_admin(pgvn_repository **output,pgvn_context *context,
     const char *id,apr_pool_t *pool)
 {

@@ -17,6 +17,7 @@ import tempfile
 import zipfile
 from pe_dependencies import closure
 from windows_manifest import embed_utf8
+from build_metadata import check_runtime
 
 def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def data_json(value):return (json.dumps(value,indent=2,sort_keys=True,ensure_ascii=False)+'\n').encode('utf-8')
@@ -42,6 +43,10 @@ def main():
     sys.path.insert(0,str(root/'tests/pgvn'))
     from test_m4 import build_identity
     if build_identity()!=manifest:raise RuntimeError('Build identity changed')
+    identity=manifest['build_identity']
+    for name in ('pgvnserve','pgvnadmin'):
+        diagnosis=json.loads(subprocess.check_output([str(runtime/'bin'/(name+'.exe')),'--version'],encoding='utf-8'))
+        check_runtime(diagnosis,identity)
     for relative,meta in manifest['products'].items():
         if digest(root/relative)!=meta['sha256']:raise RuntimeError('Product digest mismatch: '+relative)
     acceptance=None
@@ -133,7 +138,7 @@ def main():
         'windows_process_policy':windows_policy,'executable_manifest_transforms':transforms,
         'development':args.development}
     package_id=hashlib.sha256(data_json(input_identity)).hexdigest()[:16]
-    stem='PgVN-'+manifest['milestone']+'-windows-x64-'+package_id
+    stem='PgVN-'+identity['version']+'-windows-x64-'+package_id
     destination=output/stem
     files={};provenance={};native_audit={}
     def put(relative,data,source=None):
@@ -182,6 +187,7 @@ def main():
     for path in sorted((root/'sql/pgvn').glob('*.sql')):copy('schema-reference/pgvn/'+path.name,path)
     copy('build-manifest.json',manifest_path)
     copy('source-reference/httpd-host-lock.json',root/'src/pgvn/httpd/source-lock.json')
+    copy('source-reference/version.json',root/'src/pgvn/version.json')
     # Archive validation describes this archive's hash and is delivered as a
     # sidecar / source-repository record, avoiding self-referential inputs.
     for path in sorted((root/'docs/pgvn/evidence').glob('*.json')):
@@ -199,7 +205,8 @@ def main():
         'pgvnhttpd 为固定 Apache 入口源码构建，使用未改写的 SDK libhttpd/APR。\n'
         '四个未签名 PostgreSQL 客户端的私有副本加入 UTF-8 进程清单；来源/前后摘要及资源校验见包清单。\n'
     ).encode('utf-8'))
-    package={'format':1,'package_id':package_id,'product':'PgVN','milestone':manifest['milestone'],
+    package={'format':1,'package_id':package_id,'product':'PgVN','milestone':identity['milestone'],
+        'version':identity['version'],'build_identity':identity,
         'configuration':'Release','architecture':'x64','created_at':manifest['created_at'],
         'validation_status':'development-snapshot' if args.development else 'M6-accepted-runtime',
         'clean_machine_acceptance':False,'polarion_application_acceptance':False,

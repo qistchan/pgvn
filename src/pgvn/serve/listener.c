@@ -162,6 +162,7 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     if(!current) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN SVN service requires the current catalog schema; run db migrate");
     listener->context->minimum_catalog_version=PGVN_CATALOG_VERSION;
     svn_config_get(config,&listener->context->hook_root,"pgvn","hook-root",NULL);
+    SVN_ERR(pgvn_hooks_configure(listener->context,config,pool));
     SVN_ERR(svn_dirent_get_absolute(&listener->context->configuration_path,configuration,pool));
     listener->context->cancellation_event=stop_event;
     SVN_ERR(pgvn_keyring_load(&listener->parameters.pgvn_key,key_path,previous_key_path,pool));

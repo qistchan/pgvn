@@ -544,6 +544,25 @@ python scripts/pgvn/package.py --development
 
 `fetch_httpd.py` explicitly downloads and verifies checksum-pinned Apache HTTP Server sources. For offline builds, pre-stage those archives and point `apache_source` to the local directory (see [Windows UTF-8 build notes](docs/pgvn/Windows-UTF8.zh-CN.md)); `build.py` never accesses the network implicitly. Compiled binaries are placed in `runtime/pgvn`, build provenance in `artifacts/pgvn/build/manifest.json`, and distributable archives in `runtime/pgvn/packages`.
 
+Product and dependency versions, schemas, and capabilities now share `src/pgvn/version.json`. New runtime metadata, package manifests, and generated GUI version attributes use this source; freezing a build checks the actual APR/APR-util/libpq versions. The rebuilt GUI requires a matching runtime package and checks its version, API, schemas, and capabilities. Previously documented bundles retain their original build identity.
+
+The first Linux development prerequisite can run without SDKs:
+
+```sh
+python scripts/pgvn/build.py --metadata-only --target linux --configuration Release
+python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
+```
+
+`--metadata-only` prepares the version header and source/migration inventories under `build/pgvn/metadata/linux/`; it does not build Linux server or module binaries. See the [execution checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata) for package pairing, remaining Windows validation, and the implementation sequence.
+
+Linux development now includes native components: catalog schema 7 adds native-SVN-only bypass settings, and the shared context and protocol I/O use POSIX counter, cancellation, and monotonic-clock interfaces. Components were checked on Ubuntu 24.04 with an isolated PostgreSQL 18.6 server. Windows acceptance is deferred as requested; complete Linux hosts and client protocol matrices remain pending. A pinned Linux FS SDK and ELF development build are now available for isolated validation and content-transfer experiments (see the next checkpoint). Historical runtime packages do not support the new setting. See the [execution record and reproduction entry point](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components).
+
+The [Linux FS build and performance checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) documents the pinned SDK, ELF checks, reproduction commands, and limits of the binary-content experiment. These FS artifacts are not a complete Linux server or installation package.
+
+Linux credential components now use OpenSSL EVP and descriptor-based key-file checks. Release and ASan/UBSan probes passed vector, permission, real SQL and rotation checks. The [credential checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials) documents the owner-only key policy, artifacts and remaining cross-OS validation; the Linux admin/server hosts remain pending.
+
+Catalog schema 8 adds versioned logical Hook declarations and node-local filename mappings. The [Hook configuration checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) records compatibility, missing-implementation rejection, and native component checks; POSIX process execution remains pending.
+
 Run test gates via `scripts/pgvn` and `tests/pgvn`. Full M5 validation requires real-browser evidence, a configured JDK + SVNKit environment, and the dedicated test PostgreSQL cluster; see [Browser and test prerequisites](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径) and the [M5 development notes](docs/pgvn/M5-development.zh-CN.md). Because test gates provision isolated databases, register temporary services, and occasionally restart the **test** PostgreSQL cluster, never point test scripts at a deployment database. Legacy PgFS scripts and test outputs are retained as historical references only and do not represent current PgVN acceptance.
 
 <details>

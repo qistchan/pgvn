@@ -300,3 +300,44 @@ PGVN-601、PGVN-602、M6、M7 仍未完成。HTTPS、启用 shelf、SVN 失败�
 本条来源为用户的实际运行反馈，确认范围为本机 Polarion 启动运行成功。反馈没有逐项提供工作项、LiveDoc、附件、索引重建、用户权限同步等完整应用验收结果；这些场景按原计划继续记录。M6、M7、PGVN-601/602 及既有严格差分 FAIL 状态不因此改写，独立干净机器、重启、跨主机 HA 与代表性性能仍待验收。
 
 本次仅更新双语 README、运行状态说明，并纳入[下一阶段计划](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md)。该计划中的 Linux、原生 SVN 权限 bypass 和缓存加速为后续工作，尚未实现。本次文档提交不重建二进制或重跑门禁，程序版本仍为 `0.1.0-dev`；既有构建及测试身份以各报告为准。
+
+## 2026-10-17：Linux 计划前置 P0 / PX-V01 组件
+
+按[Linux / bypass / 性能计划](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata)推进共享版本及构建来源检查：新增 `src/pgvn/version.json` 单一来源、无 SDK 的双目标元数据准备、运行时/包清单核对、实际依赖版本检查、GUI 版本生成和后端能力检查，以及解包后的双平台来源配对检查。产品版本仍为 `0.1.0-dev`；未修改历史 SQL，bypass 和缓存能力继续为 false。
+
+本轮仅在 Debian 13.6 云工作区完成 Python/C 组件检查及 PowerShell 7.4.6 的版本生成/兼容性检查；结构化结果见 [P0 证据](evidence/p0-version-metadata.json)。C 探针使用依赖测试替身，包配对使用合成包，均不作为平台产品验收。未重建 Windows 产品、未生成 Linux 服务端/模块/安装包，未连接部署数据库或修改现有服务；新 GUI 与运行包需要成套重建后执行 Windows 回归。
+
+P0 的 Windows 构建/性能基线和 runner、W1 bypass 与交接包仍待完成，随后推进 Linux 平台实现。原 M6/M7、PGVN-601/602 和已知严格差分 FAIL 不变。
+
+## 2026-10-17：bypass 源码与 Linux 平台基础组件通过
+
+按用户“先跳过 windows 的验收”的新要求继续推进，Windows W1/W2 保留待验。新增 schema 7 的原生 SVN 权限模式、旧节点拒绝新字段、原生实例上下文及带凭据/配置代次保护的 bypass；CLI、GUI 与监控相关源码已接入。公共授权仍执行原 authz，bypass 保留认证、维护只读、Hook 和提交保护。历史 1–6 迁移未修改。
+
+新增平台窄接口，公共数据库上下文及原生协议 I/O 的计数、取消与单调时钟已可在 Linux 直接编译运行。Ubuntu 24.04 + PostgreSQL 18.6 隔离组件完成 36 项编排/迁移检查及 96 项 C 断言，包含实际生产 SQL 驱动、并发行锁、撤销、代次切换、回退、跨线程取消与回环 I/O；另有 20 项元数据和 20 项 PowerShell 检查通过。结果、失败历史与边界见[组件证据](evidence/linux-bypass-components.json)及[计划执行记录](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components)。
+
+该探针使用发行版测试依赖，并替换 FS 绑定、凭据适配和遥测输出；不是固定产品 SDK、完整协议或双平台验收。未产出完整 Linux 服务/CLI/Apache 安装包，未执行 Windows WPF 或原生验收，未接触部署数据库/服务。下一步为 PX-L02/03 的固定依赖与实际 Linux 构建，继而 OpenSSL、Hook、服务与监控适配。M6/M7 及已知 FAIL 不变。
+
+## 2026-10-17：固定 Linux FS SDK、真实 ELF 与二进制读取探索通过
+
+新增固定来源/归档摘要的 APR 1.7.6、APR-util 1.6.3、SVN 1.14.5、libpq 18.6 SDK 和顶层 `--components fs` 入口。实际生产 FS 已编译为 ELF `.so`，运行时版本、私有头来源、主依赖路径、导出及换目录运行检查通过。FS 初始化接入 pthread_once，历史 10 个 SQL 迁移保持原字节。
+
+内容读取新增专用 bytea 二进制结果，元数据继续文本；保留 hex 编译对照。两分支各 500 项 C 断言、36 项编排/迁移检查和 20 项元数据测试通过。1/8/32 并发各三轮，共 2,460 个计时读取全部 SHA1 一致；每次查询仍为 15 条，内容列返回字节由 16,777,278 减至 8,388,639。P95 和客户端 CPU 的本机暖数据对照、波动及原始证据见[性能记录](evidence/linux-fs-performance.json)和[计划第 11 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)。
+
+SDK 配置、预备编译、版本头及审计 SQL 的失败记录均保留，最终隔离数据库容器/tmpfs 已清理。本轮是直接 FS API 探索，未完成服务协议/提交延迟/真实应用或双平台回归；不据此声明 P1 或完整 Linux 产品通过。OpenSSL 凭据/密钥权限、POSIX Hook、listener/服务、监控 HTTP、实际主程序/Apache 与部署仍待完成。Windows W1/W2 按用户指示暂缓，M6/M7 及已知 FAIL 不变。
+
+## 2026-10-17：Linux OpenSSL 凭据与密钥权限组件通过
+
+共享凭据业务已与平台加密/密钥文件分离，Windows CNG/DACL 实现接入原构建，Linux 接入 OpenSSL EVP AES-256-GCM、私有随机源和显式清零。保持原 nonce/tag/AAD/数据库格式，新增严格 LF/CRLF 密钥读取；Linux 使用服务 EUID 的 0400/0600 单链接普通文件、逐组件 nofollow、打开后权限验证及独占创建。历史 SQL 不变。
+
+Release 与 ASan/UBSan 各 573 项 C 断言、28 项编排/迁移检查及 20 项元数据测试通过，覆盖固定向量/参考互解、文件权限及替换竞态、真实数据库加解密、撤销锁、禁用保留和并发轮换。两套产物、实际源输入及日志已冻结，临时库容器已清理。FS 构建回归后的核心库 SHA 与前一检查点相同，旧性能证据按原身份保存。详见[凭据证据](evidence/linux-credentials-components.json)和[计划第 12 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)。
+
+本轮仅交付凭据静态库与开发探针，未产出完整 Linux 主程序/安装包，也未验收线协议或实际跨 OS 凭据迁移。Windows 编译、CNG 互导与 W1/W2 继续按用户指示暂缓；下一步推进 POSIX Hook、listener/信号排空和监控 HTTP。M6/M7 及既有 FAIL 不变。
+
+
+## 2026-10-17：Hook 版本化声明与节点映射组件通过
+
+已先提交 Linux FS、凭据与 bypass 基础工作（`55f1996`），随后推进 PX-L05 的配置部分。新增 catalog 迁移 8，支持版本 1 的逻辑 Hook 名和节点本地 `[pgvn-hooks]` 映射，保留 Windows 旧 `.exe` 声明与 allow/reject。Linux 明确拒绝旧 `.exe` 隐式转换；缺映射、文件缺失或不可执行时拒绝加载 policy。旧节点校验器拒绝新声明，发布继续使用 generation CAS，先前 11 个迁移文件未改动。
+
+固定 SDK 的 Release 与 ASan/UBSan 各 114 项 C 断言、69 项编排/迁移检查、Python/便携 PowerShell 元数据各 20 项通过；bypass 回归另有 37 项编排、96 项 C 断言通过。实际源输入、产物和日志已冻结，临时数据库容器已清理。见 [Hook 配置证据](evidence/linux-hook-config-components.json)和[计划第 13 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)。
+
+本轮进程分派仍为显式返回不支持的测试适配器，文件检查仅是启动前可用性预检；没有验证实际 Hook 执行、超时/取消或后代隔离。下一项为 POSIX Hook 执行器及其系统场景，PX-L05 尚未完成。完整 Linux 服务/安装包、Windows W1/W2、M6/M7 及既有 FAIL 保留原状态。

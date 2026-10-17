@@ -331,7 +331,8 @@ static svn_error_t *pgfs_commit_body(const char **conflict,svn_revnum_t *new_rev
 
 static svn_error_t *pgfs_commit_txn(const char **conflict,svn_revnum_t *new_rev,svn_fs_txn_t *txn,apr_pool_t *pool)
 {
-    if(conflict) *conflict=NULL; *new_rev=SVN_INVALID_REVNUM;
+    if(conflict) *conflict=NULL;
+    *new_rev=SVN_INVALID_REVNUM;
     SVN_ERR(pgfs_unit_begin(txn->fs));
     svn_boolean_t receipt=FALSE,reconciled=FALSE;
     svn_error_t *error=pgfs_commit_body(conflict,new_rev,txn,&receipt,pool);

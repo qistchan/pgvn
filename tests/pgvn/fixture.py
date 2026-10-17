@@ -12,6 +12,7 @@ RUNTIME = ROOT / "runtime/pgvn"
 DATA = RUNTIME / "pg-primary"
 PORT = 16432
 DATABASE = "pgvn_poc"
+CATALOG_VERSION = json.loads((ROOT / "src/pgvn/version.json").read_text())["schemas"]["catalog"]
 
 
 class Fixture:

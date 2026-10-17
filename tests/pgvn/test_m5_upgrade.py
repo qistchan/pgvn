@@ -50,7 +50,7 @@ def checks():
     before=setup.fixture.sql("SELECT string_agg(version||':'||migration_sha256,',' ORDER BY version) FROM pgvn.schema_versions",database=DATABASE)
     migrated=admin(setup.ADMIN,'db','migrate',role=setup.OWNER)
     assert migrated['ok']
-    assert admin(setup.ADMIN,'db','check',role=setup.OWNER)['schema']['pgvn']==6
+    assert admin(setup.ADMIN,'db','check',role=setup.OWNER)['schema']['pgvn']==setup.CATALOG_VERSION
     admin(setup.ADMIN,'db','grant','--admin-role','pgvn_admin','--service-role','pgvn_service','--monitor-role','pgvn_monitor',role=setup.OWNER)
     after=admin(setup.ADMIN,'repo','show',repo['id'])
     assert after==original,(after,original)
@@ -70,10 +70,10 @@ def checks():
         setup.fixture.sql("UPDATE pgvn.schema_versions SET migration_sha256=repeat('0',64) WHERE version=6",database=DATABASE)
         admin(setup.ADMIN,'db','check',expected=4)
     finally:setup.fixture.sql("UPDATE pgvn.schema_versions SET migration_sha256='"+checksum+"' WHERE version=6",database=DATABASE)
-    assert admin(setup.ADMIN,'db','check')['schema']['pgvn']==6
-    return {'saved_m4_binary_verified':True,'actual_schema5_created_by_m4':True,'schema5_to6':True,
+    assert admin(setup.ADMIN,'db','check')['schema']['pgvn']==setup.CATALOG_VERSION
+    return {'saved_m4_binary_verified':True,'actual_schema5_created_by_m4':True,'schema5_to_current':True,
         'old_migration_checksums_unchanged':True,'repository_identity_and_history_preserved':True,
-        'binary_content_preserved':True,'service_privileges_updated':True,'m4_rejects_schema6':True,
+        'binary_content_preserved':True,'service_privileges_updated':True,'m4_rejects_current_schema':True,
         'tampered_migration6_rejected':True,'full_verify':True}
 
 
