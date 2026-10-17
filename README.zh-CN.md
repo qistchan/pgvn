@@ -13,7 +13,7 @@
 
 [English](README.md) · **简体中文**
 
-[快速部署](#快速部署) · [产品特性](#产品特性) · [监控网页](#监控网页) · [技术架构](#技术架构) · [使用说明](#使用说明) · [文档导航](#文档导航)
+[产品介绍](#产品介绍) · [快速部署](#快速部署) · [监控网页](#监控网页) · [技术架构](#技术架构) · [使用说明](#使用说明) · [文档导航](#文档导航)
 
 </div>
 
@@ -28,18 +28,20 @@
 
 | 你的目标 | 阅读入口 |
 | --- | --- |
-| 了解产品与实现方式 | [产品特性](#产品特性)、[监控网页](#监控网页)和[技术架构](#技术架构) |
+| 了解产品与实现方式 | [产品介绍](#产品介绍)、[产品特性](#产品特性)和[技术架构](#技术架构) |
 | 在全新 Windows 主机试部署 | 按[快速部署](#快速部署)完成数据库、仓库及服务配置 |
 | 连接客户端或迁移已有历史 | [使用说明](#使用说明)与[导入步骤](#管理与迁移) |
 | 参与开发或判断验证范围 | [源码构建](#源码构建)与[项目状态](#项目状态) |
 
-## 产品特性
+## 产品介绍
 
 PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 PostgreSQL 中。标准 SVN 客户端继续通过 `svn://`、HTTP 或 HTTPS 接入；运维人员通过 `pgvnadmin` 管理仓库，通过内置网页查看服务状态。
 
 PgVN 面向希望保留 SVN 客户端工作流、通过统一 PostgreSQL 后端管理仓库存储与策略的团队。产品由专用服务端、Apache 模块和管理工具组成，公共仓库核心分别链接到各组件进程。
 
 早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。Polarion 是目标集成场景，仍需完成应用层验收。
+
+## 产品特性
 
 | 能力 | 当前实现 |
 | --- | --- |
@@ -135,6 +137,16 @@ flowchart TB
 
 ## 快速部署
 
+在同一个管理员 PowerShell 会话中依次执行第 1–5 步。PostgreSQL 服务端单独部署；PgVN 运行包附带数据库客户端工具。
+
+| 步骤 | 操作 | 检查结果 |
+| --- | --- | --- |
+| [1. 运行包](#1-校验并解压运行包) | 校验摘要，解压完整运行包，检查配套依赖。 | `Test-PgVNPackage.ps1` 执行成功。 |
+| [2. 数据库](#2-准备数据库与配置) | 创建数据库及角色，生成配置，填写受保护的密码文件。 | 管理连接与运行连接均指向预期数据库。 |
+| [3. 仓库](#3-初始化权限凭据与仓库) | 初始化 schema、授权，创建密钥、用户与仓库。 | `db check` 成功，`repo create` 返回新仓库。 |
+| [4. 服务](#4-发布策略并启动服务) | 发布访问策略，安装服务，检查两种协议入口。 | `alice` 具有写权限，SVN 与 DAV 返回同一仓库 UUID。 |
+| [5. 监控](#5-检查服务并打开网页) | 检查健康，签发只读令牌，打开内嵌网页。 | 两个服务运行正常，就绪探针成功，网页接受令牌。 |
+
 ### 环境要求
 
 | 项目 | 要求 |
@@ -187,7 +199,7 @@ CREATE DATABASE pgvn OWNER pgvn_migrate ENCODING 'UTF8' TEMPLATE template0;
     -NodeId node-1 -SvnPort 14690 -MonitorPort 14691 -HttpPort 14980
 ```
 
-填写 `admin\secrets\pgpass.conf` 中的管理员密码及 `secrets\runtime.pgpass.conf` 中的业务/监控密码，保留受保护的 NTFS 权限。远程数据库按[完整部署指南](deploy/windows/README.zh-CN.md)配置 CA 和验证主机名的 TLS。再次执行初始化会保留已有配置，新参数不会覆盖旧值。
+填写 `admin\secrets\pgpass.conf` 中的管理员密码及 `secrets\runtime.pgpass.conf` 中的业务/监控密码，保留受保护的 NTFS 权限。迁移角色持有 schema 所有权，管理、业务请求、监控和隔离恢复分别使用对应角色。远程数据库按[完整部署指南](deploy/windows/README.zh-CN.md)配置 CA 和验证主机名的 TLS。再次执行初始化会保留已有配置，新参数不会覆盖旧值。
 
 <details>
 <summary>安装目录与本机配置</summary>
@@ -436,7 +448,7 @@ docs/pgvn/            架构、指南和验证证据
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-最新记录的[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数的 SVN、HTTP、HTTPS 对照。[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其中 568 个已有当前构建结果，历史结果与待验证函数分别列出。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
+最新记录的[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数的 SVN、HTTP、HTTPS 对照。[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其冻结构建中有 568 个函数取得三协议一致结果；历史结果与待验证函数分别列出。这些数字绑定报告注明的构建，后续构建需要匹配的验证证据。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
 
 此前已记录[工作副本状态](docs/pgvn/M6-network-wc-state.zh-CN.md)、[工作副本语义](docs/pgvn/M6-network-wc-workflows.zh-CN.md)、[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
 

@@ -13,7 +13,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Quick start](#quick-start) · [Features](#features) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
+[Overview](#product-overview) · [Quick start](#quick-start) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
 
 </div>
 
@@ -28,18 +28,20 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 
 | Your goal | Start with |
 | --- | --- |
-| Understand the product and implementation | [Features](#features), [web console](#web-console) and [architecture](#architecture) |
+| Understand the product and implementation | [Product overview](#product-overview), [features](#features) and [architecture](#architecture) |
 | Try a deployment on a fresh Windows host | [Quick start](#quick-start), from database preparation to running services |
 | Connect clients or migrate history | [Usage](#use-pgvn) and [migration steps](#administration-and-migration) |
 | Develop PgVN or assess validation coverage | [Build from source](#build-from-source) and [project status](#project-status) |
 
-## Features
+## Product overview
 
 PgVN brings SVN repository history, configuration and durable protocol state into PostgreSQL. Standard SVN clients continue to use `svn://`, HTTP or HTTPS; operators manage repositories through `pgvnadmin` and inspect the service through its web console.
 
 It is designed for teams that want to retain SVN client workflows while managing repository storage and policy through a common PostgreSQL backend. The product consists of a dedicated server, Apache modules and an administration tool, with the shared repository core linked into each component.
 
 The earlier PgFS filesystem-plugin PoC is the storage foundation; deployment uses the complete PgVN runtime. Polarion is a target integration and still requires application-level acceptance.
+
+## Features
 
 | Capability | What PgVN provides |
 | --- | --- |
@@ -135,6 +137,16 @@ The shared core is linked into each service process; deployment requires no sepa
 
 ## Quick start
 
+Follow steps 1–5 in the same elevated PowerShell session. Deploy PostgreSQL separately; the PgVN package includes database client tools.
+
+| Step | What you do | Result to check |
+| --- | --- | --- |
+| [1. Package](#1-verify-and-extract-the-package) | Verify the checksum, extract the complete runtime and check its dependencies. | `Test-PgVNPackage.ps1` succeeds. |
+| [2. Database](#2-prepare-the-database-and-configuration) | Create the database and roles, generate configuration and fill the protected password files. | Administration and runtime connections point to the intended database. |
+| [3. Repository](#3-initialize-permissions-credentials-and-a-repository) | Initialize the schema, grant permissions, create a key and add a user and repository. | `db check` succeeds and `repo create` returns the new repository. |
+| [4. Services](#4-publish-policy-and-start-services) | Publish an access policy, install the services and check both protocol endpoints. | `alice` has write permission; SVN and DAV report the same repository UUID. |
+| [5. Monitor](#5-check-health-and-open-the-console) | Check health, issue a read-only token and open the embedded page. | Both services run, the readiness probe succeeds and the console accepts the token. |
+
 ### Prerequisites
 
 | Item | Requirement |
@@ -187,7 +199,7 @@ Set role passwords interactively with psql `\password`, and configure database a
     -NodeId node-1 -SvnPort 14690 -MonitorPort 14691 -HttpPort 14980
 ```
 
-Fill in `admin\secrets\pgpass.conf` for administration and `secrets\runtime.pgpass.conf` for service/monitor access. Keep their protected NTFS permissions. For a remote database, configure its CA and hostname-verified TLS using the [deployment guide](deploy/windows/README.zh-CN.md). Re-running initialization preserves existing configuration; new parameters do not overwrite it.
+Fill in `admin\secrets\pgpass.conf` for administration and `secrets\runtime.pgpass.conf` for service/monitor access. Keep their protected NTFS permissions. The migration role owns the schema; administration, request handling, monitoring and isolated restore use their respective roles. For a remote database, configure its CA and hostname-verified TLS using the [deployment guide](deploy/windows/README.zh-CN.md). Re-running initialization preserves existing configuration; new parameters do not overwrite it.
 
 <details>
 <summary>Installation layout and local configuration</summary>
@@ -436,7 +448,7 @@ docs/pgvn/            Architecture, guides and validation evidence
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-The latest recorded [properties, inheritance and externals acceptance](docs/pgvn/M6-network-client-properties.zh-CN.md) covers 280 original functions in ten complete suites over SVN, HTTP and HTTPS. The [coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) records current-build results for 568 of 1,984 functions across all 62 suites, with historical results and outstanding functions listed separately. Original SKIP and XFAIL remain explicit; client-only cases do not establish backend I/O.
+The latest recorded [properties, inheritance and externals acceptance](docs/pgvn/M6-network-client-properties.zh-CN.md) covers 280 original functions in ten complete suites over SVN, HTTP and HTTPS. The [coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) catalogs all 62 suites and 1,984 functions. Its frozen build has matching three-protocol results for 568 functions; historical results and outstanding functions are listed separately. These counts belong to the build identified in that report; later builds need matching evidence. Original SKIP and XFAIL remain explicit; client-only cases do not establish backend I/O.
 
 Earlier recorded work includes [working-copy state](docs/pgvn/M6-network-wc-state.zh-CN.md), [working-copy semantics](docs/pgvn/M6-network-wc-workflows.zh-CN.md), [repository workflows](docs/pgvn/M6-network-workflows.zh-CN.md), [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
 
