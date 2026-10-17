@@ -332,3 +332,12 @@ SDK 配置、预备编译、版本头及审计 SQL 的失败记录均保留，�
 Release 与 ASan/UBSan 各 573 项 C 断言、28 项编排/迁移检查及 20 项元数据测试通过，覆盖固定向量/参考互解、文件权限及替换竞态、真实数据库加解密、撤销锁、禁用保留和并发轮换。两套产物、实际源输入及日志已冻结，临时库容器已清理。FS 构建回归后的核心库 SHA 与前一检查点相同，旧性能证据按原身份保存。详见[凭据证据](evidence/linux-credentials-components.json)和[计划第 12 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)。
 
 本轮仅交付凭据静态库与开发探针，未产出完整 Linux 主程序/安装包，也未验收线协议或实际跨 OS 凭据迁移。Windows 编译、CNG 互导与 W1/W2 继续按用户指示暂缓；下一步推进 POSIX Hook、listener/信号排空和监控 HTTP。M6/M7 及既有 FAIL 不变。
+
+
+## 2026-10-17：Hook 版本化声明与节点映射组件通过
+
+已先提交 Linux FS、凭据与 bypass 基础工作（`55f1996`），随后推进 PX-L05 的配置部分。新增 catalog 迁移 8，支持版本 1 的逻辑 Hook 名和节点本地 `[pgvn-hooks]` 映射，保留 Windows 旧 `.exe` 声明与 allow/reject。Linux 明确拒绝旧 `.exe` 隐式转换；缺映射、文件缺失或不可执行时拒绝加载 policy。旧节点校验器拒绝新声明，发布继续使用 generation CAS，先前 11 个迁移文件未改动。
+
+固定 SDK 的 Release 与 ASan/UBSan 各 114 项 C 断言、69 项编排/迁移检查、Python/便携 PowerShell 元数据各 20 项通过；bypass 回归另有 37 项编排、96 项 C 断言通过。实际源输入、产物和日志已冻结，临时数据库容器已清理。见 [Hook 配置证据](evidence/linux-hook-config-components.json)和[计划第 13 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)。
+
+本轮进程分派仍为显式返回不支持的测试适配器，文件检查仅是启动前可用性预检；没有验证实际 Hook 执行、超时/取消或后代隔离。下一项为 POSIX Hook 执行器及其系统场景，PX-L05 尚未完成。完整 Linux 服务/安装包、Windows W1/W2、M6/M7 及既有 FAIL 保留原状态。

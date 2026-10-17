@@ -479,3 +479,62 @@ python3 scripts/pgvn/build.py --target linux --components credentials \
 ```
 
 产物为 `libpgvn_credentials.a` 与开发用 `credential_probe`，不是正式 Linux `pgvnadmin`。下一项是 PX-L05 的 POSIX Hook 与兼容配置迁移，随后 listener/信号排空、监控 HTTP、主程序、Apache 和部署。实际 Windows 导入后认证、Linux 改密/轮换再回到 Windows，以及完整服务协议测试保留待验；M6/M7、PGVN-601/602 和既有严格差分 FAIL 不变。
+
+
+<a id="linux-hook-config"></a>
+## 13. PX-L05 检查点：版本化 Hook 声明与节点映射（2026-10-17）
+
+此前 FS、凭据、bypass 与构建来源工作已提交为 `55f1996`。本节推进 Hook 的配置兼容部分，**不代表 POSIX 子进程执行器或 PX-L05 整体通过**。产品版本仍为 `0.1.0-dev` / M5；新增 `008_hook_declarations.sql` 将 catalog 升至 8，FS 仍为 4。此前 11 个 storage/catalog 迁移文件与该提交逐字节相同。
+
+### 13.1 共享声明与本地实现
+
+仓库配置新增显式版本 1 的逻辑声明，例如：
+
+```json
+{"pre-commit":{"version":1,"name":"check-policy","arguments":["中文 参数"],"timeout_seconds":30}}
+```
+
+`name` 必须匹配 `[a-z][a-z0-9_-]{0,63}`；未知版本、事件或字段均拒绝。参数继承旧契约：最多 16 个 UTF-8 字符串、每个最多 2048 字节，完整 hooks JSON 最多 16384 字节；超时为 1–60 秒，默认 30 秒。旧 `allow` / `reject` 和 Windows `.exe` 对象声明继续有效；Linux 对旧 `.exe` 对象拒绝加载，要求显式迁移声明与节点映射，不会自动删除扩展名。
+
+节点的进程配置使用 `[pgvn-hooks]`，值是 `hook-root` 下的单个文件名。例如 Linux：
+
+```ini
+[pgvn]
+hook-root = /opt/pgvn/hooks
+
+[pgvn-hooks]
+check-policy = check-policy-linux
+```
+
+同一逻辑声明在 Windows 节点可映射为 `check-policy = check-policy.exe`，使用该节点的绝对 `hook-root`。Linux 文件名只允许 ASCII 字母、数字、`_`、`-`，最多 128 字节；Windows 保留旧 `.exe` 文件名规则。映射不接受路径、空格或命令行，最多 128 项。listener、管理 CLI 与 DAV 的配置初始化已接入公共映射快照；无效快照不会替换已验证的旧快照，正常配置变更通过进程重新加载生效。
+
+新声明在真实 policy 加载时解析节点映射；缺映射、缺文件、目录、末级符号链接、相对根路径或 Linux 文件不可执行都会返回配置错误，且不会发布部分 policy。不同节点可选择各自的实现；一节点缺文件不影响另一节点的独立加载。这是**可用性预检**：执行器仍须在启动时安全重开/验证文件并处理替换竞态，预检不构成执行隔离或对父目录链接的安全保证。
+
+### 13.2 旧节点与发布约束
+
+新增 `pgvn.valid_hooks(jsonb,boolean)`；旧单参数校验器保持原实现，因此已经连接的旧节点也会拒绝新声明。新节点按 catalog 版本选择校验器，schema 8 的连接检查要求新校验器存在；监控的全局配置健康视图同步识别版本 1，但不代表每个节点的本地文件都可用。
+
+配置发布继续使用 generation CAS 与同一数据库事务；旧发布者、未知声明版本及过期 generation 均不能推进代次或覆盖配置。映射只属于节点本地，发布全局声明不要求发布者所在机器安装该 Hook。现有 Windows 包不能通过修改版本号接入 schema 8；Windows 重编译及 W1/W2 按用户指示继续暂缓。
+
+### 13.3 复现与后续
+
+在当前工作区使用已有本地 Ubuntu builder、PostgreSQL 镜像和固定 SDK：
+
+```sh
+python3 tests/pgvn/run_linux_hook_config.py --sdk build/pgvn/linux-sdk-v2
+```
+
+runner 构建 Release 与 ASan/UBSan 两套 `libpgvn_hook_config.a` 和开发探针，冻结源输入、生成头、迁移摘要、运行库和产物；在隔离数据库中以非超级用户执行全部迁移。探针使用真实 context、policy、配置解析、SQL 校验/发布/加载代码；遥测及进程分派是明确适配器，所需外部 Hook 到达分派时返回不支持，不能将其当作实际执行成功。复现单独构建：
+
+```sh
+python3 scripts/pgvn/build.py --target linux --components hook-config \
+  --configuration Release --linux-sdk build/pgvn/linux-sdk-v2
+python3 scripts/pgvn/build.py --target linux --components hook-config \
+  --configuration Debug --sanitize --linux-sdk build/pgvn/linux-sdk-v2
+```
+
+最终通过 **69 项编排/迁移检查**，Release 与 ASan/UBSan **各 114 项 C 断言**；185 个源文件及两套实际产物已冻结，搬移后依赖仍来自固定 SDK。另有 Python 元数据 20 项、便携 PowerShell 元数据 20 项通过；bypass 组件回归为 37 项编排和 96 项 C 断言，其发行版依赖及独立构建身份单独记录。隔离数据库容器已删除。预备运行中的 FK 事务、UTF-8 初始化、tmpfs 执行位及依赖路径归一化问题与修复日志保留在证据中。
+
+本节验证结果与原始日志索引见 [Hook 配置证据](../pgvn/evidence/linux-hook-config-components.json)。源输入和产物保留构建时的 `55f1996` + dirty 身份；后续提交不会将它们改称 clean 构建。
+
+下一步接入 POSIX 进程执行器：共享事件 JSON、无 shell argv、环境白名单、输入/输出上限、单调超时、停止取消与后代清理。逃离进程组的后代必须采用专用 cgroup 等已验证边界，不能用仅终止主进程的检查替代。随后推进 listener/信号排空、监控 HTTP、实际主程序/Apache 和部署。完整 Linux 服务、线协议、Windows W1/W2、M6/M7、PGVN-601/602 及原严格差分 FAIL 状态不变。

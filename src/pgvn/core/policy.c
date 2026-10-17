@@ -97,7 +97,7 @@ static svn_error_t *publish_body(pgvn_context *context,const char *id,
             ? "pgvn.valid_settings(COALESCE($7::jsonb,settings),true)"
             : "pgvn.valid_settings(COALESCE($7::jsonb,settings))";
         SVN_ERR(pgvn_exec(&result,context,context->control,apr_pstrcat(pool,
-            "SELECT pgvn.valid_hooks($5::jsonb) AND ",validator,
+            "SELECT ",context->catalog_version>=8 ? "pgvn.valid_hooks($5::jsonb,true)" : "pgvn.valid_hooks($5::jsonb)"," AND ",validator,
             " FROM pgvn.configurations WHERE repository_id=$1::uuid AND generation=$2::bigint",NULL),7,values));
     } else {
         if(settings) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN protocol settings require catalog schema 4");

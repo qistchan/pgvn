@@ -84,6 +84,11 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
         svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 6 is missing DAV state tables");
     }
+    if(catalog>=8) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regprocedure('pgvn.valid_hooks(jsonb,boolean)') IS NOT NULL",0,NULL));
+        svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 8 is missing the hook declaration validator");
+    }
     if(catalog>=7) {
         SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regprocedure('pgvn.valid_settings(jsonb,boolean)') IS NOT NULL",0,NULL));
         svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);

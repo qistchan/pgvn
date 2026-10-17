@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def build_component(sdk, configuration, component="fs", content_transfer="binary", sanitize=False):
     if platform.system() != "Linux" or platform.machine() != "x86_64":
-        raise ValueError("Native FS builds require x86_64 Linux")
+        raise ValueError("Native component builds require x86_64 Linux")
     sdk = Path(sdk).resolve(strict=True)
     manifest_path = sdk / "sdk-manifest.json"
     manifest = json.loads(manifest_path.read_text())
@@ -111,19 +111,25 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc", *flags, ROOT / "tests/pgvn/fs_linux_probe.c", ROOT / "src/pgvn/core/build_info.c",
              "-Wl,--export-dynamic", "-ldl", "-lsvn_fs_pg-1", *libraries, "-o", probe])
         elf = library
-    elif component == "credentials":
+    elif component in ("credentials", "hook-config"):
         objects = []
-        for source in (ROOT / "src/pgvn/core/context.c", ROOT / "src/pgvn/core/credentials.c",
-                       ROOT / "src/pgvn/platform/credentials_posix.c"):
+        sources = ("core/context.c", "core/credentials.c", "platform/credentials_posix.c") if component == "credentials" else (
+            "core/context.c", "core/catalog.c", "core/policy.c", "core/policy_protocol.c", "core/hooks_config.c")
+        if component == "hook-config":
+            flags += ["-ffunction-sections", "-fdata-sections"]
+        for relative in sources:
+            source = ROOT / "src/pgvn" / relative
             output = work / (source.stem + ".o")
             run(["cc", *flags, "-c", source, "-o", output])
             objects.append(output)
-        library = work / "lib/libpgvn_credentials.a"
+        library = work / ("lib/libpgvn_" + component.replace("-", "_") + ".a")
         library.unlink(missing_ok=True)
         run(["ar", "rcs", library, *objects])
-        probe = work / "bin/credential_probe"
-        run(["cc", *flags, ROOT / "tests/pgvn/credential_probe.c", ROOT / "src/pgvn/core/build_info.c",
-             library, *libraries, "-lcrypto", "-o", probe])
+        probe_name = "credential_probe" if component == "credentials" else "hook_config_probe"
+        probe = work / "bin" / probe_name
+        extras = ["-lcrypto"] if component == "credentials" else ["-lsvn_repos-1", "-Wl,--gc-sections"]
+        run(["cc", *flags, ROOT / "tests/pgvn" / (probe_name + ".c"), ROOT / "src/pgvn/core/build_info.c",
+             library, *libraries, *extras, "-o", probe])
         elf = probe
     else:
         raise ValueError("Unknown Linux component")

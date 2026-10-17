@@ -561,6 +561,8 @@ The [Linux FS build and performance checkpoint](docs/plans/2026-10-17-pgvn-linux
 
 Linux credential components now use OpenSSL EVP and descriptor-based key-file checks. Release and ASan/UBSan probes passed vector, permission, real SQL and rotation checks. The [credential checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials) documents the owner-only key policy, artifacts and remaining cross-OS validation; the Linux admin/server hosts remain pending.
 
+Catalog schema 8 adds versioned logical Hook declarations and node-local filename mappings. The [Hook configuration checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) records compatibility, missing-implementation rejection, and native component checks; POSIX process execution remains pending.
+
 Run test gates via `scripts/pgvn` and `tests/pgvn`. Full M5 validation requires real-browser evidence, a configured JDK + SVNKit environment, and the dedicated test PostgreSQL cluster; see [Browser and test prerequisites](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径) and the [M5 development notes](docs/pgvn/M5-development.zh-CN.md). Because test gates provision isolated databases, register temporary services, and occasionally restart the **test** PostgreSQL cluster, never point test scripts at a deployment database. Legacy PgFS scripts and test outputs are retained as historical references only and do not represent current PgVN acceptance.
 
 <details>

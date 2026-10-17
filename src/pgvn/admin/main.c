@@ -38,8 +38,8 @@ static svn_error_t *run(admin_command *command)
         return admin_policy(command);
     const char *dsn=admin_env(L"PGVN_DSN",command->pool);
     const char *hook_root=NULL;
+    svn_config_t *config=NULL;
     if(command->values[OPT_CONFIG]) {
-        svn_config_t *config;
         svn_error_t *error=svn_config_read3(&config,command->values[OPT_CONFIG],TRUE,TRUE,TRUE,command->pool);
         if(error) { svn_error_clear(error); return admin_usage("Unable to read a valid PgVN process configuration"); }
         svn_config_get(config,&dsn,"pgvn","connection",NULL);
@@ -64,6 +64,7 @@ static svn_error_t *run(admin_command *command)
         } else SVN_ERR(privilege);
     }
     command->context->hook_root=hook_root;
+    SVN_ERR(pgvn_hooks_configure(command->context,config,command->pool));
     command->context->cancellation_event=cancellation_event;
     if(command->values[OPT_CONFIG]) SVN_ERR(svn_dirent_get_absolute(&command->context->configuration_path,command->values[OPT_CONFIG],command->pool));
     return admin_dispatch(command);

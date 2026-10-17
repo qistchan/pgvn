@@ -97,7 +97,7 @@ def main():
                 path = directory / name
                 sql("SET ROLE pgvn_fixture_owner; SELECT set_config('pgvn.migration_sha256','" + sha256(path) + "',false);\n" + path.read_text())
                 checks.append("migration " + namespace + "/" + name)
-        check("all migrations applied by a non-superuser", sql("SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions;") == "1,2,3,4,5,6,7")
+        check("all migrations applied by a non-superuser", sql("SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions;") == "1,2,3,4,5,6,7,8")
         cases = [({}, True), ({"svn_authz_mode": "enforce"}, True), ({"svn_authz_mode": "bypass"}, True),
                  ({"svn_authz_mode": "bypass", "anonymous_access": "none", "authenticated_access": "none"}, True),
                  ({"svn_authz_mode": "bypass", "anonymous_access": "read"}, False),
@@ -135,7 +135,7 @@ gcc -std=c17 -D_POSIX_C_SOURCE=200809L -pthread -O0 -g -Wall -Wextra -Werror -Wn
     -I "$PGVN_COMPONENT_WORK/upstream/svnserve" -I /src/src/libsvn_fs_pg \
     -I /src/vendor/subversion-1.14.5/subversion/include -I /usr/include/subversion-1 \
     $(pkg-config --cflags apr-1 apr-util-1 libpq) \
-    /src/tests/pgvn/bypass_probe.c /src/src/pgvn/core/policy.c /src/src/pgvn/core/policy_protocol.c \
+    /src/tests/pgvn/bypass_probe.c /src/src/pgvn/core/policy.c /src/src/pgvn/core/policy_protocol.c /src/src/pgvn/core/hooks_config.c \
     /src/src/pgvn/core/catalog.c /src/src/pgvn/core/context.c /src/src/pgvn/serve/protocol.c \
     -Wl,--gc-sections -lsvn_repos-1 -lsvn_subr-1 $(pkg-config --libs apr-1 apr-util-1 libpq) -o /tmp/bypass-probe
 node --check /src/web/pgvn-monitor/monitor.js

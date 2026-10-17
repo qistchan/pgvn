@@ -561,6 +561,8 @@ Linux 开发已推进到原生组件阶段：schema 7 新增仅限原生 SVN 的
 
 Linux 凭据组件已接入 OpenSSL EVP 和基于描述符的密钥文件校验，Release 与 ASan/UBSan 的向量、权限、真实 SQL 和轮换检查通过。[凭据检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)记录了权限策略、产物及跨 OS 待验项；正式 Linux 管理/服务主程序仍待完成。
 
+Catalog schema 8 新增版本化逻辑 Hook 声明与节点本地文件名映射。[Hook 配置检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)记录了旧节点兼容、缺实现拒绝及原生组件验证；POSIX 子进程执行仍待完成。
+
 验证测试统一通过 `scripts/pgvn` 与 `tests/pgvn` 执行。运行完整的 M5 门禁需要真实浏览器验证环境、配置好的 JDK/SVNKit 以及专用测试 PostgreSQL 集群，详见[浏览器与测试准备](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径)和 [M5 开发记录](docs/pgvn/M5-development.zh-CN.md)。由于测试门禁会创建隔离数据库、注册临时服务，且部分故障测试会重启**测试数据库集群**，请切勿将测试脚本指向业务部署库。仓库中保留的早期 PgFS 脚本与记录仅供历史参考，不作为当前 PgVN 构建的验收依据。
 
 <details>
