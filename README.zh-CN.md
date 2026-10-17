@@ -13,7 +13,7 @@
 
 [English](README.md) · **简体中文**
 
-[产品介绍](#产品介绍) · [快速部署](#快速部署) · [监控网页](#监控网页) · [技术架构](#技术架构) · [使用说明](#使用说明) · [文档导航](#文档导航)
+[产品介绍](#产品介绍) · [快速部署](#快速部署) · [Polarion 迁移](#polarion-gui-migration) · [监控网页](#监控网页) · [技术架构](#技术架构) · [使用说明](#使用说明) · [文档导航](#文档导航)
 
 </div>
 
@@ -30,6 +30,7 @@
 | --- | --- |
 | 了解产品与实现方式 | [产品介绍](#产品介绍)、[产品特性](#产品特性)和[技术架构](#技术架构) |
 | 在全新 Windows 主机试部署 | 按[快速部署](#快速部署)完成数据库、仓库及服务配置 |
+| 用 GUI 替换单机 Polarion 的 SVN | [Windows 隔离副本迁移、验收与回退](#polarion-gui-migration) |
 | 连接客户端或迁移已有历史 | [使用说明](#使用说明)与[导入步骤](#管理与迁移) |
 | 参与开发或判断验证范围 | [源码构建](#源码构建)与[项目状态](#项目状态) |
 
@@ -144,6 +145,108 @@ flowchart TB
 安装 .NET Framework 4.8 后，可直接运行组合包中的 `manager\PgVNManager.exe`；选择运行目录，加载配置，再按界面的首次使用步骤操作。使用已有 PostgreSQL 服务端，配置与服务管理需要管理员权限。完整恢复仍使用已有脚本，跨主机 HA 和 Polarion 应用验收的状态不变。
 
 开发者运行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`，产物位于 `runtime/pgvn-manager`。传入 `-RuntimePackageZip <已验证运行包.zip>` 可生成包含完整运行依赖与 GUI 的组合包；GUI 有独立构建清单。使用说明、测试入口和恢复边界见 [Manager 指南](tools/pgvn-manager/README.zh-CN.md)；本轮证据见 [本机验证记录](docs/pgvn/manager-validation.zh-CN.md)。
+
+<a id="polarion-gui-migration"></a>
+
+## 用 GUI 迁移 Windows 单机 Polarion 的 SVN
+
+本节用于 **同机、隔离副本的替换演练**：把 Polarion 默认 SVN 仓库的完整历史迁入 PostgreSQL，再让 Polarion 通过 PgVN 的 HTTP / SVN 服务访问。GUI 负责 PgVN 初始化、导入和运维；源 SVN 导出、Polarion 配置修改及应用验收仍需手工完成。当前尚无 Polarion 应用验收结论，不能把完成以下配置视为生产替换已经通过。
+
+### 1. 准备运行目录与回退点
+
+使用单独的 Polarion 测试副本，以下 `C:\Polarion` 路径均指测试副本，不能与仍在运行的原实例共用数据目录。准备完整 PgVN + Manager 组合包、.NET Framework 4.8，以及已安装的 PostgreSQL。将组合包解压到 `C:\PgVN-PolarionEval`，保留原 Polarion 程序和 SVN 仓库。先记录实际 Windows 服务名、启动方式、仓库 UUID / HEAD、认证方式、访问规则、活动锁及 hooks，并备份 Polarion 配置和应用数据；正式导出前还需在停写状态完成一致备份。
+
+以下是示例映射，数据库端口按独立 PostgreSQL 实例填写：
+
+| 项目 | 示例 |
+| --- | --- |
+| 原仓库 / 原 DAV 地址 | `C:\Polarion\data\svn\repo` / `http://localhost:80/repo/` |
+| PgVN 数据库 / 新角色前缀 | `pgvn_polarion_eval` / `pgvn_pol_eval`，两者均需未被使用 |
+| 目标仓库名称 / 路由 | `polarion` / `/svn/polarion` |
+| 目标 HTTP / SVN 地址 | `http://127.0.0.1:14980/svn/polarion/` / `svn://127.0.0.1:14690/svn/polarion` |
+| 监控 / 新 Windows 服务名 | 端口 `14691` / `PgVN-PolarionEval`、`PgVNDAV-PolarionEval` |
+
+### 2. 用 GUI 初始化目标
+
+以管理员身份运行 `C:\PgVN-PolarionEval\manager\PgVNManager.exe`，加载运行目录。在「初始化与连接」填写 PostgreSQL 地址、端口、新数据库和角色前缀，设置 SVN / 监控 / HTTP 端口为 `14690 / 14691 / 14980`，先「测试 DBA 连接」，重新输入已清空的密码，再「创建数据库并初始化」。PgVN 使用独立数据库，不替换 Polarion 自身的 SQL / 索引数据库连接。
+
+在「仓库与用户」创建 `polarion`，路由填 `/svn/polarion`。保持目标服务未启动，不向空仓库提交测试文件：GUI 只允许向 r0 空仓库导入。端口若冲突，先在 GUI 调整，并同步替换本节后续 URL。
+
+### 3. 停写源仓库，导出并导入完整历史
+
+进入测试副本的维护窗口，停止 Polarion 应用服务及所有能写源仓库的 HTTP / SVN 服务、任务和集成入口，同时停止修订属性修改。按当前 Polarion 版本的维护指南完成一致备份，至少保留 `polarion.properties`、原 Apache SVN 配置、仓库、认证 / 授权文件、hooks，以及对应应用数据 / 索引回退点。仅停止 Polarion 页面访问不能保证源仓库停写。
+
+在管理员 PowerShell 中运行以下命令；预先准备受限访问的 `D:\Polarion-migration`，并按实际安装位置修改路径。本机捆绑 `svnadmin help dump` 已核对支持 `--file`，用文件参数保留二进制内容：
+
+```powershell
+$SourceSvn = 'C:\Polarion\bundled\svn\bin'
+$SourceRepo = 'C:\Polarion\data\svn\repo'
+$Dump = 'D:\Polarion-migration\polarion-final.dump'
+if (Test-Path -LiteralPath $Dump) { throw '请选择一个不存在的导出文件' }
+& "$SourceSvn\svnadmin.exe" verify $SourceRepo
+if ($LASTEXITCODE) { throw '源仓库校验失败' }
+$SourceHead = & "$SourceSvn\svnlook.exe" youngest $SourceRepo
+if ($LASTEXITCODE) { throw '读取源 HEAD 失败' }
+$SourceUuid = & "$SourceSvn\svnlook.exe" uuid $SourceRepo
+if ($LASTEXITCODE) { throw '读取源 UUID 失败' }
+& "$SourceSvn\svnadmin.exe" dump $SourceRepo -r "0:$SourceHead" --file $Dump
+if ($LASTEXITCODE) { throw '源仓库导出失败' }
+$SourceHead; $SourceUuid
+Get-FileHash -LiteralPath $Dump -Algorithm SHA256
+```
+
+保存 HEAD、UUID 和 dump 摘要。若其他 SVN 发行版不支持 `dump --file`，在 **cmd.exe** 中用该工具的标准输出重定向生成 dump；避免 Windows PowerShell 5.1 的文本管道和 `>`，不要通过 GUI 的「导出当前仓库」导出旧 FSFS 仓库。
+
+回到 GUI，选择 `polarion` →「备份与维护」→「导入到当前空仓库」，选择 dump。程序先禁用仓库，导入完成后仍保持禁用；执行「校验当前仓库历史」，确认列表 HEAD 等于源 HEAD。失败后保留日志、重新创建空目标重试，不向部分导入的仓库继续追加。
+
+### 4. 迁移账号、有效权限和 hooks
+
+在「仓库与用户」为 Polarion `polarion.properties` 中 `login` 指定的系统账号创建凭据，输入与该文件 `password` 对应的密码，并勾选「同步 DAV / HTTP Basic 凭据」。示例系统账号为 `polarion`；若实际名称不同，使用实际值。为参与演练的普通用户按相同用户名、匹配的凭据创建账号。SVN / DAV 用户与 PostgreSQL 角色是两套账号。
+
+点击「读取当前规则」，根据原系统的有效路径权限编辑并发布。仅供单管理员隔离副本启动的最小示例如下；它没有迁移其他用户和项目的权限：
+
+```ini
+[/]
+polarion = rw
+* =
+```
+
+本机检查到的原 `/repo` 使用 DBD / 可选 LDAP 认证，并从仓库内 `/.polarion/access` 读取授权，其他安装应核对自身配置；PgVN 当前模板使用独立 DAV 密码文件和数据库中的已发布策略。**dump 中包含该文件，不代表 PgVN 会自动采用它。** GUI 不同步 Polarion 的用户创建、密码、组或权限变更。进入多用户验证前，必须完成有效 authz / groups 的迁移及后续同步、原部署所用认证方式的适配，并按路径验证允许和拒绝行为；未完成时仅作固定账号演练。组与策略的 CLI 管理见[管理指南](docs/pgvn/M2-admin.zh-CN.md#配置和授权)。
+
+dump 也不携带源仓库的 hooks、服务器配置或活动锁，需分别处理，参见 [Subversion 官方迁移说明](https://subversion.apache.org/faq)。将 Polarion 依赖的 hooks 适配到 PgVN 的全局程序目录和数据库策略：当前入口为 exe，标准输入为 JSON 事件，详见[外部 hooks](docs/pgvn/M3-serve.zh-CN.md#外部-hooks)。核对参数及通知行为，不能直接复制原 SVN 脚本或依赖 FSFS 物理路径的脚本。所需认证、授权、hooks 和锁处理未完成时，停在此步。
+
+### 5. 启动 PgVN，核对两个协议
+
+在「仓库与用户」启用已校验且策略就绪的仓库。在「服务管理」填写上述两个独立服务名，勾选「同时安装 HTTP / DAV 服务」，依次「安装服务」「启动」「运行健康检查」。再用系统账号交互输入密码，检查两个入口：
+
+```powershell
+$PgRoot = 'C:\PgVN-PolarionEval'
+& "$PgRoot\tools\svn\svn.exe" info 'http://127.0.0.1:14980/svn/polarion/' --username polarion --no-auth-cache
+& "$PgRoot\tools\svn\svn.exe" info 'svn://127.0.0.1:14690/svn/polarion' --username polarion --no-auth-cache
+```
+
+两个入口的 UUID 与导出前记录一致、HEAD 等于源 HEAD，才进入切换；同时抽查旧修订、项目目录、附件和属性，使用预期受限用户验证拒绝访问。健康检查通过本身不代表 Polarion 接入成功。首次演练使用新 checkout，避免混用指向旧 URL 的工作副本。
+
+### 6. 手工切换 Polarion 的仓库地址
+
+保持 Polarion 应用停止，备份后编辑 `C:\Polarion\polarion\configuration\polarion.properties`，只替换仓库入口；已有同名配置应修改原行，避免重复：
+
+```properties
+repo=http://127.0.0.1:14980/svn/polarion/
+repoSystem=svn://127.0.0.1:14690/svn/polarion
+```
+
+`repo` 是常规仓库入口；`repoSystem` 是可选的系统只读入口，须与 `repo` 指向同一个 UUID。初轮可注释 `repoSystem`，让系统访问跟随 `repo`；若原值为 `file://...` 或旧 SVN 地址，必须同步修改或注释。保留 `login` / `password` 与 GUI 中的凭据一致，保留原 `base.url`、Tomcat 和 Polarion 内部数据库配置。版本相关步骤以对应版本的 Deployment and Maintenance Guide 为准，官方入口见 [Siemens 文档导航](https://support.industrysoftware.automation.siemens.com/docs_general/polarion/manuals/)。
+
+恢复 Polarion 自带 Apache 的 Web 入口前，在已备份的配置中封闭旧 `/repo`、`/installrepo` 等仓库写入口：例如把相应 Location 的原授权逻辑替换为 `Require all denied`，核对 Apache 配置语法，再启动；不要并列追加而保留原有允许规则。其他原 SVN 服务和写入任务继续停止，确保旧 FSFS 不再承接写入。启动顺序为 PostgreSQL → PgVN / DAV 就绪 → Polarion 应用。GUI 服务默认手动启动，开机启动方式和依赖需另行配置、验证。
+
+这些 URL 仅用于同机演练。远端 SVN 客户端或浏览器访问需要可达的 HTTPS 入口、证书和相应 URL 配置；`127.0.0.1` 不能作为远端用户的仓库地址。
+
+### 7. 应用验收与回退
+
+从 Polarion 登录并验证项目列表、工作项读写、LiveDoc、附件、历史 / 基线、锁、普通用户路径权限，以及用户 / 组 / 密码 / 权限变更同步。按该版本维护指南验证索引 / 重建流程，确认新修订只出现在 PgVN、旧库 HEAD 保持冻结，并用 GUI 创建一次完整备份。记录结果后再决定扩大试用；目前这些应用检查仍待实际执行。
+
+需要回退时，先停止 Polarion 应用和所有写入，通过 GUI 停止本目录 PgVN / DAV。**若尚无新写入**，恢复原 `polarion.properties`、Apache 配置及匹配的应用数据 / 索引回退点，再按原顺序启用旧 SVN 和 Polarion。**若 PgVN 已有新提交或修订属性等变更**，先保留完整 PgVN 备份和新历史，由管理员迁回独立 FSFS 并核对；不能直接启用停留在旧 HEAD 的原仓库，否则会丢失切换后的变更。
 
 ## 快速部署
 

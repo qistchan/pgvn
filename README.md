@@ -13,7 +13,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Overview](#product-overview) · [Quick start](#quick-start) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
+[Overview](#product-overview) · [Quick start](#quick-start) · [Polarion migration](#polarion-gui-migration) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
 
 </div>
 
@@ -30,6 +30,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 | --- | --- |
 | Understand the product and implementation | [Product overview](#product-overview), [features](#features) and [architecture](#architecture) |
 | Try a deployment on a fresh Windows host | [Quick start](#quick-start), from database preparation to running services |
+| Replace single-host Polarion SVN with Manager | [Windows migration rehearsal, validation and rollback](#polarion-gui-migration) |
 | Connect clients or migrate history | [Usage](#use-pgvn) and [migration steps](#administration-and-migration) |
 | Develop PgVN or assess validation coverage | [Build from source](#build-from-source) and [project status](#project-status) |
 
@@ -144,6 +145,108 @@ The shared core is linked into each service process; deployment requires no sepa
 With .NET Framework 4.8 installed, run `manager\PgVNManager.exe` from the combined bundle, load the runtime directory and follow the first-use steps in the Chinese UI. PostgreSQL must be installed separately; configuration and service operations require administrator privileges. Full restore uses the existing scripts. Cross-host HA and Polarion acceptance remain pending.
 
 Build with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`; outputs go to `runtime/pgvn-manager`. Add `-RuntimePackageZip <verified-runtime.zip>` to create a combined runtime and GUI archive. The GUI records its own build manifest. See the [Manager guide](tools/pgvn-manager/README.zh-CN.md) for usage, tests and restore limitations, and the [local validation record](docs/pgvn/manager-validation.zh-CN.md) for this build.
+
+<a id="polarion-gui-migration"></a>
+
+## Migrate single-host Polarion SVN with the GUI on Windows
+
+This procedure is for an **isolated Polarion copy on the same Windows host**: move its default SVN repository history into PostgreSQL, then connect Polarion to PgVN over HTTP / SVN. Manager handles PgVN initialization, import and maintenance; exporting the source, editing Polarion configuration and application acceptance remain manual. Polarion application acceptance is still pending; completing configuration does not establish production readiness.
+
+### 1. Prepare the runtime and rollback point
+
+Use a separate Polarion test copy. Every `C:\Polarion` path below refers to that copy; it must not share a data directory with a running original instance. Prepare a complete PgVN + Manager bundle, .NET Framework 4.8 and an installed PostgreSQL server. Extract the bundle to `C:\PgVN-PolarionEval`, retaining the original Polarion programs and SVN repository. Record actual Windows service names, startup modes, repository UUID / HEAD, authentication, authorization, active locks and hooks. Back up configuration and application data; take a consistent backup after freezing writes before the final export.
+
+Example mapping; use the port of your dedicated PostgreSQL instance:
+
+| Item | Example |
+| --- | --- |
+| Source repository / DAV URL | `C:\Polarion\data\svn\repo` / `http://localhost:80/repo/` |
+| PgVN database / new role prefix | `pgvn_polarion_eval` / `pgvn_pol_eval`; both must be unused |
+| Target repository / route | `polarion` / `/svn/polarion` |
+| Target HTTP / SVN URLs | `http://127.0.0.1:14980/svn/polarion/` / `svn://127.0.0.1:14690/svn/polarion` |
+| Monitor / new Windows services | Port `14691` / `PgVN-PolarionEval`, `PgVNDAV-PolarionEval` |
+
+### 2. Initialize the target with Manager
+
+Run `C:\PgVN-PolarionEval\manager\PgVNManager.exe` as administrator and load the runtime directory. Under **初始化与连接** (Initialization and connection), enter PostgreSQL host / port, the new database and role prefix. Set SVN / monitor / HTTP ports to `14690 / 14691 / 14980`. Test the DBA connection, re-enter the cleared password, then create and initialize the database. PgVN uses its own database; retain Polarion's existing SQL / index database connection.
+
+Under **仓库与用户** (Repositories and users), create `polarion` with route `/svn/polarion`. Keep target services stopped and do not commit sample files: GUI import requires an empty r0 repository. If a port is occupied, change it in Manager and in all subsequent URLs.
+
+### 3. Freeze source writes, export and import history
+
+Start a maintenance window for the test copy. Stop the Polarion application and every HTTP / SVN service, scheduled task and integration that can write the source, including revision-property edits. Follow the version-specific Polarion maintenance guide for a consistent backup of `polarion.properties`, original Apache SVN configuration, repository, authentication / authorization files, hooks and the matching application data / index rollback point. Blocking the Polarion UI alone does not freeze SVN writes.
+
+Run the following in elevated PowerShell. Prepare the restricted `D:\Polarion-migration` directory first and adjust installation paths. The locally bundled `svnadmin help dump` was checked to support `--file`; a file argument preserves binary data:
+
+```powershell
+$SourceSvn = 'C:\Polarion\bundled\svn\bin'
+$SourceRepo = 'C:\Polarion\data\svn\repo'
+$Dump = 'D:\Polarion-migration\polarion-final.dump'
+if (Test-Path -LiteralPath $Dump) { throw 'Choose a new export filename' }
+& "$SourceSvn\svnadmin.exe" verify $SourceRepo
+if ($LASTEXITCODE) { throw 'Source verification failed' }
+$SourceHead = & "$SourceSvn\svnlook.exe" youngest $SourceRepo
+if ($LASTEXITCODE) { throw 'Cannot read source HEAD' }
+$SourceUuid = & "$SourceSvn\svnlook.exe" uuid $SourceRepo
+if ($LASTEXITCODE) { throw 'Cannot read source UUID' }
+& "$SourceSvn\svnadmin.exe" dump $SourceRepo -r "0:$SourceHead" --file $Dump
+if ($LASTEXITCODE) { throw 'Source export failed' }
+$SourceHead; $SourceUuid
+Get-FileHash -LiteralPath $Dump -Algorithm SHA256
+```
+
+Save HEAD, UUID and the dump hash. If another SVN distribution lacks `dump --file`, redirect that tool's stdout to a dump in **cmd.exe**; avoid Windows PowerShell 5.1 text pipelines and `>`. Manager's “export current repository” action exports PgVN repositories, so use the source SVN tool for the old FSFS repository.
+
+In Manager, select `polarion`, open **备份与维护** (Backup and maintenance), and choose **导入到当前空仓库** (Import into current empty repository). Import the dump. Manager disables the repository and leaves it disabled. Run history verification and check that the listed HEAD equals the source HEAD. On failure, retain logs and retry with a new empty target, rather than appending to a partial import.
+
+### 4. Migrate credentials, effective permissions and hooks
+
+Under **仓库与用户**, create credentials for the system account named by `login` in Polarion's `polarion.properties`, using the password corresponding to its `password` value. Check **同步 DAV / HTTP Basic 凭据** to synchronize DAV credentials. The example account is `polarion`; substitute the actual name if different. Provision matching usernames and credentials for ordinary evaluation users. SVN / DAV users and PostgreSQL roles are separate identities.
+
+Read the current rules, edit them to reflect effective source path permissions, then publish. This minimal bootstrap example is only for an isolated copy with one administrator; it does not migrate other users or project permissions:
+
+```ini
+[/]
+polarion = rw
+* =
+```
+
+The inspected source `/repo` uses DBD / optional LDAP authentication and authorization from `/.polarion/access` inside SVN; check your own installation's configuration. PgVN's template uses a separate DAV password file and published database policies. **Importing that file in a dump does not make PgVN use it.** Manager does not synchronize Polarion account creation, passwords, groups or permission changes. Before multi-user validation, migrate effective authz / groups, implement ongoing synchronization and integration for the source deployment's authentication methods, and check both allowed and denied paths. Until then, limit testing to fixed accounts. See the [administration guide](docs/pgvn/M2-admin.zh-CN.md#配置和授权) for CLI management of groups and policies.
+
+Dump files also exclude source hooks, server configuration and active locks; handle these separately as described in the [Subversion migration FAQ](https://subversion.apache.org/faq). Adapt Polarion-dependent hooks to PgVN's global executable directory and database policy. The entry point is an exe receiving JSON events on stdin; see [external hooks](docs/pgvn/M3-serve.zh-CN.md#外部-hooks). Check arguments and notification behavior; original SVN scripts and hooks depending on FSFS paths need adaptation. Stop here if required identity, authorization, hook or lock handling remains unresolved.
+
+### 5. Start PgVN and verify both protocols
+
+Enable the verified repository once its policies are ready. Under **服务管理** (Service management), enter the two distinct service names above, include HTTP / DAV, then install, start and run the health check. Use the system account to inspect both endpoints, entering its password interactively:
+
+```powershell
+$PgRoot = 'C:\PgVN-PolarionEval'
+& "$PgRoot\tools\svn\svn.exe" info 'http://127.0.0.1:14980/svn/polarion/' --username polarion --no-auth-cache
+& "$PgRoot\tools\svn\svn.exe" info 'svn://127.0.0.1:14690/svn/polarion' --username polarion --no-auth-cache
+```
+
+Require both UUIDs to match the recorded source UUID and both HEADs to match the source HEAD before cutover. Check historical revisions, project paths, attachments and properties, plus denied access for restricted users. A service health check alone does not validate Polarion integration. Use a fresh checkout for the first rehearsal to avoid mixing working copies pointing at old URLs.
+
+### 6. Switch Polarion repository URLs manually
+
+Keep the Polarion application stopped. Back up and edit `C:\Polarion\polarion\configuration\polarion.properties`, changing repository endpoints in place without duplicate keys:
+
+```properties
+repo=http://127.0.0.1:14980/svn/polarion/
+repoSystem=svn://127.0.0.1:14690/svn/polarion
+```
+
+`repo` is the normal repository endpoint. `repoSystem` is an optional system read-only endpoint and must resolve to the same UUID. Initially, you can comment out `repoSystem` to use `repo` for system access. Update or comment any old `file://` or SVN value. Keep `login` / `password` consistent with Manager credentials and retain `base.url`, Tomcat and Polarion's internal database configuration. Follow the Deployment and Maintenance Guide for your installed version, available through the [Siemens documentation portal](https://support.industrysoftware.automation.siemens.com/docs_general/polarion/manuals/).
+
+Before restarting Polarion's bundled Apache for the web application, block legacy repository write endpoints such as `/repo` and `/installrepo` in the backed-up configuration. For example, replace each matching Location's existing authorization logic with `Require all denied`, validate Apache syntax, then start it. Appending a deny alongside existing allow rules is insufficient. Keep other legacy SVN services and writers stopped so the old FSFS repository cannot accept writes. Start PostgreSQL, wait for PgVN / DAV readiness, then start Polarion. GUI-installed services default to manual startup; configure and verify boot behavior and dependencies separately.
+
+These URLs are for same-host evaluation. Remote SVN clients or browsers need a reachable HTTPS endpoint, certificate and corresponding URL configuration; a remote user's loopback address cannot reach this repository.
+
+### 7. Validate the application and roll back
+
+Log in to Polarion and validate projects, work-item reads / writes, LiveDocs, attachments, history / baselines, locks, ordinary-user path restrictions and synchronization of user / group / password / permission changes. Test indexing / reindexing using the version-specific maintenance procedure. Confirm that new revisions appear only in PgVN and the old HEAD remains frozen, then create a full backup with Manager. Record results before expanding evaluation; these application checks have not yet been executed.
+
+To roll back, first stop Polarion and all writers, then stop this runtime's PgVN / DAV services with Manager. **Before any new writes**, restore original `polarion.properties`, Apache configuration and the matching application data / index rollback point, then restore the original SVN and Polarion startup sequence. **After new commits, revision-property edits or other writes**, first preserve a complete PgVN backup and new history, then have an administrator migrate back to a separate FSFS repository and verify it. Restarting the original repository at its old HEAD would lose post-cutover changes.
 
 ## Quick start
 
