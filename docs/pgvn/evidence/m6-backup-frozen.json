@@ -1,0 +1,153 @@
+{
+  "format": 1,
+  "test_id": "m6-backup-net-1946ff494182",
+  "status": "PASS_BACKUP_COMPONENT_AUDIT",
+  "created_at": "2026-10-17T05:48:11.995403+00:00",
+  "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "plan_sha256": "16386c6152a0686efa1c94bc8b436740aa9f7dde5542f32c9052672ece21c88c",
+  "report_sha256": "e13b8cc361291cd0fc9c7ccd15ff68dd792697a97e7c675a1c346cf9a04d816d",
+  "component_report_sha256": "69683561e26baa86cbd57873d68a9d8b4303779fbdd061242bf9812bcfc6ebad",
+  "original_checks_function_sha256": "76f07e00778467140527cf6a7fac6fc0500d1061f38c7f9edf2d230e457fdc74",
+  "details": {
+    "source_database": "pgvn_m6_net_1946ff494182",
+    "target_database": "pgvn_m6_net_9cbe0d1da1b4",
+    "source_head": 2,
+    "restored_head_after_resume": 3,
+    "repository_identity_preserved": true,
+    "public_uuid": "c7001c2e-6687-3041-8975-0090f94f6983",
+    "logical_tables_and_sequences": 30,
+    "logical_row_ledger_sha256": "c7054b30ff65bdcebe24e63f10515bb157c583dade2ce3fe2e0aeb8382ae0500",
+    "full_row_and_sequence_equality": true,
+    "archive_sha256": "5200a8830b29a39a95ea8b3644e55b77f00121ea35cd186d166a1e4cd3331f26",
+    "archive_bytes": 109189,
+    "protected_config_file_hashes": {
+      "authz.conf": "522082e0ed6d77aa1eb35a0f5c95156114c9d81c06234630d9a68dba419cbc52",
+      "credentials-v1.key": "fcdf2679e131948ba4561e1155842ec8a84bbdbfe1caa2a423465080f0d71cab",
+      "hooks.json": "22ffbf729a2ec3c5014f3737f8131edd482860f33e64ce921684310bfb6e51d2",
+      "users.htpasswd": "6e538f83209b065ad6b345360d7a892577ad5261b52e6a067a85ec1b62387915"
+    },
+    "encrypted_credential_authentication": true,
+    "monitor_token_survives": true,
+    "svn_lock_token_preserved": true,
+    "binary_revision_property_preserved": true,
+    "published_receipt_survives": true,
+    "pending_dav_transaction_resumes": true,
+    "repeated_merge_no_new_revision": true,
+    "reader_write_denied": true,
+    "public_telemetry_execute_denied": true,
+    "monitor_credentials_read_denied": true,
+    "source_unchanged": true,
+    "no_per_repository_directory": true,
+    "restore_owner_superuser": false,
+    "archive_acl_preserved": true,
+    "test_source_sha256": "1c4e8dbbf4bdfb512afc5d9e9aef17c508de3b680fc9674a621e1146d07e94fc",
+    "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9"
+  },
+  "complete_logical_row_and_sequence_ledger": {
+    "pgfs.content_chunks": "6e86ae4271eca26e26b68b6854fddeb35a478bafea3522f13820211e22eeaed1",
+    "pgfs.contents": "e72d754802a3b3d2c5345e11a861549a8d77139d4bea5e9129b38d497172f937",
+    "pgfs.directories": "f1286cac2c25d6de37dc261be2bc1ab727cefa4b5c754564490b7c5e09118e65",
+    "pgfs.directory_entries": "8c45bdb0d5e6ba6ed06e4be6414f89fb06dd5c5d63fa872bcca2f5756083d522",
+    "pgfs.hotcopy_objects": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "pgfs.locks": "19a3122e97f7b27b6c518ecfa8cf49f05259d3053e28e7e95f6d8dac43ca67fe",
+    "pgfs.node_revisions": "f0aa7c0f905cf8c69ae60e8ec0cb4c4cfb74a09ef6f01947126cfc82527946a7",
+    "pgfs.properties": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "pgfs.property_sets": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "pgfs.repositories": "7586bcb0f53c86749cacd6d5e4ad0eba0f0f254179350e271477c3c41e23c59c",
+    "pgfs.revision_changes": "04d97150c6c840e981fe7158a4013ef85516382d0bfa723b4e9ac34a95c8273d",
+    "pgfs.revision_properties": "a3da6de18b2c53b8384470eccc01a7c3b788542bf52b24e7835c94f5e82997f7",
+    "pgfs.revisions": "a6832eb35b3cd1c06cc9a64ed724a4281b999cc438b52b1ae11fbaf95421b259",
+    "pgfs.schema_versions": "676f41c60dfe1e5ebd10140c3fd8d1b6a5264458eb25ede96da9418b0b68d5dc",
+    "pgfs.transaction_changes": "a2c4ca090166d09de8dbe217392b5033b99f927ee4f9e3cbec968260d48cef36",
+    "pgfs.transaction_properties": "72fea873d877ee865ca31400573117c32537c296dbd4f8dd0dfe1ef55d1cf51a",
+    "pgfs.transactions": "ab99190522c79a86640e78c6de5f79d78de9055381857bd46ac0f0f4b496edf7",
+    "pgvn.configurations": "0abf67dc7fba237b9a54d7fe1f7380ab0b6a942d2a3ef63562cdb49dd43aef25",
+    "pgvn.credentials": "515c1fb5efd53b7bbb30a2778c03ff1df7977c8bce60684dfafdacc60d4a0fdc",
+    "pgvn.dav_bindings": "c3d8e5c83131a653def1b2a85f297fd7147335c2ab9d95c97827ab861c9a2f9d",
+    "pgvn.dav_transactions": "4cd5a5b228aa6f04b66277f27128335e51b15a352bbca7d1ed5bffc479a4b1b5",
+    "pgvn.monitor_tokens": "48e82c88b83a2506b23d745ad645fea2f7a252b159029cf8632a846c3ba2821b",
+    "pgvn.repositories": "e5e39d1a3de6bae9f2e91be80a07f7b321b62567277c6354be5f12aa8548725e",
+    "pgvn.routes": "319ccec89d05d566041900b6e7628b2499c6acb442a13c890dad45997fa7ac4a",
+    "pgvn.schema_versions": "b3d052ccc59bdb130003ef2f3fc49df66cad2b6233ebaa3843ad599303e92754",
+    "pgvn.storage_migrations": "0712bc14f9c3f18fb77b2a42dc39e7d7c9224729950b1f914414cbf2bb3dee62",
+    "pgvn_monitor.nodes": "da273a741e60255d54099137416f1ed77bfbb07c49a95de89fb71a47f20f336a",
+    "pgvn_monitor.samples": "3999dc49d2a4e95d6a994d5e0e1a40ba838dd8d9c4f0da22975bcd166f236157",
+    "sequence:pgfs.copy_ids": "1|f",
+    "sequence:pgfs.node_ids": "3|t"
+  },
+  "identical_ledger_observations": 4,
+  "post_terminal_residuals": [
+    {
+      "owner": "pgvn_migrate_1946ff494182",
+      "owner_superuser": false,
+      "client_backends": 0,
+      "database": "pgvn_m6_net_1946ff494182",
+      "active_monitor_tokens": 0,
+      "revoked_monitor_tokens": 1
+    },
+    {
+      "owner": "pgvn_migrate_9cbe0d1da1b4",
+      "owner_superuser": false,
+      "client_backends": 0,
+      "database": "pgvn_m6_net_9cbe0d1da1b4",
+      "active_monitor_tokens": 0,
+      "revoked_monitor_tokens": 1
+    }
+  ],
+  "protected_files_not_duplicated": [
+    {
+      "path": "credentials-v1.key",
+      "sha256": "fcdf2679e131948ba4561e1155842ec8a84bbdbfe1caa2a423465080f0d71cab"
+    },
+    {
+      "path": "backup/protected-config/credentials-v1.key",
+      "sha256": "fcdf2679e131948ba4561e1155842ec8a84bbdbfe1caa2a423465080f0d71cab"
+    },
+    {
+      "path": "backup/protected-config/users.htpasswd",
+      "sha256": "6e538f83209b065ad6b345360d7a892577ad5261b52e6a067a85ec1b62387915"
+    },
+    {
+      "path": "restored-config/credentials-v1.key",
+      "sha256": "fcdf2679e131948ba4561e1155842ec8a84bbdbfe1caa2a423465080f0d71cab"
+    },
+    {
+      "path": "restored-dav/users.htpasswd",
+      "sha256": "6e538f83209b065ad6b345360d7a892577ad5261b52e6a067a85ec1b62387915"
+    },
+    {
+      "path": "source-dav/users.htpasswd",
+      "sha256": "6e538f83209b065ad6b345360d7a892577ad5261b52e6a067a85ec1b62387915"
+    }
+  ],
+  "owned_job_active_processes": 0,
+  "validation_seconds": 51.671999999991385,
+  "original_assertions_unchanged": true,
+  "fixture_adaptations": [
+    "Fresh authorized source/restore databases and distinct non-superuser owners; no Fixture.initialize.",
+    "Route original protocol client helper to the manifest-pinned runtime SVN CLI.",
+    "Observe original complete row ledgers and revoke both copies of the test token in finally."
+  ],
+  "milestone_complete": false,
+  "frozen_evidence": {
+    "path": "runtime/pgvn/baselines/m6-backup-1946ff494182",
+    "index_sha256": "e6c174d9c5bef7b57fb78c50975d8a8652ec2b7efed7099f2645cbfdd81c8813",
+    "files": 347
+  },
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "browser_m5_package_rerun": false,
+  "limitations": [
+    "Synthetic stateful history, not the full 638-revision history backup.",
+    "Both databases share one dedicated cluster; not cross-cluster role migration or cross-host HA.",
+    "Native processes are used directly; not a clean-machine Windows installation/reboot test."
+  ]
+}
