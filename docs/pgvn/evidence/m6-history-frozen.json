@@ -1,0 +1,200 @@
+{
+  "status": "PASS_FIXED_HISTORY_COMPONENT_AUDIT",
+  "created_at": "2026-10-17T06:22:32.060962+00:00",
+  "test_id": "m6-history-net-6811cf0f593e",
+  "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "plan_sha256": "cdb70d6e595c2a7852e48a6e15310d8da3816ca337e86e96a09f028c965006a4",
+  "report_sha256": "a25a00bb8545584642e80b95df6a53fea14fd7e6ae71ef74f20c5d9fce945c99",
+  "component_report_sha256": "d87f27426edd554ea832e6d5c1c735f7f2fe829465a816cf7e068627019d1695",
+  "details": {
+    "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+    "test_source_sha256": "428ea847dcbaf127c5186089c14df7188898d60c48318c70eeaf1fa679e37a93",
+    "database": "pgvn_m6_net_6811cf0f593e",
+    "work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-net-6811cf0f593e",
+    "archive_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+    "archive_bytes": 61641751,
+    "head": 637,
+    "original_repository_accessed": false,
+    "revision_property_parser_sha256": "6693f036424af74158ccc6c5d8b8723509056aad15d6058893b488f9cb1ea2e8",
+    "fsfs_load_seconds": 228.93700000000536,
+    "repository_id": "cad736ca-02ea-844c-b637-dae7b07559fa",
+    "native_load_seconds": 893.5160000000033,
+    "verified_revisions": 638,
+    "verify_seconds": 429.98399999999674,
+    "validation_work_directory": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-net-6811cf0f593e\\validation-6811cf0f593e",
+    "snapshots": [
+      {
+        "revision": 0,
+        "sha256": "d69c8744dedb5856053247f6eea802ca0edf9e125eee98b6e5ab61abf5dadcdc",
+        "nodes": 1
+      },
+      {
+        "revision": 1,
+        "sha256": "79fe4d02150425fcfa7edd293c88dcf9c6bc0eca25a031f007b4cd1df42a3dcb",
+        "nodes": 2791
+      },
+      {
+        "revision": 318,
+        "sha256": "3f7b03994a3287cc3250a3d4c9a53e65f9c854aab1cc14fdfcf913ab5d8e121f",
+        "nodes": 10423
+      },
+      {
+        "revision": 636,
+        "sha256": "684109575198599e95796ef13409c389fbfe55d7b837d01992d83326953da78c",
+        "nodes": 10644
+      },
+      {
+        "revision": 637,
+        "sha256": "0d40bd98ed26a976e9a2c40a53343b623ab87503da83482d4c444473fb2a1060",
+        "nodes": 10644
+      }
+    ],
+    "changed_path_oracle": {
+      "r0": "stock svnlook changed, empty",
+      "r1_through_head": "stock svn log --xml --verbose"
+    },
+    "changed_path_revisions_compared": 638,
+    "revision_properties_compared": 638,
+    "changed_ledger_sha256": "64bc1dbc23b82439def8af6ed2e6f16a1c94b0c81a9f78e28079610ed43490e9",
+    "revprop_ledger_sha256": "d26bbe1cad332e8abbc1ff0744a573f4c8e8fac8415b889798811d03f2b35610",
+    "changed_node_kinds_compared": 11480,
+    "known_change_flags_compared": 22960,
+    "oracle_unknown_change_flag_attributes": 0,
+    "native_dump_seconds": 154.01599999997416,
+    "dump_roundtrip_revision_properties": true,
+    "dump_roundtrip_snapshots": true,
+    "native_dump_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+    "no_per_repository_directory": true
+  },
+  "validation_seconds": 3330.5,
+  "post_terminal_residual": {
+    "owner": "pgvn_migrate_6811cf0f593e",
+    "owner_superuser": false,
+    "client_backends": 0,
+    "monitor_tokens": 0
+  },
+  "owned_job_active_processes": 0,
+  "original_assertions_unchanged": true,
+  "binary_revision_properties_independently_compared": 638,
+  "first_failure": {
+    "test_id": "m6-history-net-04118456f7f2",
+    "status": "FAIL",
+    "before_database_creation": true,
+    "report_sha256": "4494248a9ff520da139f54b73532a2da535bd367cbd657392484ed4638a73fc4",
+    "plan_sha256": "7c6d5a688ca0a50b8f85d7e09d93e056ccbe63957af40322036c49aadd2a00ab",
+    "reason": "Windows venv redirector PID differs from the interpreter PID; fixed with exact owned-Job membership handshake."
+  },
+  "milestone_complete": false,
+  "format": 1,
+  "frozen_evidence": {
+    "path": "runtime/pgvn/baselines/m6-history-6811cf0f593e",
+    "index_sha256": "1228570afc22529262450e8559677c4099b0ff0e29d22f121fae170b46ab6b64",
+    "files": 3050
+  },
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "browser_m5_package_rerun": false,
+  "fixture_adaptations": [
+    "Fresh authorized network-prefixed database without Fixture.initialize.",
+    "Route FSFS snapshots to the private stock-DLL public-API probe."
+  ],
+  "limitations": [
+    "Five full logical snapshots, not every node at every revision.",
+    "Preexisting authorized export; no original Polarion repository or application accessed.",
+    "Concurrent local validation time, not a performance acceptance result.",
+    "Database backup, remaining protocol/fault/performance and independent Windows/Polarion acceptance are separate."
+  ],
+  "post_load_fsfs_revision_property_audit": {
+    "status": "PASS_POST_LOAD_FSFS_REVISION_PROPERTIES",
+    "created_at": "2026-10-17T06:24:55.832963+00:00",
+    "test_id": "m6-history-net-6811cf0f593e",
+    "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+    "source_report_sha256": "a25a00bb8545584642e80b95df6a53fea14fd7e6ae71ef74f20c5d9fce945c99",
+    "source_component_sha256": "d87f27426edd554ea832e6d5c1c735f7f2fe829465a816cf7e068627019d1695",
+    "arguments": [
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\svnadmin.exe",
+      "dump",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-history-net-6811cf0f593e\\validation-6811cf0f593e\\fsfs-roundtrip",
+      "--quiet",
+      "--deltas"
+    ],
+    "exit_code": 0,
+    "stderr_bytes": 0,
+    "elapsed_seconds": 13.89100000000326,
+    "inputs": {
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\svnadmin.exe": "8077af69b35e413b232f8af76a379bd564cfb1fb4b18b049787c8a02de1c54ad",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\icudt77.dll": "26c6b5923c814dab36caeabd19ea7b8006786c80215dae270c8444cb528ed3bf",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\icuin77.dll": "e825807402d86307574c88e54ded5845d06b57e010b58b7975a2ab2d07ca7f6a",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\icuio77.dll": "8892f4b00f75524d70e5fa91c122a584d14faef7631fac40afff52f3fcfa6cae",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\icutu77.dll": "08cfa69abde3af84eccc98040653092710026fdfd65f6f3cddb91bffa7a6e62c",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\icuuc77.dll": "465ac249e54de36640d85e084e0039acc4f518eda7ee4a9bbee2826ab5c46829",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libapr-1.dll": "587bcf93d5bdd1a5774ab271d2002f51baab09d9b9e4615a5751ef8711f691c8",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libaprutil-1.dll": "7dbc6239fb56681761b6c7438a53182b028f9b89babec9c68a7cf02cb30e4774",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libcrypto-3-x64.dll": "54c0a88da398559c3daec198d7af8f020ff6fbeead38dbacd97d21ae920c3a00",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libcurl.dll": "7d756f341091924063baa4f9fd79b5a013125e0d5d876badc1e355310e0857f8",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libecpg.dll": "16a8bafadb8380d22007713559542414e891f5f74648c8790c8b17be5b4e8361",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libecpg_compat.dll": "4ff38e031db75f3259fd0021becd4c4ead15b996ddd343cd80be625ee533a2cf",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libexpat.dll": "ca01642a063b89ee58ea7c383df55cd38ae8776c311150ef3ae3c1cc963dc9e1",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libiconv-2.dll": "6095b3fad19fff040aeae05865c28fdeb455526fca109c3216f6ca737af60249",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libintl-9.dll": "1125ac8dc0c4f5c3ed4712e0d8ad29474099fcb55bb0e563a352ce9d03ef1d78",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\liblz4.dll": "096af775241b3bd4b1c3d79c83b103bb8f02da54ec4cd76c5d49eef61a68ad01",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libpgtypes.dll": "de59a200591d4a58e0b4afaef65603abf99e2ed9dcc01804c30e1ebfd2a8f948",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libpq.dll": "98d8e12f814ef539ded440195681c0163079dc5871d7fb278de051c2e2d4cba0",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libssl-3-x64.dll": "0ac3d836a2fa84dee83bd06a4abfaf8ab7ded689420edc76febc185500e2d6e1",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_client-1.dll": "5329c826a19053064516c1e724dfa706c93932b2e69e2cdaf7c08e14927f44ea",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_delta-1.dll": "f87f50cc8664bf1735eda4c0d6e8222f89b5596991e20d68e480c73081eec0e1",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_diff-1.dll": "e5e09e4a4523a3ad2469bfb0fcfe5a30a74875fb21bbf2443e8ae9b8a3934ce6",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_fs-1.dll": "5b3cd0583184785928dfbc7bb5fb6fda3305219cba96602b347d2bed144027eb",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_fs_fs-1.dll": "1a4bc908659a7179dfbca1142b7434920fbbc2dee72bc11940c972f988f09323",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_fs_util-1.dll": "cd1efa62635c3911881538231956c28651ab0b43c17e78e923504298993591fc",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_fs_x-1.dll": "a753ac936c66543d1660fdac8369f45c0e509c68fc03f0c63f015f60312c0942",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_ra-1.dll": "13b3fe099e2db01209a0318c1b0c5079eb1ff5363e968eb1d86946d301a3155b",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_repos-1.dll": "ecbdf6370b98613c17cc31a3f95467e138eca24318c3276adcb888181f1ae5b9",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_subr-1.dll": "601dd8e8960d2aad3b7881bddf1355701cd676e2d17a3caef7c3dc72f6e347f8",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libsvn_wc-1.dll": "2eb812f2d588b77632b7677a09dd0520e366f1289978508b137d2718b06e72db",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libwinpthread-1.dll": "ffe2d56375bb4e8bdee9037df6befc5016ddd8871d0d85027314dd5792f8fdc9",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libxml2.dll": "1cb308eb9be9063eda714549bacda541cc711843c3ab45f91ae91d3ae046dba9",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libxslt.dll": "8226fad0fc6e9b79b14203d4f5263ddec5764c0108aa7c17622dd77f311669a6",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\libzstd.dll": "287e7e474961e8886a3d961e2c07da647a7ac8d60d97023545f3a3ecf604daba",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\sqlite3.dll": "96e2412fb6e72a202700f0c368b8ea64f49c634ee4f3dc7b0e0d6bd2d4a7edf1",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\testplug.dll": "1a8225dcf5a60c719d2ea98f5493fcb706558ac42b118c536e762b40d0f61a99",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\vcruntime140.dll": "d66c3b47091ceb3f8d3cc165a43d285ae919211a0c0fcb74491ee574d8d464f8",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxbase3211u_net_vc_x64_custom.dll": "f707ee1d13ed5d3264a6b95dbb6cc4cd79e5d663180a91dca80704b1d97783eb",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxbase3211u_vc_x64_custom.dll": "cc6b32bb8cbc1ecd798a8e08144671bb0542e75217ee5b0f9a76fab9146b88be",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxbase3211u_xml_vc_x64_custom.dll": "4c716cb9407ed90331d677b55e82b3e31a16ff6f5adf9493321594d01fa200d3",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxmsw3211u_adv_vc_x64_custom.dll": "e9b0906ec69d7656228f564596ae882a8d68f37b5021f490ebcf2aae289eb742",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxmsw3211u_aui_vc_x64_custom.dll": "ded33cdf2455389eaef3e9c2bd6bca04d3edfbea9e7f53393ee6f8bab2ae124c",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxmsw3211u_core_vc_x64_custom.dll": "d658d50d6820d17ac4de22bd66b93799595d63c7469ca6a1d99f479a838b67b8",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxmsw3211u_html_vc_x64_custom.dll": "74b2e9f9f4b690b554733f1be1e4412c27ea5e0b0a6cd67d05e3895eafb2946e",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\wxmsw3211u_xrc_vc_x64_custom.dll": "24bb563eaed37c5b87d238fab8183eac8f66dbf4c67b06c2b9fa54a1234e020f",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\bin\\zlib1.dll": "890afa7a17fb66308e0026631070409138b157ef2773c0a41d22a76943f7aedf",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\supplement_history_fsfs_revprops.py": "2e2d9d8dbc46f162f158350ca56a3549f843e5c93c6c7e9038aa9db032422560",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\validate_history_supplemented_publication.py": "ba98d5abd6194b00db425181efec726286bdfed892bf36536996d8210f22cef1",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\component_publication_helpers.py": "57ad6f6565dc5d6047542f757d8ec56c8c8dacf50ecf222304d949a7afc89bde",
+      "C:\\Project\\PgVN\\pgvn\\tests\\verify_corpus_properties.py": "6693f036424af74158ccc6c5d8b8723509056aad15d6058893b488f9cb1ea2e8"
+    },
+    "revisions_compared": 638,
+    "binary_property_ledger_sha256": "5ee0ade3ca8d938d06cd036acf9e1095f2d4b394b0581a2c3d48b5654be5d6da",
+    "fsfs_dump_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+    "fsfs_dump_bytes": 61641751,
+    "fixed_export_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+    "native_dump_sha256": "178e2da5d5ca4c77403b3961ac026528de29f4e4a783be774f258742d9cd3bbf",
+    "direct_post_load_fsfs_observation": true,
+    "original_assertions_changed": false,
+    "original_repository_accessed": false,
+    "milestone_complete": false
+  },
+  "frozen_controls": {
+    "path": "runtime/pgvn/baselines/m6-history-fsfs-revprops-6811cf0f593e",
+    "index_sha256": "109b8c919344c052541f0209a47845eeb22861323cef5c2890daf810be89e238",
+    "files": 59
+  }
+}
