@@ -184,7 +184,7 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
 
 int pgvn_catalog_version(const char *versions)
 {
-    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5","1,2,3,4,5,6"};
+    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5","1,2,3,4,5,6","1,2,3,4,5,6,7"};
     _Static_assert(sizeof(known)/sizeof(*known)==PGVN_CATALOG_VERSION,"Update the supported catalog version list");
     for(int i=0;versions && i<PGVN_CATALOG_VERSION;++i) if(!strcmp(versions,known[i])) return i+1;
     return 0;

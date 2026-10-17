@@ -115,7 +115,7 @@ static svn_error_t *pgfs_txn_props_body(svn_fs_txn_t *txn,const apr_array_header
             SVN_ERR(pgfs_query_full(&result,txn->fs,
                 "INSERT INTO pgfs.transaction_properties(repository_id,txn_id,name,value) "
                 "VALUES($1::uuid,$2,$3,$4::bytea) ON CONFLICT(repository_id,txn_id,name) DO UPDATE SET value=EXCLUDED.value",
-                4,values,lengths,formats));
+                4,values,lengths,formats,0));
             PQclear(result);
         }
     }
@@ -392,7 +392,7 @@ static svn_error_t *pgfs_change_rev_prop_body(svn_fs_t *fs,svn_revnum_t rev,cons
     SVN_ERR(pgfs_query_full(&result,fs,
         "INSERT INTO pgfs.revision_properties(repository_id,rev,name,value) VALUES($1::uuid,$2::bigint,$3,$4::bytea) "
         "ON CONFLICT(repository_id,rev,name) DO UPDATE SET value=EXCLUDED.value,generation=pgfs.revision_properties.generation+1",
-        4,values,lengths,formats));
+        4,values,lengths,formats,0));
     PQclear(result);
     return SVN_NO_ERROR;
 }

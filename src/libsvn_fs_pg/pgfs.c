@@ -56,7 +56,7 @@ static apr_status_t pgfs_cleanup(void *baton)
 
 static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char *sql,
                                    int count, const char *const *values,
-                                   const int *lengths, const int *formats)
+                                   const int *lengths, const int *formats, int result_format)
 {
     pgfs_data_t *data = fs->fsap_data;
     apr_status_t status = apr_thread_mutex_lock(data->mutex);
@@ -71,7 +71,7 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
     for (int i = 0; i < count; ++i) types[i] = formats && formats[i] ? 17 : 25;
     apr_time_t started = data->observer.query ? apr_time_now() : 0;
     if(data->observer.query_started) data->observer.query_started(data->observer.baton);
-    *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, 0);
+    *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, result_format);
     free(types);
     svn_error_t *error = NULL;
     char sqlstate[6] = "00000";
@@ -94,7 +94,13 @@ static svn_error_t *pgfs_query_full(PGresult **result, svn_fs_t *fs, const char 
 static svn_error_t *pgfs_query(PGresult **result, svn_fs_t *fs, const char *sql,
                               int count, const char *const *values)
 {
-    return pgfs_query_full(result, fs, sql, count, values, NULL, NULL);
+    return pgfs_query_full(result, fs, sql, count, values, NULL, NULL, 0);
+}
+
+static svn_error_t *pgfs_query_binary(PGresult **result, svn_fs_t *fs, const char *sql,
+                                     int count, const char *const *values)
+{
+    return pgfs_query_full(result, fs, sql, count, values, NULL, NULL, 1);
 }
 
 static svn_error_t *pgfs_attach(svn_fs_t *fs, const char *path, const char *dsn,

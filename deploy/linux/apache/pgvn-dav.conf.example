@@ -1,0 +1,16 @@
+# Example for a pinned Apache 2.4.68 host. Load the PgVN modules only after
+# the Linux ELF build has produced mod_dav_pgvn.so and mod_authz_pgvn.so.
+# LoadModule dav_module modules/mod_dav.so
+# LoadModule dav_pgvn_module modules/mod_dav_pgvn.so
+# LoadModule authz_pgvn_module modules/mod_authz_pgvn.so
+Listen 127.0.0.1:3691
+PgVNConfig /etc/pgvn/pgvn-apache.ini
+<Location /svn>
+    DAV pgvn
+    PgVNPathAuthz short_circuit
+    AuthType Basic
+    AuthName "PgVN"
+    AuthBasicProvider file
+    AuthUserFile /etc/pgvn/users.htpasswd
+    Require valid-user
+</Location>

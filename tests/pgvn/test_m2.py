@@ -105,7 +105,7 @@ def migration_and_privileges():
         results = list(executor.map(lambda _: meta("db", "init", role=migration_role), range(4)))
     assert all(r["ok"] for r in results)
     check = meta("db", "check", role="pgvn_owner")
-    assert check["schema"] == {"pgfs": 4, "pgvn": 6, "checksums": "match"}
+    assert check["schema"] == {"pgfs": 4, "pgvn": 7, "checksums": "match"}
     installed = sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v")
     meta("db", "migrate", role=migration_role)
     assert sql("SELECT json_agg(v ORDER BY version)::text FROM pgvn.schema_versions v") == installed
@@ -120,7 +120,7 @@ def migration_and_privileges():
         sql("INSERT INTO pgfs.schema_versions(version) VALUES(99)")
         meta("db", "check", role="pgvn_owner", expected=4)
         meta("db", "migrate", role="pgvn_owner", expected=4)
-        assert sql("SELECT count(*) FROM pgvn.schema_versions") == "6"
+        assert sql("SELECT count(*) FROM pgvn.schema_versions") == "7"
     finally:
         sql("DELETE FROM pgfs.schema_versions WHERE version=99")
     meta("db", "grant", "--admin-role", "pgvn_admin", "--service-role", "pgvn_service", "--monitor-role", "pgvn_monitor", role=migration_role)

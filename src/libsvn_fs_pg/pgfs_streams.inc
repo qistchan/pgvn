@@ -1,3 +1,4 @@
+#include "chunk.h"
 /* Fulltexts are chunked in PostgreSQL. Streaming never buffers an attachment
    in its entirety; textdelta windows use Subversion's own delta engine. */
 #define PGFS_CHUNK_SIZE 1048576
@@ -45,11 +46,17 @@ static svn_error_t *pgfs_read_full(void *baton,char *buffer,apr_size_t *length)
             const char *values[]={data->repository_id,pgfs_number(reader->content,reader->scratch),
                                  pgfs_number(chunk,reader->scratch)};
             PGresult *result;
-            SVN_ERR(pgfs_query(&result,reader->fs,
-                "SELECT encode(data,'hex') FROM pgfs.content_chunks WHERE repository_id=$1::uuid "
+            SVN_ERR(pgfs_query_binary(&result,reader->fs,
+                "SELECT data FROM pgfs.content_chunks WHERE repository_id=$1::uuid "
                 "AND content_id=$2::bigint AND chunk_number=$3::bigint",3,values));
-            if(PQntuples(result)!=1) { PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Missing PgFS content chunk"); }
-            reader->bytes=pgfs_decode_hex(PQgetvalue(result,0,0),reader->scratch);
+            if(PQntuples(result)!=1 || PQgetisnull(result,0,0)
+                || !pgvn_chunk_length_ok(0,PQfformat(result,0)==1,PQgetlength(result,0,0),PGFS_CHUNK_SIZE)) {
+                PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Missing PgFS content chunk");
+            }
+            {
+                const char *raw=PQgetvalue(result,0,0);
+                reader->bytes=svn_string_ncreate(raw ? raw : "", (apr_size_t)PQgetlength(result,0,0), reader->scratch);
+            }
             PQclear(result);
             reader->cached_chunk=chunk;
         }
@@ -203,7 +210,7 @@ static svn_error_t *pgfs_flush_body(pgfs_writer_t *writer)
     PGresult *result;
     SVN_ERR(pgfs_query_full(&result,writer->root->fs,
         "INSERT INTO pgfs.content_chunks(repository_id,content_id,chunk_number,data) "
-        "VALUES($1::uuid,$2::bigint,$3::bigint,$4::bytea)",4,v,lengths,formats));
+        "VALUES($1::uuid,$2::bigint,$3::bigint,$4::bytea)",4,v,lengths,formats,0));
     PQclear(result);
     ++writer->chunk; writer->buffered=0;
     return SVN_NO_ERROR;

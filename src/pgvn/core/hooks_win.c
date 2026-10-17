@@ -3,6 +3,7 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include "internal.h"
+#include "hook_name.h"
 #include <apr_strings.h>
 #include <apr_base64.h>
 #include "private/svn_utf_private.h"
@@ -184,11 +185,7 @@ static DWORD WINAPI read_output(void *baton)
 
 static int executable_name(const char *name)
 {
-    size_t size=name ? strlen(name) : 0;
-    if(size<5 || size>132 || _stricmp(name+size-4,".exe")) return 0;
-    for(const unsigned char *p=(const unsigned char *)name;*p;++p)
-        if(!((*p>='A' && *p<='Z') || (*p>='a' && *p<='z') || (*p>='0' && *p<='9') || *p=='-' || *p=='_' || *p=='.')) return 0;
-    return 1;
+    return pgvn_hook_executable_valid(name, 1);
 }
 
 svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_context *event,apr_pool_t *pool)

@@ -84,6 +84,15 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
         svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 6 is missing DAV state tables");
     }
+    if(catalog>=7) {
+        SVN_ERR(pgvn_control_query(&result,context,
+            "SELECT pgvn.valid_hooks('{\"pre-commit\":{\"executable\":\"pre-commit\"}}'::jsonb)"
+            " AND pgvn.valid_hooks('{\"pre-commit\":{\"executable\":\"pre-commit.exe\"}}'::jsonb)"
+            " AND NOT pgvn.valid_hooks('{\"pre-commit\":{\"executable\":\"pre-commit.sh\"}}'::jsonb)"
+            " AND NOT pgvn.valid_hooks('{\"pre-commit\":{\"executable\":\"../hook\"}}'::jsonb)",0,NULL));
+        svn_boolean_t present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"Catalog schema 7 is missing logical hook validation");
+    }
     for(apr_size_t i=0;i<sizeof(pgvn_migrations)/sizeof(pgvn_migrations[0]);++i) {
         const admin_migration *migration=&pgvn_migrations[i];
         if(!latest && !strcmp(migration->namespace_name,"pgvn") && migration->version>catalog) continue;

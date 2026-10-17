@@ -1,0 +1,24 @@
+[Unit]
+Description=PgVN Linux monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pgvn
+Group=pgvn
+ExecStart=@PREFIX@/bin/pgvn-monitor-run.sh
+WorkingDirectory=@PREFIX@
+KillSignal=SIGTERM
+TimeoutStopSec=20
+KillMode=mixed
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

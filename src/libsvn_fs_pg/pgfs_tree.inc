@@ -8,8 +8,9 @@ typedef struct pgfs_node_t {
 } pgfs_node_t;
 
 typedef struct pgfs_entry_t {
-    apr_int64_t id;
+    apr_int64_t id, node_id, copy_id;
     svn_node_kind_t kind;
+    const char *owner;
 } pgfs_entry_t;
 
 static const char *pgfs_number(apr_int64_t value, apr_pool_t *pool)
@@ -229,13 +230,16 @@ static svn_error_t *pgfs_entries(apr_hash_t **entries, svn_fs_t *fs,
         ", latest AS (SELECT DISTINCT ON(e.name) e.name,e.child_node_revision_id "
         "FROM chain c JOIN pgfs.directory_entries e ON e.repository_id=$1::uuid "
         "AND e.directory_id=c.directory_id ORDER BY e.name,c.distance) "
-        "SELECT l.name,l.child_node_revision_id,n.kind FROM latest l "
+        "SELECT l.name,l.child_node_revision_id,n.kind,n.node_id,n.copy_id,n.owner_txn FROM latest l "
         "JOIN pgfs.node_revisions n ON n.repository_id=$1::uuid AND "
         "n.node_revision_id=l.child_node_revision_id ORDER BY l.name",2,values));
     for (int i=0;i<PQntuples(result);++i) {
         pgfs_entry_t *entry = apr_pcalloc(pool,sizeof(*entry));
         entry->id = apr_atoi64(PQgetvalue(result,i,1));
         entry->kind = !strcmp(PQgetvalue(result,i,2),"dir") ? svn_node_dir : svn_node_file;
+        entry->node_id = apr_atoi64(PQgetvalue(result,i,3));
+        entry->copy_id = apr_atoi64(PQgetvalue(result,i,4));
+        entry->owner = PQgetisnull(result,i,5) ? NULL : apr_pstrdup(pool,PQgetvalue(result,i,5));
         apr_hash_set(*entries,apr_pstrdup(pool,PQgetvalue(result,i,0)),APR_HASH_KEY_STRING,entry);
     }
     PQclear(result);
@@ -432,10 +436,10 @@ static svn_error_t *pgfs_dir_entries(apr_hash_t **entries,svn_fs_root_t *root,
     for(apr_hash_index_t *hi=apr_hash_first(pool,raw);hi;hi=apr_hash_next(hi)) {
         const void *key; void *value; apr_hash_this(hi,&key,NULL,&value);
         pgfs_entry_t *entry=value;
-        pgfs_node_t *child;
-        SVN_ERR(pgfs_load_node(&child,root->fs,entry->id,pool));
+        pgfs_node_t child={0};
         svn_fs_dirent_t *dirent=apr_pcalloc(pool,sizeof(*dirent));
-        dirent->name=key; dirent->kind=entry->kind; dirent->id=pgfs_id(root->fs,child,pool);
+        child.id=entry->id; child.node_id=entry->node_id; child.copy_id=entry->copy_id; child.owner=entry->owner;
+        dirent->name=key; dirent->kind=entry->kind; dirent->id=pgfs_id(root->fs,&child,pool);
         apr_hash_set(*entries,key,APR_HASH_KEY_STRING,dirent);
     }
     return SVN_NO_ERROR;
@@ -705,7 +709,7 @@ static svn_error_t *pgfs_change_node_prop_body(svn_fs_root_t *root,const char *p
         int lengths[]={0,0,0,(int)value->len},formats[]={0,0,0,1};
         SVN_ERR(pgfs_query_full(&result,root->fs,
             "INSERT INTO pgfs.properties(repository_id,properties_id,name,value) "
-            "VALUES($1::uuid,$2::bigint,$3,$4::bytea)",4,values,lengths,formats));
+            "VALUES($1::uuid,$2::bigint,$3,$4::bytea)",4,values,lengths,formats,0));
         PQclear(result);
     }
     apr_int64_t new_id;

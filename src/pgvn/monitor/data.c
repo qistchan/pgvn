@@ -210,7 +210,7 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
         "to_regclass('pgvn.dav_transactions') IS NOT NULL AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL);
     if(!result) return 0;
     int valid=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4")
-        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5,6") && !strcmp(PQgetvalue(result,0,2),"f")
+        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5,6,7") && !strcmp(PQgetvalue(result,0,2),"f")
         && !strcmp(PQgetvalue(result,0,3),"on") && !strcmp(PQgetvalue(result,0,4),PGVN_STORAGE_HASHES)
         && !strcmp(PQgetvalue(result,0,5),PGVN_CATALOG_HASHES);
     valid=valid && !strcmp(PQgetvalue(result,0,9),"t");

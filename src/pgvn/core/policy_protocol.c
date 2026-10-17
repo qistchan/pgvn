@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "internal.h"
+#include "hook_name.h"
 #include <apr_strings.h>
 
 svn_error_t *pgvn_policy_load_protocol(pgvn_policy *policy,apr_pool_t *pool)
@@ -36,6 +37,14 @@ svn_error_t *pgvn_policy_load_protocol(pgvn_policy *policy,apr_pool_t *pool)
         if(!handler) {
             handler=apr_pcalloc(pool,sizeof(*handler));
             handler->executable=apr_pstrdup(pool,PQgetvalue(result,row,1));
+#ifdef _WIN32
+            if(!pgvn_hook_executable_valid(handler->executable,1)) {
+#else
+            if(!pgvn_hook_executable_valid(handler->executable,0)) {
+#endif
+                PQclear(result);
+                return svn_error_create(SVN_ERR_AUTHZ_INVALID_CONFIG,NULL,"PgVN hook executable is not valid for this platform");
+            }
             handler->timeout_seconds=(unsigned)atoi(PQgetvalue(result,row,2));
             handler->arguments=apr_array_make(pool,4,sizeof(const char *));
             policy->external_hooks[index]=handler;

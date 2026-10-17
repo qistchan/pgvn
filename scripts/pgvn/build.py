@@ -86,9 +86,16 @@ def import_library(tools, dll):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--config", type=Path)
     parser.add_argument("--configuration", choices=("Debug", "Release"), default="Debug")
+    parser.add_argument("--target", choices=("windows", "linux"), default="windows")
     args = parser.parse_args()
+    if args.target == "linux":
+        from build_linux import build_linux
+        build_linux(args.configuration)
+        return
+    if args.config is None:
+        parser.error("--config is required for the Windows target")
     config = json.loads(args.config.read_text(encoding="utf-8"))
     required = ("toolchain", "subversion", "apr_include", "apu_include", "svn_bin", "apache", "postgres")
     paths = {k: Path(config[k]).resolve(strict=True) for k in required}
@@ -154,7 +161,7 @@ def main():
     legacy.generate_stubs()
     embed(ROOT,BUILD / "generated/pgvn_migrations.h")
     embed_web(ROOT,BUILD / "generated")
-    includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/monitor",
+    includes = [BUILD / "generated", ROOT / "src/pgvn/core", ROOT / "src/pgvn/platform", ROOT / "src/pgvn/monitor",
                 ROOT / "src/pgvn/serve", BUILD / "upstream/svnserve",
                 ROOT / "src/libsvn_fs_pg", repository_source,
                 svn / "include", svn / "libsvn_fs", apr, apu, pg / "include", apache / "include"]
