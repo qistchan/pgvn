@@ -448,7 +448,9 @@ docs/pgvn/            Architecture, guides and validation evidence
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-The latest recorded [working-copy upgrade acceptance](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) covers 36 original functions over SVN, HTTP and HTTPS: all 216 FSFS/PgVN outcomes passed, alongside 21 offline fixture checks. The [properties, inheritance and externals acceptance](docs/pgvn/M6-network-client-properties.zh-CN.md) covers 280 original functions in ten complete suites. Each report identifies its tested build; these results are not combined into a single-build acceptance claim.
+The [merge and patch checkpoint](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md) records the first 18 completed groups: 17 PASS and 1 FAIL. The failing group retains the original patch test failure on both backends, with local security-software interference documented. This partial checkpoint does not establish complete compatibility; follow [progress and evidence](docs/pgvn/progress.zh-CN.md) for subsequent results.
+
+Recorded [working-copy upgrade acceptance](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) covers 36 original functions over SVN, HTTP and HTTPS: all 216 FSFS/PgVN outcomes passed, alongside 21 offline fixture checks. The [properties, inheritance and externals acceptance](docs/pgvn/M6-network-client-properties.zh-CN.md) covers 280 original functions in ten complete suites. Each report identifies its tested build; these results are not combined into a single-build acceptance claim.
 
 The [coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) catalogs all 62 suites and 1,984 functions. Its earlier frozen build has matching three-protocol results for 568 functions; historical results and outstanding functions are listed separately. These counts belong to the build identified in that report; later builds need matching evidence. Original SKIP and XFAIL remain explicit; client-only cases do not establish backend I/O.
 
@@ -471,6 +473,7 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Schema design](docs/pgvn/schema-design.zh-CN.md) | Database structures and storage/control boundaries |
 | [Compatibility validation](docs/pgvn/M6-upstream-network.zh-CN.md) | Original SVN suites, FSFS comparisons and three-protocol results |
 | [Working-copy upgrades](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) | Legacy client working-copy fixtures and three-protocol acceptance |
+| [Merge and patch checkpoint](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md) | Partial original-suite results, retained failure and environment diagnosis |
 | [Coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) | Per-function current, historical and pending results across all 62 suites |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |
