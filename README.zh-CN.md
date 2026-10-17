@@ -144,6 +144,8 @@ flowchart TB
 
 安装 .NET Framework 4.8 后，可直接运行组合包中的 `manager\PgVNManager.exe`；选择运行目录，加载配置，再按界面的首次使用步骤操作。使用已有 PostgreSQL 服务端，配置与服务管理需要管理员权限。完整恢复仍使用已有脚本，跨主机 HA 和 Polarion 应用验收的状态不变。
 
+**完整组合包**是把 PgVN 运行组件与 Manager GUI 合并后的 ZIP，包含 `pgvnserve`、Apache / DAV 模块、`pgvnadmin`、配套 DLL、客户端工具、部署脚本及 `manager` 目录。本轮已生成并记录验证的文件为 `runtime/pgvn-manager-bundle-9dce96de.zip`（约 23 MiB），旁边的 `.zip.sha256` 用于校验，详见[交付记录](docs/pgvn/manager-validation.zh-CN.md#交付与使用)。这些文件是本机构建输出，不随 Git 源码分发；复制 ZIP 与摘要文件到目标机，校验后解压即可得到运行目录。解压目录下直接包含 `bin`、`apache`、`deploy`、`tools` 和 `manager`，从 `manager\PgVNManager.exe` 启动。`pgvn-manager.zip` 仅为 GUI 附加包，需要另备完整运行包。组合包不包含 PostgreSQL 服务端安装程序、.NET Framework 或 Polarion 程序及数据。
+
 开发者运行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`，产物位于 `runtime/pgvn-manager`。传入 `-RuntimePackageZip <已验证运行包.zip>` 可生成包含完整运行依赖与 GUI 的组合包；GUI 有独立构建清单。使用说明、测试入口和恢复边界见 [Manager 指南](tools/pgvn-manager/README.zh-CN.md)；本轮证据见 [本机验证记录](docs/pgvn/manager-validation.zh-CN.md)。
 
 <a id="polarion-gui-migration"></a>
@@ -154,7 +156,7 @@ flowchart TB
 
 ### 1. 准备运行目录与回退点
 
-使用单独的 Polarion 测试副本，以下 `C:\Polarion` 路径均指测试副本，不能与仍在运行的原实例共用数据目录。准备完整 PgVN + Manager 组合包、.NET Framework 4.8，以及已安装的 PostgreSQL。将组合包解压到 `C:\PgVN-PolarionEval`，保留原 Polarion 程序和 SVN 仓库。先记录实际 Windows 服务名、启动方式、仓库 UUID / HEAD、认证方式、访问规则、活动锁及 hooks，并备份 Polarion 配置和应用数据；正式导出前还需在停写状态完成一致备份。
+使用单独的 Polarion 测试副本，以下 `C:\Polarion` 路径均指测试副本，不能与仍在运行的原实例共用数据目录。准备上述[完整组合包](#windows-配置与维护-gui)、.NET Framework 4.8，以及已安装的 PostgreSQL。将组合包解压到 `C:\PgVN-PolarionEval`，保留原 Polarion 程序和 SVN 仓库。先记录实际 Windows 服务名、启动方式、仓库 UUID / HEAD、认证方式、访问规则、活动锁及 hooks，并备份 Polarion 配置和应用数据；正式导出前还需在停写状态完成一致备份。
 
 以下是示例映射，数据库端口按独立 PostgreSQL 实例填写：
 

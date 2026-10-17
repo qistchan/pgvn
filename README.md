@@ -144,6 +144,8 @@ The shared core is linked into each service process; deployment requires no sepa
 
 With .NET Framework 4.8 installed, run `manager\PgVNManager.exe` from the combined bundle, load the runtime directory and follow the first-use steps in the Chinese UI. PostgreSQL must be installed separately; configuration and service operations require administrator privileges. Full restore uses the existing scripts. Cross-host HA and Polarion acceptance remain pending.
 
+The **combined bundle** is a ZIP containing both the complete PgVN runtime and Manager GUI: `pgvnserve`, Apache / DAV modules, `pgvnadmin`, matching DLLs, client tools, deployment scripts and the `manager` directory. The locally built archive recorded for this iteration is `runtime/pgvn-manager-bundle-9dce96de.zip` (about 23 MiB), accompanied by `.zip.sha256` for verification; see the [delivery record](docs/pgvn/manager-validation.zh-CN.md#交付与使用). These are local build outputs, distributed separately from Git source. Copy the ZIP and checksum to the target machine, verify and extract them to obtain the runtime directory. Its root directly contains `bin`, `apache`, `deploy`, `tools` and `manager`; launch `manager\PgVNManager.exe`. The smaller `pgvn-manager.zip` is a GUI-only add-on requiring a separate complete runtime. The combined bundle excludes the PostgreSQL server installer, .NET Framework, and Polarion programs and data.
+
 Build with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`; outputs go to `runtime/pgvn-manager`. Add `-RuntimePackageZip <verified-runtime.zip>` to create a combined runtime and GUI archive. The GUI records its own build manifest. See the [Manager guide](tools/pgvn-manager/README.zh-CN.md) for usage, tests and restore limitations, and the [local validation record](docs/pgvn/manager-validation.zh-CN.md) for this build.
 
 <a id="polarion-gui-migration"></a>
@@ -154,7 +156,7 @@ This procedure is for an **isolated Polarion copy on the same Windows host**: mo
 
 ### 1. Prepare the runtime and rollback point
 
-Use a separate Polarion test copy. Every `C:\Polarion` path below refers to that copy; it must not share a data directory with a running original instance. Prepare a complete PgVN + Manager bundle, .NET Framework 4.8 and an installed PostgreSQL server. Extract the bundle to `C:\PgVN-PolarionEval`, retaining the original Polarion programs and SVN repository. Record actual Windows service names, startup modes, repository UUID / HEAD, authentication, authorization, active locks and hooks. Back up configuration and application data; take a consistent backup after freezing writes before the final export.
+Use a separate Polarion test copy. Every `C:\Polarion` path below refers to that copy; it must not share a data directory with a running original instance. Prepare the [combined runtime and GUI archive](#windows-configuration-gui) described above, .NET Framework 4.8 and an installed PostgreSQL server. Extract the bundle to `C:\PgVN-PolarionEval`, retaining the original Polarion programs and SVN repository. Record actual Windows service names, startup modes, repository UUID / HEAD, authentication, authorization, active locks and hooks. Back up configuration and application data; take a consistent backup after freezing writes before the final export.
 
 Example mapping; use the port of your dedicated PostgreSQL instance:
 
