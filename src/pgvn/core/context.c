@@ -9,15 +9,15 @@ void pgvn_metric_query(void *baton,const char *state,apr_interval_time_t elapsed
 {
     pgvn_context *context=baton;
     pgvn_telemetry_query(state,elapsed);
-    InterlockedIncrement64(&context->sql_calls);
-    if(strcmp(state,"00000")) InterlockedIncrement64(&context->sql_errors);
-    InterlockedAdd64(&context->sql_microseconds,elapsed);
+    pgvn_atomic_increment64(&context->sql_calls);
+    if(strcmp(state,"00000")) pgvn_atomic_increment64(&context->sql_errors);
+    pgvn_atomic_add64(&context->sql_microseconds,elapsed);
 }
 
 void pgvn_metric_closed(void *baton)
 {
     pgvn_context *context=baton;
-    InterlockedDecrement(&context->leases);
+    pgvn_atomic_decrement32(&context->leases);
     pgvn_telemetry_connection(-1,0,0);
 }
 
@@ -52,10 +52,10 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
 
 svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
 {
-    if(context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
+    if(pgvn_cancel_is_set(context->cancellation_event))
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new database connections are disabled");
     pgvn_telemetry_connection(1,0,0);
-    if(InterlockedIncrement(&context->leases)>32) {
+    if(pgvn_atomic_increment32(&context->leases)>32) {
         pgvn_telemetry_connection(0,1,0);
         pgvn_metric_closed(context);
         return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgVN connection limit reached");
@@ -98,7 +98,7 @@ const char *pgvn_new_uuid(apr_pool_t *pool)
 
 static svn_error_t *ensure_control_connection(pgvn_context *context)
 {
-    if(!context->control_transaction && context->cancellation_event && WaitForSingleObject(context->cancellation_event,0)==WAIT_OBJECT_0)
+    if(!context->control_transaction && pgvn_cancel_is_set(context->cancellation_event))
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new control requests are disabled");
     /* Detect an idle socket's already-received disconnect before sending the
      * next command. This consumes input only; it never retries a SQL command. */
@@ -184,7 +184,7 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
 
 int pgvn_catalog_version(const char *versions)
 {
-    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5","1,2,3,4,5,6"};
+    const char *known[]={"1","1,2","1,2,3","1,2,3,4","1,2,3,4,5","1,2,3,4,5,6","1,2,3,4,5,6,7"};
     _Static_assert(sizeof(known)/sizeof(*known)==PGVN_CATALOG_VERSION,"Update the supported catalog version list");
     for(int i=0;versions && i<PGVN_CATALOG_VERSION;++i) if(!strcmp(versions,known[i])) return i+1;
     return 0;
@@ -208,6 +208,11 @@ svn_error_t *pgvn_database_validate(pgvn_context *context)
             "AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL));
         int present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
         if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN catalog schema 6 is missing DAV state tables");
+    }
+    if(catalog>=7) {
+        SVN_ERR(pgvn_control_query(&result,context,"SELECT to_regprocedure('pgvn.valid_settings(jsonb,boolean)') IS NOT NULL",0,NULL));
+        int present=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t"); PQclear(result);
+        if(!present) return svn_error_create(PGVN_ERR_SCHEMA,NULL,"PgVN catalog schema 7 is missing the SVN mode validator");
     }
     context->schema_checked_at=apr_time_now();
     return SVN_NO_ERROR;
@@ -252,8 +257,8 @@ svn_error_t *pgvn_status_snapshot(pgvn_status **output,pgvn_context *context,apr
 
 void pgvn_metrics_snapshot(pgvn_metrics *output,pgvn_context *context)
 {
-    output->sql_calls=InterlockedCompareExchange64(&context->sql_calls,0,0);
-    output->sql_errors=InterlockedCompareExchange64(&context->sql_errors,0,0);
-    output->sql_microseconds=InterlockedCompareExchange64(&context->sql_microseconds,0,0);
-    output->connections=InterlockedCompareExchange(&context->leases,0,0);
+    output->sql_calls=pgvn_atomic_read64(&context->sql_calls);
+    output->sql_errors=pgvn_atomic_read64(&context->sql_errors);
+    output->sql_microseconds=pgvn_atomic_read64(&context->sql_microseconds);
+    output->connections=pgvn_atomic_read32(&context->leases);
 }

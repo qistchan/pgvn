@@ -29,7 +29,7 @@ static svn_error_t *run(admin_command *command)
     if(command->flags & OPTION(OPT_HELP)) { admin_help(); return SVN_NO_ERROR; }
     if(command->flags & OPTION(OPT_VERSION)) {
         SVN_ERR(admin_options(command,OPTION(OPT_VERSION),0,0));
-        char buffer[1024]; pgvn_build_json(buffer,sizeof(buffer)); fputs(buffer,stdout);
+        char buffer[PGVN_BUILD_JSON_SIZE]; pgvn_build_json(buffer,sizeof(buffer)); fputs(buffer,stdout);
         return SVN_NO_ERROR;
     }
     SVN_ERR(admin_preflight(command));
@@ -48,7 +48,7 @@ static svn_error_t *run(admin_command *command)
         svn_config_get(config,&hook_root,"pgvn","hook-root",NULL);
     }
     if((!dsn || !*dsn) && !strcmp(command->argv[0],"diagnose")) {
-        char buffer[1024]; pgvn_build_json(buffer,sizeof(buffer));
+        char buffer[PGVN_BUILD_JSON_SIZE]; pgvn_build_json(buffer,sizeof(buffer));
         fputs("{\"database\":\"not_configured\",\"build\":",stdout); fputs(buffer,stdout); puts("}");
         return SVN_NO_ERROR;
     }

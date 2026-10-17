@@ -2,6 +2,11 @@
    in its entirety; textdelta windows use Subversion's own delta engine. */
 #define PGFS_CHUNK_SIZE 1048576
 
+/* Build-time control for the measured legacy transport baseline. */
+#ifndef PGFS_CONTENT_BINARY
+#define PGFS_CONTENT_BINARY 1
+#endif
+
 typedef struct pgfs_reader_t {
     svn_fs_t *fs;
     apr_int64_t content, length, position, cached_chunk;
@@ -45,11 +50,32 @@ static svn_error_t *pgfs_read_full(void *baton,char *buffer,apr_size_t *length)
             const char *values[]={data->repository_id,pgfs_number(reader->content,reader->scratch),
                                  pgfs_number(chunk,reader->scratch)};
             PGresult *result;
+#if PGFS_CONTENT_BINARY
+            SVN_ERR(pgfs_query_format(&result,reader->fs,
+                "SELECT data FROM pgfs.content_chunks WHERE repository_id=$1::uuid "
+                "AND content_id=$2::bigint AND chunk_number=$3::bigint",3,values,NULL,NULL,1));
+#else
             SVN_ERR(pgfs_query(&result,reader->fs,
                 "SELECT encode(data,'hex') FROM pgfs.content_chunks WHERE repository_id=$1::uuid "
                 "AND content_id=$2::bigint AND chunk_number=$3::bigint",3,values));
-            if(PQntuples(result)!=1) { PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Missing PgFS content chunk"); }
+#endif
+            if(PQntuples(result)!=1 || PQnfields(result)!=1 || PQgetisnull(result,0,0)) {
+                PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Missing PgFS content chunk");
+            }
+            apr_int64_t expected=reader->length-chunk*PGFS_CHUNK_SIZE;
+            if(expected>PGFS_CHUNK_SIZE) expected=PGFS_CHUNK_SIZE;
+#if PGFS_CONTENT_BINARY
+            if(PQfformat(result,0)!=1 || PQftype(result,0)!=17 || PQgetlength(result,0,0)!=expected) {
+                PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Invalid PgFS content chunk");
+            }
+            /* Copy before PQclear; only one bounded chunk lives in scratch. */
+            reader->bytes=svn_string_ncreate(PQgetvalue(result,0,0),(apr_size_t)expected,reader->scratch);
+#else
+            if(PQgetlength(result,0,0)!=expected*2) {
+                PQclear(result); return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Invalid PgFS content chunk");
+            }
             reader->bytes=pgfs_decode_hex(PQgetvalue(result,0,0),reader->scratch);
+#endif
             PQclear(result);
             reader->cached_chunk=chunk;
         }

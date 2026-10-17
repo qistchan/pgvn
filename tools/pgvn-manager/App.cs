@@ -19,8 +19,6 @@ using Microsoft.Win32;
 [assembly: AssemblyTitle("PgVN Manager")]
 [assembly: AssemblyDescription("Windows configuration and maintenance console for PgVN")]
 [assembly: AssemblyProduct("PgVN Manager")]
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
 
 namespace PgVN.Manager
 {
@@ -161,7 +159,8 @@ namespace PgVN.Manager
                 if (action == "authz.publish") {
                     if (authzRepository != Convert.ToString(request["repository"]) || authzGeneration == "") throw new InvalidOperationException("请先读取当前仓库规则，再编辑并发布。");
                     request["authz"] = Box("Authz").Text; request["expectedGeneration"] = authzGeneration;
-                    if (!Confirm("用编辑框中的 authz 规则替换仓库「" + request["repository"] + "」的第 " + authzGeneration + " 代规则。请确认用户名和权限。")) return;
+                    request["svnAuthzMode"] = Convert.ToString(((ComboBoxItem)Find<ComboBox>("SvnAuthzMode").SelectedItem).Tag);
+                    if (!Confirm("用编辑框中的 authz 规则替换仓库「" + request["repository"] + "」的第 " + authzGeneration + " 代规则及 SVN 权限模式。bypass 仅影响原生 svn://，要求账号认证，已认证用户可完整读写；HTTP/DAV 继续执行授权。")) return;
                 }
                 if (action == "user.set") {
                     request["userName"] = Box("UserName").Text.Trim(); request["userPassword"] = Find<PasswordBox>("UserPassword").Password; request["withDav"] = Find<CheckBox>("UserDav").IsChecked == true; Find<PasswordBox>("UserPassword").Clear();
@@ -193,6 +192,10 @@ namespace PgVN.Manager
                 if (action == "repo.list") ApplyRepositories(result);
                 if ((action == "authz.read" || action == "authz.publish") && result != null) {
                     Box("Authz").Text = Text(result, "authz"); authzRepository = Convert.ToString(request["repository"]); authzGeneration = Text(result, "generation");
+                    var protocolSettings = result["settings"] as Dictionary<string,object>;
+                    string mode = protocolSettings == null ? "enforce" : Text(protocolSettings,"svn_authz_mode");
+                    foreach (ComboBoxItem item in Find<ComboBox>("SvnAuthzMode").Items) if (Convert.ToString(item.Tag) == (mode == "" ? "enforce" : mode)) Find<ComboBox>("SvnAuthzMode").SelectedItem = item;
+                    Find<TextBlock>("AuthzGeneration").Text = "当前配置代数：" + authzGeneration;
                 }
                 if (action == "logs" && result != null && result.ContainsKey("logs")) {
                     foreach (var item in BackendClient.Records(result["logs"])) { view.Append("--- " + Text(item, "name") + " ---\n" + Text(item, "text")); }
@@ -209,7 +212,7 @@ namespace PgVN.Manager
         void ApplyState(IDictionary<string, object> state)
         {
             loadedRoot = Text(state, "root"); configured = Flag(state, "configured");
-            view.PackageLabel = "摘要校验通过 · " + Text(state, "packageId");
+            view.PackageLabel = "PgVN " + Text(state, "productVersion") + " · 摘要校验通过 · " + Text(state, "packageId");
             view.DatabaseLabel = configured ? (Flag(state, "initialized") ? "已初始化（可运行数据库检查）" : "已有配置 · 请检查数据库") : "待初始化";
             var settings = state["settings"] as Dictionary<string, object>;
             if (settings != null) {

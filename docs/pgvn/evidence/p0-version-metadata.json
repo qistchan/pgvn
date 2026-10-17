@@ -1,0 +1,154 @@
+{
+  "test_id": "p0-version-205c43dc4fe6",
+  "component": "P0 / PX-V01 shared version and build provenance",
+  "status": "PASS",
+  "milestone_complete": false,
+  "created_at": "2026-10-17T12:35:00.438798+00:00",
+  "environment": {
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "architecture": "x86_64",
+    "python": "3.12.14",
+    "compiler": "cc (Debian 14.2.0-19) 14.2.0",
+    "powershell": "7.4.6",
+    "powershell_archive_sha256": "6f6015203c47806c5cc444c19d8ed019695e610fbd948154264bf9ca8e157561"
+  },
+  "build_identity": {
+    "product": "PgVN",
+    "version": "0.1.0-dev",
+    "milestone": "M5",
+    "upstream": {
+      "subversion": "1.14.5",
+      "apr": "1.7.6",
+      "apr_util": "1.6.3",
+      "httpd": "2.4.68",
+      "postgresql": "18.6"
+    },
+    "schemas": {
+      "catalog": 6,
+      "fs": 4
+    },
+    "api_version": 1,
+    "cache_format_version": 0,
+    "capabilities": {
+      "repository_by_id": true,
+      "svn_protocol": true,
+      "dav_protocol": true,
+      "monitor": "full",
+      "svn_authz_bypass": false,
+      "cache_local": false,
+      "cache_redis": false
+    },
+    "identity_format": 1,
+    "svn_base": "1.14.5",
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "configuration": "Release",
+    "git_commit": "d6ded91998d3a64500a3450a3646304c41fa1b08",
+    "git_worktree_dirty": true,
+    "source_manifest_sha256": "16b5983f171c4a27a1c961ae2f6e631bfe91622ba6cb08242c05cb45315a21c2",
+    "migrations_sha256": "fc1d514fd59fed6a6e1bb6c15bb7a015a2ec20b69f80700bfb80658ff21160f6"
+  },
+  "python_component": {
+    "tests_run": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "command": "python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v"
+  },
+  "powershell_component": {
+    "status": "PASS",
+    "checks": [
+      "parse Build-PgVNManager.ps1",
+      "parse Write-PgVNVersion.ps1",
+      "parse Invoke-PgVNManager.ps1",
+      "parse Test-PgVNManager.ps1",
+      "generated assembly and product version",
+      "generated process manifest version",
+      "matching backend accepted",
+      "incompatible backend rejected: version",
+      "incompatible backend rejected: api",
+      "incompatible backend rejected: schema",
+      "incompatible backend rejected: fs",
+      "incompatible backend rejected: platform",
+      "incompatible backend rejected: architecture",
+      "incompatible backend rejected: capability",
+      "incompatible backend rejected: capability_type",
+      "incompatible backend rejected: missing"
+    ],
+    "scope": "Portable version generation and backend compatibility component; Windows W1/W2 acceptance not run",
+    "powershell": "7.4.6",
+    "command": "pwsh -NoProfile -NonInteractive -File tests/pgvn/Test-VersionMetadata.ps1 -WorkDirectory <new-directory>"
+  },
+  "syntax_checked": [
+    "scripts/pgvn/build.py",
+    "scripts/pgvn/build_metadata.py",
+    "scripts/pgvn/check_pair.py",
+    "scripts/pgvn/package.py",
+    "tests/pgvn/test_build_metadata.py",
+    "tests/pgvn/test_m0.py",
+    "tests/pgvn/test_m4.py"
+  ],
+  "csproj_xml_parse": "PASS",
+  "whitespace_check": "git -c core.whitespace=cr-at-eol diff --check: PASS (existing CRLF preserved)",
+  "validation_inputs": {
+    "scripts/pgvn/build.py": "6c827442851a7abda9ef56d0f3ed868df4918d0698705909b7e4186570a52995",
+    "scripts/pgvn/build_metadata.py": "f2585bcfa07e14f63b50802ec5d54e9306c27bec304d382dbdfd76af311a77b3",
+    "scripts/pgvn/check_pair.py": "6b254a93ef701fe1a34fc9500061fe61601536cd7c5ba3fa26f5a0e4e83d9b63",
+    "scripts/pgvn/package.py": "62b77b710fdaf27f8dd119904be9309f4f1c6817270f25ddef1d7f6ce6799c55",
+    "src/pgvn/admin/main.c": "c311ceefa0764a357a6e17262095be5322de340ed03afae293a3858680b7f6da",
+    "src/pgvn/core/build_info.c": "8ee083b4dd65c8698129c4eb2adc6f2901bdcc420fe082afc56c5c3b3f985382",
+    "src/pgvn/core/build_info.h": "3580ad3c9f1b91ee39f189d5fb5ee4e1fd3fec283973e47628132da8a643ca8d",
+    "src/pgvn/core/pgvn.h": "52c3626d098b63c8be404c8a1c703168a9baa9d8a9a24e8864aa9cc4a37734fa",
+    "src/pgvn/dav/bootstrap.c": "80e8e4e4a4fd395c028d5d9ca9055949e8220a9132afea049a0c88fb425be421",
+    "src/pgvn/httpd/entry.c": "0c8a3f3046fb98d3b5c0206cf52943b1f166f3645e76eb4648b7b0b2a6738218",
+    "src/pgvn/serve/main.c": "22af2cb81415df2c75022772cbab41c9baad33b6ae8cc2427f7d70753e954359",
+    "src/pgvn/version.json": "60b3f95c14ad6f04e8e52dd563b68439ecdf102650b942ec362707e7c1c28ce6",
+    "tests/pgvn/Test-VersionMetadata.ps1": "41c59829b69702d3561c0f1e85e9762788863537df64a29728f523d55fec201b",
+    "tests/pgvn/test_build_metadata.py": "45c89feb01dac1755ea3f0fbd8913e7fc5dcdfcc7116ea2278d186fdcb61ab77",
+    "tests/pgvn/test_m0.py": "981e46b08ab38fb18800a84a718abf025a6071727a336de1aeb5b6e2cc3dda21",
+    "tests/pgvn/test_m4.py": "f1d1b699e2e2506ce01f316d38366fce22775881e546564b98d60abf27ec6781",
+    "tools/pgvn-manager/App.cs": "7b951b8211e4299d5595eab30a1be37a7cd975e7286de67dbe1d08d9d60c875c",
+    "tools/pgvn-manager/Build-PgVNManager.ps1": "e563fed7084242c6f1962fe05c7014e400c47ca1392c370981b2238f61349b18",
+    "tools/pgvn-manager/Invoke-PgVNManager.ps1": "b4912f8b04989d56f3ea0a4e329d82f407002c018c3620d071ad6209ba5b419d",
+    "tools/pgvn-manager/PgVN.Manager.csproj": "88b2f279bd8a5cee22ec59306a01a0c833c1f4fbdf08020e9bb2551d4c61e705",
+    "tools/pgvn-manager/Test-PgVNManager.ps1": "1604cc9e6f859c90250f54f97089fcc318f850e1592aff7a165d9d1e467ea73a",
+    "tools/pgvn-manager/Write-PgVNVersion.ps1": "2cea0473c0f269e95ea3930c200ec6dce9815862f82b948deb3fc65dca8afb3e"
+  },
+  "raw_outputs": {
+    "artifacts/pgvn/tests/p0-version-205c43dc4fe6/powershell.log": "052607ea8fe1d1354325a66b1416d92a6cdb2bc63c928535e82d7aaa56eb5479",
+    "artifacts/pgvn/tests/p0-version-205c43dc4fe6/python.log": "d9c9784265b747f065b9e8d04742ac97eada3f370680b12b41df788177d76aa5",
+    "artifacts/pgvn/tests/p0-capability-type-before.log": "ad6ddc21e4970bd225e8584b42748ede66e57121bd2e0231757ab64d09b3a08a"
+  },
+  "initial_attempts": [
+    {
+      "status": "environment_startup_failure",
+      "exit_code": 134,
+      "reason": "PowerShell attempted to create a cache in the read-only user home.",
+      "resolution": "Use dedicated XDG cache/config/data directories under /tmp; do not change HOME."
+    },
+    {
+      "status": "test_harness_failure",
+      "exit_code": 1,
+      "reason": "An in-memory extracted PowerShell function lost PSScriptRoot.",
+      "resolution": "Load unchanged production function definitions from a real component script beside a copied version descriptor."
+    },
+    {
+      "status": "regression_reproduced",
+      "exit_code": 1,
+      "reason": "PowerShell implicit conversion accepted boolean monitor=true where monitor=\"full\" is required.",
+      "resolution": "Require both the declared value type and value to match; final capability_type regression passes.",
+      "raw_output": "artifacts/pgvn/tests/p0-capability-type-before.log"
+    }
+  ],
+  "scope": {
+    "native_c_checks": "Host-compiled production formatter and Apache runtime branch with explicit APR/APR-util/libpq/Windows API doubles; not Windows executables.",
+    "package_pair_checks": "Synthetic unit fixtures, not platform release packages.",
+    "powershell_checks": "PowerShell 7.4.6 on Linux; no Windows PowerShell 5.1, WPF or SCM acceptance.",
+    "linux_metadata_only": "PASS; generated build inputs, no native products.",
+    "windows_native_build": "NOT_RUN",
+    "windows_W1": "NOT_COMPLETE",
+    "linux_native_products": "NOT_IMPLEMENTED",
+    "paired_platform_acceptance_W2": "NOT_COMPLETE",
+    "existing_M6_M7": "UNCHANGED"
+  }
+}

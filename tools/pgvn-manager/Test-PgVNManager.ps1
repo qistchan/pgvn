@@ -48,13 +48,38 @@ try {
     $failed=$false
     try { Call @{action='inspect';root=$badRoot} > $null } catch { if($_.Exception.Message -notmatch '部署公共脚本摘要不匹配'){throw}; $failed=$true }
     if(-not $failed){throw 'Modified bootstrap helper accepted'}
+    # Supply an intact helper and correctly rehashed fixture manifest. Version,
+    # schema, API and capability checks must reject it before state/DB access.
+    Copy-Item -LiteralPath (Join-Path $RuntimeRoot 'deploy/windows/PgVN.Common.ps1') -Destination (Join-Path $deploy 'PgVN.Common.ps1') -Force
+    $sourceManifest=Get-Content -LiteralPath (Join-Path $RuntimeRoot 'package-manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $helperHash=(Get-FileHash -LiteralPath (Join-Path $deploy 'PgVN.Common.ps1') -Algorithm SHA256).Hash.ToLowerInvariant()
+    foreach ($case in @('version','api','schema','capability','capability_type','missing')) {
+        $identity=$sourceManifest.build_identity | ConvertTo-Json -Depth 14 | ConvertFrom-Json
+        switch ($case) {
+            'version' { $identity.version='999.0.0' }
+            'api' { $identity.api_version=999 }
+            'schema' { $identity.schemas.catalog=999 }
+            'capability' { $identity.capabilities.repository_by_id=$false }
+            'capability_type' { $identity.capabilities.monitor=$true }
+        }
+        $fixture=@{files=@{'deploy/windows/PgVN.Common.ps1'=@{sha256=$helperHash}};build_identity=$identity}
+        if ($case -eq 'missing') { $fixture.Remove('build_identity') }
+        [IO.File]::WriteAllText($manifest,($fixture | ConvertTo-Json -Depth 14),$utf8)
+        [IO.File]::WriteAllText(($manifest + '.sha256'),((Get-FileHash -LiteralPath $manifest).Hash.ToLowerInvariant() + '  package-manifest.json'),$utf8)
+        $failed=$false
+        try { Call @{action='inspect';root=$badRoot} > $null } catch { if($_.Exception.Message -notmatch '版本|能力|schema|API'){throw}; $failed=$true }
+        if(-not $failed){throw ('Incompatible backend accepted: ' + $case)}
+    }
 } finally {
     $resolved=[IO.Path]::GetFullPath($temporary)
     if(-not $resolved.StartsWith([IO.Path]::GetTempPath(),[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetFileName($resolved) -notmatch '^pgvn-manager-test-[0-9a-f]{32}$'){throw 'Unsafe temporary cleanup target'}
     Remove-Item -LiteralPath $resolved -Recurse -Force
 }
 $assembly=[Reflection.Assembly]::LoadFrom((Join-Path $BuildDirectory 'PgVNManager.exe'))
+$productVersion=Get-Content -LiteralPath (Join-Path $BuildDirectory 'version.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$informational=@($assembly.GetCustomAttributes([Reflection.AssemblyInformationalVersionAttribute],$false))[0].InformationalVersion
+if($informational -cne $productVersion.version){throw 'GUI assembly/product version mismatch'}
 Add-Type -AssemblyName PresentationFramework
 $stream=$assembly.GetManifestResourceStream('PgVN.Manager.MainWindow.xaml')
 try{$window=[Windows.Markup.XamlReader]::Load($stream);if($window.FindName('Navigation').Items.Count -ne 6){throw 'Navigation incomplete'};$window.Close()}finally{$stream.Dispose()}
-@{status='PASS';scope='Package identity, inherited module isolation, allowlist, invalid target, bootstrap integrity before execution, WPF XAML and actual Windows argument parsing';package=$state['packageId']} | ConvertTo-Json
+@{status='PASS';scope='Package identity, version/API/schema/capability rejection, generated GUI version, inherited module isolation, allowlist, invalid target, bootstrap integrity before execution, WPF XAML and actual Windows argument parsing';package=$state['packageId']} | ConvertTo-Json

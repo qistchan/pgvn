@@ -47,6 +47,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Bui
 
 输出默认在 `runtime/pgvn-manager`，附加包为相邻 `.zip`。如需将 GUI 与一个已验证的完整 CLI 运行包合并，传入 `-RuntimePackageZip <完整运行包.zip>`。组合包保留原有 runtime manifest，Manager 使用独立 `manager-manifest.json` 记录源码与文件摘要，不把新增 GUI 宣称为原冻结构建的门禁结果。也可用 Visual Studio / MSBuild 打开 `PgVN.Manager.csproj`，需要 .NET Framework 4.8 targeting pack。
 
+版本信息统一读取仓库的 `src/pgvn/version.json`，由 `Write-PgVNVersion.ps1` 生成程序集版本、产品版本及进程清单。构建包包含对应的 `version.json`。GUI 显示运行包的产品版本，并在任何管理操作前检查平台、版本、API、schema 和所需后端能力；不匹配时拒绝操作。新增检查后的 GUI 需要配套重建的运行包，不能直接使用历史包补写版本信息。
+
+`tests/pgvn/Test-VersionMetadata.ps1` 可单独验证版本生成和后端兼容性函数；Linux PowerShell 组件结果不替代 Windows PowerShell 5.1、WPF、服务与完整包回归。
+
+开发源码新增「原生 SVN 权限模式」和当前 generation：先读取当前规则，再选择 enforce/bypass 并发布。bypass 只影响 svn://，固定要求认证并将 anonymous_access 设为 none；HTTP/DAV 继续执行原授权。发布保留当前 identity_domain、authenticated_access、groups 和 hooks，generation 冲突时拒绝覆盖。该入口需要 schema 7 的配套新构建，Windows GUI 实际验收按本轮要求暂缓。
+
 ## 代码结构
 
 `MainWindow.xaml` 为界面；`App.cs` 管理表单、状态和异步操作；`BackendClient.cs` 使用固定 PowerShell 进程、UTF-8 标准输入协议及进程 Job；`Invoke-PgVNManager.ps1` 校验操作白名单、目标、配置和权限，调用当前运行包的部署脚本与 `pgvnadmin`。后台不接受任意 SQL、脚本路径或命令行。每个运行目录使用命名互斥锁串行化管理操作。

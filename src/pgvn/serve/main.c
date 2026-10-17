@@ -130,7 +130,7 @@ int wmain(int argc, wchar_t **argv)
     apr_pool_t *arguments=svn_pool_create(NULL);
     for (int i = 1; i < argc; ++i) {
         if (!wcscmp(argv[i], L"--version") || !wcscmp(argv[i], L"--diagnose")) {
-            char json[1024];
+            char json[PGVN_BUILD_JSON_SIZE];
             pgvn_build_json(json, sizeof(json));
             fputs(json, stdout);
             svn_pool_destroy(arguments);

@@ -181,7 +181,7 @@ static const char sample_sql[]=
     "'svn_locks',COALESCE((SELECT sum(lock_count) FROM pgvn_monitor.locks),0))::text,''::text,''::text "
     "UNION ALL SELECT 'repositories',row_to_json(q)::text,id::text,name||' '||id::text||' '||svn_uuid::text FROM "
     "(SELECT repository_id AS id,left(canonical_name,256) AS name,length(canonical_name)>256 AS name_truncated,"
-    "enabled,generation,head_rev,svn_uuid,last_commit_at,active_transactions,lock_count FROM pgvn_monitor.repositories ORDER BY repository_id LIMIT 1001) q "
+    "enabled,generation,head_rev,svn_uuid,last_commit_at,active_transactions,lock_count,svn_authz_mode FROM pgvn_monitor.repositories ORDER BY repository_id LIMIT 1001) q "
     "UNION ALL SELECT 'nodes',row_to_json(q)::text,instance_id::text,'' FROM "
     "(SELECT instance_id,node_id,component,version,process_id,started_at,last_seen_at,"
     "extract(epoch FROM clock_timestamp()-last_seen_at)::double precision AS age_seconds,metrics FROM pgvn_monitor.nodes ORDER BY node_id,instance_id LIMIT 1001) q "
@@ -210,7 +210,7 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
         "to_regclass('pgvn.dav_transactions') IS NOT NULL AND to_regclass('pgvn.dav_bindings') IS NOT NULL",0,NULL);
     if(!result) return 0;
     int valid=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"1,2,3,4")
-        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5,6") && !strcmp(PQgetvalue(result,0,2),"f")
+        && !strcmp(PQgetvalue(result,0,1),"1,2,3,4,5,6,7") && !strcmp(PQgetvalue(result,0,2),"f")
         && !strcmp(PQgetvalue(result,0,3),"on") && !strcmp(PQgetvalue(result,0,4),PGVN_STORAGE_HASHES)
         && !strcmp(PQgetvalue(result,0,5),PGVN_CATALOG_HASHES);
     valid=valid && !strcmp(PQgetvalue(result,0,9),"t");

@@ -11,7 +11,7 @@ import sys
 import time
 import traceback
 import uuid
-from fixture import Fixture, ROOT, RUNTIME
+from fixture import Fixture, ROOT, RUNTIME, CATALOG_VERSION
 
 TEST_ID = "m3-credentials-" + uuid.uuid4().hex[:12]
 DATABASE = "pgvn_m3c_" + TEST_ID.rsplit("-", 1)[1]
@@ -59,7 +59,7 @@ def setup_database():
     fixture.sql(f"CREATE DATABASE {DATABASE} OWNER {OWNER} ENCODING 'UTF8' TEMPLATE template0", database="postgres")
     admin("db", "init", role=OWNER)
     admin("db", "grant", "--admin-role", "pgvn_admin", "--service-role", "pgvn_service", "--monitor-role", "pgvn_monitor", role=OWNER)
-    assert admin("db", "check")["schema"]["pgvn"] == 6
+    assert admin("db", "check")["schema"]["pgvn"] == CATALOG_VERSION
 
 
 def checks():

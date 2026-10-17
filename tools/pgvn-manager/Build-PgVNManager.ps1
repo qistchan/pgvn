@@ -14,10 +14,13 @@ if (-not (Test-Path -LiteralPath $compiler)) { throw '需要 Windows x64 及 .NE
 $release=(Get-ItemProperty 'HKLM:/SOFTWARE/Microsoft/NET Framework Setup/NDP/v4/Full' -Name Release).Release
 if ($release -lt 528040) { throw '请先安装 .NET Framework 4.8 或更新版本。' }
 [void][IO.Directory]::CreateDirectory($OutputDirectory)
+$versionSource=Join-Path $projectRoot 'build/pgvn-manager/generated/PgVN.Version.cs'
+& (Join-Path $PSScriptRoot 'Write-PgVNVersion.ps1') -OutputPath $versionSource
+$productVersion=Get-Content -LiteralPath (Join-Path $projectRoot 'src/pgvn/version.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $references=@('System.dll','System.Core.dll','System.Xml.dll','System.Web.Extensions.dll','System.Windows.Forms.dll','System.Xaml.dll') | ForEach-Object { '/reference:' + (Join-Path $framework $_) }
 $references += @('PresentationFramework.dll','PresentationCore.dll','WindowsBase.dll') | ForEach-Object { '/reference:' + (Join-Path $framework ('WPF/' + $_)) }
 $exe=Join-Path $OutputDirectory 'PgVNManager.exe'
-$arguments=@('/nologo','/target:winexe','/platform:x64','/optimize+','/warn:4','/warnaserror+','/codepage:65001',('/out:' + $exe),('/win32manifest:' + (Join-Path $PSScriptRoot 'app.manifest')),('/resource:' + (Join-Path $PSScriptRoot 'MainWindow.xaml') + ',PgVN.Manager.MainWindow.xaml')) + $references + @((Join-Path $PSScriptRoot 'App.cs'),(Join-Path $PSScriptRoot 'BackendClient.cs'))
+$arguments=@('/nologo','/target:winexe','/platform:x64','/optimize+','/warn:4','/warnaserror+','/codepage:65001',('/out:' + $exe),('/win32manifest:' + [IO.Path]::ChangeExtension($versionSource,'.manifest')),('/resource:' + (Join-Path $PSScriptRoot 'MainWindow.xaml') + ',PgVN.Manager.MainWindow.xaml')) + $references + @($versionSource,(Join-Path $PSScriptRoot 'App.cs'),(Join-Path $PSScriptRoot 'BackendClient.cs'))
 & $compiler @arguments
 if ($LASTEXITCODE -ne 0) { throw '编译失败。' }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'App.config') -Destination ($exe + '.config') -Force
@@ -28,12 +31,14 @@ foreach ($file in @('Invoke-PgVNManager.ps1','README.zh-CN.md')) {
     [IO.File]::WriteAllText((Join-Path $OutputDirectory $file),$text,$fileEncoding)
 }
 foreach ($file in @('LICENSE','NOTICE')) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $OutputDirectory $file) -Force }
+Copy-Item -LiteralPath (Join-Path $projectRoot 'src/pgvn/version.json') -Destination (Join-Path $OutputDirectory 'version.json') -Force
 $inputs=[ordered]@{}
-foreach ($file in @('App.cs','BackendClient.cs','MainWindow.xaml','App.config','app.manifest','PgVN.Manager.csproj','Invoke-PgVNManager.ps1','Build-PgVNManager.ps1','README.zh-CN.md')) { $inputs[$file]=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
+$inputs['../../src/pgvn/version.json']=(Get-FileHash -LiteralPath (Join-Path $projectRoot 'src/pgvn/version.json') -Algorithm SHA256).Hash.ToLowerInvariant()
+foreach ($file in @('App.cs','BackendClient.cs','MainWindow.xaml','App.config','app.manifest','PgVN.Manager.csproj','Invoke-PgVNManager.ps1','Build-PgVNManager.ps1','Write-PgVNVersion.ps1','README.zh-CN.md')) { $inputs[$file]=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
 foreach ($file in @('LICENSE','NOTICE')) { $inputs['../../' + $file]=(Get-FileHash -LiteralPath (Join-Path $projectRoot $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
 $files=[ordered]@{}
-foreach ($file in @('PgVNManager.exe','PgVNManager.exe.config','Invoke-PgVNManager.ps1','README.zh-CN.md','LICENSE','NOTICE')) { $files[$file]=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
-$manifest=[ordered]@{format=1;product='PgVN Manager';version='0.1.0-internal';platform='windows-x64';framework='.NET Framework 4.8';created_utc=[DateTime]::UtcNow.ToString('o');compiler=(Get-Item -LiteralPath $compiler).VersionInfo.FileVersion;sources=$inputs;files=$files}
+foreach ($file in @('PgVNManager.exe','PgVNManager.exe.config','Invoke-PgVNManager.ps1','version.json','README.zh-CN.md','LICENSE','NOTICE')) { $files[$file]=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
+$manifest=[ordered]@{format=1;product='PgVN Manager';version=$productVersion.version;api_version=$productVersion.api_version;schemas=$productVersion.schemas;platform='windows-x64';framework='.NET Framework 4.8';created_utc=[DateTime]::UtcNow.ToString('o');compiler=(Get-Item -LiteralPath $compiler).VersionInfo.FileVersion;sources=$inputs;files=$files}
 $encoding=New-Object Text.UTF8Encoding($false)
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'manager-manifest.json'),($manifest | ConvertTo-Json -Depth 6),$encoding)
 $archive=$OutputDirectory.TrimEnd('\') + '.zip'
@@ -53,6 +58,9 @@ if ($RuntimePackageZip) {
         if ($candidates.Count -ne 1) { throw '运行包必须包含唯一的完整部署根目录。' }
         $bundleRoot=$candidates[0].FullName
     }
+    $runtimeManifest=Get-Content -LiteralPath (Join-Path $bundleRoot 'package-manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $runtimeIdentity=$runtimeManifest.PSObject.Properties['build_identity']
+    if (-not $runtimeIdentity -or $runtimeIdentity.Value.version -cne $productVersion.version -or $runtimeIdentity.Value.api_version -ne $productVersion.api_version -or $runtimeIdentity.Value.schemas.catalog -ne $productVersion.schemas.catalog) { throw '运行包与 GUI 的产品版本、API 或 schema 不匹配；请从同一源码重新构建。' }
     $manager=Join-Path $bundleRoot 'manager'; [void][IO.Directory]::CreateDirectory($manager)
     foreach ($file in @($files.Keys) + @('manager-manifest.json')) { Copy-Item -LiteralPath (Join-Path $OutputDirectory $file) -Destination (Join-Path $manager $file) }
     $bundleZip=$combined + '.zip'

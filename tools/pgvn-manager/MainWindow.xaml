@@ -132,6 +132,10 @@
      <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
       <TextBlock Text="当前仓库的访问规则" Style="{StaticResource Subheading}"/><TextBlock Text="先读取当前规则，再编辑并发布；若期间被其他管理员更新，程序会拒绝覆盖。其他 groups/hooks/settings 保留。示例给 alice 读写权限，其余用户无权限。" Style="{StaticResource Muted}"/>
       <WrapPanel><Button Content="读取当前规则" Tag="authz.read"/></WrapPanel>
+      <TextBlock x:Name="AuthzGeneration" Text="当前配置代数：请先读取" Style="{StaticResource Muted}"/>
+      <Label Target="{Binding ElementName=SvnAuthzMode}" Content="原生 SVN 权限模式" Padding="0"/>
+      <ComboBox x:Name="SvnAuthzMode" SelectedIndex="0"><ComboBoxItem Tag="enforce" Content="enforce — 执行路径权限"/><ComboBoxItem Tag="bypass" Content="bypass — 认证用户完整读写"/></ComboBox>
+      <TextBlock Text="仅影响 svn://；bypass 固定要求账号认证并关闭匿名访问。HTTP/DAV 保持原授权，维护只读、Hook 和事务保护继续生效。" Style="{StaticResource Muted}"/>
       <TextBox x:Name="Authz" Text="[/]&#10;alice = rw&#10;* =" AcceptsReturn="True" Height="135" VerticalScrollBarVisibility="Auto" FontFamily="Consolas, Microsoft YaHei UI" VerticalContentAlignment="Top"/>
       <WrapPanel><Button Content="验证并发布规则" Tag="authz.publish" Style="{StaticResource Primary}"/></WrapPanel>
      </StackPanel></Border>

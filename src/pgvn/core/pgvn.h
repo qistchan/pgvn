@@ -2,15 +2,12 @@
 #define PGVN_CORE_H
 
 #include <stddef.h>
+#include "build_info.h"
 #include <apr_pools.h>
 #include <apr_time.h>
 #include "svn_error.h"
 #include "svn_repos.h"
 
-#define PGVN_VERSION "0.1.0-dev"
-#define PGVN_MILESTONE "M5"
-#define PGVN_SVN_BASE "1.14.5"
-#define PGVN_CATALOG_VERSION 6
 #define PGVN_MONITOR_QUEUE_LIMIT 64
 #define PGVN_MONITOR_HEADER_LIMIT 32768
 #define PGVN_MONITOR_WORKERS 2
@@ -140,8 +137,6 @@ svn_error_t *pgvn_status_snapshot(pgvn_status **snapshot, pgvn_context *context,
                                 apr_pool_t *pool);
 void pgvn_metrics_snapshot(pgvn_metrics *snapshot,pgvn_context *context);
 
-/* No credentials, repository names or local paths are exposed in build info. */
-int pgvn_build_json(char *buffer, size_t size);
 pgvn_exit_code pgvn_error_exit_code(const svn_error_t *error);
 
 #endif

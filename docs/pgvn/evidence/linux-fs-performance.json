@@ -1,0 +1,368 @@
+{
+  "format": 1,
+  "time_utc": "2026-10-17T13:33:19.955852+00:00",
+  "status": "PASS",
+  "scope": "Linux FS SDK/ELF/API and binary-content transport exploration; complete product acceptance pending",
+  "milestone_complete": false,
+  "windows_acceptance": "DEFERRED_BY_USER",
+  "build_identity": {
+    "product": "PgVN",
+    "version": "0.1.0-dev",
+    "milestone": "M5",
+    "upstream": {
+      "subversion": "1.14.5",
+      "apr": "1.7.6",
+      "apr_util": "1.6.3",
+      "httpd": "2.4.68",
+      "postgresql": "18.6"
+    },
+    "schemas": {
+      "catalog": 7,
+      "fs": 4
+    },
+    "api_version": 1,
+    "cache_format_version": 0,
+    "capabilities": {
+      "repository_by_id": true,
+      "svn_protocol": true,
+      "dav_protocol": true,
+      "monitor": "full",
+      "svn_authz_bypass": true,
+      "cache_local": false,
+      "cache_redis": false
+    },
+    "identity_format": 1,
+    "svn_base": "1.14.5",
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "configuration": "Release",
+    "git_commit": "d6ded91998d3a64500a3450a3646304c41fa1b08",
+    "git_worktree_dirty": true,
+    "source_manifest_sha256": "c9c24e5e94710779342326e4f40cd2f6eeed02cc8f7e858b15a44103286c9d1d",
+    "migrations_sha256": "3e06a286df5f9ee64ba8b1733cfd00036b53d69553d7d84a8e4988f53420ac45"
+  },
+  "raw_report": {
+    "path": "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/report.json",
+    "sha256": "920369ce3f79d66fa6f9847aa634ee210df2780c131b2cab44c966561725d499"
+  },
+  "source_snapshot": {
+    "path": "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/frozen-builds/build-inputs.json",
+    "sha256": "e93cd84e76e397a3103039e0c192198a43cc7b1e083259732067d62bdfb34cc2"
+  },
+  "sdk": {
+    "path": "build/pgvn/linux-sdk-v2/sdk-manifest.json",
+    "sha256": "811d3084d7c6292a0c48608a335dbacc09e3e7cf2bc54eeb9eabe7b05ee8365c",
+    "sources": [
+      {
+        "name": "apr",
+        "version": "1.7.6",
+        "tag": "1.7.6",
+        "commit": "5c18df51a91bcb3807f78eb36841d4d2ccf5563d",
+        "url": "https://codeload.github.com/apache/apr/tar.gz/5c18df51a91bcb3807f78eb36841d4d2ccf5563d",
+        "archive": "apr.tar.gz",
+        "sha256": "305bec39df3dc150a0cdc86283105d46cff6294f62463cc720b198b4684dac9b"
+      },
+      {
+        "name": "apr-util",
+        "version": "1.6.3",
+        "tag": "1.6.3",
+        "commit": "28327eeca2614816c1fa33ff7c4105213e0ad938",
+        "url": "https://codeload.github.com/apache/apr-util/tar.gz/28327eeca2614816c1fa33ff7c4105213e0ad938",
+        "archive": "apr-util.tar.gz",
+        "sha256": "e98923a18c0c20d105c73b531637fd5e085bf8dc77a4ba9f0ff3fcd54bac842a"
+      },
+      {
+        "name": "subversion",
+        "version": "1.14.5",
+        "tag": "1.14.5",
+        "url": "https://codeload.github.com/apache/subversion/tar.gz/refs/tags/1.14.5",
+        "archive": "subversion.tar.gz",
+        "sha256": "e6396e99a08ad5a7d944f285340821ce0acbaa8a40f1c82dc79715ac94c927a8"
+      },
+      {
+        "name": "postgresql",
+        "version": "18.6",
+        "tag": "REL_18_6",
+        "commit": "724edf9bde9d356724ad384a2e196edc3c9f80f7",
+        "url": "https://codeload.github.com/postgres/postgres/tar.gz/724edf9bde9d356724ad384a2e196edc3c9f80f7",
+        "archive": "postgresql.tar.gz",
+        "sha256": "970fe3be21ec37e7a11addcc6bf81da71de95b5a830f4bd7c3744476486a002c"
+      }
+    ],
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "files_verified": 1227,
+    "system_packages_recorded": 185,
+    "build_tool_image": "sha256:b9c8468e09d178719299d397c1a45e0e7eac0bef66cdcf6db3701b08c8939f10"
+  },
+  "images": {
+    "pgvn-linux-builder:ubuntu24": "sha256:1cdc47c866521d0d6c8d50a3bc04db50b00971534aaa1e12297a7910a4c1875e",
+    "postgres:18.6": "sha256:29754c7520f4b9654cf8ff98e19ac73b88e255c3a53f6236ebe9d52249bb6df3"
+  },
+  "checks": {
+    "orchestration": 36,
+    "fs_assertions": {
+      "hex": 500,
+      "binary": 500
+    },
+    "metadata_tests": 20,
+    "source_snapshot_matches": true,
+    "sdk_inventory_matches": true,
+    "historical_migrations_unchanged": {
+      "sql/001_initial.sql": "942879a710778c812782dca672f918c28d5802c9625ed03ec0e0a2a4ce583a92",
+      "sql/002_version_tree.sql": "dcde73f5e4102b3ac57f72ea1acbfc380e99dff7010c84dc99b9263047672e79",
+      "sql/003_locks.sql": "2ce3f44d60bb5f393cf3d629e7d8a41248a85403c343e417293f2e9e30b5b63e",
+      "sql/004_hotcopy.sql": "9a60d298a6841f839cab69196d25195076913f0ae1c37844e907ef14299d7742",
+      "sql/pgvn/001_catalog.sql": "a9aa6811eca41686f02186cb0f11ef252a7446d18ea324baa719dcd22358abe4",
+      "sql/pgvn/002_admin.sql": "cd504fb6437559ea340dc545c6ca0882c3750a2d090dacf64bdf061454313713",
+      "sql/pgvn/003_credentials.sql": "0a98f5f68b2cdfd25303c2c3365560d2f0f4d9ef0194e890afc0b7f18665ccdc",
+      "sql/pgvn/004_protocol.sql": "f0901271963fcb283e53afe96cf2fb81d8b456b5ec9b857e2bf014dfe8c16945",
+      "sql/pgvn/005_monitor.sql": "37cdce515bcf8508ef8f4f2b1b2fc18c5c347040975f14523067b7cf103a6cbd",
+      "sql/pgvn/006_dav_state.sql": "48b73740f2af1602ad7d54ab64b32ca61f85d430adb7939f155bba05131825df"
+    },
+    "container_removed": true,
+    "native_probe_principal_libraries_verified": true,
+    "timed_read_errors": 0
+  },
+  "method": {
+    "warmup_reads_per_worker": 1,
+    "rounds": 3,
+    "repetitions": 10,
+    "dataset_bytes": 8388639,
+    "seed": "0x73b198ac integer mixing by byte offset",
+    "cache": "same dataset prewarmed for each worker; no OS/PG cold-cache claim; no Redis/L1",
+    "payload": "sum PQgetlength on content chunk columns, excludes protocol overhead",
+    "limits": "shared container host; local PG only; client CPU includes SHA1; PG CPU/I/O and wire protocols not measured",
+    "resources": "Ubuntu builder 4 CPU/1GiB, PG 2 CPU/512MiB with shared_buffers=64MiB"
+  },
+  "comparison": [
+    {
+      "concurrency": 1,
+      "hex": {
+        "samples": 30,
+        "p50_ms": 195.206638,
+        "p95_ms": 224.380686,
+        "p99_ms": 248.272825,
+        "mean_client_cpu_ms": 170.39441453333333,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          16777278
+        ],
+        "round_p95_ms": [
+          206.250581,
+          248.272825,
+          205.68515
+        ],
+        "round_operations_per_second": [
+          5.105826792102487,
+          4.9603961081856704,
+          5.092277312494007
+        ],
+        "round_mean_cpu_ms": [
+          169.1694007,
+          173.3759602,
+          168.6378827
+        ]
+      },
+      "binary": {
+        "samples": 30,
+        "p50_ms": 46.6392945,
+        "p95_ms": 48.127267,
+        "p99_ms": 51.474236,
+        "mean_client_cpu_ms": 40.46471506666667,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          8388639
+        ],
+        "round_p95_ms": [
+          47.889003,
+          48.127267,
+          51.474236
+        ],
+        "round_operations_per_second": [
+          21.68382847005578,
+          21.464101016301527,
+          20.914309181344606
+        ],
+        "round_mean_cpu_ms": [
+          40.3379715,
+          39.8909695,
+          41.1652042
+        ]
+      },
+      "p95_reduction_percent": 78.55106521957956,
+      "mean_client_cpu_reduction_percent": 76.25232307203898
+    },
+    {
+      "concurrency": 8,
+      "hex": {
+        "samples": 240,
+        "p50_ms": 317.776873,
+        "p95_ms": 599.996659,
+        "p99_ms": 794.138293,
+        "mean_client_cpu_ms": 178.96995993333334,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          16777278
+        ],
+        "round_p95_ms": [
+          553.774764,
+          722.656618,
+          591.975319
+        ],
+        "round_operations_per_second": [
+          18.620103575374984,
+          18.38473390362344,
+          18.33264766557518
+        ],
+        "round_mean_cpu_ms": [
+          177.018177825,
+          175.2505047,
+          184.641197275
+        ]
+      },
+      "binary": {
+        "samples": 240,
+        "p50_ms": 90.912133,
+        "p95_ms": 144.98497,
+        "p99_ms": 162.51516,
+        "mean_client_cpu_ms": 44.5237482375,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          8388639
+        ],
+        "round_p95_ms": [
+          128.2496,
+          154.66218,
+          136.938939
+        ],
+        "round_operations_per_second": [
+          77.35736391621532,
+          73.50756988215885,
+          74.29023699574391
+        ],
+        "round_mean_cpu_ms": [
+          43.8169070875,
+          44.539760425,
+          45.2145772
+        ]
+      },
+      "p95_reduction_percent": 75.83570377847721,
+      "mean_client_cpu_reduction_percent": 75.12222260423749
+    },
+    {
+      "concurrency": 32,
+      "hex": {
+        "samples": 960,
+        "p50_ms": 1685.7135185000002,
+        "p95_ms": 2410.454534,
+        "p99_ms": 2615.904855,
+        "mean_client_cpu_ms": 188.189205503125,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          16777278
+        ],
+        "round_p95_ms": [
+          2352.933741,
+          2391.634896,
+          2454.865356
+        ],
+        "round_operations_per_second": [
+          18.039000292475365,
+          17.927286086061038,
+          18.254139709099068
+        ],
+        "round_mean_cpu_ms": [
+          186.855255696875,
+          190.241209059375,
+          187.471151753125
+        ]
+      },
+      "binary": {
+        "samples": 960,
+        "p50_ms": 405.131299,
+        "p95_ms": 584.555808,
+        "p99_ms": 653.514972,
+        "mean_client_cpu_ms": 46.06837691875,
+        "queries": [
+          15
+        ],
+        "chunk_column_bytes": [
+          8388639
+        ],
+        "round_p95_ms": [
+          612.542786,
+          541.568125,
+          588.537618
+        ],
+        "round_operations_per_second": [
+          76.32311628070161,
+          73.18768812320208,
+          71.23016141978486
+        ],
+        "round_mean_cpu_ms": [
+          44.1678455875,
+          46.511114940625,
+          47.526170228125
+        ]
+      },
+      "p95_reduction_percent": 75.74914607370894,
+      "mean_client_cpu_reduction_percent": 75.52018098190813
+    }
+  ],
+  "logs": {
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-sdk.log": "fb9a734985551620a43bf249984e596ad679dd63130b56aa44bfd8e3aa3300c5",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-sdk-v2.log": "f629bac77e6ea8297349412be812d12048fa6ddfbf58fbc3e8562069fb501cbc",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-build.log": "baeebe30dd6c18bf2082cd9706b558d00019c9083bb7d7db2f6d734bb69cbad8",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-build-v2.log": "24975aeb464c3df8e07bd608c3e7d3d5a336fc11e5413c122360ddc6c619f444",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-build-v3.log": "100003fde5bac32c2f0e3e13887b16be9d4c3354abf0d8a5d9ec274a24a87043",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-run1.log": "718b277d6514ae3c2605e52a9c10ea600b0546ec8c7d5f027bda4f1af0f67f07",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-run2.log": "384d0475889c60b3cd61e876f06b1a52113371e6e915cc7e3c09d210882173bf",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-fs-run3.log": "1ae7387faa9763cd0901273a88c5bd85a80274d8446b244ce69c138cdff76477",
+    "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/pgvn-linux-metadata-final.log": "95eb57fd18f4d5270f1980a7f39eb13b72b5762f5689a827edc8ade824093094"
+  },
+  "failed_attempts": [
+    {
+      "path": "artifacts/pgvn/tests/linux-fs-41b9aebfe781/report.json",
+      "sha256": "63476bc20a99a8ba15918c323e9949462132a73a3ac9abb8a1739c85aae6870b",
+      "container_removed": true,
+      "checks": 34,
+      "reason": "Final audit referenced nonexistent youngest_rev column; timed groups completed, database removed, corrected runner passed a fresh full run",
+      "database_created": true
+    },
+    {
+      "path": "artifacts/pgvn/tests/linux-fs-785175bccf05/report.json",
+      "sha256": "907991a8a573e3053b325c514d9ed99f2e65b76a13790b5dd2a681892cae6ed9",
+      "container_removed": false,
+      "checks": 0,
+      "reason": "FS driver compilation failed because svn_version.h was missing; database was not created",
+      "database_created": false
+    }
+  ],
+  "limitations": [
+    "Windows and cross-OS credential compatibility not tested",
+    "Complete pgvnserve/pgvnadmin, Apache modules, monitor HTTP and packaging remain pending",
+    "Generic SVN DSO loader, SVN/DAV/Polarion protocol workloads and commit latency not tested",
+    "Local warm-data synthetic FS read workload only; not a production performance claim",
+    "No PG CPU/I/O, remote PG or cold-cache measurements; no cache/Redis added"
+  ],
+  "build_manifests": {
+    "hex": {
+      "path": "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/frozen-builds/hex-manifest.json",
+      "sha256": "8262fe05037483ec1349200cd9d4a0155a3f7d7f3887bad9500c7962da78ceaf"
+    },
+    "binary": {
+      "path": "artifacts/pgvn/tests/linux-fs-3a5f3491ad05/frozen-builds/binary-manifest.json",
+      "sha256": "cf027f8dfba33521c9acb31ebe561bc538cf56fa0ecf7decb150e800210ce5f6"
+    }
+  }
+}

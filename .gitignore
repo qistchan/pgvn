@@ -4,6 +4,8 @@
 /runtime/
 /toolchains/
 /vendor/
+/tools/pgvn-manager/bin/
+/tools/pgvn-manager/obj/
 /config/*.local.json
 /config/*.local.ini
 /config/*.key

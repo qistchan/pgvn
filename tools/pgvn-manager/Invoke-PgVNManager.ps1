@@ -69,6 +69,26 @@ function Assert-Bootstrap([string]$Root,[string]$Common) {
     $entry=$manifest.files.PSObject.Properties['deploy/windows/PgVN.Common.ps1']
     if (-not $entry -or $entry.Value.sha256 -cnotmatch '^[0-9a-f]{64}$' -or (Get-FileHash -LiteralPath $Common -Algorithm SHA256).Hash.ToLowerInvariant() -cne $entry.Value.sha256) { throw '部署公共脚本摘要不匹配。' }
 }
+function Assert-BackendCompatibility($Package) {
+    $version=Read-Json (Join-Path $PSScriptRoot 'version.json')
+    $entry=$Package.PSObject.Properties['build_identity']
+    if (-not $entry) { throw '运行包缺少版本与能力信息；请从相同源码重新构建运行包和 GUI。' }
+    $identity=$entry.Value
+    if ($identity.identity_format -ne 1 -or $identity.product -cne 'PgVN' -or $identity.target_os -cne 'windows' -or $identity.target_arch -cne 'x86_64' -or $identity.version -cne $version.version -or $identity.api_version -ne $version.api_version -or $identity.schemas.catalog -ne $version.schemas.catalog -or $identity.schemas.fs -ne $version.schemas.fs) { throw '运行包与 GUI 的产品版本、API、schema 或平台不匹配。' }
+    foreach ($capability in $version.capabilities.PSObject.Properties) {
+        if ($capability.Value -is [bool] -and -not $capability.Value) { continue }
+        $actual=$identity.capabilities.PSObject.Properties[$capability.Name]
+        if (-not $actual -or $null -eq $actual.Value -or $actual.Value.GetType() -ne $capability.Value.GetType() -or $actual.Value -cne $capability.Value) { throw ('运行包缺少 GUI 所需能力：' + $capability.Name) }
+    }
+}
+function Merge-SvnAuthzSettings($Current,[string]$Mode) {
+    if ($Mode -cnotin @('enforce','bypass')) { throw 'SVN 权限模式只接受 enforce 或 bypass。' }
+    $settings=@{}
+    if ($null -ne $Current) { foreach ($property in $Current.PSObject.Properties) { $settings[$property.Name]=$property.Value } }
+    $settings['svn_authz_mode']=$Mode
+    if ($Mode -ceq 'bypass') { $settings['anonymous_access']='none' }
+    return $settings
+}
 function Validate-Settings {
     $script:hostName = Required 'host'
     if ($script:hostName -notmatch '^[A-Za-z0-9.:-]+$') { throw '主机应为单个 DNS 名称或 IP 地址。' }
@@ -137,7 +157,7 @@ function Assert-Stopped {
     }
 }
 function Read-State {
-    $state = [ordered]@{root=$script:root;packageId=$script:manifest.package_id;configured=$false;initialized=$false;services=@();settings=$null;serviceName='PgVN';davServiceName='PgVNDAV';withDav=$true}
+    $state = [ordered]@{root=$script:root;packageId=$script:manifest.package_id;productVersion=$script:manifest.build_identity.version;configured=$false;initialized=$false;services=@();settings=$null;serviceName='PgVN';davServiceName='PgVNDAV';withDav=$true}
     $path = Join-Path $script:root 'admin/deployment.json'
     if (Test-Path -LiteralPath $path) {
         $d = Read-Json $path
@@ -220,6 +240,7 @@ try {
     Assert-Bootstrap $script:root $common
     . $common
     $script:manifest=Assert-PgVNPackage $script:root
+    Assert-BackendCompatibility $script:manifest
     $sha=[Security.Cryptography.SHA256]::Create()
     try { $hash=[BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($script:root.ToLowerInvariant()))).Replace('-','') } finally { $sha.Dispose() }
     $mutex=New-Object Threading.Mutex($false,('Global\PgVN.Manager.' + $hash))
@@ -374,13 +395,18 @@ try {
             if ($current.generation -ne $expected) { throw '访问规则已更新，请重新读取当前规则后编辑；未覆盖其他管理员的修改。' }
             $path=Join-Path $script:root ('admin/authz-' + [Guid]::NewGuid().ToString('N') + '.conf')
             $groupsPath=$path + '.groups'
+            $settingsPath=$path + '.settings'
             try {
                 Write-PgVNUtf8 $path $rules
                 $validation=@('authz','validate','--authz',$path,'--json')
                 if (-not [string]::IsNullOrEmpty([string]$current.groups)) { Write-PgVNUtf8 $groupsPath $current.groups; $validation += @('--groups',$groupsPath) }
                 [void](Admin $validation)
-                $result=(Admin @('config','publish',$repo,'--expected-generation',([string]$expected),'--authz',$path,'--json')) | ConvertFrom-Json
-            } finally { foreach($temp in @($path,$groupsPath)) { if (Test-Path -LiteralPath $temp) { Remove-Item -LiteralPath $temp -Force } } }
+                $modeProperty=$current.settings.PSObject.Properties['svn_authz_mode']
+                $defaultMode=if ($modeProperty) { [string]$modeProperty.Value } else { 'enforce' }
+                $settings=Merge-SvnAuthzSettings $current.settings (Field 'svnAuthzMode' $defaultMode)
+                Write-PgVNUtf8 $settingsPath ($settings | ConvertTo-Json -Depth 8 -Compress)
+                $result=(Admin @('config','publish',$repo,'--expected-generation',([string]$expected),'--authz',$path,'--settings',$settingsPath,'--json')) | ConvertFrom-Json
+            } finally { foreach($temp in @($path,$groupsPath,$settingsPath)) { if (Test-Path -LiteralPath $temp) { Remove-Item -LiteralPath $temp -Force } } }
         }
         'backup' { $destination=[IO.Path]::GetFullPath((Required 'file')); Assert-PlainPath $destination; Deployment-Script 'Backup-PgVN.ps1' @{Root=$script:root;Destination=$destination}; $result=@{message='完整备份完成。备份含密钥及密码，请保持访问控制。';file=$destination} }
         'logs' {

@@ -1,24 +1,24 @@
 #ifndef PGVN_TELEMETRY_H
 #define PGVN_TELEMETRY_H
-#include <windows.h>
+#include "../platform/platform.h"
 #include "pgvn.h"
 #define PGVN_OPERATION_COUNT 33
 #define PGVN_RESULT_COUNT 3
 #define PGVN_BUCKET_COUNT 6
 #define PGVN_SQL_CLASS_COUNT 11
 typedef struct pgvn_process_metrics {
-    LONG64 commands[PGVN_OPERATION_COUNT][PGVN_RESULT_COUNT];
-    LONG64 latency[PGVN_BUCKET_COUNT];
-    LONG64 command_microseconds;
-    LONG64 sql_calls,sql_errors,sql_microseconds;
-    LONG64 published_revisions,receipt_confirmations;
-    LONG64 sessions_started,sessions_rejected;
-    LONG sessions_active,sessions_limit;
-    LONG commands_active,sql_active,connections_active,control_waiters,writers_active;
-    LONG64 connection_rejections,connection_failures,bytes_received,bytes_sent;
-    LONG64 sql_latency[PGVN_BUCKET_COUNT],sql_classes[PGVN_SQL_CLASS_COUNT];
-    LONG64 monitor_requests,monitor_errors,monitor_microseconds;
-    LONG monitor_active;
+    pgvn_atomic64 commands[PGVN_OPERATION_COUNT][PGVN_RESULT_COUNT];
+    pgvn_atomic64 latency[PGVN_BUCKET_COUNT];
+    pgvn_atomic64 command_microseconds;
+    pgvn_atomic64 sql_calls,sql_errors,sql_microseconds;
+    pgvn_atomic64 published_revisions,receipt_confirmations;
+    pgvn_atomic64 sessions_started,sessions_rejected;
+    pgvn_atomic32 sessions_active,sessions_limit;
+    pgvn_atomic32 commands_active,sql_active,connections_active,control_waiters,writers_active;
+    pgvn_atomic64 connection_rejections,connection_failures,bytes_received,bytes_sent;
+    pgvn_atomic64 sql_latency[PGVN_BUCKET_COUNT],sql_classes[PGVN_SQL_CLASS_COUNT];
+    pgvn_atomic64 monitor_requests,monitor_errors,monitor_microseconds;
+    pgvn_atomic32 monitor_active;
 } pgvn_process_metrics;
 typedef struct pgvn_monitor_event {
     apr_time_t at;

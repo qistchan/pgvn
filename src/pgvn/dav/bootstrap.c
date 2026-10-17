@@ -15,7 +15,7 @@ static int bootstrap_handler(request_rec *request)
     const char *handler = "pgvn-dav-bootstrap";
 #endif
     if (!request->handler || strcmp(request->handler, handler)) return DECLINED;
-    char json[1024];
+    char json[PGVN_BUILD_JSON_SIZE];
     pgvn_build_json(json, sizeof(json));
     ap_set_content_type(request, "application/json");
     ap_rputs(json, request);

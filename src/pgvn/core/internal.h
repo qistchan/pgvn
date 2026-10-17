@@ -1,6 +1,6 @@
 #ifndef PGVN_INTERNAL_H
 #define PGVN_INTERNAL_H
-#include <windows.h>
+#include "../platform/platform.h"
 #include <apr_thread_mutex.h>
 #include <libpq-fe.h>
 #include "pgvn.h"
@@ -17,11 +17,11 @@ struct pgvn_context {
     int catalog_version;
     const char *hook_root;
     const char *configuration_path;
-    HANDLE cancellation_event;
-    volatile LONG leases;
-    volatile LONG64 sql_calls;
-    volatile LONG64 sql_errors;
-    volatile LONG64 sql_microseconds;
+    pgvn_cancel_event cancellation_event;
+    volatile pgvn_atomic32 leases;
+    volatile pgvn_atomic64 sql_calls;
+    volatile pgvn_atomic64 sql_errors;
+    volatile pgvn_atomic64 sql_microseconds;
     apr_time_t schema_checked_at;
     const char *instance_id;
     apr_pool_t *pool;
@@ -44,6 +44,7 @@ struct pgvn_policy {
     const char *identity_domain;
     const char *anonymous_access;
     const char *authenticated_access;
+    svn_boolean_t svn_authz_bypass;
 };
 
 struct pgvn_repository {
@@ -53,6 +54,7 @@ struct pgvn_repository {
     svn_fs_t *fs;
     svn_repos_t *svn;
     svn_boolean_t administrative;
+    svn_boolean_t native_svn; /* Assigned only by the native protocol entry. */
     const char *credential_domain;
     const char *credential_user;
     apr_int64_t credential_generation;
@@ -61,6 +63,9 @@ struct pgvn_repository {
 svn_error_t *pgvn_database_open(pgvn_context **context,const pgvn_context_options *options,apr_pool_t *pool);
 svn_error_t *pgvn_database_validate(pgvn_context *context);
 int pgvn_catalog_version(const char *version_list);
+svn_error_t *pgvn_repos_open_svn(pgvn_repository **repository,pgvn_context *context,
+    const char *repository_id,apr_pool_t *pool);
+svn_boolean_t pgvn_repository_svn_bypass(const pgvn_repository *repository);
 svn_error_t *pgvn_policy_load_protocol(pgvn_policy *policy,apr_pool_t *pool);
 svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_context *event,apr_pool_t *pool);
 svn_error_t *pgvn_require_admin(pgvn_context *context);

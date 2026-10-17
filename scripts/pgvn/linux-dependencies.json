@@ -1,0 +1,33 @@
+{
+  "format": 1,
+  "scope": "Linux FS SDK; Apache host not included",
+  "sources": [
+    {
+      "name": "apr", "version": "1.7.6", "tag": "1.7.6",
+      "commit": "5c18df51a91bcb3807f78eb36841d4d2ccf5563d",
+      "url": "https://codeload.github.com/apache/apr/tar.gz/5c18df51a91bcb3807f78eb36841d4d2ccf5563d",
+      "archive": "apr.tar.gz",
+      "sha256": "305bec39df3dc150a0cdc86283105d46cff6294f62463cc720b198b4684dac9b"
+    },
+    {
+      "name": "apr-util", "version": "1.6.3", "tag": "1.6.3",
+      "commit": "28327eeca2614816c1fa33ff7c4105213e0ad938",
+      "url": "https://codeload.github.com/apache/apr-util/tar.gz/28327eeca2614816c1fa33ff7c4105213e0ad938",
+      "archive": "apr-util.tar.gz",
+      "sha256": "e98923a18c0c20d105c73b531637fd5e085bf8dc77a4ba9f0ff3fcd54bac842a"
+    },
+    {
+      "name": "subversion", "version": "1.14.5", "tag": "1.14.5",
+      "url": "https://codeload.github.com/apache/subversion/tar.gz/refs/tags/1.14.5",
+      "archive": "subversion.tar.gz",
+      "sha256": "e6396e99a08ad5a7d944f285340821ce0acbaa8a40f1c82dc79715ac94c927a8"
+    },
+    {
+      "name": "postgresql", "version": "18.6", "tag": "REL_18_6",
+      "commit": "724edf9bde9d356724ad384a2e196edc3c9f80f7",
+      "url": "https://codeload.github.com/postgres/postgres/tar.gz/724edf9bde9d356724ad384a2e196edc3c9f80f7",
+      "archive": "postgresql.tar.gz",
+      "sha256": "970fe3be21ec37e7a11addcc6bf81da71de95b5a830f4bd7c3744476486a002c"
+    }
+  ]
+}
