@@ -1,0 +1,1517 @@
+{
+  "format": 1,
+  "status": "FAIL_ORIGINAL_MATRIX_RETAINED",
+  "created_at": "2026-10-17T06:14:14.882433+00:00",
+  "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "collector_sha256": "f079189afe7ad206d44ebfd0390e13e0d42186443a0c14812e3613100131adb4",
+  "groups": 45,
+  "selected_unique_original_functions": 377,
+  "suites": {
+    "merge_tree_conflict_tests": {
+      "upstream_source_sha256": "fbdbd9ecc95beb307b74a1b04d122b2930fc4bb830d9abd4a82ad2f147b082c0",
+      "original_functions": 29,
+      "default_disabled_shelf": false
+    },
+    "merge_reintegrate_tests": {
+      "upstream_source_sha256": "2833ccc10b7e3940d19afa75fdb68d46a4b205a7e3024d6d31c8e8ebbd76bde7",
+      "original_functions": 22,
+      "default_disabled_shelf": false
+    },
+    "shelf_tests": {
+      "upstream_source_sha256": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+      "original_functions": 32,
+      "default_disabled_shelf": true
+    },
+    "merge_authz_tests": {
+      "upstream_source_sha256": "6a7f095fa7579c59e4d924291a5081428300e0e95bbf8d527246b991db2feec7",
+      "original_functions": 4,
+      "default_disabled_shelf": false
+    },
+    "patch_tests": {
+      "upstream_source_sha256": "d8d3350b69da6217cb56385f4400c4bda43b0129a8e4be74a77f9654af21427d",
+      "original_functions": 82,
+      "default_disabled_shelf": false
+    },
+    "shelf2_tests": {
+      "upstream_source_sha256": "4a3cafa045137a56b2f3564104ad7d92a4c0aba8bdb370e35cf0c3d6df59ba13",
+      "original_functions": 31,
+      "default_disabled_shelf": true
+    },
+    "svnmucc_tests": {
+      "upstream_source_sha256": "7e2a8e6905c1dcf2a489ece800a19811d5f5a0bd6c497eb2af395d8b1ea66b0f",
+      "original_functions": 9,
+      "default_disabled_shelf": false
+    },
+    "merge_tests": {
+      "upstream_source_sha256": "44fc33f06236e774208b369285f28e42e12dc965ff9b79faf081131f49a527f4",
+      "original_functions": 143,
+      "default_disabled_shelf": false
+    },
+    "merge_automatic_tests": {
+      "upstream_source_sha256": "1e29ac93a11929a494c0a0c175f769e51d0ccd5f8dd8bf16c4e94306dca67a4a",
+      "original_functions": 25,
+      "default_disabled_shelf": false
+    }
+  },
+  "counts": {
+    "PASS": 1786,
+    "XFAIL": 66,
+    "SKIP": 408,
+    "FAIL": 2
+  },
+  "counts_by_protocol": {
+    "svn": {
+      "PASS": 594,
+      "XFAIL": 22,
+      "SKIP": 136,
+      "FAIL": 2
+    },
+    "http": {
+      "PASS": 596,
+      "XFAIL": 22,
+      "SKIP": 136
+    },
+    "https": {
+      "PASS": 596,
+      "XFAIL": 22,
+      "SKIP": 136
+    }
+  },
+  "non_skip_outcomes": 1854,
+  "xfail_pairs": 33,
+  "xfail_strict_comparison_status": "FAIL",
+  "xfail_strict_equal_pairs": 32,
+  "xfail_strict_mismatches": [
+    {
+      "test_id": "m6-network-525ae24a1d03",
+      "suite": "merge_tests",
+      "protocol": "https",
+      "case_id": 49,
+      "equal_after_work_directory_normalization": false,
+      "fsfs_sha256": "f3b0b07180901a11b619af3f6c7afcf623f156fe7f0bc7302261913254211840",
+      "pgvn_sha256": "02d3783bf82d0002fed1bb577987ec8bdc239b6d504864cb026c116c56c05189"
+    }
+  ],
+  "xfail_order_review": {
+    "status": "REVIEWED_DIAGNOSTIC_ORDER_DIFFERENCE",
+    "test_id": "m6-network-525ae24a1d03",
+    "case_id": 49,
+    "strict_comparison_status_retained": "FAIL",
+    "strict_pairs": 33,
+    "strict_equal_pairs": 32,
+    "strict_mismatches": [
+      {
+        "test_id": "m6-network-525ae24a1d03",
+        "suite": "merge_tests",
+        "protocol": "https",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "f3b0b07180901a11b619af3f6c7afcf623f156fe7f0bc7302261913254211840",
+        "pgvn_sha256": "02d3783bf82d0002fed1bb577987ec8bdc239b6d504864cb026c116c56c05189"
+      }
+    ],
+    "printed_actual_tree": {
+      "tfile1": {
+        "status": "  ",
+        "treeconflict": "C"
+      },
+      "tfile2": {
+        "status": "  ",
+        "treeconflict": "C"
+      },
+      "bfile1": {
+        "status": "A "
+      },
+      "bfile2": {
+        "status": "A "
+      }
+    },
+    "printed_node_orders": {
+      "fsfs": [
+        "tfile1",
+        "tfile2",
+        "bfile1",
+        "bfile2"
+      ],
+      "pgvn": [
+        "tfile2",
+        "tfile1",
+        "bfile1",
+        "bfile2"
+      ]
+    },
+    "entire_printed_tree_equal_by_node_and_attributes": true,
+    "entire_traceback_and_result_line_equal": true,
+    "diagnostic_prefix_only_differs_in_first_reported_node": true,
+    "source_observation": "tree.py compare_trees iterates a.children and invokes default_singleton_handler for the first missing child; that handler raises SVNTreeUnequal immediately.",
+    "inference": "The observed mismatch is consistent with different traversal order of the same printed conflict nodes. It does not demonstrate full merge correctness because this original XFAIL stops at the output-tree assertion.",
+    "original_results_rewritten": false,
+    "raw_logs_rewritten": false,
+    "acceptance_established": false,
+    "matrix_status_retained": "FAIL",
+    "inputs": {
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-525ae24a1d03\\fsfs\\upstream.log": "aa0eee2bb207ab28c9e167e078cc18bfcac61280a396399d0b0175adbdf3afc8",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-525ae24a1d03-xfail-49-fsfs.txt": "c83c269d31c312d11a11e85617de8874e76c054152d01c039c3361127c8f4694",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-525ae24a1d03\\pgvn\\upstream.log": "2638514e9c90b4d1dea1b6a94334e6614ae55b11e2ac1b06f2ff65f6d3cd9c22",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-525ae24a1d03-xfail-49-pgvn.txt": "52a359ff881b18f859cb63e6ff1d404deaf36b101726edac854573be7e70c452",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-all-xfail.json": "45e7986faec16033282880db02a38927ce7dca3b4f964535fc4e75579d7ecb55",
+      "C:\\Project\\PgVN\\pgvn\\artifacts\\pgvn\\tests\\m6-network-525ae24a1d03.json": "77907676560bc9979cbf31b8b5d490964892df4419c261de6c7f3470e4d133f1",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-525ae24a1d03\\subversion\\tests\\cmdline\\svntest\\tree.py": "c09345ec891c5ac5cf146507ab298b7e30f7518f9fd76051aca25ce6aba4c0f5",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\review_matrix_xfail_order_v1.py": "4b55b06070dea1db69d6bf3078f317bff1d21f260beb6f06b9618d8ab1f30114"
+    }
+  },
+  "preserved_audit_inputs": {
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\audit_runs.py": "c2bb8a92fa392facb512852f89f013463dacd95f93777ab17e8780007e2484c2",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\compare_xfail.py": "c64f95134e030012e1db032225e2f5cddad1092f8dbb9c6008d07030fa7251cf",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\collect_merge_patch_matrix.py": "7f18495dce1838361166e92eabeb2279be7ac659129a7899865a8064f7a77e41",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\prepare_matrix_publication_v2.py": "2d33e6733de385b23b049babe392d8d59fa1e0dd22aca06b95d75f10a47b4112",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-passing-raw-audit.json": "be35cbc575aa21a728a7b468996d55b907d19b456a0c4c7a0744318185dbfca0",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-passing-raw-audit.execution.log": "97cb80c1db117e18a577f3e6bc078e8217f876485f2f88727f1ed026b2990ec0",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-all-xfail.json": "45e7986faec16033282880db02a38927ce7dca3b4f964535fc4e75579d7ecb55",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-all-xfail.execution.log": "2a0b467f036be921fc9e504906a97bab85fb33fb2c9dea4dfc3009055a0015ba",
+    "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\merge-patch-matrix-xfail-order-review-v1.json": "ee456147d80c076b72d26f3205f8056248c5019220e8806edeca081480d45ef9"
+  },
+  "initial_collector_status": "FAIL_STRICT_XFAIL_TEXT_MISMATCH",
+  "initial_collector_outputs_overwritten": false,
+  "default_disabled_shelf_skip_outcomes": 378,
+  "original_outcomes_identical": true,
+  "inner_jobs_drained": 210,
+  "outer_jobs_drained": 45,
+  "runs": [
+    {
+      "test_id": "m6-network-410483dfa45e",
+      "protocol": "svn",
+      "suite": "svnmucc_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "report_sha256": "8ad6aa9c8dc546e9b346ff9585e958848fdc50b44ed0d1b348dd450cf4abb2e8",
+      "plan_sha256": "047329769561e664ba58824842836bb0f076754dca87cf40a78df42d5b7ea103",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-54c6362e919f",
+      "protocol": "svn",
+      "suite": "merge_authz_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 4
+        },
+        "pgvn": {
+          "PASS": 4
+        }
+      },
+      "report_sha256": "0326113cd6f6c3df5a4cac4f5158e5d767837ad4af369558203688c527e7a22f",
+      "plan_sha256": "6624a75bf90b4d7abd3eae6d155600f6589ba57aee713c6dc29c7bff603f671d",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-58fdb5511e0d",
+      "protocol": "svn",
+      "suite": "merge_automatic_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 23,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 23,
+          "XFAIL": 2
+        }
+      },
+      "report_sha256": "11509d9fcbb9bba80d4449a4019621687ecb19a2c8f79ead5ed1db755fd07798",
+      "plan_sha256": "67d5b317008bfaf769dcb36232275588352b249ae9e6a8b20e47a04acafb309e",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-2591eda69b7a",
+      "protocol": "svn",
+      "suite": "merge_reintegrate_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 21,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "f534b7e2f8ef175ba195c0820f5bea6bc1c6de707645da190da90f7a9f1d50dd",
+      "plan_sha256": "5a805119405dd8d09c3a9adfc8f7f3fc97d6c1081924c435def3943157f12e4f",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-6ed5ad4dfb34",
+      "protocol": "svn",
+      "suite": "merge_tree_conflict_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 29
+        },
+        "pgvn": {
+          "PASS": 29
+        }
+      },
+      "report_sha256": "49ca9c7df2141775a21291e590932689de5429817e466f24cb3d85fab2b8620c",
+      "plan_sha256": "0a481e05a5397c21cc5164a5efb1f635c8d6a0eb1d9a7c4503c3481807fb894b",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-183b75ffb480",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "report_sha256": "a9cbf24f5918b48f7592c26dbb73804bf0ce39ef379555487544d409304a4485",
+      "plan_sha256": "16ab2589ae57c5fc2950ee0c6b2d7339d869baff3eca04c2fced3c3772af6753",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-a87941708cd4",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "b26054a62893c48b04ecc0f6c383bb83bea6c20e8707fda409f20334938c456b",
+      "plan_sha256": "f2347d7092e53ca4f6c574785773626f36537ec277c5494c1faad11ba0abf1bb",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-40387eaa23db",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "de310e187e10ec50aa91f19da78a5f5001bf2b08d7486e37a6f5cea70e111dd6",
+      "plan_sha256": "baacc3fd3ade73433d0d194a9fa405ab5f84868a1a6d746e06f6d892c31a22e7",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-4eea78169349",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "4c80e2b7080c15dcc67aacbd285720dd16efe7277f81a79197a9709dde0fc2b3",
+      "plan_sha256": "121bf45229b92e7528b643e3bef5fa74bcdd34d3ffd2de7db25434a34a4bc37e",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-847b2418c2fe",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "986b61edd35b1d37de16e5ef97af9664975d8c37de88715aa15d95daef0802d4",
+      "plan_sha256": "d5c7494e880ac0c5f7848f106d21e6c6599c13bec0bd3e105c999ef42ed56a35",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-998bb016f50b",
+      "protocol": "svn",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18
+        },
+        "pgvn": {
+          "PASS": 18
+        }
+      },
+      "report_sha256": "2022c35a94354b6e6662a09668fea484581908228691c6015c99b2c4a5f9ffdb",
+      "plan_sha256": "b1e2c55dcd8f6c24a27260f3a32960abe900847ab62e746f9861cf0908b7711c",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-cd75ae89bffd",
+      "protocol": "svn",
+      "suite": "patch_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 41
+        },
+        "pgvn": {
+          "PASS": 41
+        }
+      },
+      "report_sha256": "668cb2727ca1952ba5bb4f5bb6e5b051f5c037dc8d52373746d84ddb3154d598",
+      "plan_sha256": "44b151c09bc5fa3b610dba2a57ec3875c79b870a61aeb4b6d4d260f386b3d2b8",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-9490cbbdee6e",
+      "protocol": "svn",
+      "suite": "patch_tests",
+      "status": "FAIL",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 33,
+          "XFAIL": 5,
+          "SKIP": 2,
+          "FAIL": 1
+        },
+        "pgvn": {
+          "PASS": 33,
+          "XFAIL": 5,
+          "SKIP": 2,
+          "FAIL": 1
+        }
+      },
+      "report_sha256": "9724d3e1cb0329198ebd612dc35f6597a68542e78f4951610f0258d967d44d03",
+      "plan_sha256": "108232ad7606bca4780d779c30f8ae1fdf9756c80716763342e5518c9e595355",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-9c7683f9f567",
+      "protocol": "svn",
+      "suite": "shelf_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 32
+        },
+        "pgvn": {
+          "SKIP": 32
+        }
+      },
+      "report_sha256": "7e36908e9a7775e4c4d736272ad54d555a4a9d0222846bbcd942ff9b81ed7f9a",
+      "plan_sha256": "3915d73d15ad3a8bf1608c52c6e593c721ce7c05bec1687aa6881467f60f8c48",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-01a492439ffd",
+      "protocol": "svn",
+      "suite": "shelf2_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 31
+        },
+        "pgvn": {
+          "SKIP": 31
+        }
+      },
+      "report_sha256": "501fc5c059a2032190fab56afc773000e80f0a9a1791de4414dc4c269eef5301",
+      "plan_sha256": "1aad9c02b6629ad4a95d43e5484c25c040ac4785b3c7a59e1fd600d02d9d7ff3",
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-a96223a6bf83",
+      "protocol": "http",
+      "suite": "svnmucc_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "report_sha256": "2e6718e33fad76558069500a2e2a518a984e9d803be0bbc61b497a0fa1b833b0",
+      "plan_sha256": "a5c28f1e8e22f07e41c1af714eb48014a3ce4b66d83ec7feddca4ee1108de1f0",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-c14b7bac2bb7",
+      "protocol": "http",
+      "suite": "merge_authz_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 4
+        },
+        "pgvn": {
+          "PASS": 4
+        }
+      },
+      "report_sha256": "dfeb327c14c42438ddd08455d7c4b9d6a212b3d8b0740152dcb35fab6bf679c6",
+      "plan_sha256": "dde7f2414977536dd0cdce74e16ecaa9f72358d20933eb1f9625e0bea867575f",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-f1645be98e9b",
+      "protocol": "http",
+      "suite": "merge_automatic_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 23,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 23,
+          "XFAIL": 2
+        }
+      },
+      "report_sha256": "a20129ffed5b1da6f840b110443f3090451f6ec10e0070f37a2a99d972ce1a7f",
+      "plan_sha256": "6fdf745b48b60b5abb3ea94e45dadf0b47b821da936d5f98a850e68b8fa97662",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-062ea291b6bc",
+      "protocol": "http",
+      "suite": "merge_reintegrate_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 21,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "b6498c5a669d64fcbf331b0978251520da41dc20480821a9c6b3b698a1ca5976",
+      "plan_sha256": "8f7b5d7dac9324bfb6649e6a2c58145256eb2344afc45c6d4f884d06e4701d14",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-30f6c39a725b",
+      "protocol": "http",
+      "suite": "merge_tree_conflict_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 29
+        },
+        "pgvn": {
+          "PASS": 29
+        }
+      },
+      "report_sha256": "f404aa1677258abe1131a5d3cc2975b75e1d962c187f7f67842ade949369a078",
+      "plan_sha256": "daf8e61d593479eb2d27b351750b614b8d7710dc08e4d49dcf41275bfc48147e",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-270f42db3e3d",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "report_sha256": "1dff83bc0dde017a572f1723bc320e87ff851db4232fca7fb64b2c1e3037054c",
+      "plan_sha256": "484c729d37a53a0b699e6088ceb1eb18b81add06366e618eb6fd77ad1c1dbd9c",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-ef7588567edf",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "fb89dc5e15b0cd950930f43f07f2661a69e125102bb48b5449050ce14c2526b0",
+      "plan_sha256": "a3a93c301628217c54e511fd79c47fd34797048d109e026608fbf107b24526e9",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-981831a91e88",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "a5d080a2c62119995fef4c619376e070cb7f40de759a5ec9fd9634bebef5023f",
+      "plan_sha256": "7c7a808ad30adb288c7ca4832809bf1e96bd06154ad03edc021c1d6635499580",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-6b22acb7792f",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "2659429d1c43cbf33a64d9c2c120237f488235f7b1702b5a30c7ef1c6f89a336",
+      "plan_sha256": "db9ae7fe05e656305fb8ba8314a4ae73c84da2425e004778d8b75f20ce46ac6d",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-d7bb93696c69",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "0d8dd4600abced4dfa6b0673bdd1d9635aebf6187874f41dbc32e6c920e342e7",
+      "plan_sha256": "eceafb6ac74652fa1ee3b4f6dc58ae765a70202d4a39b28c8638856a9224bc8a",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-b075367e27be",
+      "protocol": "http",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18
+        },
+        "pgvn": {
+          "PASS": 18
+        }
+      },
+      "report_sha256": "affceabd36ce661884c49f37b2dd79a26fb178d09ff66f1edf253c0aecd5ec1d",
+      "plan_sha256": "1725ce0809d1aec084cad153f62628556a4b0b2be5885e09d4f34618bdecfea0",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-8f4eada6c27c",
+      "protocol": "http",
+      "suite": "patch_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 41
+        },
+        "pgvn": {
+          "PASS": 41
+        }
+      },
+      "report_sha256": "f4e11f2cfb5feadd56610760c4afa9f23a016a2cc31ffd2f56ee23102aaa864a",
+      "plan_sha256": "be15f7ea30b505c1d6d70485b8d24c97354f49a1a10ae29f8798cfe4af30eb67",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-659b0c128b9b",
+      "protocol": "http",
+      "suite": "patch_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        },
+        "pgvn": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        }
+      },
+      "report_sha256": "15b80a934f7fa0991d482fc944289bb329dc2e6ebb493982ed8e3fcfcd9d2ccb",
+      "plan_sha256": "5ba84c0348b0dcc66f19782f58df13136a741d627046169613ea8632da219261",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-9ebdbcc7ffcd",
+      "protocol": "http",
+      "suite": "shelf_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 32
+        },
+        "pgvn": {
+          "SKIP": 32
+        }
+      },
+      "report_sha256": "a46968eb03244f94389dd995352929723b9c9de1e04bd01532154892e552317e",
+      "plan_sha256": "0a2e2a23637d084c2608746ae99903440853b37f408488c8db2856110da259e6",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-780ccd3d2d7d",
+      "protocol": "http",
+      "suite": "shelf2_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 31
+        },
+        "pgvn": {
+          "SKIP": 31
+        }
+      },
+      "report_sha256": "cd68fbaf4a4ea073fa5fba8bfb4f4e5956413d00f726b211987bbe6377ec3186",
+      "plan_sha256": "b8f1244eb1af0c782e527bd538a28924ab30c5927eb58a9da2985cc9b6f8d580",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-1d84669ff9ff",
+      "protocol": "https",
+      "suite": "svnmucc_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "report_sha256": "838d241ebb91ff5772bcab991839cb98b0a4e4f7d77001d36a4884d6eafe257a",
+      "plan_sha256": "c956c9aad18344981237a382d3ba7994c154feadaa951947eb0616d59467377d",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-56766e1fe653",
+      "protocol": "https",
+      "suite": "merge_authz_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 4
+        },
+        "pgvn": {
+          "PASS": 4
+        }
+      },
+      "report_sha256": "b414cdf7578d4179223d872d03c795a24deb1ce8a0c1629b0eec4a801041ae7b",
+      "plan_sha256": "4b35c697320cafe6a10debacf5795ab2e1904dc822230bacf80e72766901cffd",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-0abb24766f7e",
+      "protocol": "https",
+      "suite": "merge_automatic_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 23,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 23,
+          "XFAIL": 2
+        }
+      },
+      "report_sha256": "3b40aba93588d98e6b9a734ec9b286535a5bab0fc7d5ca434025a5e7c68138f7",
+      "plan_sha256": "ae57bc7f138087e58afc4cd31b5ba545d02f931ce1fa937c94bdb0faa6dbfe6b",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-d5888427f72d",
+      "protocol": "https",
+      "suite": "merge_reintegrate_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 21,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "1a528c5396a7c3b0224d704b10a494a6342fedd63d90570e74d8c9ee2670cd8f",
+      "plan_sha256": "4aefd87f526bb638cdef2389e618af05c0585b6a8b71cfbfb83ae50056179429",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-651922835289",
+      "protocol": "https",
+      "suite": "merge_tree_conflict_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 29
+        },
+        "pgvn": {
+          "PASS": 29
+        }
+      },
+      "report_sha256": "b3977bd25faabac491856f1e273f9527e53c3e5266c0561e7ab9d1bba9508cd2",
+      "plan_sha256": "456b0b522c48e4aca2d70007654baabc0e99140d8be43bb91f7d3828b3f57de7",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-87472c4aa7ed",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "report_sha256": "0a016710aa68168931ebf97b3d2b5c8a69aee593fad6e0cf877ec1ed72b01b92",
+      "plan_sha256": "37d5b980f6fa398636d8ddaa9b3ef4ace6b159f66a4cb8bef24dc22442872fd2",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-525ae24a1d03",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "77907676560bc9979cbf31b8b5d490964892df4419c261de6c7f3470e4d133f1",
+      "plan_sha256": "0c019ef183520f0f2afd99fa7fd596e53d6b56ac0fcb50603a36aaede9dcf6ed",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-881164fdcffe",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "0ce67a4260811ebf042aec60a9c1fea4aedc6adccf0e3f6ebbc0c7756aef2d47",
+      "plan_sha256": "1c2ea10cc2eb2eb2bdf25427120f717ddadc9ee6f7c4496b7aa555f1b06e62a7",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-138dee750dae",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "0bc858a66c656c209be1badc1de34fc9f3f4e84963386f9e481516eb0ed89461",
+      "plan_sha256": "9ea5f6b2106e1482d367e82476e63d1f15ff912b25e5a874397077ecc356c81b",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-64f7c37bcb51",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "16880a6efffc895c773879762c78407b1a09cf4e3054bc1fa802fce1680e99a0",
+      "plan_sha256": "de8da730f254bb586f825a4b9800ca0194d68ba60bb738cbf57e51ed9b6c6555",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-d95824646b87",
+      "protocol": "https",
+      "suite": "merge_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18
+        },
+        "pgvn": {
+          "PASS": 18
+        }
+      },
+      "report_sha256": "3030dbaf5ce62612517f0fbc064dcb3d7f04c3957d4274b991d0042e127d91c9",
+      "plan_sha256": "1cdde1424d215c52f59046effe5c38b01893ba24a204941221f034f0e25be5f7",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-ff6d94811051",
+      "protocol": "https",
+      "suite": "patch_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 41
+        },
+        "pgvn": {
+          "PASS": 41
+        }
+      },
+      "report_sha256": "d98b7400ac8a3386871a497b3f81b8fde19cd5f97a6c0469c7a71888b46cbfe2",
+      "plan_sha256": "26d7274dbd903f6e8422972dfb774078f0907fbcc3fb2fe7bc6ea676f6973e26",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-24ce516a1e04",
+      "protocol": "https",
+      "suite": "patch_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        },
+        "pgvn": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        }
+      },
+      "report_sha256": "2e0db697c8ebe3d2b3377f2920ed9ca131c59b287211291e38888995ece3d921",
+      "plan_sha256": "cf023a268d87fa4120e7bb831e35d0ca3eb977bb11ccbaa0a1db878970df5871",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-f361601a2e4b",
+      "protocol": "https",
+      "suite": "shelf_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 32
+        },
+        "pgvn": {
+          "SKIP": 32
+        }
+      },
+      "report_sha256": "3264bdd0e3407e3a0115764d04511f2b6b452c909aeea2e7bfd2c6d0aa983164",
+      "plan_sha256": "82598942548d5095307a7e7ea450acda9f31d03010fc975cd0427b9b3e144088",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-d919eae71cd6",
+      "protocol": "https",
+      "suite": "shelf2_tests",
+      "status": "PASS",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 31
+        },
+        "pgvn": {
+          "SKIP": 31
+        }
+      },
+      "report_sha256": "c9e5f58df382bfc0d3190f73c64536f2d6d2ab5ef75334cd00e7321287495019",
+      "plan_sha256": "484a80896554a32ede44f27d4e62ce02cb3aae41702fe017ccf990bbd79018f6",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    }
+  ],
+  "failed_cases": [
+    {
+      "test_id": "m6-network-9490cbbdee6e",
+      "protocol": "svn",
+      "suite": "patch_tests",
+      "backend": "fsfs",
+      "case": {
+        "id": 69,
+        "name": "patch_add_remove_executable",
+        "result": "FAIL"
+      },
+      "report_sha256": "9724d3e1cb0329198ebd612dc35f6597a68542e78f4951610f0258d967d44d03"
+    },
+    {
+      "test_id": "m6-network-9490cbbdee6e",
+      "protocol": "svn",
+      "suite": "patch_tests",
+      "backend": "pgvn",
+      "case": {
+        "id": 69,
+        "name": "patch_add_remove_executable",
+        "result": "FAIL"
+      },
+      "report_sha256": "9724d3e1cb0329198ebd612dc35f6597a68542e78f4951610f0258d967d44d03"
+    }
+  ],
+  "database_controls": [
+    {
+      "database": "pgvn_m6_net_410483dfa45e",
+      "owner": "pgvn_migrate_410483dfa45e",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_54c6362e919f",
+      "owner": "pgvn_migrate_54c6362e919f",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_58fdb5511e0d",
+      "owner": "pgvn_migrate_58fdb5511e0d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_2591eda69b7a",
+      "owner": "pgvn_migrate_2591eda69b7a",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_6ed5ad4dfb34",
+      "owner": "pgvn_migrate_6ed5ad4dfb34",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_183b75ffb480",
+      "owner": "pgvn_migrate_183b75ffb480",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_a87941708cd4",
+      "owner": "pgvn_migrate_a87941708cd4",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_40387eaa23db",
+      "owner": "pgvn_migrate_40387eaa23db",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_4eea78169349",
+      "owner": "pgvn_migrate_4eea78169349",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_847b2418c2fe",
+      "owner": "pgvn_migrate_847b2418c2fe",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_998bb016f50b",
+      "owner": "pgvn_migrate_998bb016f50b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_cd75ae89bffd",
+      "owner": "pgvn_migrate_cd75ae89bffd",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_9490cbbdee6e",
+      "owner": "pgvn_migrate_9490cbbdee6e",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_9c7683f9f567",
+      "owner": "pgvn_migrate_9c7683f9f567",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_01a492439ffd",
+      "owner": "pgvn_migrate_01a492439ffd",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_a96223a6bf83",
+      "owner": "pgvn_migrate_a96223a6bf83",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_c14b7bac2bb7",
+      "owner": "pgvn_migrate_c14b7bac2bb7",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_f1645be98e9b",
+      "owner": "pgvn_migrate_f1645be98e9b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_062ea291b6bc",
+      "owner": "pgvn_migrate_062ea291b6bc",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_30f6c39a725b",
+      "owner": "pgvn_migrate_30f6c39a725b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_270f42db3e3d",
+      "owner": "pgvn_migrate_270f42db3e3d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_ef7588567edf",
+      "owner": "pgvn_migrate_ef7588567edf",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_981831a91e88",
+      "owner": "pgvn_migrate_981831a91e88",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_6b22acb7792f",
+      "owner": "pgvn_migrate_6b22acb7792f",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_d7bb93696c69",
+      "owner": "pgvn_migrate_d7bb93696c69",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_b075367e27be",
+      "owner": "pgvn_migrate_b075367e27be",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_8f4eada6c27c",
+      "owner": "pgvn_migrate_8f4eada6c27c",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_659b0c128b9b",
+      "owner": "pgvn_migrate_659b0c128b9b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_9ebdbcc7ffcd",
+      "owner": "pgvn_migrate_9ebdbcc7ffcd",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_780ccd3d2d7d",
+      "owner": "pgvn_migrate_780ccd3d2d7d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_1d84669ff9ff",
+      "owner": "pgvn_migrate_1d84669ff9ff",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_56766e1fe653",
+      "owner": "pgvn_migrate_56766e1fe653",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_0abb24766f7e",
+      "owner": "pgvn_migrate_0abb24766f7e",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_d5888427f72d",
+      "owner": "pgvn_migrate_d5888427f72d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_651922835289",
+      "owner": "pgvn_migrate_651922835289",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_87472c4aa7ed",
+      "owner": "pgvn_migrate_87472c4aa7ed",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_525ae24a1d03",
+      "owner": "pgvn_migrate_525ae24a1d03",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_881164fdcffe",
+      "owner": "pgvn_migrate_881164fdcffe",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_138dee750dae",
+      "owner": "pgvn_migrate_138dee750dae",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_64f7c37bcb51",
+      "owner": "pgvn_migrate_64f7c37bcb51",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_d95824646b87",
+      "owner": "pgvn_migrate_d95824646b87",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_ff6d94811051",
+      "owner": "pgvn_migrate_ff6d94811051",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_24ce516a1e04",
+      "owner": "pgvn_migrate_24ce516a1e04",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_f361601a2e4b",
+      "owner": "pgvn_migrate_f361601a2e4b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_d919eae71cd6",
+      "owner": "pgvn_migrate_d919eae71cd6",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    }
+  ],
+  "initial_queue_status": "FAIL",
+  "initial_queue_report_sha256": "c59fd9abae986ff0e23aab3c7c06b5b24aeb8867bb2f45be89dafdceedecbd32",
+  "continuation_queue_status": "PASS",
+  "continuation_queue_report_sha256": "4fdac6de3170fe2d601f697489a934cae6f14c4f33e89828c55856dde767d510",
+  "restarted_plans": 0,
+  "raw_failures_retained_without_reclassification": true,
+  "milestone_complete": false,
+  "full_three_protocol_acceptance": false,
+  "scope": "All original 45 selections executed with original predicates and assertions. Complete matching FAILs remain FAIL; disabled shelf SKIPs do not prove enabled-profile behavior.",
+  "frozen_network": {
+    "path": "runtime/pgvn/baselines/m6-merge-patch-complete-matrix-d919eae71cd6",
+    "index_sha256": "d847ae34ec2a5935372f32838565c2893c50f31c13aee9b656102cf76418561a",
+    "files": 1164
+  },
+  "frozen_controls": {
+    "path": "runtime/pgvn/baselines/m6-merge-patch-matrix-controls-d919eae71cd6",
+    "index_sha256": "4477bd07953b3a4ba114445432590e9b72de322113a1879c2fc448eff3b0f67e",
+    "files": 29
+  },
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "browser_m5_package_rerun": false,
+  "limitations": [
+    "Original FAIL is retained; matching backend failures do not establish success.",
+    "One of 33 strict XFAIL diagnostic comparisons remains FAIL; its order review is explanatory, not acceptance.",
+    "Default shelf/shelf2 SKIPs do not establish enabled-profile behavior.",
+    "This execution matrix does not complete PGVN-601, PGVN-602, M6 or M7."
+  ]
+}
