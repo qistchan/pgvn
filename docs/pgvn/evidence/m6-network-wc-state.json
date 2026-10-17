@@ -1,0 +1,1368 @@
+{
+  "status": "PASS_COMPONENT_ONLY",
+  "created_at": "2026-10-17T01:59:28.566517+00:00",
+  "build_manifest_sha256": "e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997",
+  "build_git_base_commit": "c6381272e20af5fc02bfed5dcb9a7dc859dba587",
+  "build_worktree_dirty": true,
+  "registered_source_inputs": 154,
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "source_or_product_edits_in_this_component": false,
+  "scope": {
+    "complete_original_suites": 10,
+    "unique_original_functions": 163,
+    "counts": {
+      "PASS": 894,
+      "SKIP": 72,
+      "XFAIL": 12
+    },
+    "outcomes": 978,
+    "entered_including_original_xfail": 906,
+    "upstream_assertions_or_decorators_changed": false,
+    "new_exclusions": []
+  },
+  "runs": [
+    {
+      "test_id": "m6-network-a14f75b67ca9",
+      "suite": "stat_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 90,
+      "upstream_python_tests_executed": 88,
+      "report_sha256": "6a6f9a101c3e12dbb3a9a2315c26f2ed2a4b539b5d8724fee8245f52492c4dc7"
+    },
+    {
+      "test_id": "m6-network-e23c702f76ce",
+      "suite": "resolve_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 7,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 16,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "43d2e07b068789496b38f09656594592018d8929c7ca7cd583eac5ab49f2b59a"
+    },
+    {
+      "test_id": "m6-network-0a4f73c5d58f",
+      "suite": "relocate_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "ce456f801628bf4e50740c26710f0a373d9f986f84ec549bc3fcfcbd15b1942b"
+    },
+    {
+      "test_id": "m6-network-8bb28bbfa8c3",
+      "suite": "tree_conflict_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 26
+        },
+        "pgvn": {
+          "PASS": 26
+        }
+      },
+      "upstream_python_case_outcomes": 52,
+      "upstream_python_tests_executed": 52,
+      "report_sha256": "f9651d0ed04f7c391ff33accc02a6bc30196725a024a10affd0dd2eaa3b4d051"
+    },
+    {
+      "test_id": "m6-network-80d87a1b1cf2",
+      "suite": "move_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15
+        },
+        "pgvn": {
+          "PASS": 15
+        }
+      },
+      "upstream_python_case_outcomes": 30,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "8b4d9af9089212c37b5d86c1cdac121d9ce8032a055de415c98d0cce2c0a0c79"
+    },
+    {
+      "test_id": "m6-network-a3ddc50866a8",
+      "suite": "schedule_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 15,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 32,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "73c305255e9b9ad398e8282b2d5ad27568bda55402d490521c315a4cf1d05657"
+    },
+    {
+      "test_id": "m6-network-9d797840f1be",
+      "suite": "changelist_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 17,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 17,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 36,
+      "report_sha256": "50be2237b0dc8cadbd086250885bd3197d317613b267be10763bebce9804fc42"
+    },
+    {
+      "test_id": "m6-network-160862077720",
+      "suite": "wc_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 9,
+          "PASS": 9
+        },
+        "pgvn": {
+          "SKIP": 9,
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "ca47bcab90aa99c5276d2cf3b889669743235bc7bef7fa090a9ca834ababfcb5"
+    },
+    {
+      "test_id": "m6-network-0f87c267a9d7",
+      "suite": "svnversion_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "3053c111887393d99c195a1c5ae3ac6e7ee89511606e461f3867b51bdda4a1c4"
+    },
+    {
+      "test_id": "m6-network-72922c91d237",
+      "suite": "entries_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 3
+        },
+        "pgvn": {
+          "PASS": 3
+        }
+      },
+      "upstream_python_case_outcomes": 6,
+      "upstream_python_tests_executed": 6,
+      "report_sha256": "4d6d61c6187b1b20449636488b50b845157ea994a053befc8c9756cfeba01fd7"
+    },
+    {
+      "test_id": "m6-network-0525ad142cff",
+      "suite": "stat_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 90,
+      "upstream_python_tests_executed": 88,
+      "report_sha256": "e7a17c6cbc4e4d7f38535bad2269d8da70b73cb93e5448302a15807bfaac2e63"
+    },
+    {
+      "test_id": "m6-network-0a4188bf41f0",
+      "suite": "resolve_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 7,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 16,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "6fc80fba40648151e43ba6cf9eed20b4c575ff7573c152148156b7e5b980acad"
+    },
+    {
+      "test_id": "m6-network-3d48540b1f60",
+      "suite": "relocate_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "9de1e1be7e4416f51af6a744f92615a8001855a84f52e9183a44a0d125c4279b"
+    },
+    {
+      "test_id": "m6-network-f91b55a3060c",
+      "suite": "tree_conflict_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 26
+        },
+        "pgvn": {
+          "PASS": 26
+        }
+      },
+      "upstream_python_case_outcomes": 52,
+      "upstream_python_tests_executed": 52,
+      "report_sha256": "66234d263097e22cf8d3fd6e8151c0b03e0783597a0732c061d4e02fc91f725f"
+    },
+    {
+      "test_id": "m6-network-b3dba6cf2a2d",
+      "suite": "move_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15
+        },
+        "pgvn": {
+          "PASS": 15
+        }
+      },
+      "upstream_python_case_outcomes": 30,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "2baee114b2d8533b6d6c54e690edc52e62ca0a01519b5044f36c5fa227ce5269"
+    },
+    {
+      "test_id": "m6-network-4ae1e365efb0",
+      "suite": "schedule_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 15,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 32,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "edeae1cf11c594672f90001e445e36a48790e69d8ee50c7368fa5fbf8a1caf9e"
+    },
+    {
+      "test_id": "m6-network-e6998c962164",
+      "suite": "changelist_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 17,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 17,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 36,
+      "report_sha256": "6b0cf536e7b4b74c0a283912fdb3eab10a1c7c053fd7da19b07f6af6da522194"
+    },
+    {
+      "test_id": "m6-network-6168a9c5eab2",
+      "suite": "wc_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 9,
+          "PASS": 9
+        },
+        "pgvn": {
+          "SKIP": 9,
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "e5da86968daabb52dafc6c981c965c7e96819835129edfdc5323848a5939f95e"
+    },
+    {
+      "test_id": "m6-network-c226a7b9bb2b",
+      "suite": "svnversion_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "51ca3b67f68e144df70123629352ead433fcaaca968c16eda6ce2f676d21a928"
+    },
+    {
+      "test_id": "m6-network-f61f71998c42",
+      "suite": "entries_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 3
+        },
+        "pgvn": {
+          "PASS": 3
+        }
+      },
+      "upstream_python_case_outcomes": 6,
+      "upstream_python_tests_executed": 6,
+      "report_sha256": "f4af192f3d5e7c795beb05760525a596759f0c25e4ba2ca1dab57c2d57d6d29d"
+    },
+    {
+      "test_id": "m6-network-478869e186cf",
+      "suite": "stat_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 43,
+          "SKIP": 1,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 90,
+      "upstream_python_tests_executed": 88,
+      "report_sha256": "c828f6f37ee078d495db4bc2d508d43b23644b44ac4c24941785d10211c90d69"
+    },
+    {
+      "test_id": "m6-network-084a33399994",
+      "suite": "resolve_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 7,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 16,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "f66028310a91d96d17b63b6e16c62de6f2a6898146d89b42bee7559895a2d42c"
+    },
+    {
+      "test_id": "m6-network-0851476fcd54",
+      "suite": "relocate_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "6b88f20b36fa161b93a4e1fb009fadc2e1b76c712177c57684a6d6aa182feeda"
+    },
+    {
+      "test_id": "m6-network-dc5abfcb6f7a",
+      "suite": "tree_conflict_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 26
+        },
+        "pgvn": {
+          "PASS": 26
+        }
+      },
+      "upstream_python_case_outcomes": 52,
+      "upstream_python_tests_executed": 52,
+      "report_sha256": "68141e48cc4ea279d035643014c9e39d56183a505644021ba9c273fd0b2486d3"
+    },
+    {
+      "test_id": "m6-network-2cb85071b84c",
+      "suite": "move_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15
+        },
+        "pgvn": {
+          "PASS": 15
+        }
+      },
+      "upstream_python_case_outcomes": 30,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "03d7348f836323f62488447461cbbb640ba0bc19fd81b3930497141e1b374b71"
+    },
+    {
+      "test_id": "m6-network-bfe29405a020",
+      "suite": "schedule_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 15,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 15,
+          "SKIP": 1
+        }
+      },
+      "upstream_python_case_outcomes": 32,
+      "upstream_python_tests_executed": 30,
+      "report_sha256": "eddc2cd4aa117cf9329f42f3e5831a274adde9b3ac73c1056a0b73d304a494e2"
+    },
+    {
+      "test_id": "m6-network-5420dd547f5e",
+      "suite": "changelist_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 17,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 17,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 36,
+      "report_sha256": "06f7e53868e3453729723675bdef8ea287d9f7c7b4c81b61d806d1e7fba29bbf"
+    },
+    {
+      "test_id": "m6-network-04b61416d35b",
+      "suite": "wc_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 9,
+          "PASS": 9
+        },
+        "pgvn": {
+          "SKIP": 9,
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 36,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "ff7dafca9211705dd6d28e85f522c7dfacf35d1960c34c5c2bf5b38fc3b84cc0"
+    },
+    {
+      "test_id": "m6-network-dc9b7878c774",
+      "suite": "svnversion_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 7
+        },
+        "pgvn": {
+          "PASS": 7
+        }
+      },
+      "upstream_python_case_outcomes": 14,
+      "upstream_python_tests_executed": 14,
+      "report_sha256": "fc392ebec84b9db3e46d9f1c07d5edc0e82c4ef225fe25b61dc654f0fda70bb3"
+    },
+    {
+      "test_id": "m6-network-0f666711e191",
+      "suite": "entries_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 3
+        },
+        "pgvn": {
+          "PASS": 3
+        }
+      },
+      "upstream_python_case_outcomes": 6,
+      "upstream_python_tests_executed": 6,
+      "report_sha256": "18e44885d01b9262241d168a5ffab1331d932e69595b91fb114524ce40c82770"
+    }
+  ],
+  "queue_sha256": "f4da50ac35d284a04d9d5bc17963d994041993d2e1ee6f9a52712a048bcbb61b",
+  "plans_sha256": "495b50253337a5e32a70c52ef9f833376be8cb1bf61f3d55b18f15c9ecf775a8",
+  "original_plans_sha256": "b7be7df5288c7d1f9eb29cc9605580ccc170425ae6026f1eb53a5d7ff87db78c",
+  "interruption_recovery": {
+    "review_sha256": "6a679e58bcf2c691641d12b85906eba081701eaba12e2b00ce6c789e1706c6a5",
+    "original_completed_runs": 20,
+    "recovery_completed_runs": 10,
+    "total_dispatched_attempts": 33,
+    "fresh_replacement_plans": 3,
+    "executed_plans_reused": 0,
+    "interrupted_baseline": {
+      "path": "runtime/pgvn/baselines/m6-wc-state-interrupted-20261017",
+      "index_sha256": "e28d3be89f9c237c7671b44e82b63535bee79d182fdbbc870d48750fd6050301",
+      "files": 38
+    },
+    "excluded_interrupted_attempts": [
+      {
+        "test_id": "m6-network-f3087f9f751d",
+        "suite": "tree_conflict_tests",
+        "protocol": "http",
+        "status": "INTERRUPTED_NO_TERMINAL_REPORT_NOT_ACCEPTED",
+        "files": {
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/plan.json": "94d85259f22d063e7ff82ec2830b0af7e8183c2195648f5f171fe6b3d987ec93",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/started.json": "79f8e4b0b8b8338bd025f0fabb668331b3b1c99c06b5f31edd8cc97006eaacdb",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/console.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/fsfs/entry.json": "4f4021ca90acd0c23323b05ad6fc96788759ef994734451bedbc1eeb270bc1ea",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/fsfs/entry-result.json": "8106f797bce095b0071e89d5a374e751a9c27e42983a0ee056a94446928a67e6",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/fsfs/upstream.log": "b171a02130e75034727c23d70b73a3ba036c0328d17d6df8ffc8a50b50d0afcd",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/fsfs/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/fsfs/fixture-events.jsonl": "ad9cabcef845c2adc1d2e3d28f11593aa8a556b7796a52181676f90670fdef65",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/entry.json": "b7b496c554d223831ceed53fb2df84bb627c8b41758f80891a6b3e420875b719",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/upstream.log": "1a86d3838858aa0235b5dfbe08884b08bde79277391d674b894e1d198ab90a00",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/local-fixture-svn.log": "0ee5f32315cf88b6869e02248c2b7f7da4edd167763db58bc5cca4c4dca59374",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/fixture-events.jsonl": "9f4a73ffd45517c624dcb6a4a5996cafdaa9a8fc0a892f63c42929d184a742b3",
+          "runtime/pgvn/tests/m6-network-f3087f9f751d/pgvn/native-commands.jsonl": "c001c3073ae9b022d09b07a7c9c3d467f4905d2a37dd40294d4401400934a8b7"
+        },
+        "original_job_close_observation": "UNKNOWN; do not infer normal cleanup from absent processes"
+      },
+      {
+        "test_id": "m6-network-1debcd95c7f2",
+        "suite": "resolve_tests",
+        "protocol": "https",
+        "status": "INTERRUPTED_NO_TERMINAL_REPORT_NOT_ACCEPTED",
+        "files": {
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/plan.json": "4039a908e27db15f038d2c31289a079a534b15fc1cf4e21edb73f3be697ae88e",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/started.json": "de7cc740e9628b9a406d8e3a282b761c0c570845daabb164524222e06e1a3709",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/console.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/fsfs/entry.json": "3da89c903aab2842098d31f3a7ac7e875d3b69d020b928e049607c16cd0eecf7",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/fsfs/entry-result.json": "f542821d640e00b85719aad3b3c69b35868cc3cb6af423328be62011fdbd78a2",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/fsfs/upstream.log": "d0af1e2debb4eb741f9c89a37f3d75fbdf10b0271fe1ce10782e99f9f6c4652f",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/fsfs/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/fsfs/fixture-events.jsonl": "d9310bdb23cdd22b2a276f04f19b9af3d3384eb368bba4037e9ff80ca4a8366d",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/entry.json": "f83d55abe13bc729f99d7452a38b0f0b53cf8243df1c3f2c8974b57f931751f3",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/entry-result.json": "b7ee4645d21ba6a4e8e833538c8c1aa7a4b1bf637f84efb61ada6693ee8b9d8b",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/upstream.log": "d0af1e2debb4eb741f9c89a37f3d75fbdf10b0271fe1ce10782e99f9f6c4652f",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/local-fixture-svn.log": "0ee5f32315cf88b6869e02248c2b7f7da4edd167763db58bc5cca4c4dca59374",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/fixture-events.jsonl": "57e14702fd2a6286cc4c032f128094462d314c03fb7e3834da057eddaba4ab92",
+          "runtime/pgvn/tests/m6-network-1debcd95c7f2/pgvn/native-commands.jsonl": "1a3dfae095717153ee3209e859a69da0d021131807315e009f2ea2901d1582f8"
+        },
+        "original_job_close_observation": "UNKNOWN; do not infer normal cleanup from absent processes"
+      },
+      {
+        "test_id": "m6-network-8de19a26fc17",
+        "suite": "relocate_tests",
+        "protocol": "https",
+        "status": "INTERRUPTED_NO_TERMINAL_REPORT_NOT_ACCEPTED",
+        "files": {
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/plan.json": "5329213ee3623eb5980ae2400b5ddc99a6f94f50de5211cb18bedd9dd3543c49",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/started.json": "5e65b6292364932373adc23caf13ed405e4f935ee96bc15748dd94d4e2b011f5",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/console.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/fsfs/entry.json": "94d9d137c73cfa80908dbecf9688cf0ae5d1cb193b0e95cb43fcf74ee6427a1f",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/fsfs/entry-result.json": "30c535329056944d2b4aadab19765e1d17bcb142f3b71bbcc249a3d0c7d3e0bd",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/fsfs/upstream.log": "d64d1ba75b5a4b43501b49aae2c6ef4c2b6f99f658328be65a27fb5026722f51",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/fsfs/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/fsfs/fixture-events.jsonl": "24c2babdeb32de2dc6096637703a24df662fc08597e45389583eff87178a4492",
+          "runtime/pgvn/tests/m6-network-8de19a26fc17/pgvn/server.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "original_job_close_observation": "UNKNOWN; do not infer normal cleanup from absent processes"
+      }
+    ],
+    "boundary": "Accepted cleanup counts refer only to the 30 completed runs; original interrupted job cleanup is unproven and those attempts are never counted as PASS."
+  },
+  "raw_result_audit_sha256": "d81903f74a2450ee5d5b70f6bd112fbbad0eb7f79a107b37048e59f856b02080",
+  "xfail_comparison_sha256": "1e384418c9f98a6d58b9ee98cdbfc8658ac80a46653faa242cf148577095cf38",
+  "original_xfail_pairs_identical": 6,
+  "baseline": {
+    "path": "runtime/pgvn/baselines/m6-wc-state-full-0f666711e191",
+    "index_sha256": "f09a4d1d5e3e242ddace0a00ef2766487c95e718b838f8c5b0e6e8c85da2406d",
+    "files": 863,
+    "reports": [
+      {
+        "test_id": "m6-network-a14f75b67ca9",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-e23c702f76ce",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 7,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0a4f73c5d58f",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-8bb28bbfa8c3",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 26
+          },
+          "pgvn": {
+            "PASS": 26
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-80d87a1b1cf2",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15
+          },
+          "pgvn": {
+            "PASS": 15
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-a3ddc50866a8",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 15,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-9d797840f1be",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 17,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 17,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-160862077720",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "SKIP": 9,
+            "PASS": 9
+          },
+          "pgvn": {
+            "SKIP": 9,
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0f87c267a9d7",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-72922c91d237",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 3
+          },
+          "pgvn": {
+            "PASS": 3
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0525ad142cff",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0a4188bf41f0",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 7,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-3d48540b1f60",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-f91b55a3060c",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 26
+          },
+          "pgvn": {
+            "PASS": 26
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-b3dba6cf2a2d",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15
+          },
+          "pgvn": {
+            "PASS": 15
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-4ae1e365efb0",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 15,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-e6998c962164",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 17,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 17,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-6168a9c5eab2",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "SKIP": 9,
+            "PASS": 9
+          },
+          "pgvn": {
+            "SKIP": 9,
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-c226a7b9bb2b",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-f61f71998c42",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 3
+          },
+          "pgvn": {
+            "PASS": 3
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-478869e186cf",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 43,
+            "SKIP": 1,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-084a33399994",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 7,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0851476fcd54",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-dc5abfcb6f7a",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 26
+          },
+          "pgvn": {
+            "PASS": 26
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-2cb85071b84c",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15
+          },
+          "pgvn": {
+            "PASS": 15
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-bfe29405a020",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 15,
+            "SKIP": 1
+          },
+          "pgvn": {
+            "PASS": 15,
+            "SKIP": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-5420dd547f5e",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 17,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 17,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-04b61416d35b",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "SKIP": 9,
+            "PASS": 9
+          },
+          "pgvn": {
+            "SKIP": 9,
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-dc9b7878c774",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 7
+          },
+          "pgvn": {
+            "PASS": 7
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-0f666711e191",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 3
+          },
+          "pgvn": {
+            "PASS": 3
+          }
+        }
+      }
+    ],
+    "status": "PASS"
+  },
+  "full_coverage_ledger": {
+    "sha256": "73645d9d2a1925fea5936c650ef8c0e7e00d1cecabceb948e2ee2fb8d1534e75",
+    "suite_count": 62,
+    "static_function_count": 1984,
+    "accepted_run_references": 88,
+    "current_build_runs": 39,
+    "current_functions": 288,
+    "historical_only_functions": 676,
+    "without_accepted_reference": 1020,
+    "current_outcomes_both_backends": {
+      "PASS": 1608,
+      "XFAIL": 48,
+      "SKIP": 72
+    },
+    "current_entries_excluding_original_skips": 1656,
+    "before_ledger_sha256": "3eee33792ed58d23dbab0bb29f26df5b8a6c3c4e4c27a9e62ede4ebb65401e50"
+  },
+  "full_m5_acceptance_reused": {
+    "test_id": "m5-0587e0a9e03b",
+    "status": "PASS",
+    "report_sha256": "c64b4b0d5746436750e36771e74f3923671f70005d2b1cd7aa5b62eb570fbff7",
+    "groups": 10,
+    "elapsed_seconds": 578.6410000000033,
+    "nested_m4_test_id": "m4-77ebedd6492f",
+    "nested_m4_groups": 8,
+    "protocol_diagnostics_test_id": "m3-protocol-smoke-5023a0a37e97",
+    "http_diagnostics_test_id": "m5-http-50dc205a3020",
+    "http_diagnostics": {
+      "http_v1": {
+        "http_status": 404,
+        "svn_error_code": 180001,
+        "missing_and_disabled_diagnostics_identical": true,
+        "request_ids_present": true,
+        "svn_xml_error_body": true,
+        "missing_copy_destination_is_xml_404_without_revision": true
+      },
+      "http_v2": {
+        "http_status": 404,
+        "svn_error_code": 180001,
+        "missing_and_disabled_diagnostics_identical": true,
+        "request_ids_present": true,
+        "svn_xml_error_body": true,
+        "missing_copy_destination_is_xml_404_without_revision": true
+      }
+    },
+    "fresh_run_in_this_component": false,
+    "basis": "Identical exact frozen build, all154 registered inputs, five products and dependency inventories; original report and manifest identity retained."
+  },
+  "browser_acceptance_reused": {
+    "m4": {
+      "test_id": "m4-browser-wc-workflows-378953f87f86",
+      "checks": {
+        "authentication": true,
+        "paused_refresh": true,
+        "configurable_refresh": true,
+        "repository_pagination": true,
+        "text_only_hostile_name": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "all_views": true,
+        "lost_peer_and_recovery": true,
+        "keyboard_focus_and_refresh": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "narrow_layout": true,
+        "stale_database_and_unknown_nodes": true,
+        "token_revocation_clears_data": true
+      },
+      "report_sha256": "820ff84f37e7a7abc7587f69b25f623dea07e8c473c246d1338d4311f9d141fd",
+      "reused_original_report": true,
+      "fresh_browser_run_in_this_component": false
+    },
+    "m5": {
+      "test_id": "m5-browser-wc-workflows-378953f87f86",
+      "checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "lost_worker_and_new_instance": true,
+        "refresh_retains_open_and_focus": true,
+        "narrow_details_layout": true
+      },
+      "report_sha256": "a8488b4e67f8383d5a379d1aa1b5aea9684429cdfceb24ec5e7a05977af01bd8",
+      "reused_original_report": true,
+      "fresh_browser_run_in_this_component": false
+    }
+  },
+  "network_cleanup": {
+    "status": "PASS",
+    "checked_at": "2026-10-17T01:59:12.442286+00:00",
+    "cluster": "127.0.0.1:16432",
+    "database_owners_retained": [
+      {
+        "database": "pgvn_m6_net_a14f75b67ca9",
+        "owner": "pgvn_migrate_a14f75b67ca9",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_e23c702f76ce",
+        "owner": "pgvn_migrate_e23c702f76ce",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0a4f73c5d58f",
+        "owner": "pgvn_migrate_0a4f73c5d58f",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_8bb28bbfa8c3",
+        "owner": "pgvn_migrate_8bb28bbfa8c3",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_80d87a1b1cf2",
+        "owner": "pgvn_migrate_80d87a1b1cf2",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_a3ddc50866a8",
+        "owner": "pgvn_migrate_a3ddc50866a8",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_9d797840f1be",
+        "owner": "pgvn_migrate_9d797840f1be",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_160862077720",
+        "owner": "pgvn_migrate_160862077720",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0f87c267a9d7",
+        "owner": "pgvn_migrate_0f87c267a9d7",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_72922c91d237",
+        "owner": "pgvn_migrate_72922c91d237",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0525ad142cff",
+        "owner": "pgvn_migrate_0525ad142cff",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0a4188bf41f0",
+        "owner": "pgvn_migrate_0a4188bf41f0",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_3d48540b1f60",
+        "owner": "pgvn_migrate_3d48540b1f60",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_f91b55a3060c",
+        "owner": "pgvn_migrate_f91b55a3060c",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_b3dba6cf2a2d",
+        "owner": "pgvn_migrate_b3dba6cf2a2d",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_4ae1e365efb0",
+        "owner": "pgvn_migrate_4ae1e365efb0",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_e6998c962164",
+        "owner": "pgvn_migrate_e6998c962164",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_6168a9c5eab2",
+        "owner": "pgvn_migrate_6168a9c5eab2",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_c226a7b9bb2b",
+        "owner": "pgvn_migrate_c226a7b9bb2b",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_f61f71998c42",
+        "owner": "pgvn_migrate_f61f71998c42",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_478869e186cf",
+        "owner": "pgvn_migrate_478869e186cf",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_084a33399994",
+        "owner": "pgvn_migrate_084a33399994",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0851476fcd54",
+        "owner": "pgvn_migrate_0851476fcd54",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_dc5abfcb6f7a",
+        "owner": "pgvn_migrate_dc5abfcb6f7a",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_2cb85071b84c",
+        "owner": "pgvn_migrate_2cb85071b84c",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_bfe29405a020",
+        "owner": "pgvn_migrate_bfe29405a020",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_5420dd547f5e",
+        "owner": "pgvn_migrate_5420dd547f5e",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_04b61416d35b",
+        "owner": "pgvn_migrate_04b61416d35b",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_dc9b7878c774",
+        "owner": "pgvn_migrate_dc9b7878c774",
+        "superuser": false,
+        "monitor_token_rows": 0
+      },
+      {
+        "database": "pgvn_m6_net_0f666711e191",
+        "owner": "pgvn_migrate_0f666711e191",
+        "superuser": false,
+        "monitor_token_rows": 0
+      }
+    ],
+    "databases": 30,
+    "monitor_token_rows": 0,
+    "inner_jobs_closed": 140,
+    "outer_jobs_closed": 30,
+    "excluded_interrupted_databases_retained": [
+      {
+        "database": "pgvn_m6_net_f3087f9f751d",
+        "owner": "pgvn_migrate_f3087f9f751d",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "live_database_sessions": 0,
+        "acceptance_status": "EXCLUDED_INTERRUPTED_ATTEMPT",
+        "original_job_cleanup_proven": false
+      },
+      {
+        "database": "pgvn_m6_net_1debcd95c7f2",
+        "owner": "pgvn_migrate_1debcd95c7f2",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "live_database_sessions": 0,
+        "acceptance_status": "EXCLUDED_INTERRUPTED_ATTEMPT",
+        "original_job_cleanup_proven": false
+      },
+      {
+        "database": "pgvn_m6_net_8de19a26fc17",
+        "owner": "pgvn_migrate_8de19a26fc17",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "live_database_sessions": 0,
+        "acceptance_status": "EXCLUDED_INTERRUPTED_ATTEMPT",
+        "original_job_cleanup_proven": false
+      }
+    ],
+    "databases_or_roles_deleted": 0,
+    "scope": "30 completed runs plus 3 explicitly excluded interrupted databases; CIM process/service observation recorded separately."
+  },
+  "runtime_cleanup": {
+    "status": "PASS",
+    "gate_id": "m5-0587e0a9e03b",
+    "checked_at": "2026-10-17T01:59:20.4318671Z",
+    "method": "Read-only Win32_Process and Win32_Service checks",
+    "executable_scope": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn",
+    "temporary_service_patterns": [
+      "PgVN_M3_<12 hex>",
+      "PgVN_M4_<12 hex>",
+      "PgVNDavM5_<12 hex>"
+    ],
+    "remaining_runtime_processes": 0,
+    "remaining_temporary_services": 0,
+    "url_acl_scope": "Removal verified by passing M3/M4 fixture assertions; no global URL ACL changes in this check.",
+    "installed_services_modified": false
+  },
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "m6_complete": false,
+  "m7_complete": false,
+  "remaining_scope": "Remaining suites/applicability and final-build replays; maintenance, real history/backup, acknowledgement/failure ledger, cross-host HA, representative performance and independent Windows/Polarion acceptance."
+}

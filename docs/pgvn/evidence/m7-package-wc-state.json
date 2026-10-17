@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "validation_kind": "package_integrity_and_clean_path_startup_only",
+  "created_at": "2026-10-17T02:00:32.509310+00:00",
+  "build_manifest_sha256": "e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997",
+  "package_id": "fa6fd390be872efa",
+  "archive": "runtime/pgvn/packages/PgVN-M5-windows-x64-fa6fd390be872efa.zip",
+  "archive_sha256": "97b9fefa4a0f3ac5aef94d614ebdf3af14bd0ad72f04bee997e907674f158304",
+  "archive_bytes": 23948550,
+  "payload_files": 228,
+  "zip_entries": 230,
+  "native_images": 95,
+  "five_products_match": true,
+  "zip_payloads_match_staged_files": true,
+  "file_hashes_and_sizes_match": true,
+  "clean_path_check": {
+    "Status": "PASS",
+    "PackageId": "fa6fd390be872efa",
+    "NativeImages": 95,
+    "ValidationStatus": "development-snapshot",
+    "TestScope": "Hashes, x64 PE headers and clean-PATH version startup; no clean-machine claim",
+    "PowerShellVersion": "5.1.26100.9711"
+  },
+  "clean_path_check_sha256": "87f8ede357401d66ae5308edb19ad741d0c4dbb5f1d9697429697491f9159696",
+  "validation_status": "development-snapshot",
+  "clean_machine_acceptance": false,
+  "polarion_application_acceptance": false,
+  "milestone_complete": false,
+  "additional_files_since_prior_package": [
+    "docs/pgvn/M6-network-coverage.zh-CN.md",
+    "docs/pgvn/M6-network-wc-state.zh-CN.md",
+    "docs/pgvn/evidence/m6-network-coverage.json",
+    "docs/pgvn/evidence/m6-network-wc-state.json"
+  ],
+  "changed_files_since_prior_package": [
+    "docs/pgvn/M6-network-log-diff.zh-CN.md",
+    "docs/pgvn/M6-network-wc-workflows.zh-CN.md",
+    "docs/pgvn/M6-network-workflows.zh-CN.md",
+    "docs/pgvn/M6-upstream-network.zh-CN.md",
+    "docs/pgvn/M7-package-local.zh-CN.md",
+    "docs/pgvn/Windows-UTF8.zh-CN.md",
+    "docs/pgvn/progress.zh-CN.md",
+    "docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md"
+  ],
+  "self_reference_policy": "This validation is an external ZIP sidecar; m7-package evidence is excluded by the existing packager."
+}

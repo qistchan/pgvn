@@ -436,9 +436,9 @@ docs/pgvn/            Architecture, guides and validation evidence
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-The latest recorded [working-copy acceptance](docs/pgvn/M6-network-wc-workflows.zh-CN.md) covers all 125 original switch, depth and revert functions, compared with FSFS over SVN, HTTP and HTTPS: 750 outcomes, with 714 PASS and 36 original XFAIL. Its 15+6 browser checks and full M5 gate use the same frozen build.
+The latest recorded [working-copy state acceptance](docs/pgvn/M6-network-wc-state.zh-CN.md) covers 163 original functions in ten complete suites over SVN, HTTP and HTTPS. The [coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) distinguishes current-build results, historical results and outstanding functions across all 62 suites; original SKIP and XFAIL remain explicit.
 
-Earlier recorded work includes [repository workflows](docs/pgvn/M6-network-workflows.zh-CN.md), [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
+Earlier recorded work includes [working-copy semantics](docs/pgvn/M6-network-wc-workflows.zh-CN.md), [repository workflows](docs/pgvn/M6-network-workflows.zh-CN.md), [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
 
 Known client boundaries include SVNKit 1.10.1 revision-property changes on Unicode repository URLs and a pinned `svnmucc` Unicode-user issue reproduced against stock FSFS. Use ASCII repository routes for this SVNKit version. See [DAV compatibility](docs/pgvn/M5-DAV.zh-CN.md) and [Windows UTF-8 validation](docs/pgvn/Windows-UTF8.zh-CN.md).
 
@@ -456,5 +456,6 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Apache DAV](docs/pgvn/M5-DAV.zh-CN.md) | HTTP/HTTPS, authorization, recovery and worker telemetry |
 | [Schema design](docs/pgvn/schema-design.zh-CN.md) | Database structures and storage/control boundaries |
 | [Compatibility validation](docs/pgvn/M6-upstream-network.zh-CN.md) | Original SVN suites, FSFS comparisons and three-protocol results |
+| [Coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) | Per-function current, historical and pending results across all 62 suites |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |

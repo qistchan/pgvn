@@ -457,3 +457,13 @@ Debug 与 Release 分别记录编译选项和摘要。实际发布的 Release �
 冻结清单 `e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997` 下，浏览器 15+6 项和完整 M5 `m5-0587e0a9e03b` 十组通过，耗时 578.641 秒，含 M4 `m4-77ebedd6492f` 八组和 M0–M3。375×812、双详情刷新焦点、故障恢复及令牌撤销清屏均实测；原始网络失败、三个候选、浏览器部分尝试和漏带测试环境变量的一轮 FAIL 保留。最终网络 42/9 个内外层 Job 清空，运行进程、临时服务和本轮有效监控令牌均为零；库与角色保留。
 
 见[工作副本组件](../pgvn/M6-network-wc-workflows.zh-CN.md)和[结构化证据](../pgvn/evidence/m6-network-wc-workflows.json)，匹配开发包校验由随 ZIP 单独提供的 `<ZIP_STEM>.validation.json` 说明。包仍为 development-snapshot。PGVN-601、M6、M7 保持未完成；旧组件绑定各自构建，继续剩余适用性/套件、最终构建复跑、维护与真实历史备份、跨故障域/确认账本、代表性性能及独立 Windows/Polarion 验收。
+
+## 2026-10-17：工作副本状态与完整覆盖账本
+
+原版 stat、resolve、relocate、tree_conflict、move、schedule、changelist、wc、svnversion、entries 十个完整套件在 SVN、HTTP、HTTPS 完成 FSFS 对照：163 个唯一函数、978 个结果，894 PASS、12 个原有 XFAIL、72 个原有 SKIP；实际进入 906 次。无新增排除或断言改写，原有 XFAIL 诊断逐对一致。
+
+冻结清单仍为 `e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997`，154 项输入与五个生产产物均未修改；明确复用同构建浏览器 15+6 项及完整 M5 `m5-0587e0a9e03b` 原始验收，不改写为新运行。140 个内层和 30 个外层 Job 清空，30 个隔离库所有者均为非超级用户、监控令牌行数为零；最终运行进程和临时服务为零，库与角色保留。
+
+原调度器中断后保留 20 组完整结果，3 组缺少终态报告的尝试单独冻结且不计通过。续跑为这 3 组创建新 UUID，首次执行另 7 个原未启动计划，未重复执行已启动计划。上述 140/30 个 Job 仅对应最终接纳的完整 30 组；原中断尝试不宣称正常关闭，其隔离库、角色和记录继续保留。
+
+新增[覆盖账本](../pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数与已接纳报告/快照。当前构建三协议有结果的函数从 125 增至 288；676 个仅有旧构建结果，1020 个尚无已接纳引用，原有 SKIP 不计实际进入。细节见[状态与冲突组件](../pgvn/M6-network-wc-state.zh-CN.md)和[结构化证据](../pgvn/evidence/m6-network-wc-state.json)，开发包检查由随 ZIP 单独提供的 `<ZIP_STEM>.validation.json` 说明。PGVN-601、M6、M7 保持未完成，继续剩余适用性/套件、最终产品复跑、维护/真实历史备份、跨故障域/确认账本、代表性性能及独立 Windows/Polarion 验收。
