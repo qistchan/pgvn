@@ -448,7 +448,9 @@ docs/pgvn/            架构、指南和验证证据
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-最新记录的[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数的 SVN、HTTP、HTTPS 对照。[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其冻结构建中有 568 个函数取得三协议一致结果；历史结果与待验证函数分别列出。这些数字绑定报告注明的构建，后续构建需要匹配的验证证据。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
+最新记录的[工作副本升级验收](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md)覆盖 36 个原版函数的 SVN、HTTP、HTTPS 对照：两后端共 216 个结果全部通过，另有 21 项离线夹具检查通过。[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数。各报告标明其测试构建，这些结果不合并为同一构建的验收结论。
+
+[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其较早冻结构建中有 568 个函数取得三协议一致结果；历史结果与待验证函数分别列出。这些数字绑定报告注明的构建，后续构建需要匹配的验证证据。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
 
 此前已记录[工作副本状态](docs/pgvn/M6-network-wc-state.zh-CN.md)、[工作副本语义](docs/pgvn/M6-network-wc-workflows.zh-CN.md)、[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
 
@@ -468,6 +470,7 @@ docs/pgvn/            架构、指南和验证证据
 | [Apache DAV 指南](docs/pgvn/M5-DAV.zh-CN.md) | HTTP/HTTPS、授权、恢复与工作进程遥测 |
 | [Schema 设计](docs/pgvn/schema-design.zh-CN.md) | 数据结构、存储与控制边界 |
 | [兼容性验证](docs/pgvn/M6-upstream-network.zh-CN.md) | 原版 SVN 套件、FSFS 对照与三协议实测 |
+| [工作副本升级](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) | 旧客户端工作副本夹具与三协议验收 |
 | [兼容性覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md) | 全部 62 个套件逐函数的当前、历史和待验证结果 |
 | [进展与验证](docs/pgvn/progress.zh-CN.md) | 已验收构建、结果与待办 |
 | [实施计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | 里程碑及验收要求 |
