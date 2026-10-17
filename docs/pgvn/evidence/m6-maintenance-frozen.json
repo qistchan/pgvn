@@ -1,0 +1,208 @@
+{
+  "status": "PASS_MAINTENANCE_COMPONENT_AUDIT",
+  "created_at": "2026-10-17T05:42:12.976084+00:00",
+  "test_id": "m6-maintenance-net-0a94997ff6e2",
+  "database": "pgvn_m6_net_0a94997ff6e2",
+  "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "plan_sha256": "867ef911828e9efc77d0e996d2687bcf35fe524fde490396c03fd6a4fbcf5edf",
+  "report_sha256": "037859040d225c914c30348eeb5907ef06e80b2acace251fcda45d9960ac2b20",
+  "component_report_sha256": "848bf60aaca9ee8926df383ccbd3d256d4fce5478589df1163ac3541bb3df6f8",
+  "original_checks": [
+    {
+      "name": "hotcopy_and_maintenance",
+      "status": "PASS",
+      "details": {
+        "full_and_incremental_hotcopy": true,
+        "independent_id_preserved_uuid": true,
+        "divergence_rejected_without_changes": true,
+        "route_conflict_rolls_back_storage": true,
+        "pack_recover_preserve_snapshot": true
+      },
+      "elapsed_seconds": 17.98499999998603
+    },
+    {
+      "name": "freeze_and_lifecycle",
+      "status": "PASS",
+      "details": {
+        "freeze_blocks_commit_until_child_exits": true,
+        "child_argument_quoting": true,
+        "timeout_kills_child_tree": true,
+        "purge_requires_disable_and_drained_handles": true,
+        "purge_clears_catalog_and_storage": true,
+        "pathless_working_directory_empty": true
+      },
+      "elapsed_seconds": 10.75
+    },
+    {
+      "name": "portable_binary",
+      "status": "PASS",
+      "details": {
+        "standalone_binary_and_dll_directory": true,
+        "runtime_python_node_not_required": true
+      },
+      "elapsed_seconds": 0.6710000000020955
+    }
+  ],
+  "original_function_sha256": {
+    "hotcopy_and_maintenance": "0517edbe1787b1be9c19e8f3a318d0a209143b660da8a394732ced550e486eb5",
+    "freeze_and_lifecycle": "83f6eab692cff3f116dca141a6cde368eb5a3c8d24c2fbb97be9fcfe32baf4de",
+    "portable_binary": "92ce8103368dba7039675ccd3c1978cf122771847a9c509bcd89b35c51757ba2"
+  },
+  "additional_checks": [
+    {
+      "name": "full_dump_equality",
+      "source": {
+        "repository": "52187488-495f-2c40-aa09-7a720b006831",
+        "file": "hotcopy-9-source-52187488-495f-2c40-aa09-7a720b006831.dump",
+        "bytes": 2337,
+        "sha256": "9de58dd853d7b2e7f258975223cfabf696f629465272f2cc5f301c26081d3d29"
+      },
+      "target": {
+        "repository": "41df0b3c-32bd-7042-b5f8-57d1f2f7987d",
+        "file": "hotcopy-9-target-41df0b3c-32bd-7042-b5f8-57d1f2f7987d.dump",
+        "bytes": 2337,
+        "sha256": "9de58dd853d7b2e7f258975223cfabf696f629465272f2cc5f301c26081d3d29"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "incremental_dump_equality",
+      "source": {
+        "repository": "52187488-495f-2c40-aa09-7a720b006831",
+        "file": "hotcopy-15-source-52187488-495f-2c40-aa09-7a720b006831.dump",
+        "bytes": 2792,
+        "sha256": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "target": {
+        "repository": "41df0b3c-32bd-7042-b5f8-57d1f2f7987d",
+        "file": "hotcopy-15-target-41df0b3c-32bd-7042-b5f8-57d1f2f7987d.dump",
+        "bytes": 2792,
+        "sha256": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "rejected_hotcopy_preserves_all_history",
+      "arguments": [
+        "maintenance",
+        "hotcopy",
+        "52187488-495f-2c40-aa09-7a720b006831",
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d",
+        "--incremental",
+        "--json"
+      ],
+      "expected_exit_code": 2,
+      "before": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "after": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "rejected_hotcopy_preserves_all_history",
+      "arguments": [
+        "maintenance",
+        "hotcopy",
+        "52187488-495f-2c40-aa09-7a720b006831",
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d",
+        "--incremental",
+        "--json"
+      ],
+      "expected_exit_code": 7,
+      "before": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "80de69a29ffcfa253a4072d5d2ff1304e82024bb8097ee4d89bb5a130bc98fb6",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "after": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "80de69a29ffcfa253a4072d5d2ff1304e82024bb8097ee4d89bb5a130bc98fb6",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "rejected_hotcopy_preserves_all_history",
+      "arguments": [
+        "maintenance",
+        "hotcopy",
+        "52187488-495f-2c40-aa09-7a720b006831",
+        "collision-m2-0a94997ff6e2",
+        "--route",
+        "/m6-maintenance",
+        "--json"
+      ],
+      "expected_exit_code": 7,
+      "before": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "80de69a29ffcfa253a4072d5d2ff1304e82024bb8097ee4d89bb5a130bc98fb6",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "after": {
+        "41df0b3c-32bd-7042-b5f8-57d1f2f7987d": "80de69a29ffcfa253a4072d5d2ff1304e82024bb8097ee4d89bb5a130bc98fb6",
+        "52187488-495f-2c40-aa09-7a720b006831": "b54af519be17e258c7cf64b9df8d20c1cd8b06afe8433ed35ebbf72c7e865b86"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "stock_fsfs_roundtrip_after_maintenance",
+      "status": "PASS",
+      "dump": {
+        "repository": "52187488-495f-2c40-aa09-7a720b006831",
+        "file": "final-source-52187488-495f-2c40-aa09-7a720b006831.dump",
+        "bytes": 3255,
+        "sha256": "6b707f5c3d30c46bb5023c0598c5246525ba1c2feddbc9385a511f307f073f52"
+      },
+      "verified_revisions": 7,
+      "binary_text_and_property": true
+    }
+  ],
+  "admin_calls": 52,
+  "exit_code_counts": {
+    "0": 42,
+    "2": 3,
+    "7": 4,
+    "1": 1,
+    "6": 2
+  },
+  "owned_job_active_processes": 0,
+  "post_terminal_residual": {
+    "owner": "pgvn_migrate_0a94997ff6e2",
+    "owner_superuser": false,
+    "client_backends": 0,
+    "monitor_tokens": 0
+  },
+  "original_assertions_unchanged": true,
+  "milestone_complete": false,
+  "format": 1,
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "frozen_evidence": {
+    "path": "runtime/pgvn/baselines/m6-maintenance-0a94997ff6e2",
+    "files": 584,
+    "index_sha256": "ca740a63da3cf7a1221afa4f85e5e76b92f5be3962f72ce5ae57c3105cb402cd"
+  },
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "validation_seconds": 38.125,
+  "corpus": "New synthetic FSFS r0-r4: binary text/property, copy history and replacement; source advanced to r6 by original maintenance checks.",
+  "fixture_adaptations": [
+    "Fresh authorized M6 database, no Fixture.initialize.",
+    "Map helpers including captured default database to that database.",
+    "Seed four revisions using stock SVN file:// transactions."
+  ],
+  "browser_m5_package_rerun": false,
+  "limitations": [
+    "Synthetic component, not a real-history backup/restore acceptance.",
+    "Freeze uses Python as the test child; this is not a no-Python target-machine installation test.",
+    "Pack/recover consistency checks do not exercise physical WAL or cluster crash recovery.",
+    "Remaining protocol matrix, faults, formal performance and independent Windows/Polarion validation remain pending."
+  ]
+}
