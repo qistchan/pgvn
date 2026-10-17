@@ -1,0 +1,934 @@
+{
+  "format": 1,
+  "status": "FAIL_ENABLED_SHELF_DIAGNOSTICS",
+  "created_at": "2026-10-17T06:25:21.221838+00:00",
+  "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "collector_sha256": "3fd6648fafb1ae9ef9a60ca6e2fd2d2061eb9fd82b4d2b13faf64a339ade00bc",
+  "queue_report_sha256": "fcd81fdce69c6a1d2514d61aaeed8c94c8d09dc08f5f2b626eb083f5a17fff4d",
+  "groups": 6,
+  "unique_original_functions": 63,
+  "outcomes": 378,
+  "counts": {
+    "PASS": 330,
+    "XFAIL": 48
+  },
+  "counts_by_protocol": {
+    "svn": {
+      "PASS": 110,
+      "XFAIL": 16
+    },
+    "http": {
+      "PASS": 110,
+      "XFAIL": 16
+    },
+    "https": {
+      "PASS": 110,
+      "XFAIL": 16
+    }
+  },
+  "profiles": {
+    "shelf2_tests": {
+      "profile": "shelf2",
+      "functions": 31,
+      "predicate": {
+        "name": "shelf2_enabled",
+        "source_file": "subversion/tests/cmdline/shelf2_tests.py",
+        "source_sha256": "4a3cafa045137a56b2f3564104ad7d92a4c0aba8bdb370e35cf0c3d6df59ba13",
+        "original_ast_sha256": "a387c9212510d4c7925771372cf2390279ffb87fecf5ad9666a804fa0e655ab8",
+        "evaluated_with_profile": true
+      },
+      "original_suite_sha256": "4a3cafa045137a56b2f3564104ad7d92a4c0aba8bdb370e35cf0c3d6df59ba13"
+    },
+    "shelf_tests": {
+      "profile": "shelf3",
+      "functions": 32,
+      "predicate": {
+        "name": "shelf3_enabled",
+        "source_file": "subversion/tests/cmdline/shelf_tests.py",
+        "source_sha256": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+        "original_ast_sha256": "3d44b11c99bf94becf5f36d7d2d3506ba346b3087e01d2ec56da4c53c855408e",
+        "evaluated_with_profile": true
+      },
+      "original_suite_sha256": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd"
+    }
+  },
+  "runs": [
+    {
+      "test_id": "m6-network-d7b5b11af41f",
+      "suite": "shelf2_tests",
+      "protocol": "svn",
+      "profile": "shelf2",
+      "report_sha256": "4bb4550f64f8943bc12a6d1f8fd35661411c3bf00def134bb3ad21d97167ed83",
+      "plan_sha256": "73ae77feef287cc1ec2f63e38c90b625327327177d1c985ddd78c0d51af028ef",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 31
+        },
+        "pgvn": {
+          "PASS": 31
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-2c4f3d3d4a08",
+      "suite": "shelf_tests",
+      "protocol": "svn",
+      "profile": "shelf3",
+      "report_sha256": "30c3b1059360ec0cc26d75f46de57879f2d69b23d6d67f914c2dd104046e644f",
+      "plan_sha256": "3d1a354ae0ac2fd84d98898eeef776a20653499e019e49ef012843923c02dd0e",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 8
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 8
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 4,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-b9ca9892229a",
+      "suite": "shelf2_tests",
+      "protocol": "http",
+      "profile": "shelf2",
+      "report_sha256": "6ed7b986e52ca364de049099ab1d708800d8e43c6f3aaea487789ac4a099b848",
+      "plan_sha256": "0490dc83ed7a30f1bb38adc26883dcdd398164a446a1026dcbc6f07cb0f72005",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 31
+        },
+        "pgvn": {
+          "PASS": 31
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-421da4e78dd8",
+      "suite": "shelf_tests",
+      "protocol": "http",
+      "profile": "shelf3",
+      "report_sha256": "504d66b8791cf96dbe60b818a0332393b116260f2d365e100aaf6e9d2d113815",
+      "plan_sha256": "ce77b5b36ef8f921099671f4114ee28611467ad57e4c14b2e0715786613cfb8a",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 8
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 8
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-86d267db507b",
+      "suite": "shelf2_tests",
+      "protocol": "https",
+      "profile": "shelf2",
+      "report_sha256": "27ba36b72dbd8aa694d10dd215429783c80b54434d706c1fada44108fa699817",
+      "plan_sha256": "27f42a5c34dca1f0c187030f556409647db62f07f3bd86f71a17eecdd67770e3",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 31
+        },
+        "pgvn": {
+          "PASS": 31
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-f428753c6813",
+      "suite": "shelf_tests",
+      "protocol": "https",
+      "profile": "shelf3",
+      "report_sha256": "03762e7e80ca61fac11587ede471189f25c5fc4c0a358a75006e5bdfa2520103",
+      "plan_sha256": "acc4744e333cd82234622f95b4234fc6e8d1e46ab9ae5915e3643fff75e2dbd2",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 8
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 8
+        }
+      },
+      "original_predicate_true": true,
+      "all_original_functions_entered": true,
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "native_aliases_absent": true
+    }
+  ],
+  "original_outcomes_identical": true,
+  "zero_skip_required_and_observed": true,
+  "original_assertions_unchanged": true,
+  "strict_xfail_status": "FAIL",
+  "strict_xfail_pairs": 24,
+  "strict_xfail_mismatches": [
+    {
+      "test_id": "m6-network-421da4e78dd8",
+      "suite": "shelf_tests",
+      "protocol": "http",
+      "case_id": 30,
+      "equal_after_work_directory_normalization": false,
+      "fsfs_sha256": "8371352841076f5c6388061f25959160ea5ecae333405305c892f70a2f7b2259",
+      "pgvn_sha256": "e5a3f21a8d0cf4da0b4fe728418643c4ebb87cd339d93734e257c16937d0d7b4"
+    },
+    {
+      "test_id": "m6-network-f428753c6813",
+      "suite": "shelf_tests",
+      "protocol": "https",
+      "case_id": 27,
+      "equal_after_work_directory_normalization": false,
+      "fsfs_sha256": "5b4e977bc6dfdaf96a5043ec65422b0767f45136187f165161f3a64e590c95b5",
+      "pgvn_sha256": "b1fa371221c48cd689b4a1dab85346fd689676f8a7b7c5117dd0fdb93de98246"
+    }
+  ],
+  "inner_jobs_drained": 28,
+  "outer_jobs_drained": 6,
+  "database_controls": [
+    {
+      "database": "pgvn_m6_net_d7b5b11af41f",
+      "owner": "pgvn_migrate_d7b5b11af41f",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_2c4f3d3d4a08",
+      "owner": "pgvn_migrate_2c4f3d3d4a08",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_b9ca9892229a",
+      "owner": "pgvn_migrate_b9ca9892229a",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_421da4e78dd8",
+      "owner": "pgvn_migrate_421da4e78dd8",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_86d267db507b",
+      "owner": "pgvn_migrate_86d267db507b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_f428753c6813",
+      "owner": "pgvn_migrate_f428753c6813",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    }
+  ],
+  "prior_queue_states": {
+    "first": {
+      "status": "FAIL",
+      "sha256": "c59fd9abae986ff0e23aab3c7c06b5b24aeb8867bb2f45be89dafdceedecbd32",
+      "completed": 18
+    },
+    "continuation": {
+      "status": "PASS",
+      "sha256": "4fdac6de3170fe2d601f697489a934cae6f14c4f33e89828c55856dde767d510",
+      "completed": 27
+    },
+    "combined_validation_status": "FAIL",
+    "raw_failures_retained": true,
+    "scope": "All 45 prior plans are terminal and drained. Enabled shelf is an independent diagnostic component; it cannot accept or reclassify any previous FAIL."
+  },
+  "prior_matrix_failure_reclassified": false,
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": 5,
+  "milestone_complete": false,
+  "scope": "Enabled original experimental shelf2/shelf3 suites only; original XFAILs retained, no new unique functions added to previous default-profile catalog and no claim of general shelf completeness.",
+  "frozen_network": {
+    "path": "runtime/pgvn/baselines/m6-enabled-shelf-f428753c6813",
+    "index_sha256": "027608a1e0fc033a299b6a3cc4308ff886758742cc4b951ccece580b236b7deb",
+    "files": 384
+  },
+  "frozen_controls": {
+    "path": "runtime/pgvn/baselines/m6-enabled-shelf-controls-f428753c6813",
+    "index_sha256": "b40562fa1b4f1a68895bfcb0a373ddb6bb6704c51c68cbf80662ccb4ae0ab21f",
+    "files": 40
+  },
+  "diagnostic_order_review": {
+    "status": "REVIEWED_PRINTED_STATUS_ORDER_DIFFERENCES",
+    "strict_comparison_status_retained": "FAIL",
+    "component_status_retained": "FAIL_ENABLED_SHELF_DIAGNOSTICS",
+    "strict_pairs": 24,
+    "strict_equal_pairs": 22,
+    "strict_mismatches": [
+      {
+        "test_id": "m6-network-421da4e78dd8",
+        "suite": "shelf_tests",
+        "protocol": "http",
+        "case_id": 30,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "8371352841076f5c6388061f25959160ea5ecae333405305c892f70a2f7b2259",
+        "pgvn_sha256": "e5a3f21a8d0cf4da0b4fe728418643c4ebb87cd339d93734e257c16937d0d7b4"
+      },
+      {
+        "test_id": "m6-network-f428753c6813",
+        "suite": "shelf_tests",
+        "protocol": "https",
+        "case_id": 27,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "5b4e977bc6dfdaf96a5043ec65422b0767f45136187f165161f3a64e590c95b5",
+        "pgvn_sha256": "b1fa371221c48cd689b4a1dab85346fd689676f8a7b7c5117dd0fdb93de98246"
+      }
+    ],
+    "reviews": [
+      {
+        "test_id": "m6-network-421da4e78dd8",
+        "case_id": 30,
+        "protocol": "http",
+        "expected_nodes": {
+          "A": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/alpha": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/beta": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/F": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/lambda": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/mu": {
+            "status": " C",
+            "wc_rev": "3"
+          },
+          "A/C": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/pi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/rho": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/tau": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/chi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/omega": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/psi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/gamma": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "iota": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          ".": {
+            "status": "  ",
+            "wc_rev": "1"
+          }
+        },
+        "actual_nodes": {
+          "A": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/C": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/pi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/rho": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/tau": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/chi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/omega": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/psi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/gamma": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/alpha": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/beta": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/F": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/lambda": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/mu": {
+            "status": " M",
+            "wc_rev": "3"
+          },
+          "iota": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          ".": {
+            "status": "  ",
+            "wc_rev": "1"
+          }
+        },
+        "printed_orders": {
+          "fsfs": {
+            "expected": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ],
+            "actual": [
+              "A",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "iota",
+              "."
+            ]
+          },
+          "pgvn": {
+            "expected": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ],
+            "actual": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ]
+          }
+        },
+        "differing_order_sections": [
+          "actual"
+        ],
+        "complete_printed_trees_equal_by_node_and_attributes": true,
+        "complete_prefix_traceback_and_result_equal": true,
+        "same_original_failed_expectation": {
+          "path": "A/mu",
+          "expected": {
+            "status": " C",
+            "wc_rev": "3"
+          },
+          "actual": {
+            "status": " M",
+            "wc_rev": "3"
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-f428753c6813",
+        "case_id": 27,
+        "protocol": "https",
+        "expected_nodes": {
+          "A": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/alpha": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/beta": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/F": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/lambda": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/mu": {
+            "status": "C ",
+            "wc_rev": "3"
+          },
+          "A/C": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/pi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/rho": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/tau": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/chi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/omega": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/psi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/gamma": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "iota": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          ".": {
+            "status": "  ",
+            "wc_rev": "1"
+          }
+        },
+        "actual_nodes": {
+          "A": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/alpha": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/E/beta": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/F": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/B/lambda": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/mu": {
+            "status": "M ",
+            "wc_rev": "3"
+          },
+          "A/C": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/pi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/rho": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/G/tau": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/chi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/omega": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/H/psi": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "A/D/gamma": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          "iota": {
+            "status": "  ",
+            "wc_rev": "1"
+          },
+          ".": {
+            "status": "  ",
+            "wc_rev": "1"
+          }
+        },
+        "printed_orders": {
+          "fsfs": {
+            "expected": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ],
+            "actual": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ]
+          },
+          "pgvn": {
+            "expected": [
+              "A",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "iota",
+              "."
+            ],
+            "actual": [
+              "A",
+              "A/B",
+              "A/B/E",
+              "A/B/E/alpha",
+              "A/B/E/beta",
+              "A/B/F",
+              "A/B/lambda",
+              "A/mu",
+              "A/C",
+              "A/D",
+              "A/D/G",
+              "A/D/G/pi",
+              "A/D/G/rho",
+              "A/D/G/tau",
+              "A/D/H",
+              "A/D/H/chi",
+              "A/D/H/omega",
+              "A/D/H/psi",
+              "A/D/gamma",
+              "iota",
+              "."
+            ]
+          }
+        },
+        "differing_order_sections": [
+          "expected"
+        ],
+        "complete_printed_trees_equal_by_node_and_attributes": true,
+        "complete_prefix_traceback_and_result_equal": true,
+        "same_original_failed_expectation": {
+          "path": "A/mu",
+          "expected": {
+            "status": "C ",
+            "wc_rev": "3"
+          },
+          "actual": {
+            "status": "M ",
+            "wc_rev": "3"
+          }
+        }
+      }
+    ],
+    "interpretation": "Both strict text differences consist solely of printed dictionary key order. Every printed node and attribute, diagnostic prefix, exception and XFAIL line match. Both backends still fail the same original conflict-status expectation; later behavior after that assertion is not established.",
+    "original_results_rewritten": false,
+    "raw_logs_rewritten": false,
+    "strict_normalizer_modified": false,
+    "acceptance_established": false,
+    "inputs": {
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\enabled-shelf-xfail-audit-v1.json": "2450164962b46351d9eb8f16d1ff4ef5e902d9778601f8acf70778f8fde14ad5",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\enabled-shelf-component-v1.json": "4f9e8a4e86a78ebe3d3bcb56e8dd2987a09bc87bb0d5911e8538e2f452a3ae59",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\review_enabled_shelf_status_order_v1.py": "4cd69f3dfe192130308a7400c11c3ee7459a0b4147a1a66a067b1cb673eaeaa7",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-421da4e78dd8\\fsfs\\upstream.log": "c2cc4228aabbcea50028c6d97c6768ba79814ba9ced01ca644a7ae743ce6b506",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-421da4e78dd8-xfail-30-fsfs.txt": "2d749ac094dea5f564fa0c6512392f1ada6fb15dd8064adf7d177ccb74b47612",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-421da4e78dd8\\pgvn\\upstream.log": "f70b36ae7ae2c59583540802ae8c34e052b9a13c434c9df0c6b5e10402752923",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-421da4e78dd8-xfail-30-pgvn.txt": "516418887c9206f9fb7c1fbe31a640f94c2285292b5b57d4abcd4e89696c6b86",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-421da4e78dd8\\subversion\\tests\\cmdline\\shelf_tests.py": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-421da4e78dd8\\subversion\\tests\\cmdline\\svntest\\wc.py": "44b09b63701f9e3d0226d128e10ef50d5760cab213c4c457482e7b336c1c55f1",
+      "C:\\Project\\PgVN\\pgvn\\artifacts\\pgvn\\tests\\m6-network-421da4e78dd8.json": "504d66b8791cf96dbe60b818a0332393b116260f2d365e100aaf6e9d2d113815",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-f428753c6813\\fsfs\\upstream.log": "dccfc2537eb06ba0a0d0abb5ca134a8f7722e482e41ae7f16cc443f94cf28709",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-f428753c6813-xfail-27-fsfs.txt": "88c7cd61cee3bbf2138054ed277887555c584f13543bad07f2d13cce2c07d79b",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\tests\\m6-network-f428753c6813\\pgvn\\upstream.log": "6bd1a596b76fe0e55d78f4b58c987a8f8eaf5c6a05c8e4fc7c9cb70d88863767",
+      "C:\\Program Files\\PostgreSQL\\pgfs-work\\merge-and-upgrade\\wc-count-frozen\\m6-network-f428753c6813-xfail-27-pgvn.txt": "4461905679eb5faac9af0dec25a727b0c555801e11b23ed6454b72482b6341f5",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-f428753c6813\\subversion\\tests\\cmdline\\shelf_tests.py": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+      "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn\\upstream-source\\m6-network-f428753c6813\\subversion\\tests\\cmdline\\svntest\\wc.py": "44b09b63701f9e3d0226d128e10ef50d5760cab213c4c457482e7b336c1c55f1",
+      "C:\\Project\\PgVN\\pgvn\\artifacts\\pgvn\\tests\\m6-network-f428753c6813.json": "03762e7e80ca61fac11587ede471189f25c5fc4c0a358a75006e5bdfa2520103"
+    }
+  },
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "browser_m5_package_rerun": false,
+  "limitations": [
+    "Strict diagnostic comparison remains FAIL (22 exact pairs, 2 printed-order differences); review does not establish acceptance.",
+    "Original experimental XFAILs are retained; this is not general shelf feature acceptance.",
+    "These are the same 63 original functions as default-profile selections; do not double-count unique coverage.",
+    "Previous merge/patch matrix FAIL is unchanged; M6 and M7 remain incomplete."
+  ]
+}
