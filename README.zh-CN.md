@@ -436,9 +436,9 @@ docs/pgvn/            架构、指南和验证证据
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-最新记录的[工作副本状态验收](docs/pgvn/M6-network-wc-state.zh-CN.md)覆盖十个完整套件、163 个原版函数的 SVN、HTTP、HTTPS 对照。[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)逐项区分全部 62 个套件的当前构建结果、历史结果和待验证函数，原有 SKIP/XFAIL 单独保留。
+最新记录的[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数的 SVN、HTTP、HTTPS 对照。[覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其中 568 个已有当前构建结果，历史结果与待验证函数分别列出。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
 
-此前已记录[工作副本语义](docs/pgvn/M6-network-wc-workflows.zh-CN.md)、[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
+此前已记录[工作副本状态](docs/pgvn/M6-network-wc-state.zh-CN.md)、[工作副本语义](docs/pgvn/M6-network-wc-workflows.zh-CN.md)、[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 

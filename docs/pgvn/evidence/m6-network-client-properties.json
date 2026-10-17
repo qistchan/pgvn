@@ -1,0 +1,2589 @@
+{
+  "status": "PASS_COMPONENT_ONLY",
+  "created_at": "2026-10-17T03:14:06.448361+00:00",
+  "build_manifest_sha256": "e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997",
+  "build_git_base_commit": "c6381272e20af5fc02bfed5dcb9a7dc859dba587",
+  "build_worktree_dirty": true,
+  "registered_source_inputs": 154,
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "source_or_product_edits_in_this_component": false,
+  "scope": {
+    "complete_original_suites": 10,
+    "unique_original_functions": 280,
+    "counts": {
+      "PASS": 1512,
+      "XFAIL": 126,
+      "SKIP": 42
+    },
+    "outcomes": 1680,
+    "entered_including_original_xfail": 1638,
+    "client_only_cases_are_not_storage_io_evidence": true,
+    "upstream_assertions_or_decorators_changed": false,
+    "new_exclusions": []
+  },
+  "runs": [
+    {
+      "test_id": "m6-network-cd32f84c3d5d",
+      "suite": "autoprop_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30
+        },
+        "pgvn": {
+          "PASS": 30
+        }
+      },
+      "upstream_python_case_outcomes": 60,
+      "upstream_python_tests_executed": 60,
+      "report_sha256": "92d2a602b97495dec920eb5e83d811eb7c6fe98be4175b55d2fa6dd9201a5889"
+    },
+    {
+      "test_id": "m6-network-a815074e21a0",
+      "suite": "getopt_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "a2a10d9c5dfa265817fdef401c9cadbd496c22725e8175a7073bc3c566f70f2d"
+    },
+    {
+      "test_id": "m6-network-565a02f77584",
+      "suite": "input_validation_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "upstream_python_case_outcomes": 50,
+      "upstream_python_tests_executed": 50,
+      "report_sha256": "5090e52f0f2ab3e6b1a45bfe27d2e0c130bfdc1392cdea4925fddfaaf3a67368"
+    },
+    {
+      "test_id": "m6-network-a56a6fa7be7a",
+      "suite": "pegrev_parse_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 68,
+          "XFAIL": 16
+        },
+        "pgvn": {
+          "PASS": 68,
+          "XFAIL": 16
+        }
+      },
+      "upstream_python_case_outcomes": 168,
+      "upstream_python_tests_executed": 168,
+      "report_sha256": "0f2fa3c6830c0efb51f9e90eff96f9d84dbf0026aaf92fa567c4c67fa4d07f18"
+    },
+    {
+      "test_id": "m6-network-09a9b799c731",
+      "suite": "trans_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 9,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 22,
+      "upstream_python_tests_executed": 22,
+      "report_sha256": "fc2490b6fe135dd8bc38bae55c886447851f0bffe7798c577270bbb3a8385773"
+    },
+    {
+      "test_id": "m6-network-4bb1ff0fbdef",
+      "suite": "special_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 54,
+      "upstream_python_tests_executed": 40,
+      "report_sha256": "e0bbc4a6da0f70403928fa05ac239d9022b3ce11b5432c5ef4b48e8a8c7c3049"
+    },
+    {
+      "test_id": "m6-network-144590fd8900",
+      "suite": "mergeinfo_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "upstream_python_case_outcomes": 26,
+      "upstream_python_tests_executed": 26,
+      "report_sha256": "22d9f6eb2b50625808f508a67fe59c389000bc044f276812e66eee1ac64c474c"
+    },
+    {
+      "test_id": "m6-network-1638a394e4b5",
+      "suite": "iprop_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "8aee174590ecbe4896c7b2f9191504fb160a98d7f1274589de6b5eb3b615c6cf"
+    },
+    {
+      "test_id": "m6-network-11c96c8443d9",
+      "suite": "iprop_authz_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "upstream_python_case_outcomes": 2,
+      "upstream_python_tests_executed": 2,
+      "report_sha256": "8ad5e1943908e84294ebe5e9cbb331919999d70fabf11f5f9bdcc97a726ec553"
+    },
+    {
+      "test_id": "m6-network-aa81c6c63762",
+      "suite": "externals_tests",
+      "protocol": "svn",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 69,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 69,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 142,
+      "upstream_python_tests_executed": 142,
+      "report_sha256": "6256e1234bfad7dd75cbe8614bade773af80b20aff3097221f0f6e6bf0ef0f6d"
+    },
+    {
+      "test_id": "m6-network-00311b6d0a3f",
+      "suite": "autoprop_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30
+        },
+        "pgvn": {
+          "PASS": 30
+        }
+      },
+      "upstream_python_case_outcomes": 60,
+      "upstream_python_tests_executed": 60,
+      "report_sha256": "ecf2f338a42abe5e355dce39911ca39a1fb05f9a02a37cb2c86fbbb7ffdd8759"
+    },
+    {
+      "test_id": "m6-network-280ea2bc74ff",
+      "suite": "getopt_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "18846d538e65a09b6d1d298cf4d42eb3c2cce99ec19789266d952fecff3b2a10"
+    },
+    {
+      "test_id": "m6-network-533b8d039746",
+      "suite": "input_validation_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "upstream_python_case_outcomes": 50,
+      "upstream_python_tests_executed": 50,
+      "report_sha256": "6b772bad0cc5c70ae4e26736776b75b56c5cd2ce3dbcb5bea37542b6b12377bc"
+    },
+    {
+      "test_id": "m6-network-17375029382f",
+      "suite": "pegrev_parse_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 68,
+          "XFAIL": 16
+        },
+        "pgvn": {
+          "PASS": 68,
+          "XFAIL": 16
+        }
+      },
+      "upstream_python_case_outcomes": 168,
+      "upstream_python_tests_executed": 168,
+      "report_sha256": "ab817da6eee6ae14b9533c6ddd57dab0f088ed474d7246245223d48186e48610"
+    },
+    {
+      "test_id": "m6-network-9a64fcdb6d12",
+      "suite": "trans_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 9,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 22,
+      "upstream_python_tests_executed": 22,
+      "report_sha256": "aba6af2fe8dcc3ec7b5db191abb03215f096feb35e7986e4b31f68ed3de93897"
+    },
+    {
+      "test_id": "m6-network-8e672113bef0",
+      "suite": "special_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 54,
+      "upstream_python_tests_executed": 40,
+      "report_sha256": "99cdeb32b283c45cc7087e644a2756989de1c37a7eb5d21089469a19257910d8"
+    },
+    {
+      "test_id": "m6-network-a86d3c4423fa",
+      "suite": "mergeinfo_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "upstream_python_case_outcomes": 26,
+      "upstream_python_tests_executed": 26,
+      "report_sha256": "24aad497d30297982c9c0bf1915dda114499e120683b938a36d7584a5abd60ae"
+    },
+    {
+      "test_id": "m6-network-19829c750147",
+      "suite": "iprop_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "31ae28ba27b3c2da75325e1a1f2785cd4945811f0bd2f67cb7212fc0cba22e2f"
+    },
+    {
+      "test_id": "m6-network-f4c74e09f9f7",
+      "suite": "iprop_authz_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "upstream_python_case_outcomes": 2,
+      "upstream_python_tests_executed": 2,
+      "report_sha256": "ff78698518ede80a97903f1d2775da4e2ddb525227aeda7e244eecb75b6b1e7d"
+    },
+    {
+      "test_id": "m6-network-33d8822340b1",
+      "suite": "externals_tests",
+      "protocol": "http",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 69,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 69,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 142,
+      "upstream_python_tests_executed": 142,
+      "report_sha256": "b242de6379c48cd9894f6c865742d675efa68861e19ca33968473eb31a7d35ab"
+    },
+    {
+      "test_id": "m6-network-34b6ee34815e",
+      "suite": "autoprop_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 30
+        },
+        "pgvn": {
+          "PASS": 30
+        }
+      },
+      "upstream_python_case_outcomes": 60,
+      "upstream_python_tests_executed": 60,
+      "report_sha256": "cb55ec1be5a237ca631cc179b0b2587cffec1c07c946d7ea8b63bb423da857cd"
+    },
+    {
+      "test_id": "m6-network-d0f92eb6c4ad",
+      "suite": "getopt_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "2d9e42a1f7c1b081cb3316e9d353af806896a433521656dc068bd7fbd982aa74"
+    },
+    {
+      "test_id": "m6-network-35ea50b28cae",
+      "suite": "input_validation_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "upstream_python_case_outcomes": 50,
+      "upstream_python_tests_executed": 50,
+      "report_sha256": "467e6c44c44f7ec5eef2ec8beb1dc987a6ddb11bfa3cf4220285f5c301f2eabf"
+    },
+    {
+      "test_id": "m6-network-7b0a83227cef",
+      "suite": "pegrev_parse_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 68,
+          "XFAIL": 16
+        },
+        "pgvn": {
+          "PASS": 68,
+          "XFAIL": 16
+        }
+      },
+      "upstream_python_case_outcomes": 168,
+      "upstream_python_tests_executed": 168,
+      "report_sha256": "d069b497addd3a1f8475887a1b85fcf4b43b554b440e7fd40d803df30722877c"
+    },
+    {
+      "test_id": "m6-network-378fd80900aa",
+      "suite": "trans_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 9,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 22,
+      "upstream_python_tests_executed": 22,
+      "report_sha256": "12f294d14648416d1b3cc430cce6b19a7f6110f010c66600d1239f84667c1c6b"
+    },
+    {
+      "test_id": "m6-network-a09a62e782eb",
+      "suite": "special_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 19,
+          "SKIP": 7,
+          "XFAIL": 1
+        }
+      },
+      "upstream_python_case_outcomes": 54,
+      "upstream_python_tests_executed": 40,
+      "report_sha256": "ac3b575a7efbd23fa315771add65e48682e3fdecd30b461992ed7cb53d5ec770"
+    },
+    {
+      "test_id": "m6-network-ee632902f30d",
+      "suite": "mergeinfo_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 13
+        },
+        "pgvn": {
+          "PASS": 13
+        }
+      },
+      "upstream_python_case_outcomes": 26,
+      "upstream_python_tests_executed": 26,
+      "report_sha256": "a844cc965680d91de68e8f631ec153cef4236677b0abddd325a4023eb1fcc43c"
+    },
+    {
+      "test_id": "m6-network-5438f345a32d",
+      "suite": "iprop_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "upstream_python_case_outcomes": 18,
+      "upstream_python_tests_executed": 18,
+      "report_sha256": "22b86f51adbbbfaa5a4510d3fa9817edfe1ed2db7ef4a624bfe96eb2fea30a7d"
+    },
+    {
+      "test_id": "m6-network-8bb79a385a9c",
+      "suite": "iprop_authz_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "upstream_python_case_outcomes": 2,
+      "upstream_python_tests_executed": 2,
+      "report_sha256": "1c84475d78e4997d6df94346c5883e0eb772340ffcc7ad6a4331f25306a0d8b7"
+    },
+    {
+      "test_id": "m6-network-076a5095f6ba",
+      "suite": "externals_tests",
+      "protocol": "https",
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 69,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 69,
+          "XFAIL": 2
+        }
+      },
+      "upstream_python_case_outcomes": 142,
+      "upstream_python_tests_executed": 142,
+      "report_sha256": "3317e02b1685649d50289cf9f5e85d3494b6678b06212e5657881fbac85c32c5"
+    }
+  ],
+  "queue_sha256": "5ab898d593fa092d7b03fb4a01f837c9b024565f569728cfdac0cf01481c170b",
+  "plans_sha256": "cd6155e026cbb06d15fbca7622134da3576ebc41071bdc7426a9cf9cfdf05a60",
+  "source_review_sha256": "34bbb05ab83fca8b93c04aed0c703c8679e0964e04294016424d944dd3eb4295",
+  "raw_result_audit_sha256": "13da77b61fed4840824b118cc7859909b0a6527a5c483c100472038c4e3824ee",
+  "xfail_comparison_sha256": "cf9ac85e5767a266bde1e946da111876f3dcb60e957d0e93f0ddf3a3f0d20108",
+  "original_xfail_pairs_reviewed": 63,
+  "original_xfail_text_identical_pairs": 50,
+  "original_xfail_status_mapping_permutation_pairs": 13,
+  "xfail_strict_original_audit_sha256": "c6707b16827e6e4de042d1a67169c75aa645467feb1487c7ea905a4c9d758a13",
+  "xfail_reviewed_source_snapshots_sha256": "9b7d6738cb6517d05b8c21a6f65e6133e90c0f87b075cd4b52a025221f6eb99d",
+  "xfail_diagnostic_review": {
+    "status": "PASS_WITH_EXPLICIT_DIAGNOSTIC_ORDER_RECONCILIATION",
+    "strict_original_audit": {
+      "path": "final-xfail.json",
+      "status": "FAIL",
+      "sha256": "c6707b16827e6e4de042d1a67169c75aa645467feb1487c7ea905a4c9d758a13",
+      "comparator_sha256": "c64f95134e030012e1db032225e2f5cddad1092f8dbb9c6008d07030fa7251cf",
+      "pairs": 63,
+      "text_mismatches": 13
+    },
+    "exact_normalized_text_pairs": 50,
+    "status_mapping_permutation_pairs": 13,
+    "rule": "Only the single upstream ACTUAL STATUS TREE/wc.State diagnostic dictionary in the 13 listed pegrev XFAIL pairs is compared by unique path with each raw Item line exact; all text outside the block must be exact after the unchanged original work-directory/exact-endpoint normalization.",
+    "upstream_basis": "State.__eq__ compares normalized desc dictionaries; the diagnostic tree crawler prints children in traversal order without sorting. This review proves equal mapping data, not the cause of traversal order.",
+    "negative_probes": [
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 81,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 82,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 83,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "case_id": 84,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 80,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 81,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 82,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 83,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "case_id": 84,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 80,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 81,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 82,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "status_value_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "path_deleted",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "duplicate_path_appended",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "traceback_or_result_changed",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "item_line_outside_dump",
+        "rejected": true
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "case_id": 83,
+        "probe": "unrecognized_dump_header",
+        "rejected": true
+      }
+    ],
+    "upstream_source_provenance": [
+      {
+        "path": "svntest/wc.py",
+        "file_sha256": "44b09b63701f9e3d0226d128e10ef50d5760cab213c4c457482e7b336c1c55f1",
+        "function": "old_tree",
+        "line": 445,
+        "source_sha256": "1ca5ca4ef2579be48fafad87b0a9d2205e3c279c9ad5c7d851637edba6b347c6",
+        "source": "def old_tree(self):\n    \"Return an old-style tree (for compatibility purposes).\"\n    nodelist = [ ]\n    for path, item in self.desc.items():\n      nodelist.append(item.as_node_tuple(os.path.join(self.wc_dir, path)))\n\n    tree = svntest.tree.build_generic_tree(nodelist)\n    if 0:\n      check = tree.as_state()\n      if self != check:\n        logger.warn(pprint.pformat(self.desc))\n        logger.warn(pprint.pformat(check.desc))\n        # STATE -> TREE -> STATE is lossy.\n        # In many cases, TREE -> STATE -> TREE is not.\n        # Even though our conversion from a TREE has lost some information, we\n        # may be able to verify that our lesser-STATE produces the same TREE.\n        svntest.tree.compare_trees('mismatch', tree, check.old_tree())\n\n    return tree"
+      },
+      {
+        "path": "svntest/wc.py",
+        "file_sha256": "44b09b63701f9e3d0226d128e10ef50d5760cab213c4c457482e7b336c1c55f1",
+        "function": "__eq__",
+        "line": 468,
+        "source_sha256": "3eda015560f53e99fd1c4a98f597be7bfbd067f934faca38d09833338de56f42",
+        "source": "def __eq__(self, other):\n    if not isinstance(other, State):\n      return False\n    norm_self = self.normalize()\n    norm_other = other.normalize()\n    return norm_self.desc == norm_other.desc"
+      },
+      {
+        "path": "svntest/wc.py",
+        "file_sha256": "44b09b63701f9e3d0226d128e10ef50d5760cab213c4c457482e7b336c1c55f1",
+        "function": "__eq__",
+        "line": 942,
+        "source_sha256": "046a982f51b036979b54f34dcdd33b5ed7d17dc9f5319eb69f3a3059e868af92",
+        "source": "def __eq__(self, other):\n    if not isinstance(other, StateItem):\n      return False\n    v_self = dict([(k, v) for k, v in vars(self).items()\n                   if not k.startswith('_') and not k.startswith('entry_')])\n    v_other = dict([(k, v) for k, v in vars(other).items()\n                    if not k.startswith('_') and not k.startswith('entry_')])\n\n    if self.wc_rev == '0' and self.status == 'A ':\n      v_self['wc_rev'] = '-'\n    if other.wc_rev == '0' and other.status == 'A ':\n      v_other['wc_rev'] = '-'\n    return v_self == v_other"
+      },
+      {
+        "path": "svntest/actions.py",
+        "file_sha256": "a14c005aaba514c3f351e13e4f1653daee94960109de79bb53eb3a3efd0913a8",
+        "function": "_log_tree_state",
+        "line": 46,
+        "source_sha256": "e153bfdf52b5f5ec1e4bf8e8ffba75a7b1388a75d60407c47cb56192fd0a24dc",
+        "source": "def _log_tree_state(msg, actual, subtree=\"\"):\n  if subtree:\n    subtree += os.sep\n  o = StringIO()\n  o.write(msg + '\\n')\n  tree.dump_tree_script(actual, subtree, stream=o)\n  logger.warn(o.getvalue())\n  o.close()"
+      },
+      {
+        "path": "svntest/actions.py",
+        "file_sha256": "a14c005aaba514c3f351e13e4f1653daee94960109de79bb53eb3a3efd0913a8",
+        "function": "run_and_verify_status",
+        "line": 1579,
+        "source_sha256": "77053d36a3a8234606b6be316387bb6fef9f818511f5419990e01801fc632fc5",
+        "source": "def run_and_verify_status(wc_dir_name, status_tree, no_entries=False):\n  \"\"\"Run 'status' on WC_DIR_NAME and compare it with the\n  expected STATUS_TREE.\n  Returns on success, raises on failure.\"\"\"\n\n  if not isinstance(status_tree, wc.State):\n    raise TypeError('wc.State tree expected')\n\n  exit_code, output, errput = main.run_svn(None, 'status', '-v', '-u', '-q',\n                                           wc_dir_name)\n\n  actual_status = svntest.wc.State.from_status(output, wc_dir=wc_dir_name)\n\n  # Verify actual output against expected output.\n  try:\n    status_tree.compare_and_display('status', actual_status)\n  except tree.SVNTreeError:\n    _log_tree_state(\"ACTUAL STATUS TREE:\", actual_status.old_tree(),\n                                           wc_dir_name)\n    raise\n\n  if no_entries:\n    return\n\n  # if we have an output State, and we can/are-allowed to create an\n  # entries-based State, then compare the two.\n  actual_entries = wc.State.from_entries(wc_dir_name)\n  if actual_entries:\n    tweaked = status_tree.copy()\n    tweaked.tweak_for_entries_compare()\n    try:\n      tweaked.compare_and_display('entries', actual_entries)\n    except tree.SVNTreeUnequal:\n      ### do something more\n      _log_tree_state(\"ACTUAL ENTRY TREE:\", actual_entries.old_tree(),\n                                           wc_dir_name)\n      raise"
+      },
+      {
+        "path": "svntest/tree.py",
+        "file_sha256": "c09345ec891c5ac5cf146507ab298b7e30f7518f9fd76051aca25ce6aba4c0f5",
+        "function": "dump_tree_script__crawler",
+        "line": 735,
+        "source_sha256": "85bc44948fccb772aed9724f8fbd94311205ea8e625135637d389a13e5120b4c",
+        "source": "def dump_tree_script__crawler(n, subtree=\"\", stream=sys.stdout):\n  \"Helper for dump_tree_script. See that comment.\"\n  count = 0\n\n  # skip printing the root node.\n  if n.name != root_node_name:\n    count += n.print_script(stream, subtree)\n\n  for child in n.children or []:\n    count += dump_tree_script__crawler(child, subtree, stream)\n\n  return count"
+      },
+      {
+        "path": "svntest/tree.py",
+        "file_sha256": "c09345ec891c5ac5cf146507ab298b7e30f7518f9fd76051aca25ce6aba4c0f5",
+        "function": "dump_tree_script",
+        "line": 749,
+        "source_sha256": "f7cf90b675acab876faae921f3d7d5e1dae4fb5119275a5bf572a096928130c4",
+        "source": "def dump_tree_script(n, subtree=\"\", stream=sys.stdout, wc_varname='wc_dir'):\n  \"\"\"Print out a python script representation of the structure of the tree\n  in the SVNTreeNode N. Print only those nodes whose path string starts\n  with the string SUBTREE, and print only the part of the path string\n  that remains after SUBTREE.\n  The result is printed to STREAM.\n  The WC_VARNAME is inserted in the svntest.wc.State(wc_dir,{}) call\n  that is printed out (this is used by factory.py).\"\"\"\n\n  stream.write(\"svntest.wc.State(\" + wc_varname + \", {\")\n  count = dump_tree_script__crawler(n, subtree, stream)\n  if count > 0:\n    stream.write('\\n')\n  stream.write(\"})\")"
+      }
+    ],
+    "pairs": [
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "a31a102b57ffe76f7029b90685487de3f8e44552471e07dd9653b8560bc2c0dc",
+        "pgvn_sha256": "a31a102b57ffe76f7029b90685487de3f8e44552471e07dd9653b8560bc2c0dc",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 23,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "bd6b36346110eea52360ab3d26be962eed67448bce288f47536b086a81c85d3a",
+        "pgvn_sha256": "bd6b36346110eea52360ab3d26be962eed67448bce288f47536b086a81c85d3a",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 25,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "7c8ec2dd8e3a234526182c7bf989aeffac9eb35445f827194f801dfc2e758834",
+        "pgvn_sha256": "7c8ec2dd8e3a234526182c7bf989aeffac9eb35445f827194f801dfc2e758834",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 28,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "b09ef3affbb032ef3da190db931f93797cfc5a732434332a0e879d4594eabad4",
+        "pgvn_sha256": "b09ef3affbb032ef3da190db931f93797cfc5a732434332a0e879d4594eabad4",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 39,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "1485aa771cada81138447413be063a1977709a168ddd39cbfa1f5007d0247d17",
+        "pgvn_sha256": "1485aa771cada81138447413be063a1977709a168ddd39cbfa1f5007d0247d17",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "f3d926f5373909a31c4d88dc7f4e34b33b491dab09e7b08cdfcf3334f66ceaa7",
+        "pgvn_sha256": "f3d926f5373909a31c4d88dc7f4e34b33b491dab09e7b08cdfcf3334f66ceaa7",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 51,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ba1d0ce4b0de8577f1ca1ee33dd1a8d8b0fa4848ada681b3a686891d0fe5a697",
+        "pgvn_sha256": "ba1d0ce4b0de8577f1ca1ee33dd1a8d8b0fa4848ada681b3a686891d0fe5a697",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 52,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "3b34ee11627903269ba62239fbd3292a0972bc21a10b66adadfd21931cfffc0d",
+        "pgvn_sha256": "3b34ee11627903269ba62239fbd3292a0972bc21a10b66adadfd21931cfffc0d",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 63,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "494f12430161959762fd21cece23e83a5aa2634b7c9fc3291a3aa33acd061078",
+        "pgvn_sha256": "494f12430161959762fd21cece23e83a5aa2634b7c9fc3291a3aa33acd061078",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 77,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "62b66165d35c07128bb05a6e98b83cb40b433d026cbebf2986f0dde2c5a9f364",
+        "pgvn_sha256": "62b66165d35c07128bb05a6e98b83cb40b433d026cbebf2986f0dde2c5a9f364",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 79,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "3a32f627c17b0e193b9492ce6bb30f619b9b6706e9f7daac7197e48f4c6caeb7",
+        "pgvn_sha256": "3a32f627c17b0e193b9492ce6bb30f619b9b6706e9f7daac7197e48f4c6caeb7",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 80,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "f66196b9ed1a7274d988325e06d092bf6a171f3ba4db15e23e560115fa3a2e31",
+        "pgvn_sha256": "f66196b9ed1a7274d988325e06d092bf6a171f3ba4db15e23e560115fa3a2e31",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 81,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "fc9918498b9ece7da6c82271ea4bedfdec53bbd365723af613ac0cf5c06023a2",
+        "pgvn_sha256": "9d1d58913a78abe9412fd7c3901682a10a287ce0155c4d4058d92299a66b7360",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "510731a7b3af31774070fcb8f773a2e0ebc91294b35522d616cffd9600a2e808",
+        "suffix_sha256": "3a247edc8a26ac0d52f35b1613485ccd1258586caaec58bf7d6aeec6a0453552",
+        "sorted_exact_item_lines_sha256": "9923bf3394ac5837b08c0d525d2d77f59e3503a48020935f113ed2a088cee962"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 82,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "a1d74faeaf2604cd97f2b4cda56fa83801144f66f0b16acd82bc657357b41758",
+        "pgvn_sha256": "8fef19a462568e8903bb7522d46698b4b2c18f34eb9d26df489a5519fcec2976",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "5dde0c8896ecd6f19d3d9e895fd4b1b42a914266052e3fa59e35a5c2c1b662a1",
+        "suffix_sha256": "38c98b5cded14d37d5af38175ec437eafb0bd92605475b093181a6577b5aed84",
+        "sorted_exact_item_lines_sha256": "38975500c2c74c8e82bf559bc7932909412287dd1a5da5babef8aba1f41c3a25"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 83,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "6db7c8d4a7e2b2fbce2deb4b57065fab7edce5bfe938af905c878bf94f7cff8e",
+        "pgvn_sha256": "0b05bd23cc992a8cc405c8bf042e161f0e2f4b8c945f9e14fc45186901f45562",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 27,
+        "prefix_sha256": "1d7db5cb4bbfd1c76558e33a5b1e19172cfb4a1db422fcffe1a81bfa250814ea",
+        "suffix_sha256": "95a8448b61217b8b8d8fb5b6aee2b49be23489e55ae088df5e5071dee738c82a",
+        "sorted_exact_item_lines_sha256": "63347fa5b319f2606aac0885a0c7cf224792a726ba89822e222fce1b40787378"
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "suite": "pegrev_parse_tests",
+        "protocol": "svn",
+        "case_id": 84,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "4ec0f8f6e6d387d5b3848b8100dea8acc0cda5a672a8338202193bf389fd6fab",
+        "pgvn_sha256": "98f133d49e1c23c87cbe16667e4380c2e39fad82b00b537a88220320ccc4b5b0",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 27,
+        "prefix_sha256": "607a974df1e190f6af35ecbc4da1e24c1c172eff98db2718527db58133101dda",
+        "suffix_sha256": "dbd9771f9806184b7001b6be0a52f71307876ddab641d9dd4300791598240331",
+        "sorted_exact_item_lines_sha256": "80603f3990b3510c29fa133cf5e4bd424bf920333702520cfaaafca487387e6e"
+      },
+      {
+        "test_id": "m6-network-09a9b799c731",
+        "suite": "trans_tests",
+        "protocol": "svn",
+        "case_id": 10,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ab683d10b3ec49fe89ec4073a42df814582641ea0dc06f7648edfd3016505df3",
+        "pgvn_sha256": "ab683d10b3ec49fe89ec4073a42df814582641ea0dc06f7648edfd3016505df3",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-09a9b799c731",
+        "suite": "trans_tests",
+        "protocol": "svn",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ba7cff5d54bf927af7ed16c9304a7447521c23c71248877ba2eeca663aac42f3",
+        "pgvn_sha256": "ba7cff5d54bf927af7ed16c9304a7447521c23c71248877ba2eeca663aac42f3",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-4bb1ff0fbdef",
+        "suite": "special_tests",
+        "protocol": "svn",
+        "case_id": 24,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "41cd14b3df73643eba5e0e1feb51f97678cb2082402627bead45d92542311e3a",
+        "pgvn_sha256": "41cd14b3df73643eba5e0e1feb51f97678cb2082402627bead45d92542311e3a",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-aa81c6c63762",
+        "suite": "externals_tests",
+        "protocol": "svn",
+        "case_id": 44,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "d64e0a905fdda4fae055ecce12c673e1f8e13ad60fe7316e9ab248ba66455c70",
+        "pgvn_sha256": "d64e0a905fdda4fae055ecce12c673e1f8e13ad60fe7316e9ab248ba66455c70",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-aa81c6c63762",
+        "suite": "externals_tests",
+        "protocol": "svn",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "9129acb0a7f51eaa4155935146a97f115fe6cf7b3fee17be4bbbf24c9a948646",
+        "pgvn_sha256": "9129acb0a7f51eaa4155935146a97f115fe6cf7b3fee17be4bbbf24c9a948646",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "b342505d4983def9b4a3ba0a40a18e611f7ef183af5b7a2c09cc7dd9a574585b",
+        "pgvn_sha256": "b342505d4983def9b4a3ba0a40a18e611f7ef183af5b7a2c09cc7dd9a574585b",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 23,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ce95d85f4985f326fad540ca6bea23f7e15de8601cb51a3faebec4564f8bf39d",
+        "pgvn_sha256": "ce95d85f4985f326fad540ca6bea23f7e15de8601cb51a3faebec4564f8bf39d",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 25,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ab5ce44683f683bd9e4643f012e5b3e1af6fd5dd8e12ec43e51206e56898aee4",
+        "pgvn_sha256": "ab5ce44683f683bd9e4643f012e5b3e1af6fd5dd8e12ec43e51206e56898aee4",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 28,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "2d333e596a5fbe14818e9593255f416a6a4ff5944fecb6db33f33caf81a78b0a",
+        "pgvn_sha256": "2d333e596a5fbe14818e9593255f416a6a4ff5944fecb6db33f33caf81a78b0a",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 39,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "9b04e522275faa441cb291edc868c983529e5e83f2f6cc40afe65983684c5ac3",
+        "pgvn_sha256": "9b04e522275faa441cb291edc868c983529e5e83f2f6cc40afe65983684c5ac3",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "bb77d66283e0f77718290a010f093ba626e1f2536213d2f5844a2ab8ae2e5567",
+        "pgvn_sha256": "bb77d66283e0f77718290a010f093ba626e1f2536213d2f5844a2ab8ae2e5567",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 51,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "0ad97df07392ee74067885173df32876571e72dbcbc31dc34af1acfa559a2951",
+        "pgvn_sha256": "0ad97df07392ee74067885173df32876571e72dbcbc31dc34af1acfa559a2951",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 52,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "779495830e8b70598b727e3b570ffc35779b9c06a8ec4062fe4137741bf9a181",
+        "pgvn_sha256": "779495830e8b70598b727e3b570ffc35779b9c06a8ec4062fe4137741bf9a181",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 63,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "4b3dfd7bd540ad5eeda109b2589f690a1f5b4b6efa3a858136b0c38a9ea67cb4",
+        "pgvn_sha256": "4b3dfd7bd540ad5eeda109b2589f690a1f5b4b6efa3a858136b0c38a9ea67cb4",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 77,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "3912c35db29051ee7664a56a0170d1a9a2ef3fe491910f08af5529637bb972ae",
+        "pgvn_sha256": "3912c35db29051ee7664a56a0170d1a9a2ef3fe491910f08af5529637bb972ae",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 79,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "5922d8f8a2aa815e8e8b9f28ab5a33c1ff9bee2731cb1cb1e5862bad0e0a47b3",
+        "pgvn_sha256": "5922d8f8a2aa815e8e8b9f28ab5a33c1ff9bee2731cb1cb1e5862bad0e0a47b3",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 80,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "3610a96fad10fa4ce55452afa167434905f683b0d14ffe8893ed5decc226f4a0",
+        "pgvn_sha256": "9aaf1fe017e77fc51ff0873c0a1522d6c57755f5bded04f712b6876bba6f0d99",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "d444d0492482798bdda63a5b866f7e839212a88a0f6f1b0cb57460fd4943d825",
+        "suffix_sha256": "886a8d0bccbb725ab3172e91901c555fc60b176df1030bb1678a2f74b33788c7",
+        "sorted_exact_item_lines_sha256": "d154d12475a4bdfa04e184c4f0d3e92fe18fb7e77aabc4e1937cd610e2d8b5dd"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 81,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "e79575cfa70c02cbd8adb9b9c2f6c02917247d4a8204373aa91b431481ea5005",
+        "pgvn_sha256": "6bce86c6a3f249e65d09d92258c75ca5a5c5117c935cd19811a6a4f9d54aa66c",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "510731a7b3af31774070fcb8f773a2e0ebc91294b35522d616cffd9600a2e808",
+        "suffix_sha256": "a4114b0ca15db207925a6232d898ec9cdb72eafb79e5d1eca46fa94ecd7eb44c",
+        "sorted_exact_item_lines_sha256": "9923bf3394ac5837b08c0d525d2d77f59e3503a48020935f113ed2a088cee962"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 82,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "969c4da56d6d0003b7a2a421a7a39a4a6dd08dcab39086e83ab6bf3995853ace",
+        "pgvn_sha256": "48be7d04f4ab4aca74e752114404fe797b685348b3558c731d96cc96f83843c9",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "5dde0c8896ecd6f19d3d9e895fd4b1b42a914266052e3fa59e35a5c2c1b662a1",
+        "suffix_sha256": "0a88f81db05d24c0e02f9308ba65cad002d3561dc053d4511e5780e1c58a1720",
+        "sorted_exact_item_lines_sha256": "38975500c2c74c8e82bf559bc7932909412287dd1a5da5babef8aba1f41c3a25"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 83,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "807b01a538e296ebd345ad34b95e6dfe1937a77b97f3e505106522081816aa31",
+        "pgvn_sha256": "9b55c38d34af6e54c7dc9e2fce31d18046f9113323b20c7b94e2ddab675face4",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 27,
+        "prefix_sha256": "1d7db5cb4bbfd1c76558e33a5b1e19172cfb4a1db422fcffe1a81bfa250814ea",
+        "suffix_sha256": "d2539ca805872bbf4b435defbec5d434eb1ceace8a54a23badd4c382a0db6da7",
+        "sorted_exact_item_lines_sha256": "63347fa5b319f2606aac0885a0c7cf224792a726ba89822e222fce1b40787378"
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "suite": "pegrev_parse_tests",
+        "protocol": "http",
+        "case_id": 84,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "cc2e08709c622d64c489de664183fc09954b2bbe9a752d059d3f4d516ad7b728",
+        "pgvn_sha256": "562e2f9a0132fcf7c2807ffcedb412fe29f9ea0c6cc70aadc8c645e400fb4c1b",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 27,
+        "prefix_sha256": "607a974df1e190f6af35ecbc4da1e24c1c172eff98db2718527db58133101dda",
+        "suffix_sha256": "d027736008171e4647facb26981e4d89bc090d0e76c5d5810bb8148d931e3238",
+        "sorted_exact_item_lines_sha256": "80603f3990b3510c29fa133cf5e4bd424bf920333702520cfaaafca487387e6e"
+      },
+      {
+        "test_id": "m6-network-9a64fcdb6d12",
+        "suite": "trans_tests",
+        "protocol": "http",
+        "case_id": 10,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "0381168aa01d1f965d079ab505b91cc1fd4d7618e7c1923c025f74668439ef4b",
+        "pgvn_sha256": "0381168aa01d1f965d079ab505b91cc1fd4d7618e7c1923c025f74668439ef4b",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-9a64fcdb6d12",
+        "suite": "trans_tests",
+        "protocol": "http",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ebb5db3f4afdaa7ee9b938790d35feb7f220ade8559b54bfb3f453129f1d503e",
+        "pgvn_sha256": "ebb5db3f4afdaa7ee9b938790d35feb7f220ade8559b54bfb3f453129f1d503e",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-8e672113bef0",
+        "suite": "special_tests",
+        "protocol": "http",
+        "case_id": 24,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "3247db28d2a790182ac1927fdbafce01e64f45c3cb1f10685f426040d74d0666",
+        "pgvn_sha256": "3247db28d2a790182ac1927fdbafce01e64f45c3cb1f10685f426040d74d0666",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-33d8822340b1",
+        "suite": "externals_tests",
+        "protocol": "http",
+        "case_id": 44,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "b58321bc2ad5b662cc9e40acc0373c3583ea6cb66b59d9260005460d47f20b88",
+        "pgvn_sha256": "b58321bc2ad5b662cc9e40acc0373c3583ea6cb66b59d9260005460d47f20b88",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-33d8822340b1",
+        "suite": "externals_tests",
+        "protocol": "http",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ff32ee0d4ae745b93ad276954b001eef3baddf98338432994233f58ea13d07c2",
+        "pgvn_sha256": "ff32ee0d4ae745b93ad276954b001eef3baddf98338432994233f58ea13d07c2",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "20f187c4b77441444c837298bb7fb53d3b6cab0c7c98cea2a94daa43e329ec1a",
+        "pgvn_sha256": "20f187c4b77441444c837298bb7fb53d3b6cab0c7c98cea2a94daa43e329ec1a",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 23,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "1852138d043641e1c7968b2fbf0ff6f5ed53c4803a6ef8001576923b902dffa2",
+        "pgvn_sha256": "1852138d043641e1c7968b2fbf0ff6f5ed53c4803a6ef8001576923b902dffa2",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 25,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "cc2b254b6b15c09589fd852ae95ee249deae0c04c489c7be5bd8914d2d626b4f",
+        "pgvn_sha256": "cc2b254b6b15c09589fd852ae95ee249deae0c04c489c7be5bd8914d2d626b4f",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 28,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ebe129e26f3c404831f5d7fab744dc9adf4f955a3483b3bcd91bc3c7ee4942a6",
+        "pgvn_sha256": "ebe129e26f3c404831f5d7fab744dc9adf4f955a3483b3bcd91bc3c7ee4942a6",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 39,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "2d9bd4a1ed6994284a967ea583bef2124f020d61f1d5ea2cb34b9012109fc900",
+        "pgvn_sha256": "2d9bd4a1ed6994284a967ea583bef2124f020d61f1d5ea2cb34b9012109fc900",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "eaf62d8761b3f7acf75754387874938afa74a757b9fffb65007c55a23525b02c",
+        "pgvn_sha256": "eaf62d8761b3f7acf75754387874938afa74a757b9fffb65007c55a23525b02c",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 51,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "8e53a8e9aa3ce35afef8e38b83f72e0c0d875cf9bc955e1fa260a99ef3d365da",
+        "pgvn_sha256": "8e53a8e9aa3ce35afef8e38b83f72e0c0d875cf9bc955e1fa260a99ef3d365da",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 52,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "1b2f2bb0cd9eb485f83d0d3d753a66834a4728da0ea417051d79954a3cd57086",
+        "pgvn_sha256": "1b2f2bb0cd9eb485f83d0d3d753a66834a4728da0ea417051d79954a3cd57086",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 63,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "c45413b4dfd54a624360f4df977c2cdee9c0c2b91f001b7068af0db7da77d35f",
+        "pgvn_sha256": "c45413b4dfd54a624360f4df977c2cdee9c0c2b91f001b7068af0db7da77d35f",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 77,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "fe5a24863d7d6c738b33ab5acf574e56fdef40373c659e773e9573fb188b7f45",
+        "pgvn_sha256": "fe5a24863d7d6c738b33ab5acf574e56fdef40373c659e773e9573fb188b7f45",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 79,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "cf067b0c06850f467f31c6f7656253124620c2c3b0687c4fa72143d1646a8712",
+        "pgvn_sha256": "cf067b0c06850f467f31c6f7656253124620c2c3b0687c4fa72143d1646a8712",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 80,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "e1e6b59c70b48779c3db739eba7d9f72870e9dcdf5bdf5e7ddc9f7b814e9f982",
+        "pgvn_sha256": "6536dc854d55a8f91be96691d1b1570e18b1bf86bb9d0bd2fdfa265913fc8d1d",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "d444d0492482798bdda63a5b866f7e839212a88a0f6f1b0cb57460fd4943d825",
+        "suffix_sha256": "466adbff174806b15534468ff6dfade73febb6e65f895cb93dc1005d7c821e5c",
+        "sorted_exact_item_lines_sha256": "d154d12475a4bdfa04e184c4f0d3e92fe18fb7e77aabc4e1937cd610e2d8b5dd"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 81,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "4a8687a7eebf9742f768cfb661ba68e2881107ffe8ba857e74429a56bf9d8bcd",
+        "pgvn_sha256": "c8d97410bbd5d65d769281f0beec6cb007d1e31e45edc5e8de36aab87fe12ce2",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "510731a7b3af31774070fcb8f773a2e0ebc91294b35522d616cffd9600a2e808",
+        "suffix_sha256": "5b8f524006fb0369982bd07356c27ecd6557b3cadba06438cbb268dd91d7a9ed",
+        "sorted_exact_item_lines_sha256": "9923bf3394ac5837b08c0d525d2d77f59e3503a48020935f113ed2a088cee962"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 82,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "db80ddea26077a28ddeda7f39b83b428326738001ff554fb0c165416e06cc135",
+        "pgvn_sha256": "1dc8c2349a17db440ae27fe43e9c0b02d0be3137f44a85a047b87915343fff9c",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 26,
+        "prefix_sha256": "5dde0c8896ecd6f19d3d9e895fd4b1b42a914266052e3fa59e35a5c2c1b662a1",
+        "suffix_sha256": "81edabdcc53dd7a1baadafd2c66c9c01398667447ff39e81a8e899350c3558c7",
+        "sorted_exact_item_lines_sha256": "38975500c2c74c8e82bf559bc7932909412287dd1a5da5babef8aba1f41c3a25"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 83,
+        "equal_after_work_directory_normalization": false,
+        "fsfs_sha256": "0554752e59e1c60b75374b4ed14922ef6c3bc3b5aa55927cfd120ff937947e15",
+        "pgvn_sha256": "f7834bcdf2f0be358e98150980254c5af9b7220818a1d21d525fdb85ba4dcc50",
+        "exact_normalized_text_equal": false,
+        "review": "IDENTICAL_STATUS_MAPPING_AND_EXACT_SURROUNDING_DIAGNOSTIC",
+        "state_items": 27,
+        "prefix_sha256": "1d7db5cb4bbfd1c76558e33a5b1e19172cfb4a1db422fcffe1a81bfa250814ea",
+        "suffix_sha256": "4e4f2ebba5201dd75ecf8da4d25dcb4ae2b372cc41290bc47ff2d4f090791d92",
+        "sorted_exact_item_lines_sha256": "63347fa5b319f2606aac0885a0c7cf224792a726ba89822e222fce1b40787378"
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "suite": "pegrev_parse_tests",
+        "protocol": "https",
+        "case_id": 84,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "9e46e9fdc63c04d575b74795c57a2bf4f8117b1c5cd1930dfdfd6fdcd06d3c3f",
+        "pgvn_sha256": "9e46e9fdc63c04d575b74795c57a2bf4f8117b1c5cd1930dfdfd6fdcd06d3c3f",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-378fd80900aa",
+        "suite": "trans_tests",
+        "protocol": "https",
+        "case_id": 10,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "ef929242a8c891926aa09cd0fbeef4b47f772cfcab147e4dfb16f3ad4fa48bbc",
+        "pgvn_sha256": "ef929242a8c891926aa09cd0fbeef4b47f772cfcab147e4dfb16f3ad4fa48bbc",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-378fd80900aa",
+        "suite": "trans_tests",
+        "protocol": "https",
+        "case_id": 11,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "4281af35ab9ea83f3b5889c9d97c30e8d671ec281201ef1837027a07dc00a584",
+        "pgvn_sha256": "4281af35ab9ea83f3b5889c9d97c30e8d671ec281201ef1837027a07dc00a584",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-a09a62e782eb",
+        "suite": "special_tests",
+        "protocol": "https",
+        "case_id": 24,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "06432b33ada1d5e9a7f36883919cea1cc8c254846887b1d445e3aa945e423c51",
+        "pgvn_sha256": "06432b33ada1d5e9a7f36883919cea1cc8c254846887b1d445e3aa945e423c51",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-076a5095f6ba",
+        "suite": "externals_tests",
+        "protocol": "https",
+        "case_id": 44,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "17a2d36dfd0cbf9bb26f0a6f053ec6093153728e6d26c3c23a42976a455fea99",
+        "pgvn_sha256": "17a2d36dfd0cbf9bb26f0a6f053ec6093153728e6d26c3c23a42976a455fea99",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      },
+      {
+        "test_id": "m6-network-076a5095f6ba",
+        "suite": "externals_tests",
+        "protocol": "https",
+        "case_id": 49,
+        "equal_after_work_directory_normalization": true,
+        "fsfs_sha256": "149fecf25682af28e48b4f6582d7f82733aec9a35ea13ce633ed0d9c3442b65a",
+        "pgvn_sha256": "149fecf25682af28e48b4f6582d7f82733aec9a35ea13ce633ed0d9c3442b65a",
+        "exact_normalized_text_equal": true,
+        "review": "EXACT_AFTER_ORIGINAL_DIRECTORY_AND_ENDPOINT_NORMALIZATION"
+      }
+    ],
+    "raw_logs_changed": false,
+    "original_comparator_changed": false,
+    "upstream_assertions_changed": false,
+    "command_outputs_rewritten": false,
+    "strict_original_failure_preserved": true
+  },
+  "baseline": {
+    "path": "runtime/pgvn/baselines/m6-client-properties-full-076a5095f6ba",
+    "index_sha256": "e1d818c89f8aa3f36d13ce86438a2a0db50212cecbb734cefff242a43764eb10",
+    "files": 863,
+    "reports": [
+      {
+        "test_id": "m6-network-cd32f84c3d5d",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 30
+          },
+          "pgvn": {
+            "PASS": 30
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-a815074e21a0",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-565a02f77584",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 25
+          },
+          "pgvn": {
+            "PASS": 25
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-a56a6fa7be7a",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 68,
+            "XFAIL": 16
+          },
+          "pgvn": {
+            "PASS": 68,
+            "XFAIL": 16
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-09a9b799c731",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 9,
+            "XFAIL": 2
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-4bb1ff0fbdef",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-144590fd8900",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-1638a394e4b5",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-11c96c8443d9",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 1
+          },
+          "pgvn": {
+            "PASS": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-aa81c6c63762",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 69,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 69,
+            "XFAIL": 2
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-00311b6d0a3f",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 30
+          },
+          "pgvn": {
+            "PASS": 30
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-280ea2bc74ff",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-533b8d039746",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 25
+          },
+          "pgvn": {
+            "PASS": 25
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-17375029382f",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 68,
+            "XFAIL": 16
+          },
+          "pgvn": {
+            "PASS": 68,
+            "XFAIL": 16
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-9a64fcdb6d12",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 9,
+            "XFAIL": 2
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-8e672113bef0",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-a86d3c4423fa",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-19829c750147",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-f4c74e09f9f7",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 1
+          },
+          "pgvn": {
+            "PASS": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-33d8822340b1",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 69,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 69,
+            "XFAIL": 2
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-34b6ee34815e",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 30
+          },
+          "pgvn": {
+            "PASS": 30
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-d0f92eb6c4ad",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-35ea50b28cae",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 25
+          },
+          "pgvn": {
+            "PASS": 25
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-7b0a83227cef",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 68,
+            "XFAIL": 16
+          },
+          "pgvn": {
+            "PASS": 68,
+            "XFAIL": 16
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-378fd80900aa",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 9,
+            "XFAIL": 2
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-a09a62e782eb",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          },
+          "pgvn": {
+            "PASS": 19,
+            "SKIP": 7,
+            "XFAIL": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-ee632902f30d",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 13
+          },
+          "pgvn": {
+            "PASS": 13
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-5438f345a32d",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 9
+          },
+          "pgvn": {
+            "PASS": 9
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-8bb79a385a9c",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 1
+          },
+          "pgvn": {
+            "PASS": 1
+          }
+        }
+      },
+      {
+        "test_id": "m6-network-076a5095f6ba",
+        "status": "PASS",
+        "counts": {
+          "fsfs": {
+            "PASS": 69,
+            "XFAIL": 2
+          },
+          "pgvn": {
+            "PASS": 69,
+            "XFAIL": 2
+          }
+        }
+      }
+    ]
+  },
+  "full_coverage_ledger": {
+    "path": "docs/pgvn/evidence/m6-network-coverage-client-properties.json",
+    "sha256": "70f7aea337cb36af8faaf5892606661f1b0f8283d70fa669de68e2c6a6f0d389",
+    "suite_count": 62,
+    "static_function_count": 1984,
+    "accepted_run_references": 118,
+    "current_build_runs": 69,
+    "current_functions": 568,
+    "historical_only_functions": 676,
+    "without_accepted_reference": 740,
+    "current_outcomes_both_backends": {
+      "PASS": 3120,
+      "XFAIL": 174,
+      "SKIP": 114
+    },
+    "current_entries_excluding_original_skips": 3294,
+    "prior_committed_snapshot": {
+      "path": "docs/pgvn/evidence/m6-network-coverage.json",
+      "sha256": "73645d9d2a1925fea5936c650ef8c0e7e00d1cecabceb948e2ee2fb8d1534e75"
+    },
+    "before_ledger_sha256": "6985cd36fa43715e82ca4795dda47d307aaf7fcf45654d8c5fce333fc0214c81"
+  },
+  "full_m5_acceptance_reused": {
+    "test_id": "m5-0587e0a9e03b",
+    "status": "PASS",
+    "report_sha256": "c64b4b0d5746436750e36771e74f3923671f70005d2b1cd7aa5b62eb570fbff7",
+    "groups": 10,
+    "elapsed_seconds": 578.6410000000033,
+    "nested_m4_test_id": "m4-77ebedd6492f",
+    "nested_m4_groups": 8,
+    "protocol_diagnostics_test_id": "m3-protocol-smoke-5023a0a37e97",
+    "http_diagnostics_test_id": "m5-http-50dc205a3020",
+    "http_diagnostics": {
+      "http_v1": {
+        "http_status": 404,
+        "svn_error_code": 180001,
+        "missing_and_disabled_diagnostics_identical": true,
+        "request_ids_present": true,
+        "svn_xml_error_body": true,
+        "missing_copy_destination_is_xml_404_without_revision": true
+      },
+      "http_v2": {
+        "http_status": 404,
+        "svn_error_code": 180001,
+        "missing_and_disabled_diagnostics_identical": true,
+        "request_ids_present": true,
+        "svn_xml_error_body": true,
+        "missing_copy_destination_is_xml_404_without_revision": true
+      }
+    },
+    "fresh_run_in_this_component": false,
+    "basis": "Identical exact frozen build, all154 registered inputs, five products and dependency inventories; original report and manifest identity retained."
+  },
+  "browser_acceptance_reused": {
+    "m4": {
+      "test_id": "m4-browser-wc-workflows-378953f87f86",
+      "checks": {
+        "authentication": true,
+        "paused_refresh": true,
+        "configurable_refresh": true,
+        "repository_pagination": true,
+        "text_only_hostile_name": true,
+        "repository_search": true,
+        "repository_detail": true,
+        "all_views": true,
+        "lost_peer_and_recovery": true,
+        "keyboard_focus_and_refresh": true,
+        "reload_requires_token": true,
+        "no_persistent_token": true,
+        "narrow_layout": true,
+        "stale_database_and_unknown_nodes": true,
+        "token_revocation_clears_data": true
+      },
+      "report_sha256": "820ff84f37e7a7abc7587f69b25f623dea07e8c473c246d1338d4311f9d141fd",
+      "reused_original_report": true,
+      "fresh_browser_run_in_this_component": false
+    },
+    "m5": {
+      "test_id": "m5-browser-wc-workflows-378953f87f86",
+      "checks": {
+        "worker_details": true,
+        "http_method_counts": true,
+        "request_error_id": true,
+        "lost_worker_and_new_instance": true,
+        "refresh_retains_open_and_focus": true,
+        "narrow_details_layout": true
+      },
+      "report_sha256": "a8488b4e67f8383d5a379d1aa1b5aea9684429cdfceb24ec5e7a05977af01bd8",
+      "reused_original_report": true,
+      "fresh_browser_run_in_this_component": false
+    }
+  },
+  "package_acceptance_reused": {
+    "report": "docs/pgvn/evidence/m7-package-wc-state.json",
+    "report_sha256": "dde23b3d35451ac2a239d8e5183647f75e2c9acb7587f74ebca7f70dbd60dd26",
+    "package_id": "fa6fd390be872efa",
+    "archive": "runtime/pgvn/packages/PgVN-M5-windows-x64-fa6fd390be872efa.zip",
+    "archive_sha256": "97b9fefa4a0f3ac5aef94d614ebdf3af14bd0ad72f04bee997e907674f158304",
+    "new_package_built_in_this_component": false,
+    "scope": "The existing package contains the identical accepted runtime; its bundled documentation predates this component."
+  },
+  "reuse_basis": "All 154 registered source inputs, five products, web assets and dependency inventories remain identical. Original report identities and build base are retained.",
+  "network_cleanup": {
+    "status": "PASS",
+    "checked_at": "2026-10-17T03:13:13.201277+00:00",
+    "cluster": "127.0.0.1:16432",
+    "database_owners_retained": [
+      {
+        "database": "pgvn_m6_net_a815074e21a0",
+        "owner": "pgvn_migrate_a815074e21a0",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_565a02f77584",
+        "owner": "pgvn_migrate_565a02f77584",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_09a9b799c731",
+        "owner": "pgvn_migrate_09a9b799c731",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_4bb1ff0fbdef",
+        "owner": "pgvn_migrate_4bb1ff0fbdef",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_cd32f84c3d5d",
+        "owner": "pgvn_migrate_cd32f84c3d5d",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_a56a6fa7be7a",
+        "owner": "pgvn_migrate_a56a6fa7be7a",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_1638a394e4b5",
+        "owner": "pgvn_migrate_1638a394e4b5",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_11c96c8443d9",
+        "owner": "pgvn_migrate_11c96c8443d9",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_144590fd8900",
+        "owner": "pgvn_migrate_144590fd8900",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_280ea2bc74ff",
+        "owner": "pgvn_migrate_280ea2bc74ff",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_533b8d039746",
+        "owner": "pgvn_migrate_533b8d039746",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_00311b6d0a3f",
+        "owner": "pgvn_migrate_00311b6d0a3f",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_9a64fcdb6d12",
+        "owner": "pgvn_migrate_9a64fcdb6d12",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_17375029382f",
+        "owner": "pgvn_migrate_17375029382f",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_8e672113bef0",
+        "owner": "pgvn_migrate_8e672113bef0",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_aa81c6c63762",
+        "owner": "pgvn_migrate_aa81c6c63762",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_f4c74e09f9f7",
+        "owner": "pgvn_migrate_f4c74e09f9f7",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_a86d3c4423fa",
+        "owner": "pgvn_migrate_a86d3c4423fa",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_19829c750147",
+        "owner": "pgvn_migrate_19829c750147",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_d0f92eb6c4ad",
+        "owner": "pgvn_migrate_d0f92eb6c4ad",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_35ea50b28cae",
+        "owner": "pgvn_migrate_35ea50b28cae",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_34b6ee34815e",
+        "owner": "pgvn_migrate_34b6ee34815e",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_378fd80900aa",
+        "owner": "pgvn_migrate_378fd80900aa",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_7b0a83227cef",
+        "owner": "pgvn_migrate_7b0a83227cef",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_a09a62e782eb",
+        "owner": "pgvn_migrate_a09a62e782eb",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_ee632902f30d",
+        "owner": "pgvn_migrate_ee632902f30d",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_5438f345a32d",
+        "owner": "pgvn_migrate_5438f345a32d",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_8bb79a385a9c",
+        "owner": "pgvn_migrate_8bb79a385a9c",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_33d8822340b1",
+        "owner": "pgvn_migrate_33d8822340b1",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      },
+      {
+        "database": "pgvn_m6_net_076a5095f6ba",
+        "owner": "pgvn_migrate_076a5095f6ba",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0
+      }
+    ],
+    "databases": 30,
+    "monitor_token_rows": 0,
+    "inner_jobs_closed": 140,
+    "outer_jobs_closed": 30,
+    "databases_or_roles_deleted": 0,
+    "scope": "Only the completed client-properties matrix; read-only CIM observation is separate."
+  },
+  "runtime_cleanup": {
+    "status": "PASS",
+    "gate_id": "m5-0587e0a9e03b",
+    "checked_at": "2026-10-17T03:13:58.0134827Z",
+    "method": "Read-only Win32_Process and Win32_Service checks",
+    "executable_scope": "C:\\Project\\PgVN\\pgvn\\runtime\\pgvn",
+    "temporary_service_patterns": [
+      "PgVN_M3_<12 hex>",
+      "PgVN_M4_<12 hex>",
+      "PgVNDavM5_<12 hex>"
+    ],
+    "remaining_runtime_processes": 0,
+    "remaining_temporary_services": 0,
+    "url_acl_scope": "Removal verified by passing M3/M4 fixture assertions; no global URL ACL changes in this check.",
+    "installed_services_modified": false
+  },
+  "milestone_complete": false,
+  "pgvn_601_complete": false,
+  "m6_complete": false,
+  "m7_complete": false
+}

@@ -178,3 +178,13 @@ lock-helper 原版命令体追加虚拟 `db` 分量，由测试构造入口解�
 原调度器中断后保留 20 组完整结果，3 组缺少终态报告的尝试单独冻结且不计通过。续跑为这 3 组创建新 UUID，首次执行另 7 个原未启动计划，未重复执行已启动计划。上述 140/30 个 Job 仅对应最终接纳的完整 30 组；原中断尝试不宣称正常关闭，其隔离库、角色和记录继续保留。
 
 新增[覆盖账本](M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数与已接纳报告/快照。当前构建三协议有结果的函数从 125 增至 288；676 个仅有旧构建结果，1020 个尚无已接纳引用，原有 SKIP 不计实际进入。细节见[状态与冲突组件](M6-network-wc-state.zh-CN.md)和[结构化证据](evidence/m6-network-wc-state.json)，开发包检查见[包旁记录](evidence/m7-package-wc-state.json)。PGVN-601、M6、M7 保持未完成，继续剩余适用性/套件、最终产品复跑、维护/真实历史备份、跨故障域/确认账本、代表性性能及独立 Windows/Polarion 验收。
+
+## 2026-10-17：自动属性、继承与外部引用
+
+原版 autoprop、getopt、input_validation、pegrev_parse、trans、special、mergeinfo、iprop、iprop_authz、externals 十个完整套件在 SVN、HTTP、HTTPS 完成 FSFS/PgVN 对照：280 个唯一函数、1,680 个结果，1512 PASS、126 个原有 XFAIL、42 个原有 SKIP；实际进入 1638 次。原函数、装饰器、golden 文件和断言未修改，没有新增排除。63 对 XFAIL 中 50 对归一后文本相同，另 13 对仅状态树字典条目顺序不同，路径键值及块外诊断完全相同；原严格文本比较的 FAIL 记录保留，专项复核拒绝全部 78 个内容变更反例，详见[诊断复核](M6-network-client-properties.zh-CN.md#xfail-诊断复核)。getopt 和部分输入/peg 校验可在客户端结束，协议夹具结果不等于这些用例访问过 PostgreSQL。
+
+本轮 30 个新计划均首次执行完成，140 个内层、30 个外层 Job 关闭前活动进程为零；30 个隔离库所有者均为非超级用户，监控令牌与残留客户端连接为零，最终 runtime 进程和临时测试服务为零。隔离库、角色及原始报告保留。HTTPS 两侧均核对证书链、主机名及未知 CA/错误主机名拒绝对照。
+
+当前冻结构建三协议结果从 288 增至 **568 个函数、23 个完整套件**；另有 676 个函数仅有旧构建结果、740 个尚无已接纳引用。最新[覆盖账本](M6-network-coverage.zh-CN.md)指向新的不可变 JSON，上一版 JSON 与旧组件哈希保持不变；原有 3 份中断尝试继续保留且不计通过。详见[本轮组件](M6-network-client-properties.zh-CN.md)和[结构化证据](evidence/m6-network-client-properties.json)。
+
+154 项注册输入、五个产物和依赖保持原冻结构建，明确复用浏览器 15+6 项及完整 M5 `m5-0587e0a9e03b` 的原验收。现有开发包 `fa6fd390be872efa` 的运行时相同，本轮只复核原包记录与哈希，没有重建运行包；包内文档早于本组件，见[原包验收](evidence/m7-package-wc-state.json)。PGVN-601、M6、M7 仍未完成，继续剩余套件/适用性、最终构建复跑、维护/真实历史备份、确认账本与跨故障域 HA、代表性性能及独立 Windows/Polarion 验收。
