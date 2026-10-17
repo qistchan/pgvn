@@ -1,0 +1,960 @@
+{
+  "status": "PASS_HTTP_COMPONENT_ONLY",
+  "created_at": "2026-10-17T05:29:50.942404+00:00",
+  "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "source_sha256": "d3278139b9881f7df7a56beae56d54a6bd663624408aef8992c1a694844edb2d",
+  "groups": 15,
+  "suites": {
+    "svnmucc_tests": {
+      "upstream_source_sha256": "7e2a8e6905c1dcf2a489ece800a19811d5f5a0bd6c497eb2af395d8b1ea66b0f",
+      "selected_original_functions": 9,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "merge_authz_tests": {
+      "upstream_source_sha256": "6a7f095fa7579c59e4d924291a5081428300e0e95bbf8d527246b991db2feec7",
+      "selected_original_functions": 4,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "merge_automatic_tests": {
+      "upstream_source_sha256": "1e29ac93a11929a494c0a0c175f769e51d0ccd5f8dd8bf16c4e94306dca67a4a",
+      "selected_original_functions": 25,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "merge_tests": {
+      "upstream_source_sha256": "44fc33f06236e774208b369285f28e42e12dc965ff9b79faf081131f49a527f4",
+      "selected_original_functions": 143,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "merge_tree_conflict_tests": {
+      "upstream_source_sha256": "fbdbd9ecc95beb307b74a1b04d122b2930fc4bb830d9abd4a82ad2f147b082c0",
+      "selected_original_functions": 29,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "merge_reintegrate_tests": {
+      "upstream_source_sha256": "2833ccc10b7e3940d19afa75fdb68d46a4b205a7e3024d6d31c8e8ebbd76bde7",
+      "selected_original_functions": 22,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "patch_tests": {
+      "upstream_source_sha256": "d8d3350b69da6217cb56385f4400c4bda43b0129a8e4be74a77f9654af21427d",
+      "selected_original_functions": 82,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": false
+    },
+    "shelf_tests": {
+      "upstream_source_sha256": "df109ae49f42a244c16f575f93b64e270359e5d52849d0ded1c675b6772f80dd",
+      "selected_original_functions": 32,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": true
+    },
+    "shelf2_tests": {
+      "upstream_source_sha256": "4a3cafa045137a56b2f3564104ad7d92a4c0aba8bdb370e35cf0c3d6df59ba13",
+      "selected_original_functions": 31,
+      "all_original_function_ids_and_names_match": true,
+      "default_disabled_shelf": true
+    }
+  },
+  "selected_original_functions": 377,
+  "counts": {
+    "PASS": 596,
+    "XFAIL": 22,
+    "SKIP": 136
+  },
+  "non_skip_outcomes": 618,
+  "default_disabled_shelf_skip_outcomes": 126,
+  "other_original_skip_outcomes": 10,
+  "xfail_pairs": 11,
+  "inner_jobs_drained": 75,
+  "outer_jobs_drained": 15,
+  "runs": [
+    {
+      "test_id": "m6-network-a96223a6bf83",
+      "suite": "svnmucc_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 9
+        },
+        "pgvn": {
+          "PASS": 9
+        }
+      },
+      "report_sha256": "2e6718e33fad76558069500a2e2a518a984e9d803be0bbc61b497a0fa1b833b0",
+      "plan_sha256": "a5c28f1e8e22f07e41c1af714eb48014a3ce4b66d83ec7feddca4ee1108de1f0",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-c14b7bac2bb7",
+      "suite": "merge_authz_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 4
+        },
+        "pgvn": {
+          "PASS": 4
+        }
+      },
+      "report_sha256": "dfeb327c14c42438ddd08455d7c4b9d6a212b3d8b0740152dcb35fab6bf679c6",
+      "plan_sha256": "dde7f2414977536dd0cdce74e16ecaa9f72358d20933eb1f9625e0bea867575f",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-f1645be98e9b",
+      "suite": "merge_automatic_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 23,
+          "XFAIL": 2
+        },
+        "pgvn": {
+          "PASS": 23,
+          "XFAIL": 2
+        }
+      },
+      "report_sha256": "a20129ffed5b1da6f840b110443f3090451f6ec10e0070f37a2a99d972ce1a7f",
+      "plan_sha256": "6fdf745b48b60b5abb3ea94e45dadf0b47b821da936d5f98a850e68b8fa97662",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-270f42db3e3d",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 25
+        },
+        "pgvn": {
+          "PASS": 25
+        }
+      },
+      "report_sha256": "1dff83bc0dde017a572f1723bc320e87ff851db4232fca7fb64b2c1e3037054c",
+      "plan_sha256": "484c729d37a53a0b699e6088ceb1eb18b81add06366e618eb6fd77ad1c1dbd9c",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-30f6c39a725b",
+      "suite": "merge_tree_conflict_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 29
+        },
+        "pgvn": {
+          "PASS": 29
+        }
+      },
+      "report_sha256": "f404aa1677258abe1131a5d3cc2975b75e1d962c187f7f67842ade949369a078",
+      "plan_sha256": "daf8e61d593479eb2d27b351750b614b8d7710dc08e4d49dcf41275bfc48147e",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-062ea291b6bc",
+      "suite": "merge_reintegrate_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 21,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 21,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "b6498c5a669d64fcbf331b0978251520da41dc20480821a9c6b3b698a1ca5976",
+      "plan_sha256": "8f7b5d7dac9324bfb6649e6a2c58145256eb2344afc45c6d4f884d06e4701d14",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-ef7588567edf",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "fb89dc5e15b0cd950930f43f07f2661a69e125102bb48b5449050ce14c2526b0",
+      "plan_sha256": "a3a93c301628217c54e511fd79c47fd34797048d109e026608fbf107b24526e9",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-981831a91e88",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "XFAIL": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "XFAIL": 1
+        }
+      },
+      "report_sha256": "a5d080a2c62119995fef4c619376e070cb7f40de759a5ec9fd9634bebef5023f",
+      "plan_sha256": "7c7a808ad30adb288c7ca4832809bf1e96bd06154ad03edc021c1d6635499580",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-6b22acb7792f",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 24,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 24,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "2659429d1c43cbf33a64d9c2c120237f488235f7b1702b5a30c7ef1c6f89a336",
+      "plan_sha256": "db9ae7fe05e656305fb8ba8314a4ae73c84da2425e004778d8b75f20ce46ac6d",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-d7bb93696c69",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        },
+        "pgvn": {
+          "PASS": 22,
+          "XFAIL": 2,
+          "SKIP": 1
+        }
+      },
+      "report_sha256": "0d8dd4600abced4dfa6b0673bdd1d9635aebf6187874f41dbc32e6c920e342e7",
+      "plan_sha256": "eceafb6ac74652fa1ee3b4f6dc58ae765a70202d4a39b28c8638856a9224bc8a",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-b075367e27be",
+      "suite": "merge_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 18
+        },
+        "pgvn": {
+          "PASS": 18
+        }
+      },
+      "report_sha256": "affceabd36ce661884c49f37b2dd79a26fb178d09ff66f1edf253c0aecd5ec1d",
+      "plan_sha256": "1725ce0809d1aec084cad153f62628556a4b0b2be5885e09d4f34618bdecfea0",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-8f4eada6c27c",
+      "suite": "patch_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 41
+        },
+        "pgvn": {
+          "PASS": 41
+        }
+      },
+      "report_sha256": "f4e11f2cfb5feadd56610760c4afa9f23a016a2cc31ffd2f56ee23102aaa864a",
+      "plan_sha256": "be15f7ea30b505c1d6d70485b8d24c97354f49a1a10ae29f8798cfe4af30eb67",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-9ebdbcc7ffcd",
+      "suite": "shelf_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 32
+        },
+        "pgvn": {
+          "SKIP": 32
+        }
+      },
+      "report_sha256": "a46968eb03244f94389dd995352929723b9c9de1e04bd01532154892e552317e",
+      "plan_sha256": "0a2e2a23637d084c2608746ae99903440853b37f408488c8db2856110da259e6",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-780ccd3d2d7d",
+      "suite": "shelf2_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "SKIP": 31
+        },
+        "pgvn": {
+          "SKIP": 31
+        }
+      },
+      "report_sha256": "cd68fbaf4a4ea073fa5fba8bfb4f4e5956413d00f726b211987bbe6377ec3186",
+      "plan_sha256": "b8f1244eb1af0c782e527bd538a28924ab30c5927eb58a9da2985cc9b6f8d580",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    },
+    {
+      "test_id": "m6-network-659b0c128b9b",
+      "suite": "patch_tests",
+      "protocol": "http",
+      "selected_case_ids": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        },
+        "pgvn": {
+          "PASS": 34,
+          "XFAIL": 5,
+          "SKIP": 2
+        }
+      },
+      "report_sha256": "15b80a934f7fa0991d482fc944289bb329dc2e6ebb493982ed8e3fcfcd9d2ccb",
+      "plan_sha256": "5ba84c0348b0dcc66f19782f58df13136a741d627046169613ea8632da219261",
+      "inner_jobs_drained": 5,
+      "outer_job_drained": true,
+      "original_outcomes_identical": true,
+      "native_aliases_absent": true
+    }
+  ],
+  "database_controls": [
+    {
+      "database": "pgvn_m6_net_a96223a6bf83",
+      "owner": "pgvn_migrate_a96223a6bf83",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_c14b7bac2bb7",
+      "owner": "pgvn_migrate_c14b7bac2bb7",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_f1645be98e9b",
+      "owner": "pgvn_migrate_f1645be98e9b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_270f42db3e3d",
+      "owner": "pgvn_migrate_270f42db3e3d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_30f6c39a725b",
+      "owner": "pgvn_migrate_30f6c39a725b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_062ea291b6bc",
+      "owner": "pgvn_migrate_062ea291b6bc",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_ef7588567edf",
+      "owner": "pgvn_migrate_ef7588567edf",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_981831a91e88",
+      "owner": "pgvn_migrate_981831a91e88",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_6b22acb7792f",
+      "owner": "pgvn_migrate_6b22acb7792f",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_d7bb93696c69",
+      "owner": "pgvn_migrate_d7bb93696c69",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_b075367e27be",
+      "owner": "pgvn_migrate_b075367e27be",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_8f4eada6c27c",
+      "owner": "pgvn_migrate_8f4eada6c27c",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_9ebdbcc7ffcd",
+      "owner": "pgvn_migrate_9ebdbcc7ffcd",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_780ccd3d2d7d",
+      "owner": "pgvn_migrate_780ccd3d2d7d",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    },
+    {
+      "database": "pgvn_m6_net_659b0c128b9b",
+      "owner": "pgvn_migrate_659b0c128b9b",
+      "owner_superuser": false,
+      "monitor_tokens": 0,
+      "remaining_client_backends": 0
+    }
+  ],
+  "patch69_http": [
+    {
+      "backend": "fsfs",
+      "test_id": "m6-network-659b0c128b9b",
+      "case": {
+        "id": 69,
+        "name": "patch_add_remove_executable",
+        "result": "PASS"
+      }
+    },
+    {
+      "backend": "pgvn",
+      "test_id": "m6-network-659b0c128b9b",
+      "case": {
+        "id": 69,
+        "name": "patch_add_remove_executable",
+        "result": "PASS"
+      }
+    }
+  ],
+  "initial_aggregate_status": "FAIL",
+  "initial_report_sha256": "c59fd9abae986ff0e23aab3c7c06b5b24aeb8867bb2f45be89dafdceedecbd32",
+  "initial_svn_patch_failure": {
+    "status": "FAIL",
+    "report_sha256": "9724d3e1cb0329198ebd612dc35f6597a68542e78f4951610f0258d967d44d03",
+    "test_id": "m6-network-9490cbbdee6e",
+    "retained_without_reclassification": true
+  },
+  "raw_audit_sha256": "5d5a4665a4ee36ce64e828eb09d7f3b71ac2433f3d5f60ef53ea9a1d3dc35926",
+  "xfail_audit_sha256": "1b61b03ab060e13a3c9c425ca29804df433d4fd64d1e18876c7382a9edbf0df6",
+  "checker_correction": {
+    "original_source_sha256": "0171fd65012dc7de320f365f0b0518faf6a7a6e785f06e50c2588303de28c5e7",
+    "failure": "Compared the pairs list itself with an integer count.",
+    "correction": "Check list length and exact test/case membership; reuse the unchanged passing raw audits."
+  },
+  "milestone_complete": false,
+  "full_three_protocol_acceptance": false,
+  "scope": "Complete original HTTP selection for nine suites; disabled-shelf SKIPs and existing XFAILs retained. SVN failure, HTTPS continuation, enabled shelf and the remaining M6/M7 requirements remain separate.",
+  "format": 1,
+  "git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "git_worktree_dirty": true,
+  "registered_source_count": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "network_freeze": {
+    "path": "runtime/pgvn/baselines/m6-merge-patch-http-complete-659b0c128b9b",
+    "index_sha256": "cda745b2efe9367c6c37423bdc9e2859f8bbfcad7b2c3eeb9c08252e4822b2b6",
+    "files": 579
+  },
+  "controls_freeze": {
+    "path": "runtime/pgvn/baselines/m6-merge-patch-http-controls-659b0c128b9b",
+    "index_sha256": "b88789d733558364308bc2cc3e674924f83053b78206a9b5f45e154af77b3bb5",
+    "files": 14
+  },
+  "final_browser_m5_package_rerun": false,
+  "pending_requirements": [
+    "SVN patch69 controlled-environment rerun; original FAIL retained.",
+    "HTTPS continuation and enabled shelf/shelf2 configuration.",
+    "Formal management-tool bindings and remaining original suites.",
+    "Final-build gates, maintenance/history/backup, acknowledgement ledger, cross-host HA, performance and clean Windows/Polarion acceptance."
+  ]
+}
