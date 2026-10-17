@@ -7,6 +7,7 @@ ARCHIVE_ROOT = "subversion-1.14.5"
 PROVENANCE = "Configured local Git archive; contents compared byte-for-byte with the vendor tree. No upstream signature verification is claimed."
 FILES = {
     'subversion/include/svn_version.h': {'sha256': 'b396c2a73f673cd0a6834663d7a1618e92b463e661a135651ec7668a6f5257b0', 'size': 13093},
+    'subversion/libsvn_wc/wc.h': {'sha256': '517d77c89898b93bcb51257e66ed16cd26f160bca0d3d39ba886386f94e8154b', 'size': 30467},
     'subversion/tests/cmdline/README': {'sha256': 'b4dc08b9681674249d4ced1d8ca74bb2eb62857575395485c6605d880af80e18', 'size': 20610},
     'subversion/tests/cmdline/atomic-ra-revprop-change.c': {'sha256': 'ce94d50d16f1b85690fd04017dcfa34947b6ed328dc2951609efc590fd6d697a', 'size': 6984},
     'subversion/tests/cmdline/authz_tests.py': {'sha256': 'c74d7e4817f77c5df89eaaafebdbee0b29a699710c44f55a78b4047f19027f52', 'size': 68528},

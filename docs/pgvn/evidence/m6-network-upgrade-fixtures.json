@@ -1,0 +1,1404 @@
+{
+  "status": "PASS_COMPONENT_ONLY",
+  "created_at": "2026-10-17T04:06:35.435430+00:00",
+  "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_worktree_dirty": true,
+  "registered_source_inputs": 155,
+  "changed_registered_sources": [
+    "tests/pgvn/test_m6_network.py",
+    "tests/pgvn/test_m6_network_upgrade.py",
+    "tests/pgvn/upstream_network_entry.py",
+    "tests/pgvn/upstream_network_import.py",
+    "tests/pgvn/upstream_network_lock.py"
+  ],
+  "products": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "product_and_runtime_identity_matches_previous_manifest": "e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997",
+  "runtime_dependencies_unchanged": 67,
+  "apache_dependencies_unchanged": 84,
+  "web_assets_unchanged": 3,
+  "scope": {
+    "complete_original_suites": 1,
+    "additional_original_cases": [
+      {
+        "suite": "authz_tests",
+        "id": 24
+      }
+    ],
+    "unique_original_functions": 36,
+    "protocols": [
+      "svn",
+      "http",
+      "https"
+    ],
+    "outcomes": 216,
+    "counts": {
+      "PASS": 216
+    },
+    "upstream_assertions_or_decorators_changed": false,
+    "new_exclusions": [],
+    "working_copy_upgrade_is_client_metadata_not_server_disk_format_upgrade": true
+  },
+  "runs": [
+    {
+      "test_id": "m6-network-621c41d6bce9",
+      "suite": "upgrade_tests",
+      "protocol": "svn",
+      "report_sha256": "3066a78b09013996f55c49673643a28cb84d87136db5b14c760781c7cc73c454",
+      "selected_cases": [
+        {
+          "id": 1,
+          "name": "basic_upgrade",
+          "line": 255,
+          "decorators": []
+        },
+        {
+          "id": 2,
+          "name": "upgrade_with_externals",
+          "line": 298,
+          "decorators": []
+        },
+        {
+          "id": 3,
+          "name": "upgrade_1_5",
+          "line": 340,
+          "decorators": []
+        },
+        {
+          "id": 4,
+          "name": "update_1_5",
+          "line": 345,
+          "decorators": []
+        },
+        {
+          "id": 5,
+          "name": "logs_left_1_5",
+          "line": 355,
+          "decorators": []
+        },
+        {
+          "id": 6,
+          "name": "upgrade_wcprops",
+          "line": 366,
+          "decorators": []
+        },
+        {
+          "id": 7,
+          "name": "basic_upgrade_1_0",
+          "line": 427,
+          "decorators": []
+        },
+        {
+          "id": 8,
+          "name": "x3_1_4_0",
+          "line": 636,
+          "decorators": [
+            "Issue(2530)"
+          ]
+        },
+        {
+          "id": 9,
+          "name": "x3_1_4_6",
+          "line": 645,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 10,
+          "name": "x3_1_6_12",
+          "line": 653,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 11,
+          "name": "missing_dirs",
+          "line": 660,
+          "decorators": []
+        },
+        {
+          "id": 12,
+          "name": "missing_dirs2",
+          "line": 691,
+          "decorators": []
+        },
+        {
+          "id": 13,
+          "name": "delete_and_keep_local",
+          "line": 721,
+          "decorators": [
+            "Issue(3808)"
+          ]
+        },
+        {
+          "id": 14,
+          "name": "dirs_only_upgrade",
+          "line": 749,
+          "decorators": []
+        },
+        {
+          "id": 15,
+          "name": "delete_in_copy_upgrade",
+          "line": 767,
+          "decorators": [
+            "Issue(3898)"
+          ]
+        },
+        {
+          "id": 16,
+          "name": "replaced_files",
+          "line": 800,
+          "decorators": []
+        },
+        {
+          "id": 17,
+          "name": "upgrade_with_scheduled_change",
+          "line": 861,
+          "decorators": []
+        },
+        {
+          "id": 18,
+          "name": "tree_replace1",
+          "line": 875,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 19,
+          "name": "tree_replace2",
+          "line": 899,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 20,
+          "name": "depth_exclude",
+          "line": 923,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 21,
+          "name": "depth_exclude_2",
+          "line": 939,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 22,
+          "name": "add_add_del_del_tc",
+          "line": 954,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 23,
+          "name": "add_add_x2",
+          "line": 972,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 24,
+          "name": "upgrade_with_missing_subdir",
+          "line": 989,
+          "decorators": [
+            "Issue(3940)"
+          ]
+        },
+        {
+          "id": 25,
+          "name": "upgrade_locked",
+          "line": 1046,
+          "decorators": [
+            "Issue(3994)"
+          ]
+        },
+        {
+          "id": 26,
+          "name": "upgrade_file_externals",
+          "line": 1065,
+          "decorators": [
+            "Issue(4015)"
+          ]
+        },
+        {
+          "id": 27,
+          "name": "upgrade_missing_replaced",
+          "line": 1137,
+          "decorators": [
+            "Issue(4035)"
+          ]
+        },
+        {
+          "id": 28,
+          "name": "upgrade_not_present_replaced",
+          "line": 1176,
+          "decorators": [
+            "Issue(4033)"
+          ]
+        },
+        {
+          "id": 29,
+          "name": "upgrade_from_1_7_conflict",
+          "line": 1205,
+          "decorators": [
+            "Issue(4307)"
+          ]
+        },
+        {
+          "id": 30,
+          "name": "iprops_upgrade",
+          "line": 1311,
+          "decorators": []
+        },
+        {
+          "id": 31,
+          "name": "iprops_upgrade1_6",
+          "line": 1328,
+          "decorators": []
+        },
+        {
+          "id": 32,
+          "name": "changelist_upgrade_1_6",
+          "line": 1345,
+          "decorators": []
+        },
+        {
+          "id": 33,
+          "name": "upgrade_1_7_dir_external",
+          "line": 1363,
+          "decorators": []
+        },
+        {
+          "id": 34,
+          "name": "auto_analyze",
+          "line": 1374,
+          "decorators": [
+            "SkipUnless(svntest.wc.python_sqlite_can_read_wc)"
+          ]
+        },
+        {
+          "id": 35,
+          "name": "upgrade_1_0_with_externals",
+          "line": 1416,
+          "decorators": []
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 35
+        },
+        "pgvn": {
+          "PASS": 35
+        }
+      },
+      "elapsed_seconds": 119.56299999999464,
+      "jobs": 4,
+      "fixture_audit": {
+        "test_id": "m6-network-621c41d6bce9",
+        "suite": "upgrade_tests",
+        "protocol": "svn",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_621c41d6bce9",
+        "owner": "pgvn_migrate_621c41d6bce9",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 37,
+        "pgvn": 37
+      },
+      "tls_verification": {
+        "fsfs": null,
+        "pgvn": null
+      }
+    },
+    {
+      "test_id": "m6-network-c9fccf099b03",
+      "suite": "authz_tests",
+      "protocol": "svn",
+      "report_sha256": "eec48c6064975a49eea337de203c88fd2958953ec46b0988d5257a44651a5046",
+      "selected_cases": [
+        {
+          "id": 24,
+          "name": "upgrade_absent",
+          "line": 1371,
+          "decorators": [
+            "Skip(svntest.main.is_ra_type_file)"
+          ]
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 17.07799999997951,
+      "jobs": 4,
+      "fixture_audit": {
+        "test_id": "m6-network-c9fccf099b03",
+        "suite": "authz_tests",
+        "protocol": "svn",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_c9fccf099b03",
+        "owner": "pgvn_migrate_c9fccf099b03",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 1,
+        "pgvn": 1
+      },
+      "tls_verification": {
+        "fsfs": null,
+        "pgvn": null
+      }
+    },
+    {
+      "test_id": "m6-network-8dcba925b1af",
+      "suite": "upgrade_tests",
+      "protocol": "http",
+      "report_sha256": "f5abd8cd2d6242283a68f082fa4cfcc34a23f517728c6036b5ae21960a54fc36",
+      "selected_cases": [
+        {
+          "id": 1,
+          "name": "basic_upgrade",
+          "line": 255,
+          "decorators": []
+        },
+        {
+          "id": 2,
+          "name": "upgrade_with_externals",
+          "line": 298,
+          "decorators": []
+        },
+        {
+          "id": 3,
+          "name": "upgrade_1_5",
+          "line": 340,
+          "decorators": []
+        },
+        {
+          "id": 4,
+          "name": "update_1_5",
+          "line": 345,
+          "decorators": []
+        },
+        {
+          "id": 5,
+          "name": "logs_left_1_5",
+          "line": 355,
+          "decorators": []
+        },
+        {
+          "id": 6,
+          "name": "upgrade_wcprops",
+          "line": 366,
+          "decorators": []
+        },
+        {
+          "id": 7,
+          "name": "basic_upgrade_1_0",
+          "line": 427,
+          "decorators": []
+        },
+        {
+          "id": 8,
+          "name": "x3_1_4_0",
+          "line": 636,
+          "decorators": [
+            "Issue(2530)"
+          ]
+        },
+        {
+          "id": 9,
+          "name": "x3_1_4_6",
+          "line": 645,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 10,
+          "name": "x3_1_6_12",
+          "line": 653,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 11,
+          "name": "missing_dirs",
+          "line": 660,
+          "decorators": []
+        },
+        {
+          "id": 12,
+          "name": "missing_dirs2",
+          "line": 691,
+          "decorators": []
+        },
+        {
+          "id": 13,
+          "name": "delete_and_keep_local",
+          "line": 721,
+          "decorators": [
+            "Issue(3808)"
+          ]
+        },
+        {
+          "id": 14,
+          "name": "dirs_only_upgrade",
+          "line": 749,
+          "decorators": []
+        },
+        {
+          "id": 15,
+          "name": "delete_in_copy_upgrade",
+          "line": 767,
+          "decorators": [
+            "Issue(3898)"
+          ]
+        },
+        {
+          "id": 16,
+          "name": "replaced_files",
+          "line": 800,
+          "decorators": []
+        },
+        {
+          "id": 17,
+          "name": "upgrade_with_scheduled_change",
+          "line": 861,
+          "decorators": []
+        },
+        {
+          "id": 18,
+          "name": "tree_replace1",
+          "line": 875,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 19,
+          "name": "tree_replace2",
+          "line": 899,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 20,
+          "name": "depth_exclude",
+          "line": 923,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 21,
+          "name": "depth_exclude_2",
+          "line": 939,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 22,
+          "name": "add_add_del_del_tc",
+          "line": 954,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 23,
+          "name": "add_add_x2",
+          "line": 972,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 24,
+          "name": "upgrade_with_missing_subdir",
+          "line": 989,
+          "decorators": [
+            "Issue(3940)"
+          ]
+        },
+        {
+          "id": 25,
+          "name": "upgrade_locked",
+          "line": 1046,
+          "decorators": [
+            "Issue(3994)"
+          ]
+        },
+        {
+          "id": 26,
+          "name": "upgrade_file_externals",
+          "line": 1065,
+          "decorators": [
+            "Issue(4015)"
+          ]
+        },
+        {
+          "id": 27,
+          "name": "upgrade_missing_replaced",
+          "line": 1137,
+          "decorators": [
+            "Issue(4035)"
+          ]
+        },
+        {
+          "id": 28,
+          "name": "upgrade_not_present_replaced",
+          "line": 1176,
+          "decorators": [
+            "Issue(4033)"
+          ]
+        },
+        {
+          "id": 29,
+          "name": "upgrade_from_1_7_conflict",
+          "line": 1205,
+          "decorators": [
+            "Issue(4307)"
+          ]
+        },
+        {
+          "id": 30,
+          "name": "iprops_upgrade",
+          "line": 1311,
+          "decorators": []
+        },
+        {
+          "id": 31,
+          "name": "iprops_upgrade1_6",
+          "line": 1328,
+          "decorators": []
+        },
+        {
+          "id": 32,
+          "name": "changelist_upgrade_1_6",
+          "line": 1345,
+          "decorators": []
+        },
+        {
+          "id": 33,
+          "name": "upgrade_1_7_dir_external",
+          "line": 1363,
+          "decorators": []
+        },
+        {
+          "id": 34,
+          "name": "auto_analyze",
+          "line": 1374,
+          "decorators": [
+            "SkipUnless(svntest.wc.python_sqlite_can_read_wc)"
+          ]
+        },
+        {
+          "id": 35,
+          "name": "upgrade_1_0_with_externals",
+          "line": 1416,
+          "decorators": []
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 35
+        },
+        "pgvn": {
+          "PASS": 35
+        }
+      },
+      "elapsed_seconds": 164.26600000000326,
+      "jobs": 5,
+      "fixture_audit": {
+        "test_id": "m6-network-8dcba925b1af",
+        "suite": "upgrade_tests",
+        "protocol": "http",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_8dcba925b1af",
+        "owner": "pgvn_migrate_8dcba925b1af",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 37,
+        "pgvn": 37
+      },
+      "tls_verification": {
+        "fsfs": null,
+        "pgvn": null
+      }
+    },
+    {
+      "test_id": "m6-network-8b164d0cc7db",
+      "suite": "authz_tests",
+      "protocol": "http",
+      "report_sha256": "5c50d251afab9f10ec174ec8318119d716dc66847ad3a7cc173597c9b3fade2c",
+      "selected_cases": [
+        {
+          "id": 24,
+          "name": "upgrade_absent",
+          "line": 1371,
+          "decorators": [
+            "Skip(svntest.main.is_ra_type_file)"
+          ]
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 29.0,
+      "jobs": 5,
+      "fixture_audit": {
+        "test_id": "m6-network-8b164d0cc7db",
+        "suite": "authz_tests",
+        "protocol": "http",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_8b164d0cc7db",
+        "owner": "pgvn_migrate_8b164d0cc7db",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 1,
+        "pgvn": 1
+      },
+      "tls_verification": {
+        "fsfs": null,
+        "pgvn": null
+      }
+    },
+    {
+      "test_id": "m6-network-23bd33c79411",
+      "suite": "upgrade_tests",
+      "protocol": "https",
+      "report_sha256": "2652a1f3b4cf3115c62b133db19352af1aef90b20b0156ebfbe75c95158c7676",
+      "selected_cases": [
+        {
+          "id": 1,
+          "name": "basic_upgrade",
+          "line": 255,
+          "decorators": []
+        },
+        {
+          "id": 2,
+          "name": "upgrade_with_externals",
+          "line": 298,
+          "decorators": []
+        },
+        {
+          "id": 3,
+          "name": "upgrade_1_5",
+          "line": 340,
+          "decorators": []
+        },
+        {
+          "id": 4,
+          "name": "update_1_5",
+          "line": 345,
+          "decorators": []
+        },
+        {
+          "id": 5,
+          "name": "logs_left_1_5",
+          "line": 355,
+          "decorators": []
+        },
+        {
+          "id": 6,
+          "name": "upgrade_wcprops",
+          "line": 366,
+          "decorators": []
+        },
+        {
+          "id": 7,
+          "name": "basic_upgrade_1_0",
+          "line": 427,
+          "decorators": []
+        },
+        {
+          "id": 8,
+          "name": "x3_1_4_0",
+          "line": 636,
+          "decorators": [
+            "Issue(2530)"
+          ]
+        },
+        {
+          "id": 9,
+          "name": "x3_1_4_6",
+          "line": 645,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 10,
+          "name": "x3_1_6_12",
+          "line": 653,
+          "decorators": [
+            "Issue(3811)"
+          ]
+        },
+        {
+          "id": 11,
+          "name": "missing_dirs",
+          "line": 660,
+          "decorators": []
+        },
+        {
+          "id": 12,
+          "name": "missing_dirs2",
+          "line": 691,
+          "decorators": []
+        },
+        {
+          "id": 13,
+          "name": "delete_and_keep_local",
+          "line": 721,
+          "decorators": [
+            "Issue(3808)"
+          ]
+        },
+        {
+          "id": 14,
+          "name": "dirs_only_upgrade",
+          "line": 749,
+          "decorators": []
+        },
+        {
+          "id": 15,
+          "name": "delete_in_copy_upgrade",
+          "line": 767,
+          "decorators": [
+            "Issue(3898)"
+          ]
+        },
+        {
+          "id": 16,
+          "name": "replaced_files",
+          "line": 800,
+          "decorators": []
+        },
+        {
+          "id": 17,
+          "name": "upgrade_with_scheduled_change",
+          "line": 861,
+          "decorators": []
+        },
+        {
+          "id": 18,
+          "name": "tree_replace1",
+          "line": 875,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 19,
+          "name": "tree_replace2",
+          "line": 899,
+          "decorators": [
+            "Issue(3777)"
+          ]
+        },
+        {
+          "id": 20,
+          "name": "depth_exclude",
+          "line": 923,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 21,
+          "name": "depth_exclude_2",
+          "line": 939,
+          "decorators": [
+            "Issue(3901)"
+          ]
+        },
+        {
+          "id": 22,
+          "name": "add_add_del_del_tc",
+          "line": 954,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 23,
+          "name": "add_add_x2",
+          "line": 972,
+          "decorators": [
+            "Issue(3916)"
+          ]
+        },
+        {
+          "id": 24,
+          "name": "upgrade_with_missing_subdir",
+          "line": 989,
+          "decorators": [
+            "Issue(3940)"
+          ]
+        },
+        {
+          "id": 25,
+          "name": "upgrade_locked",
+          "line": 1046,
+          "decorators": [
+            "Issue(3994)"
+          ]
+        },
+        {
+          "id": 26,
+          "name": "upgrade_file_externals",
+          "line": 1065,
+          "decorators": [
+            "Issue(4015)"
+          ]
+        },
+        {
+          "id": 27,
+          "name": "upgrade_missing_replaced",
+          "line": 1137,
+          "decorators": [
+            "Issue(4035)"
+          ]
+        },
+        {
+          "id": 28,
+          "name": "upgrade_not_present_replaced",
+          "line": 1176,
+          "decorators": [
+            "Issue(4033)"
+          ]
+        },
+        {
+          "id": 29,
+          "name": "upgrade_from_1_7_conflict",
+          "line": 1205,
+          "decorators": [
+            "Issue(4307)"
+          ]
+        },
+        {
+          "id": 30,
+          "name": "iprops_upgrade",
+          "line": 1311,
+          "decorators": []
+        },
+        {
+          "id": 31,
+          "name": "iprops_upgrade1_6",
+          "line": 1328,
+          "decorators": []
+        },
+        {
+          "id": 32,
+          "name": "changelist_upgrade_1_6",
+          "line": 1345,
+          "decorators": []
+        },
+        {
+          "id": 33,
+          "name": "upgrade_1_7_dir_external",
+          "line": 1363,
+          "decorators": []
+        },
+        {
+          "id": 34,
+          "name": "auto_analyze",
+          "line": 1374,
+          "decorators": [
+            "SkipUnless(svntest.wc.python_sqlite_can_read_wc)"
+          ]
+        },
+        {
+          "id": 35,
+          "name": "upgrade_1_0_with_externals",
+          "line": 1416,
+          "decorators": []
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 35
+        },
+        "pgvn": {
+          "PASS": 35
+        }
+      },
+      "elapsed_seconds": 168.7039999999979,
+      "jobs": 5,
+      "fixture_audit": {
+        "test_id": "m6-network-23bd33c79411",
+        "suite": "upgrade_tests",
+        "protocol": "https",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_23bd33c79411",
+        "owner": "pgvn_migrate_23bd33c79411",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 37,
+        "pgvn": 37
+      },
+      "tls_verification": {
+        "fsfs": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "9960889890d765f58b2389d335a92f9dec1ccba78c174c6a02bbc49a9e52dcde",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.016
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.0
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.0
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "pgvn": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "9960889890d765f58b2389d335a92f9dec1ccba78c174c6a02bbc49a9e52dcde",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.015
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.032
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        }
+      }
+    },
+    {
+      "test_id": "m6-network-18b925e5f9ef",
+      "suite": "authz_tests",
+      "protocol": "https",
+      "report_sha256": "a3ef74fbfaa885c10ee2854ca567d6fe0077f1981a8a233d622520617a53afae",
+      "selected_cases": [
+        {
+          "id": 24,
+          "name": "upgrade_absent",
+          "line": 1371,
+          "decorators": [
+            "Skip(svntest.main.is_ra_type_file)"
+          ]
+        }
+      ],
+      "counts_by_backend": {
+        "fsfs": {
+          "PASS": 1
+        },
+        "pgvn": {
+          "PASS": 1
+        }
+      },
+      "elapsed_seconds": 25.562999999994645,
+      "jobs": 5,
+      "fixture_audit": {
+        "test_id": "m6-network-18b925e5f9ef",
+        "suite": "authz_tests",
+        "protocol": "https",
+        "snapshot_manifest_sha256": "e56abe306da52c589688772ac1da74776fd22eed54f07e4b9ba244cab3ba1af6",
+        "snapshot_locked_files": 235,
+        "database": "pgvn_m6_net_18b925e5f9ef",
+        "owner": "pgvn_migrate_18b925e5f9ef",
+        "superuser": false,
+        "monitor_token_rows": 0,
+        "remaining_client_backends": 0,
+        "stock_native_fixture_signatures_identical": true
+      },
+      "working_copy_moves": {
+        "fsfs": 1,
+        "pgvn": 1
+      },
+      "tls_verification": {
+        "fsfs": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "03a15b23f7bebd1b033b9364c3eeee88b6f27da0b75fbf4a788f38ef1d82a92a",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.031
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.032
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        },
+        "pgvn": {
+          "version": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "peer_certificate_der_sha256": "03a15b23f7bebd1b033b9364c3eeee88b6f27da0b75fbf4a788f38ef1d82a92a",
+          "hostname_and_chain_verified": true,
+          "verified_names": [
+            "127.0.0.1",
+            "localhost"
+          ],
+          "verified_endpoints": [
+            {
+              "connect_host": "127.0.0.1",
+              "peer_address": "127.0.0.1",
+              "verified_hostname": "127.0.0.1",
+              "tcp_connect_seconds": 0.0
+            },
+            {
+              "connect_host": "localhost",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.016
+            },
+            {
+              "connect_host": "::1",
+              "peer_address": "::1",
+              "verified_hostname": "localhost",
+              "tcp_connect_seconds": 0.031
+            }
+          ],
+          "negative_controls": [
+            {
+              "case": "untrusted CA",
+              "verify_code": 20
+            },
+            {
+              "case": "wrong hostname",
+              "verify_code": 62
+            }
+          ],
+          "client_url_hostname": "localhost",
+          "localhost_resolves_to": [
+            "127.0.0.1",
+            "::1"
+          ]
+        }
+      }
+    }
+  ],
+  "offline": {
+    "test_id": "m6-network-upgrade-offline-0e9428b370b8",
+    "report_sha256": "0a7058b043f217b6d6008fd8212cf8c9d0d11cf141ec32b440921cc86558f89b",
+    "checks": [
+      {
+        "name": "fsfs: unchanged extraction and read-only SVN metadata survive the same-volume rename",
+        "status": "PASS"
+      },
+      {
+        "name": "pgvn: unchanged extraction and read-only SVN metadata survive the same-volume rename",
+        "status": "PASS"
+      },
+      {
+        "name": "Transient WinError 5 retries rename without copying or changing WC attributes",
+        "status": "PASS"
+      },
+      {
+        "name": "Transient WinError 32 retries rename without copying or changing WC attributes",
+        "status": "PASS"
+      },
+      {
+        "name": "Transient WinError 33 retries rename without copying or changing WC attributes",
+        "status": "PASS"
+      },
+      {
+        "name": "wrong database prefix rejected before installing an adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "unknown backend rejected before installing an adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "wrong fixture root rejected before installing an adapter",
+        "status": "PASS"
+      },
+      {
+        "name": "archive path escape rejected",
+        "status": "PASS"
+      },
+      {
+        "name": "extraction directory escape rejected",
+        "status": "PASS"
+      },
+      {
+        "name": "Changed locked archive rejected before extraction",
+        "status": "PASS"
+      },
+      {
+        "name": "outside WC root rejected before original cleanup",
+        "status": "PASS"
+      },
+      {
+        "name": "WC root itself rejected before original cleanup",
+        "status": "PASS"
+      },
+      {
+        "name": "Extraction outside local_tmp cannot be moved",
+        "status": "PASS"
+      },
+      {
+        "name": "Failed old-WC cleanup cannot cause a nested move or hide existing data",
+        "status": "PASS"
+      },
+      {
+        "name": "unrecognized permission error propagates without retry or copy",
+        "status": "PASS"
+      },
+      {
+        "name": "non-permission error propagates without retry or copy",
+        "status": "PASS"
+      },
+      {
+        "name": "Post-move content change fails the archive inventory check",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Windows deny-delete directory handle releases and rename succeeds with original bytes/attributes",
+        "status": "PASS"
+      },
+      {
+        "name": "Persistent real Windows sharing denial remains a failure",
+        "status": "PASS"
+      },
+      {
+        "name": "Retry has a finite deadline, leaves the source, and creates no partial copied WC",
+        "status": "PASS"
+      }
+    ],
+    "real_subprocesses_started": 0,
+    "database_connections_attempted": 0,
+    "upstream_python_tests_executed": 0
+  },
+  "fixture_events": {
+    "working_copy_moves": 228,
+    "stock_native_archive_tree_attributes_identical": true,
+    "transient_errors_retried": {
+      "5": 5
+    },
+    "full_audit_relative_to_controls": "wc-count-frozen/upgrade-preflight-fixture-audit.json",
+    "full_audit_sha256": "201888affaad02d2899eb5c740367e6c9e19e0c973fc73361a2931706650c53d"
+  },
+  "cleanup": {
+    "inner_jobs_closed": 28,
+    "outer_jobs_closed": 6,
+    "non_superuser_database_owners": 6,
+    "remaining_client_backends": 0,
+    "monitor_token_rows": 0,
+    "runtime_processes": 0,
+    "temporary_services": 0,
+    "databases_and_roles_retained": true,
+    "cim_observation": {
+      "checked_at": "2026-10-17T04:03:40.6753949+00:00",
+      "runtime_processes": [],
+      "temporary_services": [],
+      "process_count": 0,
+      "service_count": 0,
+      "scope": "Read-only executable-path observation after the six preflight runs; the dedicated PostgreSQL server is retained."
+    }
+  },
+  "failure_history": {
+    "first_upgrade_test_id": "m6-network-7d505953863d",
+    "first_counts": {
+      "fsfs": {
+        "PASS": 33,
+        "FAIL": 2
+      },
+      "pgvn": {
+        "PASS": 32,
+        "FAIL": 3
+      }
+    },
+    "root_handle_owner_in_original_failures": "UNKNOWN",
+    "initial_child_file_lock_hypothesis_did_not_reproduce_directory_move_denial": true,
+    "root_directory_deny_delete_reproduction_sha256": "1f7f57f2cbf30161217c53ebce838f39d14b6f157ad4d56a3ad4c4e84b39abbb",
+    "offline_nameerror_test_id": "m6-network-upgrade-offline-d223fbd22f1d",
+    "offline_exact_retry_count_failure_test_id": "m6-network-upgrade-offline-9c4a68c3efd5",
+    "unchanged_count_diagnostic_test_id": "m6-network-upgrade-offline-d2aaab924173",
+    "exact_error_events_in_first_count_failure": "Not captured; later diagnostic retained separately."
+  },
+  "frozen_baselines": [
+    {
+      "path": "runtime/pgvn/baselines/m6-upgrade-fixture-preflight-18b925e5f9ef",
+      "index_sha256": "7c4083d6ba4350a1e4f53ca060e6fbb3a108d85467b384f4ae3dd253ab73f259",
+      "files": 484
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-merge-upgrade-initial-2129e77cee4f",
+      "index_sha256": "f9bef6df1739562609593bd5139024e1ca0d203e313bcc0a2515c9528ded99d0",
+      "files": 333
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-wc-offline-failure-d223fbd22f1d",
+      "index_sha256": "3cf9930ae0896b00692aa9fda190b06ef99a0845ce35caaee74a75a45386fc30",
+      "files": 157
+    },
+    {
+      "path": "runtime/pgvn/baselines/m6-wc-offline-count-9c4a68c3efd5",
+      "index_sha256": "b780010c6d05846f00fe8f38f4280204b6a39074858453495d072eeae8982d73",
+      "files": 159
+    }
+  ],
+  "frozen_controls": {
+    "path": "runtime/pgvn/baselines/m6-upgrade-fixture-controls-18b925e5f9ef",
+    "index_sha256": "ec3a66b168429089c39564e3201bf61f5ffd7f1f6c2d0a4e5d0c7030d1a2ab01",
+    "files": 40
+  },
+  "existing_acceptance": {
+    "browser_and_full_m5_newly_run": false,
+    "old_manifest_sha256": "e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997",
+    "old_full_m5_id": "m5-0587e0a9e03b",
+    "old_records_relabelled": false,
+    "new_package_created": false
+  },
+  "remaining_plans": {
+    "count": 45,
+    "potential_outcomes": 2262,
+    "plans_sha256": "a4faf97d2dc5aea0924b37c693789060813f0aed5c797fab075d177fe3d89575",
+    "status_when_component_recorded": "NOT_EXECUTED"
+  },
+  "milestone_complete": false,
+  "full_m6_or_m7_accepted": false
+}

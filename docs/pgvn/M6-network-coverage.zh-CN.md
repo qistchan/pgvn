@@ -1,10 +1,12 @@
 # M6 原版网络套件覆盖账本
 
-更新：2026-10-17，自动属性/继承/外部引用组件。[最新逐函数快照](evidence/m6-network-coverage-client-properties.json)绑定固定归档 `53bd33126d6be42bdd2725f1ee92132e03c291aa4a3fcc910eccde10dad796f4`、62 套件和 1,984 个原版函数，当前构建 `e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997`。这是覆盖审计，不是 M6 完成结论。[上一版 288 函数快照](evidence/m6-network-coverage.json)保持原字节和哈希，旧组件仍可核对。
+更新：2026-10-17，自动属性/继承/外部引用组件。[最新逐函数快照](evidence/m6-network-coverage-client-properties.json)绑定固定归档 `53bd33126d6be42bdd2725f1ee92132e03c291aa4a3fcc910eccde10dad796f4`、62 套件和 1,984 个原版函数，本账本构建 `e63c40be2a119368e6060d4e4637dfc2ee8936d1a8dc45106cfa1aa0e56bb997`。这是覆盖审计，不是 M6 完成结论。[上一版 288 函数快照](evidence/m6-network-coverage.json)保持原字节和哈希，旧组件仍可核对。
+
+后续[升级夹具组件](M6-network-upgrade-fixtures.zh-CN.md)已在新的 `5e3d4cc3…` 清单完成 36 个函数、216 个结果。下列统计和 JSON 仍绑定上文的 `e63c40be…`，没有把旧结果改记到新清单；后续汇总将生成新的逐函数快照。
 
 ## 计数口径
 
-当前构建 568 个函数在 SVN、HTTP、HTTPS 均取得 FSFS/PgVN 一致的原版结果；两后端三协议共 3120 PASS / 174 XFAIL / 114 SKIP，实际进入 3294 次。PASS、XFAIL、SKIP 分开记录，SKIP 不计实际进入；客户端提前结束的用例不证明存储 I/O。
+本账本构建 568 个函数在 SVN、HTTP、HTTPS 均取得 FSFS/PgVN 一致的原版结果；两后端三协议共 3120 PASS / 174 XFAIL / 114 SKIP，实际进入 3294 次。PASS、XFAIL、SKIP 分开记录，SKIP 不计实际进入；客户端提前结束的用例不证明存储 I/O。
 
 另有 676 个函数仅有旧构建的已接纳结果，仍需最终构建复跑；740 个尚无已接纳引用。唯一函数按源文件和原编号去重。只接纳原编号、函数名、两侧结果、原始快照及报告/日志哈希相符的记录，定点重复和失败尝试不累加。本轮 13 对 XFAIL 诊断转储仅条目顺序不同，专项字典复核及最初严格文本比较的 FAIL 记录均见[组件说明](M6-network-client-properties.zh-CN.md#xfail-诊断复核)，不声称全部诊断逐字相同。
 

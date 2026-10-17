@@ -58,7 +58,7 @@ def numbers(value):
     return result
 
 def plan(args):
-    assert re.fullmatch('[a-z_]+_tests',args.suite)
+    assert re.fullmatch('[a-z][a-z0-9_]*_tests',args.suite)
     source,archive,lock=upstream_inputs();suite=suite_catalog(source,source/'subversion/tests/cmdline'/(args.suite+'.py'))
     selected=numbers(args.cases);assert max(selected)<=suite['test_count']
     frozen=identity(args.protocol)
@@ -151,7 +151,7 @@ def execute(path):
     assert work==path.parent==(RUNTIME/'tests'/value['test_id']).resolve()
     assert value['database']=='pgvn_m6_net_'+suffix and value['owner']=='pgvn_migrate_'+suffix
     assert value['endpoint']=='127.0.0.1:16432' and value['cluster_data_directory']==str(RUNTIME/'pg-primary')
-    assert re.fullmatch('[a-z_]+_tests',value['suite']) and value['cases']==numbers(','.join(map(str,value['cases'])))
+    assert re.fullmatch('[a-z][a-z0-9_]*_tests',value['suite']) and value['cases']==numbers(','.join(map(str,value['cases'])))
     assert not (work/'started.json').exists(),'Never reuse or silently restart an executed fixture plan'
     (work/'started.json').write_text(json.dumps({'started_at':dt.datetime.now(dt.timezone.utc).isoformat(),'plan_sha256':sha(path)}),encoding='utf-8')
     database=value['database'];owner=value['owner'];fixture=Fixture();start=time.monotonic()

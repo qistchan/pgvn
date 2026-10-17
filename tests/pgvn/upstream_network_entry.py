@@ -346,12 +346,13 @@ def main():
     # Upstream's default arglist is captured when its module is imported.
     _,selection=main.parse_options(sys.argv[1:])
     assert not main.options.development and not main.options.list_tests and not main.options.parallel
+    import_source=ROOT/'tests/pgvn/upstream_network_import.py'
+    assert sha(import_source)==manifest['sources']['tests/pgvn/upstream_network_import.py']
+    import_spec=importlib.util.spec_from_file_location('pgvn_upstream_import',import_source)
+    import_boundary=importlib.util.module_from_spec(import_spec);import_spec.loader.exec_module(import_boundary)
+    upgrades=importlib.import_module('upgrade_tests')
+    if os.name=='nt':import_boundary.install_working_copy_moves(upgrades,config,snapshot,marker,event)
     if native:
-        import_source=ROOT/'tests/pgvn/upstream_network_import.py'
-        assert sha(import_source)==manifest['sources']['tests/pgvn/upstream_network_import.py']
-        import_spec=importlib.util.spec_from_file_location('pgvn_upstream_import',import_source)
-        import_boundary=importlib.util.module_from_spec(import_spec);import_spec.loader.exec_module(import_boundary)
-        upgrades=importlib.import_module('upgrade_tests')
         def legacy_repository(sbox,tar_filename,dir=None):
             return import_boundary.legacy_repository(sbox,tar_filename,dir,config,snapshot,marker,create,remove,event)
         upgrades.replace_sbox_repo_with_tarfile=legacy_repository
@@ -391,6 +392,8 @@ def main():
                                   'legacy file:// svnmucc setup uses a same-database loopback SVN writer; tested updates retain their URLs'] if native else ['helper executable paths'],
             'pending_boundaries':['Native hook bridge runs the supplied Python body; Windows cmd_alternative is not executed.',
                                   'Direct physical repository file operations and historical disk formats need case applicability review.'] if native else []}
+    if os.name=='nt':
+        result['fixture_boundaries']+=['locked historical WC archive setup uses a bounded same-volume rename retry on both backends; bytes/attributes preserved']
     if config.get('tls_authority'):
         result['fixture_boundaries']+=['private CA in default client configuration; explicit caller TLS settings retained',
                                       'direct HTTPS helper verifies certificate chain and hostname']
