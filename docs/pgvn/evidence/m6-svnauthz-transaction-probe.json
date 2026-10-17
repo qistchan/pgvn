@@ -1,0 +1,295 @@
+{
+  "format": 1,
+  "status": "PASS_TRANSACTION_READ_COMPONENT_ONLY",
+  "created_at": "2026-10-17T05:14:46.949378+00:00",
+  "test_id": "m6-authz-txn-probe-dc9a23cb7a89",
+  "database": "pgvn_m6_net_dc9a23cb7a89",
+  "build_manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "git_worktree_dirty": true,
+  "registered_source_count": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "candidate_sha256": "62498787dc1b6ac8437536fc44f1fbce53f7082f2f40bf58b4dfd9df38976b7c",
+  "candidate_build_report_sha256": "072879bf8eb4f6d2f91375a0e6db4c019f157cb2b10bec3350407affabac8774",
+  "probe_source_sha256": "08f008ad79385c36efb23b214edc6d6b5c353d901fdbf1b6ee35e83c64fb6717",
+  "plan_sha256": "d75b3bc66036be02edc6d08e05b3e2406784f8f8655191cc37e70132df432188",
+  "raw_report_sha256": "22fd45458bc202eae566845e7edc398e0d437c976d3b9644e6abc0f755a18963",
+  "audit_sha256": "4e74af280397f6f0e443e5a9ecb02ab9830b6b05247263948d64706bdb4d00c8",
+  "freeze": {
+    "status": "FROZEN_SUPPLEMENTARY_TRANSACTION_PROBE",
+    "path": "runtime/pgvn/baselines/m6-svnauthz-transaction-dc9a23cb7a89",
+    "files": 195,
+    "index_sha256": "f418eede583b4700d5244bb0f2b2af24888eae9ffcd82987d2c8f846ed39cc22",
+    "raw_report_sha256": "22fd45458bc202eae566845e7edc398e0d437c976d3b9644e6abc0f755a18963",
+    "audit_sha256": "4e74af280397f6f0e443e5a9ecb02ab9830b6b05247263948d64706bdb4d00c8",
+    "excluded_private_key_files": [
+      "credentials.key"
+    ],
+    "test_id": "m6-authz-txn-probe-dc9a23cb7a89"
+  },
+  "protocol": "svn",
+  "rounds": [
+    {
+      "backend": "fsfs",
+      "url": "svn://127.0.0.1:53641/authz-probe",
+      "phases": [
+        {
+          "name": "valid-user",
+          "revision": 1,
+          "transaction_id": "0-0",
+          "authz_sha256": "1f4ea47da435bf38110691c87b870737389babc071903efa84de1f8356ad366b",
+          "exit_codes": [
+            0,
+            0,
+            0,
+            3,
+            2
+          ],
+          "access_stdout": "rw",
+          "committed_file_bytes_match": true
+        },
+        {
+          "name": "invalid-syntax",
+          "revision": 2,
+          "transaction_id": "1-1",
+          "authz_sha256": "c718e40d602e834d01d9efa6c9f202b96928804b1253b23df310248b57630091",
+          "exit_codes": [
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "access_stdout": "",
+          "committed_file_bytes_match": true
+        },
+        {
+          "name": "valid-inline-group",
+          "revision": 3,
+          "transaction_id": "2-2",
+          "authz_sha256": "0dd6ed1c2da860590a7ea3c6220082e45030a6d9f123ad4b0e24bee05a6cf27a",
+          "exit_codes": [
+            0,
+            0,
+            0,
+            3,
+            2
+          ],
+          "access_stdout": "rw",
+          "committed_file_bytes_match": true
+        }
+      ],
+      "captures_sha256": "f5c4645f575968d4dc3bb7960204a3c8404302a9423f5d71ee2e6cfc067124d8"
+    },
+    {
+      "backend": "pgvn",
+      "url": "svn://127.0.0.1:56817/authz-probe",
+      "phases": [
+        {
+          "name": "valid-user",
+          "revision": 1,
+          "transaction_id": "185118d5-3cb0-c644-929f-61738a5bf7f1",
+          "authz_sha256": "1f4ea47da435bf38110691c87b870737389babc071903efa84de1f8356ad366b",
+          "exit_codes": [
+            0,
+            0,
+            0,
+            3,
+            2
+          ],
+          "access_stdout": "rw",
+          "committed_file_bytes_match": true
+        },
+        {
+          "name": "invalid-syntax",
+          "revision": 2,
+          "transaction_id": "fa734605-7087-3141-ba40-6f3377c1b800",
+          "authz_sha256": "c718e40d602e834d01d9efa6c9f202b96928804b1253b23df310248b57630091",
+          "exit_codes": [
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "access_stdout": "",
+          "committed_file_bytes_match": true
+        },
+        {
+          "name": "valid-inline-group",
+          "revision": 3,
+          "transaction_id": "93366d07-61cd-784a-93b8-878052608f70",
+          "authz_sha256": "0dd6ed1c2da860590a7ea3c6220082e45030a6d9f123ad4b0e24bee05a6cf27a",
+          "exit_codes": [
+            0,
+            0,
+            0,
+            3,
+            2
+          ],
+          "access_stdout": "rw",
+          "committed_file_bytes_match": true
+        }
+      ],
+      "captures_sha256": "329a31b20017de0f82fa4c3a41c93b1c2a2c567292483a459a2dd1c4b131079c",
+      "native_repository_id": "1e25c729-1941-074a-a92a-c0b90048c53d",
+      "native_open_count": 15,
+      "native_ledger_sha256": "aacf6600604c7a50be2ad7c776003cda3d1e308f40502c7eebd5c4e1c48e052c",
+      "repository_aliases_materialized": 0
+    }
+  ],
+  "svnauthz_cli_processes": 30,
+  "parent_cli_processes": 30,
+  "original_upstream_python_functions_executed": 0,
+  "all_stdout_stderr_bytes_identical_without_normalization": true,
+  "output_pairs": [
+    {
+      "phase": 1,
+      "command": 1,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 1,
+      "command": 2,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 1,
+      "command": 3,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 1,
+      "command": 4,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 1,
+      "command": 5,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 2,
+      "command": 1,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 2,
+      "command": 2,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 2,
+      "command": 3,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 2,
+      "command": 4,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 2,
+      "command": 5,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 3,
+      "command": 1,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 3,
+      "command": 2,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 3,
+      "command": 3,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 3,
+      "command": 4,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    },
+    {
+      "phase": 3,
+      "command": 5,
+      "exit_codes_identical": true,
+      "stdout_identical": true,
+      "stderr_identical": true
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 42232,
+      "exit_code": 1,
+      "job_active_processes": 0
+    },
+    {
+      "pid": 60792,
+      "exit_code": 1,
+      "job_active_processes": 0
+    }
+  ],
+  "controls": {
+    "checked_at": "2026-10-17T05:13:05.202010+00:00",
+    "owner_superuser": "f",
+    "monitor_tokens": 0,
+    "database_client_backends": 0
+  },
+  "audit_initial_failure": {
+    "status": "FAIL_AUDIT_ASSUMPTION",
+    "source_sha256": "9966e0172b4906095716753d2be3438341a0dbef6015c793c071a0be7c666546",
+    "raw_probe_report_unchanged": true,
+    "failing_assertion": "assert err == b''",
+    "reason": "The stock --is r permission mismatch (exit 3) writes its documented diagnostic to stderr; raw stderr is identical on both backends.",
+    "protocol_probe_not_rerun": true
+  },
+  "elapsed_seconds": 16.14000000001397,
+  "monitor_tokens_created": 0,
+  "temporary_windows_services_created": 0,
+  "generated_private_keys_exported": false,
+  "formal_tool_bindings_applied": false,
+  "new_browser_m5_or_package_acceptance_claimed": false,
+  "pgvn_601_complete": false,
+  "pgvn_602_complete": false,
+  "milestone_m6_complete": false,
+  "milestone_m7_complete": false,
+  "scope": "Supplementary five-command pre-commit reads of three pending contents per backend over SVN only; no original-suite, HTTP/HTTPS, legacy transaction or full protocol acceptance."
+}
