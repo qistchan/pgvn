@@ -7,6 +7,7 @@
 A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, centralized repository administration and an embedded monitoring console.
 
 [![Status: first usable preview](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#project-status)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
 [![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#quick-start)
 [![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#prerequisites)
 [![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#prerequisites)
@@ -613,3 +614,7 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
 | [Next iteration plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | Planned Linux support, Windows/Linux version parity, native SVN authorization bypass and measured performance optimization |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |
+
+## License
+
+Original PgVN source code and documentation are licensed under the [Apache License, Version 2.0](LICENSE) (`Apache-2.0`). See [NOTICE](NOTICE) for attribution information. Third-party components retain their own licenses; runtime packages preserve their license texts in `licenses/`, including the Phosphor Icons MIT notice also embedded in the monitoring HTML.

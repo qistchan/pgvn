@@ -1,0 +1,17 @@
+PgVN
+Copyright 2026 PgVN contributors
+
+Original PgVN source code and documentation are licensed under the Apache
+License, Version 2.0. See the accompanying LICENSE file.
+
+This product includes software developed by The Apache Software Foundation
+(https://www.apache.org/), including Subversion, Apache HTTP Server, APR and
+APR-util. Their upstream license and attribution notices are preserved in
+the licenses directory of runtime distributions.
+
+The monitoring interface uses Phosphor Icons, licensed under the MIT License.
+Its copyright and license notice are preserved in the monitoring HTML and
+included in runtime distributions.
+
+Third-party components and dependencies retain their respective licenses
+and attribution notices.

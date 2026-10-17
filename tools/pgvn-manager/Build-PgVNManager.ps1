@@ -4,6 +4,8 @@
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
+$projectRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+foreach ($file in @('LICENSE','NOTICE')) { if (-not (Test-Path -LiteralPath (Join-Path $projectRoot $file) -PathType Leaf)) { throw ('缺少项目许可文件：' + $file) } }
 if (-not $OutputDirectory) { $OutputDirectory=Join-Path $PSScriptRoot '../../runtime/pgvn-manager' }
 $OutputDirectory=[IO.Path]::GetFullPath($OutputDirectory)
 $framework=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319'
@@ -25,10 +27,12 @@ foreach ($file in @('Invoke-PgVNManager.ps1','README.zh-CN.md')) {
     $fileEncoding=New-Object Text.UTF8Encoding($file.EndsWith('.ps1'))
     [IO.File]::WriteAllText((Join-Path $OutputDirectory $file),$text,$fileEncoding)
 }
+foreach ($file in @('LICENSE','NOTICE')) { Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $OutputDirectory $file) -Force }
 $inputs=[ordered]@{}
 foreach ($file in @('App.cs','BackendClient.cs','MainWindow.xaml','App.config','app.manifest','PgVN.Manager.csproj','Invoke-PgVNManager.ps1','Build-PgVNManager.ps1','README.zh-CN.md')) { $inputs[$file]=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
+foreach ($file in @('LICENSE','NOTICE')) { $inputs['../../' + $file]=(Get-FileHash -LiteralPath (Join-Path $projectRoot $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
 $files=[ordered]@{}
-foreach ($file in @('PgVNManager.exe','PgVNManager.exe.config','Invoke-PgVNManager.ps1','README.zh-CN.md')) { $files[$file]=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
+foreach ($file in @('PgVNManager.exe','PgVNManager.exe.config','Invoke-PgVNManager.ps1','README.zh-CN.md','LICENSE','NOTICE')) { $files[$file]=(Get-FileHash -LiteralPath (Join-Path $OutputDirectory $file) -Algorithm SHA256).Hash.ToLowerInvariant() }
 $manifest=[ordered]@{format=1;product='PgVN Manager';version='0.1.0-internal';platform='windows-x64';framework='.NET Framework 4.8';created_utc=[DateTime]::UtcNow.ToString('o');compiler=(Get-Item -LiteralPath $compiler).VersionInfo.FileVersion;sources=$inputs;files=$files}
 $encoding=New-Object Text.UTF8Encoding($false)
 [IO.File]::WriteAllText((Join-Path $OutputDirectory 'manager-manifest.json'),($manifest | ConvertTo-Json -Depth 6),$encoding)

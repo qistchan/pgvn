@@ -7,6 +7,7 @@
 以 PostgreSQL 为存储后端的 Windows Subversion 服务端，提供原生 SVN/DAV 接入、集中式仓库管理和内置监控网页。
 
 [![状态：首个可用预览版本](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#项目状态)
+[![许可：Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
 [![平台：Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#快速部署)
 [![Subversion：1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#环境要求)
 [![PostgreSQL：18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#环境要求)
@@ -613,3 +614,7 @@ docs/pgvn/            架构、指南和验证证据
 | [进展与验证](docs/pgvn/progress.zh-CN.md) | 已验收构建、结果与待办 |
 | [下一阶段计划](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | 规划中的 Linux 支持、双平台版本同步、原生 SVN 权限 bypass 与性能优化 |
 | [实施计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | 里程碑及验收要求 |
+
+## 开源协议
+
+PgVN 原创源代码和文档采用 [Apache License 2.0](LICENSE)（`Apache-2.0`），署名信息见 [NOTICE](NOTICE)。第三方组件继续遵循各自许可证；运行包在 `licenses/` 保留其许可原文，包括监控 HTML 中同时内嵌的 Phosphor Icons MIT 声明。

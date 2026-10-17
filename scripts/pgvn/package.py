@@ -105,6 +105,7 @@ def main():
     apache_source=Path(manifest['inputs']['apache'])
     apr=Path(manifest['inputs']['apr_include']).parent
     apu=Path(manifest['inputs']['apu_include']).parent
+    project_notices={name:root/name for name in ('LICENSE','NOTICE')}
     licenses={'Subversion-LICENSE.txt':svn_source/'LICENSE.txt','Subversion-NOTICE.txt':svn_source/'NOTICE.txt',
         'Apache-LICENSE.txt':apache_source/'LICENSE.txt','Apache-NOTICE.txt':apache_source/'NOTICE.txt',
         'APR-LICENSE.txt':apr/'LICENSE','APR-NOTICE.txt':apr/'NOTICE',
@@ -114,8 +115,8 @@ def main():
     host_source=Path(manifest['inputs']['apache_source'])
     licenses['Apache-host-source-LICENSE.txt']=host_source/'LICENSE'
     licenses['Apache-host-source-NOTICE.txt']=host_source/'NOTICE'
-    for path in licenses.values():
-        if not path.is_file():raise RuntimeError('Missing vendor license input: '+str(path))
+    for path in (*project_notices.values(),*licenses.values()):
+        if not path.is_file():raise RuntimeError('Missing distribution license input: '+str(path))
     documentation=sorted((root/'docs/pgvn').glob('*.md'))
     support=[]
     for pattern in ('docs/plans/*.md','config/*example*','sql/*.sql','sql/pgvn/*.sql',
@@ -124,6 +125,7 @@ def main():
     input_identity={'build_manifest':digest(manifest_path),'packager':digest(Path(__file__)),
         'pe_reader':digest(Path(__file__).with_name('pe_dependencies.py')),
         'templates':{n:digest(templates/n) for n in required},
+        'project_notices':{n:digest(p) for n,p in project_notices.items()},
         'licenses':{n:digest(p) for n,p in licenses.items()},
         'documentation':{p.name:digest(p) for p in documentation},
         'support_files':{p.relative_to(root).as_posix():digest(p) for p in support},
@@ -162,6 +164,7 @@ def main():
             text=(templates/name).read_text(encoding='utf-8').replace('(../../docs/pgvn/','(docs/pgvn/')
             put(relative,text.encode('utf-8'),templates/name)
         else:copy(relative,templates/name,bom=name.endswith('.ps1'))
+    for name,path in project_notices.items():copy(name,path)
     for name,path in licenses.items():copy('licenses/'+name,path)
     html=(root/'web/pgvn-monitor/index.html').read_text(encoding='utf-8')
     start=html.index('MIT License');end=html.index('-->',start)
@@ -188,6 +191,7 @@ def main():
     for path in sorted((root/'web/pgvn-monitor').iterdir()):
         if path.is_file():copy('embedded-web-reference/'+path.name,path)
     put('THIRD_PARTY_NOTICES.zh-CN.txt',(
+        'PgVN 原创内容采用 Apache License 2.0，原文和署名见根目录 LICENSE 与 NOTICE；第三方许可各自保留。\n'
         '依赖来自本次固定 SDK 分发，逐文件来源和摘要见 package-manifest.json。\n'
         'Subversion、Apache、APR/APR-util、PostgreSQL 及其运行依赖的随附许可证保存在 licenses。\n'
         'Phosphor 图标 MIT 声明同时内嵌于监控 HTML。VC 运行库为固定供应商分发中的应用本地依赖。\n'
