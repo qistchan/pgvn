@@ -4,6 +4,7 @@
 #include "pgfs_native.h"
 #include "dav_state.h"
 
+#ifdef _WIN32
 static wchar_t *wide(const char *text,apr_pool_t *pool)
 {
     int size=MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,text,-1,NULL,0);
@@ -105,6 +106,22 @@ cleanup:
     if(win_error) error=svn_error_compose_create(error,svn_error_wrap_apr(win_error,"Unable to execute freeze child"));
     return error;
 }
+
+#else
+#include "../platform/process.h"
+static svn_error_t *freeze_child(void *baton,apr_pool_t *pool)
+{
+    admin_command *command=baton; apr_int64_t seconds=300;
+    if(command->values[OPT_TIMEOUT]) SVN_ERR(admin_number(&seconds,command->values[OPT_TIMEOUT],1,86400));
+    const char **args=apr_pcalloc(pool,(size_t)(command->child_argc+4)*sizeof(*args));
+    args[0]="pgvn-hook-runner"; args[1]="--command"; args[2]=apr_psprintf(pool,"%" APR_INT64_T_FMT,seconds);
+    for(int i=0;i<command->child_argc;++i) args[i+3]=command->child_argv[i];
+    pgvn_process_result result;
+    SVN_ERR(pgvn_process_run(&result,command->context->hook_runner,args,NULL,NULL,0,command->context->cancellation_event,pool));
+    if(result.cancelled || result.exit_code==124) return svn_error_create(SVN_ERR_CANCELLED,NULL,"Freeze child cancelled or exceeded its timeout");
+    return result.exit_code ? svn_error_createf(SVN_ERR_EXTERNAL_PROGRAM,NULL,"Freeze child exited with code %d",result.exit_code) : SVN_NO_ERROR;
+}
+#endif
 
 svn_error_t *admin_maintenance(admin_command *command)
 {

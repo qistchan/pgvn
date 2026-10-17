@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "name": "httpd",
+  "version": "2.4.68",
+  "commit": "736bb657405eb73fd68a64772c3a908807bdb887",
+  "url": "https://codeload.github.com/apache/httpd/tar.gz/736bb657405eb73fd68a64772c3a908807bdb887",
+  "archive": "httpd.tar.gz",
+  "sha256": "f49a0320c1172b42f69917b5fae0bfc4efb2ee51e53adc01bcfcf7aa2cc4842c"
+}

@@ -1,10 +1,13 @@
 #ifndef PGVN_MONITOR_DATA_H
 #define PGVN_MONITOR_DATA_H
+#include <stdint.h>
+#ifdef _WIN32
 #include <winsock2.h>
 #include <windows.h>
+#endif
 #include "pgvn.h"
 typedef struct pgvn_monitor_data pgvn_monitor_data;
-DWORD pgvn_monitor_data_start(pgvn_monitor_data **data,const char *configuration);
+uint32_t pgvn_monitor_data_start(pgvn_monitor_data **data,const char *configuration);
 void pgvn_monitor_data_stop(pgvn_monitor_data *data);
 void pgvn_monitor_business(pgvn_monitor_data *data,int ready);
 void pgvn_monitor_tick(pgvn_monitor_data *data);

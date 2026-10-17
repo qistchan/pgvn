@@ -158,7 +158,7 @@ class MetadataTests(unittest.TestCase):
         windows, linux = self.identity("windows"), self.identity("linux")
         changes = {"version": "0.2.0-dev", "git_commit": "1" * 40, "source_manifest_sha256": "1" * 64,
                    "migrations_sha256": "1" * 64, "schemas": {**linux["schemas"], "catalog": linux["schemas"]["catalog"]+1},
-                   "api_version": 2, "cache_format_version": 1,
+                   "api_version": 2, "cache_format_version": linux["cache_format_version"]+1,
                    "upstream": {**linux["upstream"], "subversion": "1.14.6"},
                    "capabilities": {**linux["capabilities"], "svn_authz_bypass": not linux["capabilities"]["svn_authz_bypass"]},
                    "configuration": "Debug", "git_worktree_dirty": True,
@@ -243,11 +243,11 @@ class MetadataTests(unittest.TestCase):
             self.assertFalse(output["products_built"])
             self.assertEqual(output["build_identity"]["target_os"], target)
 
-    def test_unimplemented_linux_build_fails_explicitly(self):
+    def test_linux_build_requires_all_verified_sdks(self):
         result = subprocess.run([sys.executable, str(ROOT / "scripts/pgvn/build.py"), "--target", "linux"],
                                 capture_output=True, text=True, timeout=20)
         self.assertEqual(result.returncode, 2)
-        self.assertIn("Complete native Linux hosts are not implemented", result.stderr)
+        self.assertIn("--linux-sdk, --linux-httpd-sdk and --linux-tools-sdk are required", result.stderr)
 
     @unittest.skipUnless(sys.platform.startswith("linux") and shutil.which("cc"), "Linux host C compiler required")
     def test_production_formatter_roundtrip_and_buffer_bounds(self):

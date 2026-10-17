@@ -3,13 +3,14 @@
 static PGresult *pgfs_receipt_query(pgfs_data_t *data,PGconn *connection,const char *sql,
                                   int count,const char *const *values)
 {
-    apr_time_t started=apr_time_now();
+    apr_time_t started=pgfs_pq_clock();
     if(data->observer.query_started) data->observer.query_started(data->observer.baton);
-    PGresult *result=PQexecParams(connection,sql,count,NULL,values,NULL,NULL,0);
+    PGresult *result=pgfs_pq_exchange(connection,sql,count,NULL,values,NULL,NULL,0,6000,
+        data->observer.cancelled,data->observer.baton,0);
     if(data->observer.query) {
         const char *state=result ? PQresultErrorField(result,PG_DIAG_SQLSTATE) : NULL;
         svn_boolean_t ok=result && (PQresultStatus(result)==PGRES_COMMAND_OK || PQresultStatus(result)==PGRES_TUPLES_OK);
-        data->observer.query(data->observer.baton,ok ? "00000" : state ? state : "08006",apr_time_now()-started);
+        data->observer.query(data->observer.baton,ok ? "00000" : state ? state : "08006",pgfs_pq_clock()-started);
     }
     return result;
 }
@@ -22,6 +23,9 @@ static svn_boolean_t pgfs_resolve_commit_receipt(svn_revnum_t *revision,svn_fs_t
     }
     const char *keywords[]={"dbname","connect_timeout",NULL};
     const char *values[]={data->connection_string,"5",NULL};
+    if(data->observer.cancelled && data->observer.cancelled(data->observer.baton)) {
+        apr_thread_mutex_unlock(data->mutex); return FALSE;
+    }
     PGconn *probe=PQconnectdbParams(keywords,values,1);
     svn_boolean_t committed=FALSE;
     if(PQstatus(probe)==CONNECTION_OK) {

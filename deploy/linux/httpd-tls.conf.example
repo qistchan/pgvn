@@ -1,0 +1,12 @@
+# Append to httpd.conf after installing a certificate with the correct SAN.
+LoadModule ssl_module "${PGVN_HOME}/apache/modules/mod_ssl.so"
+LoadModule socache_shmcb_module "${PGVN_HOME}/apache/modules/mod_socache_shmcb.so"
+Listen 127.0.0.1:8443
+SSLSessionCache shmcb:/run/pgvnhttpd/ssl-cache(512000)
+<VirtualHost 127.0.0.1:8443>
+    ServerName localhost
+    SSLEngine on
+    SSLProtocol -all +TLSv1.2 +TLSv1.3
+    SSLCertificateFile /etc/pgvn/tls/server.pem
+    SSLCertificateKeyFile /etc/pgvn/tls/server.key
+</VirtualHost>

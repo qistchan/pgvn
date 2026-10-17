@@ -17,7 +17,7 @@ from build_metadata import collect, sha256, write_metadata, check_runtime
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def build_component(sdk, configuration, component="fs", content_transfer="binary", sanitize=False):
+def build_component(sdk, configuration, component="fs", content_transfer="binary", sanitize=False, directory_batch=True):
     if platform.system() != "Linux" or platform.machine() != "x86_64":
         raise ValueError("Native component builds require x86_64 Linux")
     sdk = Path(sdk).resolve(strict=True)
@@ -33,6 +33,8 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         if not path.is_relative_to(sdk) or sha256(path) != expected:
             raise ValueError("SDK file mismatch: " + name)
     suffix = content_transfer if component == "fs" else component
+    if component == "fs" and not directory_batch:
+        suffix += "-per-node"
     if sanitize:
         suffix += "-sanitized"
     work = ROOT / "build/pgvn/linux" / (configuration.lower() + "-" + suffix)
@@ -92,6 +94,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
     if sanitize:
         flags += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
     flags += ["-DPGFS_CONTENT_BINARY=" + ("1" if content_transfer == "binary" else "0")]
+    flags += ["-DPGFS_DIRECTORY_BATCH=" + ("1" if directory_batch else "0")]
     for path in includes:
         flags += ["-I", path]
     libraries = ["-L" + str(work / "lib"), "-L" + str(sdk / "lib"),
@@ -163,6 +166,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
               "fs_loader_header_sha256": sha256(svn / "libsvn_fs/fs-loader.h"),
               "component": component, "sanitizers": ["address", "undefined"] if sanitize else [],
               "content_transfer": content_transfer if component == "fs" else None,
+              "directory_batch": directory_batch if component == "fs" else None,
               "runtime": runtime, "dependencies": paths,
               "system_dependencies": {name: {"path": path, "sha256": sha256(Path(path))}
                                       for name, path in paths.items() if not Path(path).resolve().is_relative_to(work)},

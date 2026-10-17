@@ -12,10 +12,10 @@
 #include "logger.h"
 #include "telemetry.h"
 
-#define PGVN_SVN_MAX_CONNECTIONS MAXIMUM_WAIT_OBJECTS
+#define PGVN_SVN_MAX_CONNECTIONS 64
 typedef struct pgvn_client_slot {
     struct pgvn_listener *owner;
-    HANDLE thread;
+    pgvn_thread thread;
     apr_socket_t *socket;
     apr_pool_t *pool;
 } pgvn_client_slot;
@@ -23,16 +23,16 @@ typedef struct pgvn_client_slot {
 struct pgvn_listener {
     pgvn_context *context;
     apr_socket_t *socket;
-    HANDLE thread;
-    HANDLE stop;
-    HANDLE io_cancel;
-    CRITICAL_SECTION mutex;
+    pgvn_thread thread;
+    pgvn_cancel_event stop;
+    pgvn_cancel_event io_cancel;
+    pgvn_rwlock mutex;
     unsigned connection_limit;
     pgvn_client_slot clients[PGVN_SVN_MAX_CONNECTIONS];
     serve_params_t parameters;
 };
 
-static DWORD WINAPI client_main(void *baton)
+static PGVN_THREAD_PROC client_main(void *baton)
 {
     pgvn_client_slot *slot=baton;
     pgvn_listener *listener=slot->owner;
@@ -45,24 +45,24 @@ static DWORD WINAPI client_main(void *baton)
         fprintf(stderr,"PgVN SVN session ended (code %ld)\n",(long)error->apr_err);
         svn_error_clear(error);
     }
-    EnterCriticalSection(&listener->mutex);
+    pgvn_write_lock(&listener->mutex);
     slot->socket=NULL;
-    LeaveCriticalSection(&listener->mutex);
+    pgvn_write_unlock(&listener->mutex);
     svn_pool_destroy(pool);
     pgvn_telemetry_session(-1);
     return 0;
 }
 
-static DWORD WINAPI accept_main(void *baton)
+static PGVN_THREAD_PROC accept_main(void *baton)
 {
     pgvn_listener *listener=baton;
     apr_pollfd_t descriptor={0};
     descriptor.desc_type=APR_POLL_SOCKET; descriptor.desc.s=listener->socket; descriptor.reqevents=APR_POLLIN;
-    while(WaitForSingleObject(listener->stop,0)==WAIT_TIMEOUT) {
+    while(!pgvn_wait_stop(listener->stop,0)) {
         apr_int32_t ready=0;
         apr_status_t status=apr_poll(&descriptor,1,&ready,APR_USEC_PER_SEC);
         if(APR_STATUS_IS_TIMEUP(status) || APR_STATUS_IS_EINTR(status)) continue;
-        if(status || !(descriptor.rtnevents&APR_POLLIN)) { SetEvent(listener->stop); break; }
+        if(status || !(descriptor.rtnevents&APR_POLLIN)) { pgvn_cancel_signal(listener->stop); break; }
         apr_pool_t *pool=svn_pool_create(NULL);
         apr_socket_t *socket=NULL;
         status=apr_socket_accept(&socket,listener->socket,pool);
@@ -70,37 +70,36 @@ static DWORD WINAPI accept_main(void *baton)
             svn_pool_destroy(pool);
             if(APR_STATUS_IS_TIMEUP(status) || APR_STATUS_IS_EAGAIN(status) || APR_STATUS_IS_EINTR(status)
                 || APR_STATUS_IS_ECONNABORTED(status) || APR_STATUS_IS_ECONNRESET(status)) continue;
-            SetEvent(listener->stop); break;
+            pgvn_cancel_signal(listener->stop); break;
         }
         /* Client callbacks retain nonblocking I/O and implement their own
          * bounded waits, including cancellation after the drain deadline. */
         status=apr_socket_timeout_set(socket,0);
         if(status) { svn_pool_destroy(pool); continue; }
         apr_socket_opt_set(socket,APR_SO_KEEPALIVE,1);
-        EnterCriticalSection(&listener->mutex);
+        pgvn_write_lock(&listener->mutex);
         pgvn_client_slot *available=NULL;
         for(unsigned i=0;i<listener->connection_limit;++i) {
             pgvn_client_slot *slot=&listener->clients[i];
-            if(slot->thread && WaitForSingleObject(slot->thread,0)==WAIT_OBJECT_0) {
-                CloseHandle(slot->thread); slot->thread=NULL;
+            if(slot->thread && pgvn_thread_wait(slot->thread,0)) {
+                pgvn_thread_close(slot->thread); slot->thread=NULL;
             }
             if(!slot->thread && !available) available=slot;
         }
-        if(available && WaitForSingleObject(listener->stop,0)==WAIT_TIMEOUT) {
+        if(available && !pgvn_wait_stop(listener->stop,0)) {
             available->owner=listener; available->socket=socket; available->pool=pool;
             pgvn_telemetry_session(1);
-            available->thread=CreateThread(NULL,0,client_main,available,0,NULL);
+            available->thread=pgvn_thread_create(client_main,available);
             if(available->thread) pool=NULL;
             else { available->socket=NULL; pgvn_telemetry_session(-1); }
         }
-        LeaveCriticalSection(&listener->mutex);
+        pgvn_write_unlock(&listener->mutex);
         if(pool) { pgvn_telemetry_session(0); svn_pool_destroy(pool); }
     }
     return 0;
 }
 
-/* Keep the configured limit within one Win32 wait set so a full listener
- * can still drain every worker without forced thread termination. */
+/* Bound worker resources and drain every worker without forced termination. */
 static svn_error_t *connection_limit(unsigned *output,svn_config_t *config)
 {
     const char *text; svn_config_get(config,&text,"pgvn","max-connections","64");
@@ -131,7 +130,7 @@ static svn_error_t *byte_limit(apr_uint64_t *output,svn_config_t *config,const c
     *output=value; return SVN_NO_ERROR;
 }
 
-svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuration,HANDLE stop_event,apr_pool_t *pool)
+svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuration,pgvn_cancel_event stop_event,apr_pool_t *pool)
 {
     *output=NULL;
     pgvn_listener *listener=apr_pcalloc(pool,sizeof(*listener));
@@ -163,6 +162,7 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     listener->context->minimum_catalog_version=PGVN_CATALOG_VERSION;
     svn_config_get(config,&listener->context->hook_root,"pgvn","hook-root",NULL);
     SVN_ERR(pgvn_hooks_configure(listener->context,config,pool));
+    SVN_ERR(pgvn_cache_configure(listener->context,config,pool));
     SVN_ERR(svn_dirent_get_absolute(&listener->context->configuration_path,configuration,pool));
     listener->context->cancellation_event=stop_event;
     SVN_ERR(pgvn_keyring_load(&listener->parameters.pgvn_key,key_path,previous_key_path,pool));
@@ -176,18 +176,24 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
     apr_sockaddr_t *address;
     apr_status_t status=apr_sockaddr_info_get(&address,host,APR_UNSPEC,(apr_port_t)port,0,pool);
     if(!status) status=apr_socket_create(&listener->socket,address->family,SOCK_STREAM,APR_PROTO_TCP,pool);
-    if(!status) status=apr_socket_opt_set(listener->socket,APR_SO_REUSEADDR,0);
+#ifdef _WIN32
+    const int reuse=0;
+#else
+    const int reuse=1;
+#endif
+    if(!status) status=apr_socket_opt_set(listener->socket,APR_SO_REUSEADDR,reuse);
     /* SO_RCVTIMEO does not bound Win32 accept(). Poll a nonblocking listener. */
     if(!status) status=apr_socket_timeout_set(listener->socket,0);
     if(!status) status=apr_socket_bind(listener->socket,address);
     if(!status) status=apr_socket_listen(listener->socket,PGVN_SVN_MAX_CONNECTIONS);
     if(status) return svn_error_wrap_apr(status,"PgVN SVN listener could not bind");
-    listener->io_cancel=CreateEventW(NULL,TRUE,FALSE,NULL);
+    listener->io_cancel=pgvn_event_create();
     if(!listener->io_cancel) return svn_error_create(SVN_ERR_IO_WRITE_ERROR,NULL,"PgVN I/O cancellation event creation failed");
+    listener->context->query_cancellation_event=listener->io_cancel;
     pgvn_svn_set_io_cancel(listener->io_cancel);
-    InitializeCriticalSection(&listener->mutex);
-    listener->thread=CreateThread(NULL,0,accept_main,listener,0,NULL);
-    if(!listener->thread) { DeleteCriticalSection(&listener->mutex); pgvn_svn_set_io_cancel(NULL); CloseHandle(listener->io_cancel);
+    pgvn_rwlock_init(&listener->mutex);
+    listener->thread=pgvn_thread_create(accept_main,listener);
+    if(!listener->thread) { pgvn_rwlock_destroy(&listener->mutex); pgvn_svn_set_io_cancel(NULL); pgvn_event_close(listener->io_cancel);
         return svn_error_create(SVN_ERR_IO_WRITE_ERROR,NULL,"PgVN listener thread creation failed"); }
     pgvn_telemetry_session_limit(listener->connection_limit);
     *output=listener; return SVN_NO_ERROR;
@@ -196,30 +202,29 @@ svn_error_t *pgvn_listener_start(pgvn_listener **output,const char *configuratio
 void pgvn_listener_stop(pgvn_listener *listener,void (*progress)(void))
 {
     if(!listener) return;
-    SetEvent(listener->stop);
-    while(WaitForSingleObject(listener->thread,1000)==WAIT_TIMEOUT) if(progress) progress();
-    CloseHandle(listener->thread);
+    pgvn_cancel_signal(listener->stop);
+    while(!pgvn_thread_wait(listener->thread,1000)) if(progress) progress();
+    pgvn_thread_close(listener->thread);
     apr_socket_close(listener->socket);
-    /* Stop accepting, allow ten seconds for active commands, then cancel I/O.
-     * No forced thread termination: SQL transactions retain normal cleanup. */
-    HANDLE threads[PGVN_SVN_MAX_CONNECTIONS]; DWORD count=0;
-    for(unsigned i=0;i<listener->connection_limit;++i) if(listener->clients[i].thread) threads[count++]=listener->clients[i].thread;
-    ULONGLONG deadline=GetTickCount64()+10000;
-    DWORD state=WAIT_OBJECT_0;
-    while(count && (state=WaitForMultipleObjects(count,threads,TRUE,1000))==WAIT_TIMEOUT) {
-        if(progress) progress();
-        if(GetTickCount64()>=deadline) break;
-    }
-    if(count && state==WAIT_TIMEOUT) {
-        SetEvent(listener->io_cancel);
-        EnterCriticalSection(&listener->mutex);
+    uint64_t deadline=pgvn_tick()+10000;
+    for(;;) {
+        int active=0;
         for(unsigned i=0;i<listener->connection_limit;++i)
-            if(listener->clients[i].socket) apr_socket_shutdown(listener->clients[i].socket,APR_SHUTDOWN_READWRITE);
-        LeaveCriticalSection(&listener->mutex);
-        while(WaitForMultipleObjects(count,threads,TRUE,1000)==WAIT_TIMEOUT) if(progress) progress();
+            if(listener->clients[i].thread && !pgvn_thread_wait(listener->clients[i].thread,0)) active=1;
+        if(!active || pgvn_tick()>=deadline) break;
+        if(progress) progress();
+        apr_sleep(50000);
     }
-    for(DWORD i=0;i<count;++i) CloseHandle(threads[i]);
+    pgvn_cancel_signal(listener->io_cancel);
+    pgvn_write_lock(&listener->mutex);
+    for(unsigned i=0;i<listener->connection_limit;++i)
+        if(listener->clients[i].socket) apr_socket_shutdown(listener->clients[i].socket,APR_SHUTDOWN_READWRITE);
+    pgvn_write_unlock(&listener->mutex);
+    for(unsigned i=0;i<listener->connection_limit;++i) if(listener->clients[i].thread) {
+        while(!pgvn_thread_wait(listener->clients[i].thread,1000)) if(progress) progress();
+        pgvn_thread_close(listener->clients[i].thread);
+    }
     pgvn_telemetry_session_limit(0);
-    pgvn_svn_set_io_cancel(NULL); CloseHandle(listener->io_cancel);
-    DeleteCriticalSection(&listener->mutex);
+    pgvn_svn_set_io_cancel(NULL); pgvn_event_close(listener->io_cancel);
+    pgvn_rwlock_destroy(&listener->mutex);
 }

@@ -61,11 +61,15 @@ static svn_boolean_t mapping(const char *name,const char *value,void *baton,apr_
 
 svn_error_t *pgvn_hooks_configure(pgvn_context *context,svn_config_t *config,apr_pool_t *pool)
 {
+    const char *runner=NULL;
+    if(config) svn_config_get(config,&runner,"pgvn","hook-runner",NULL);
+    if(runner && !svn_dirent_is_absolute(runner)) return invalid("PgVN hook-runner must be absolute");
     mapping_baton state={apr_hash_make(pool),pool,TRUE,0};
     if(config) svn_config_enumerate2(config,"pgvn-hooks",mapping,&state,pool);
     if(!state.valid) return invalid("Invalid PgVN node hook mapping");
     /* Publish only a complete, validated snapshot. */
     context->hook_implementations=state.mappings;
+    context->hook_runner=runner ? apr_pstrdup(pool,runner) : NULL;
     return SVN_NO_ERROR;
 }
 

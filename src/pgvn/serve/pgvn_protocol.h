@@ -2,6 +2,7 @@
 #define PGVN_PROTOCOL_H
 #include "server.h"
 #include "credentials.h"
+#include "../platform/credentials.h"
 #include "telemetry.h"
 
 svn_error_t *pgvn_svn_find(repository_t *repository,const char *url,svn_boolean_t read_only,

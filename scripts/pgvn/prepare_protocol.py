@@ -101,13 +101,13 @@ def prepare_protocol(source, destination, specification):
             "  SVN_ERR(pgvn_svn_password(&password, repository, *user, pool));")
     replace("libsvn_ra_svn/cram.c", """  compute_digest(sdigest, challenge, password);
   if (memcmp(cdigest, sdigest, sizeof(sdigest)) != 0)""", """  compute_digest(sdigest, challenge, password);
-  SecureZeroMemory((void *)password, strlen(password));
+  pgvn_secure_zero((void *)password, strlen(password));
   unsigned char difference = 0;
   for (size_t i = 0; i < sizeof(sdigest); ++i) difference |= cdigest[i] ^ sdigest[i];
-  SecureZeroMemory(sdigest, sizeof(sdigest));
+  pgvn_secure_zero(sdigest, sizeof(sdigest));
   if (difference)""")
     replace("libsvn_ra_svn/cram.c", "  apr_md5_final(digest, &ctx);\n}",
-            "  apr_md5_final(digest, &ctx);\n  SecureZeroMemory(secret, sizeof(secret));\n  SecureZeroMemory(&ctx, sizeof(ctx));\n}")
+            "  apr_md5_final(digest, &ctx);\n  pgvn_secure_zero(secret, sizeof(secret));\n  pgvn_secure_zero(&ctx, sizeof(ctx));\n}")
     replace("libsvn_ra_svn/cram.c", '"Username not found"', '"Authentication failed"')
     replace("libsvn_ra_svn/cram.c", '"Password incorrect"', '"Authentication failed"')
     replace("libsvn_ra_svn/marshal.c", "return conn->block_handler ? 0 : -1;", "return conn->block_handler ? 0 : 30 * APR_USEC_PER_SEC;")

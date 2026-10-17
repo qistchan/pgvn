@@ -25,6 +25,8 @@ A PostgreSQL-backed Subversion server for Windows, offering native SVN/DAV acces
 > [!IMPORTANT]
 > **First usable preview for Windows.** On 2026-10-17, the project owner confirmed that their local Polarion instance is running successfully with PgVN; see the [local operation record](docs/pgvn/progress.zh-CN.md#first-usable-preview). Milestones M0–M5 have recorded local acceptance runs, while M6 compatibility, fault-injection, and performance validation remains in progress. Clean-machine installation, reboot recovery, cross-host failover, and full Polarion application acceptance remain pending. This preview release is intended for internal evaluation.
 
+Linux x86_64 development snapshots now include native SVN, Apache DAV, the monitor, CLI, supervised Hooks, packaging and offline recovery. See the [Linux build and deployment guide](docs/pgvn/linux.zh-CN.md). Container integration has passed; real-host systemd/reboot and same-version Windows acceptance remain separate gates.
+
 ## Start here
 
 | Your goal | Start with |

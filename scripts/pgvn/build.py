@@ -93,8 +93,11 @@ def main():
     parser.add_argument("--configuration", choices=("Debug", "Release"), default="Debug")
     parser.add_argument("--components", choices=("all", "fs", "credentials", "hook-config"), default="all")
     parser.add_argument("--linux-sdk", type=Path, help="verified SDK from prepare_linux_sdk.py")
+    parser.add_argument("--linux-httpd-sdk", type=Path, help="verified Apache SDK from prepare_linux_httpd.py")
+    parser.add_argument("--linux-tools-sdk", type=Path, help="verified PostgreSQL client tools from prepare_linux_tools.py")
     parser.add_argument("--fs-content-transfer", choices=("binary", "hex"), default="binary",
                         help="FS experiment control: binary bytea or legacy hex baseline")
+    parser.add_argument("--fs-directory-mode", choices=("batch", "per-node"), default="batch", help="FS experiment control for directory SQL")
     parser.add_argument("--sanitize", action="store_true", help="ASan/UBSan for Linux development components")
     args = parser.parse_args()
     if args.metadata_only:
@@ -106,7 +109,15 @@ def main():
         if args.linux_sdk is None:
             parser.error("--linux-sdk is required for native component builds")
         from build_linux import build_component
-        print(json.dumps(build_component(args.linux_sdk, args.configuration, args.components, args.fs_content_transfer, args.sanitize)))
+        print(json.dumps(build_component(args.linux_sdk, args.configuration, args.components, args.fs_content_transfer, args.sanitize, args.fs_directory_mode == "batch")))
+        return
+    if args.target == "linux" and args.components == "all":
+        if args.linux_sdk is None or args.linux_httpd_sdk is None or args.linux_tools_sdk is None:
+            parser.error("--linux-sdk, --linux-httpd-sdk and --linux-tools-sdk are required for complete Linux builds")
+        if args.fs_content_transfer != "binary" or args.fs_directory_mode != "batch":
+            parser.error("Experimental FS controls apply to --components fs only")
+        from build_linux_product import build_product
+        print(json.dumps(build_product(args.linux_sdk, args.linux_httpd_sdk, args.linux_tools_sdk, args.configuration, args.sanitize)))
         return
     if args.components != "all":
         parser.error("--components fs/credentials/hook-config currently applies to Linux only")
@@ -192,7 +203,7 @@ def main():
     compiler = tools / "clang.exe"
     utf8_resource=compile_resource(ROOT,BUILD,tools,run)
     objects = []
-    for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c", ROOT / "src/pgvn/platform/credentials_win.c"]:
+    for source in sorted((ROOT / "src/pgvn/core").glob("*.c")) + [ROOT / "src/libsvn_fs_pg/pgfs.c", ROOT / "src/pgvn/platform/credentials_win.c", ROOT / "src/pgvn/platform/runtime.c"]:
         output = BUILD / "objects" / ("core-" + source.stem + ".o")
         run([compiler, *options, "-DPGVN_STATIC", "-c", source, "-o", output])
         objects.append(output)
@@ -206,7 +217,7 @@ def main():
         static_core.unlink()
     run([tools / "llvm-ar.exe", "rcs", static_core, *objects])
     core_links = [static_core, *[libraries[name] for name in ("libsvn_fs-1.dll", "libsvn_fs_util-1.dll",
-        "libsvn_diff-1.dll", "libsvn_delta-1.dll", "libsvn_subr-1.dll", "libaprutil-1.dll", "libapr-1.dll")], pg / "lib/libpq.lib", "-lbcrypt", "-ladvapi32"]
+        "libsvn_diff-1.dll", "libsvn_delta-1.dll", "libsvn_subr-1.dll", "libaprutil-1.dll", "libapr-1.dll")], pg / "lib/libpq.lib", "-lbcrypt", "-ladvapi32", "-lws2_32", "-lpsapi"]
     products = [RUNTIME / "bin/pgvnserve.exe", RUNTIME / "bin/pgvnadmin.exe",
                 RUNTIME / "apache/modules/mod_dav_pgvn.so", RUNTIME / "apache/modules/mod_authz_pgvn.so"]
     protocol_objects = []
@@ -218,8 +229,8 @@ def main():
         run([compiler, *[o for o in options if o != "-Werror"], "-Wno-deprecated-declarations", "-Wno-missing-field-initializers",
              "-c", source, "-o", output])
         protocol_objects.append(output)
-    run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/serve").glob("*.c")),
-         *sorted((ROOT / "src/pgvn/monitor").glob("*.c")), BUILD / "generated/pgvn_web.c", *protocol_objects, *core_links, "-lhttpapi", "-lws2_32", "-lpsapi", "-ladvapi32",
+    run([compiler, *options, "-municode", *[p for p in sorted((ROOT / "src/pgvn/serve").glob("*.c")) if not p.stem.endswith("_posix")],
+         *[p for p in sorted((ROOT / "src/pgvn/monitor").glob("*.c")) if not p.stem.endswith("_posix")], BUILD / "generated/pgvn_web.c", *protocol_objects, *core_links, "-lhttpapi", "-lws2_32", "-lpsapi", "-ladvapi32",
          utf8_resource,"-Wl,--no-insert-timestamp", "-o", products[0]])
     run([compiler, *options, "-municode", *sorted((ROOT / "src/pgvn/admin").glob("*.c")), *core_links, "-lbcrypt",
          utf8_resource,"-Wl,--no-insert-timestamp", "-o", products[1]])
@@ -282,7 +293,7 @@ def main():
             shutil.copy2(item, legacy.RUNTIME / item.name)
     plugin_imports = [libraries[name] for name in ("libapr-1.dll", "libaprutil-1.dll", "libsvn_subr-1.dll", "libsvn_delta-1.dll")]
     run([compiler, *options, "-shared", ROOT / "src/libsvn_fs_pg/pgfs.c", *plugin_imports,
-         pg / "lib/libpq.lib", "-Wl,--no-insert-timestamp", "-o", legacy.RUNTIME / "libsvn_fs_pg-1.dll"])
+         pg / "lib/libpq.lib", "-lws2_32", "-Wl,--no-insert-timestamp", "-o", legacy.RUNTIME / "libsvn_fs_pg-1.dll"])
     legacy.build_dynamic_loader(includes, plugin_imports + [libraries["libsvn_fs_util-1.dll"]])
     legacy_fs, _ = import_library(tools, legacy.RUNTIME / "libsvn_fs-1.dll")
     run([compiler, *options, ROOT / "tests/fs_probe.c", *plugin_imports, legacy_fs,

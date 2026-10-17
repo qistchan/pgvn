@@ -1,0 +1,39 @@
+[Unit]
+Description=PgVN native SVN service
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pgvn
+Group=pgvn
+EnvironmentFile=/etc/pgvn/environment
+ExecStart=/opt/pgvn/current/bin/pgvnserve --console --config /etc/pgvn/pgvn.ini --monitor-url http://127.0.0.1:18033/
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGTERM
+KillMode=control-group
+TimeoutStopSec=30
+SendSIGKILL=yes
+UMask=0077
+RuntimeDirectory=pgvn
+StateDirectory=pgvn
+LogsDirectory=pgvn
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+TasksMax=512
+LimitNOFILE=4096
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

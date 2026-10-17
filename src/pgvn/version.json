@@ -15,14 +15,14 @@
     "fs": 4
   },
   "api_version": 1,
-  "cache_format_version": 0,
+  "cache_format_version": 1,
   "capabilities": {
     "repository_by_id": true,
     "svn_protocol": true,
     "dav_protocol": true,
     "monitor": "full",
     "svn_authz_bypass": true,
-    "cache_local": false,
+    "cache_local": true,
     "cache_redis": false
   }
 }

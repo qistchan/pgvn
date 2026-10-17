@@ -1,0 +1,40 @@
+[Unit]
+Description=PgVN Apache DAV service
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pgvn
+Group=pgvn
+EnvironmentFile=/etc/pgvn/environment
+ExecStartPre=/opt/pgvn/current/apache/bin/httpd -t -f /etc/pgvn/httpd.conf
+ExecStart=/opt/pgvn/current/apache/bin/httpd -DFOREGROUND -f /etc/pgvn/httpd.conf
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGTERM
+KillMode=control-group
+TimeoutStopSec=30
+UMask=0077
+RuntimeDirectory=pgvnhttpd
+StateDirectory=pgvn
+LogsDirectory=pgvn
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+TasksMax=512
+LimitNOFILE=4096
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

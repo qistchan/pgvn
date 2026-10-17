@@ -16,6 +16,10 @@ typedef struct pgfs_observer {
     void (*published)(void *baton,svn_boolean_t receipt);
     void (*query_started)(void *baton);
     void (*writer_changed)(void *baton,int change);
+    int query_timeout_ms;
+    int (*cancelled)(void *baton);
+    svn_string_t *(*cache_get)(void *baton,const char *key,apr_pool_t *pool);
+    void (*cache_put)(void *baton,const char *key,const svn_string_t *value);
 } pgfs_observer;
 
 svn_error_t *pgfs_native_bind(svn_fs_t *fs, PGconn *connection,

@@ -11,6 +11,13 @@ static void query_observer(void *baton,const char *state,apr_interval_time_t ela
     pgvn_metric_query(((pgvn_repository *)baton)->context,state,elapsed);
 }
 
+static int query_cancelled(void *baton) { return pgvn_query_cancelled(((pgvn_repository *)baton)->context); }
+
+static svn_string_t *cache_get(void *baton,const char *key,apr_pool_t *pool)
+{ return pgvn_cache_get(((pgvn_repository *)baton)->context->cache,key,pool); }
+static void cache_put(void *baton,const char *key,const svn_string_t *value)
+{ pgvn_cache_put(((pgvn_repository *)baton)->context->cache,key,value); }
+
 static void query_started_observer(void *baton) { pgvn_telemetry_query_start(); }
 static void writer_observer(void *baton,int change) { pgvn_telemetry_writer(change); }
 
@@ -41,14 +48,15 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
     SVN_ERR(pgvn_policy_acquire_internal(&repository->policy,context,id,0,administrative,pool));
     /* The pinned public constructor is deprecated but supplies the complete
      * loader-owned layout. No path dispatch or filesystem operation occurs. */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     repository->fs=svn_fs_new(NULL,pool);
-#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
     PGconn *connection;
     SVN_ERR(pgvn_connect(&connection,context));
     pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository,
-        administrative ? NULL : pgvn_guard_mutation,published_observer,query_started_observer,writer_observer};
+        administrative ? NULL : pgvn_guard_mutation,published_observer,query_started_observer,writer_observer,context->statement_timeout_ms+1000,query_cancelled,
+        context->cache ? cache_get : NULL,context->cache ? cache_put : NULL};
     SVN_ERR(pgfs_native_bind(repository->fs,connection,context->connection_string,id,&observer,pool));
     if(!administrative) SVN_ERR(pgvn_policy_revalidate(repository->policy,context,pool));
     *output=repository;

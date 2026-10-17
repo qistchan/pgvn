@@ -9,6 +9,7 @@ from embed_migrations import CATALOG, STORAGE
 
 VERSION_PATH = "src/pgvn/version.json"
 SOURCE_GROUPS = (
+    ("deploy/linux", {".py", ".service", ".example", ".md"}),
     ("src", None), ("web", None), ("sql", None), ("patches/pgvn", None),
     ("scripts/pgvn", {".py", ".ps1", ".json", ".Dockerfile"}),
     ("tests/pgvn", {".py", ".ps1", ".c", ".h", ".inc", ".java", ".Dockerfile"}),

@@ -71,6 +71,7 @@ svn_error_t *admin_number(apr_int64_t *number,const char *value,apr_int64_t mini
     return SVN_NO_ERROR;
 }
 
+#ifdef _WIN32
 const char *admin_utf8(const wchar_t *value,apr_pool_t *pool)
 {
     int length=WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,value,-1,NULL,0,NULL,NULL);
@@ -88,6 +89,16 @@ const char *admin_env(const wchar_t *name,apr_pool_t *pool)
     if(!GetEnvironmentVariableW(name,value,size)) return NULL;
     return admin_utf8(value,pool);
 }
+#else
+const char *admin_env(const wchar_t *name,apr_pool_t *pool)
+{
+    char key[128]; size_t i=0;
+    for(;name[i] && i<sizeof(key)-1;++i) { if(name[i]>127) return NULL; key[i]=(char)name[i]; }
+    if(name[i]) return NULL;
+    key[i]=0;
+    const char *value=getenv(key); return value ? apr_pstrdup(pool,value) : NULL;
+}
+#endif
 
 void admin_json_string(FILE *file,const char *value,apr_size_t length)
 {
@@ -176,7 +187,7 @@ int admin_error(svn_error_t *error,svn_boolean_t json)
 
 void admin_help(void)
 {
-    puts("PgVN administrative CLI (Windows x64)\n"
+    puts("PgVN administrative CLI\n"
          "Connection: PGVN_DSN environment variable or --config FILE ([pgvn] connection=...).\n"
          "Metadata commands emit JSON; --json also structures errors and look results.\n"
          "  db init|migrate|check\n"

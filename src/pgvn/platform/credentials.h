@@ -8,6 +8,7 @@
 /* Internal platform boundary. Wire format, AAD construction, identity checks,
  * key parsing, SQL and generation semantics remain in core/credentials.c. */
 void pgvn_secure_zero(void *data,size_t size);
+int pgvn_sha256(unsigned char digest[32],const unsigned char *value,size_t length);
 int pgvn_secure_random(unsigned char *data,size_t size);
 int pgvn_utf8_valid(const char *text);
 

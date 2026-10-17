@@ -115,6 +115,27 @@ static svn_error_t *pgfs_file_contents(svn_stream_t **stream,svn_fs_root_t *root
     const char *md5,*sha1;
     SVN_ERR(pgfs_content_metadata(&reader->length,&md5,&sha1,root->fs,node->content,pool));
     reader->scratch=svn_pool_create(pool);
+    pgfs_data_t *data=root->fs->fsap_data;
+    if(!root->is_txn_root && !node->owner && reader->length>0 && reader->length<=PGFS_CHUNK_SIZE &&
+       data->observer.cache_get && data->observer.cache_put) {
+        const char *key=apr_psprintf(pool,"1:%s:%" APR_INT64_T_FMT ":%s:%s:%" APR_INT64_T_FMT,data->repository_id,node->content,md5,sha1,reader->length);
+        svn_string_t *cached=data->observer.cache_get(data->observer.baton,key,pool);
+        int miss=!cached;
+        if(miss) {
+            char *buffer=apr_palloc(pool,(apr_size_t)reader->length);
+            apr_size_t length=(apr_size_t)reader->length;
+            SVN_ERR(pgfs_read_full(reader,buffer,&length));
+            if(length!=(apr_size_t)reader->length)
+                return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"Truncated PgFS immutable fulltext");
+            cached=svn_string_ncreate(buffer,length,pool);
+        }
+        svn_checksum_t *checksum;
+        SVN_ERR(svn_checksum(&checksum,svn_checksum_sha1,cached->data,cached->len,pool));
+        if(cached->len!=(apr_size_t)reader->length || strcmp(svn_checksum_to_cstring(checksum,pool),sha1))
+            return svn_error_create(SVN_ERR_FS_CORRUPT,NULL,"PgFS immutable fulltext checksum mismatch");
+        if(miss) data->observer.cache_put(data->observer.baton,key,cached);
+        *stream=svn_stream_from_string(cached,pool); return SVN_NO_ERROR;
+    }
     *stream=svn_stream_create(reader,pool);
     svn_stream_set_read2(*stream,pgfs_read_full,pgfs_read_full);
     svn_stream_set_mark(*stream,pgfs_read_mark);

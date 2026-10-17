@@ -1,4 +1,8 @@
 /* PgFS: PostgreSQL native filesystem provider for Subversion 1.14.5. */
+#ifdef _WIN32
+#include <winsock2.h>
+#include <windows.h>
+#endif
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,6 +27,7 @@
 #include "svn_version.h"
 #include "fs-loader.h"
 #include "pgfs_native.h"
+#include "pgfs_pq.h"
 
 typedef struct pgfs_data_t {
     PGconn *connection;
@@ -72,9 +77,11 @@ static svn_error_t *pgfs_query_format(PGresult **result, svn_fs_t *fs, const cha
         return svn_error_create(SVN_ERR_FS_GENERAL, NULL, "PgFS parameter allocation failed");
     }
     for (int i = 0; i < count; ++i) types[i] = formats && formats[i] ? 17 : 25;
-    apr_time_t started = data->observer.query ? apr_time_now() : 0;
+    apr_time_t started = data->observer.query ? pgfs_pq_clock() : 0;
     if(data->observer.query_started) data->observer.query_started(data->observer.baton);
-    *result = PQexecParams(data->connection, sql, count, types, values, lengths, formats, result_format);
+    *result = pgfs_pq_exchange(data->connection, sql, count, types, values, lengths, formats, result_format,
+        data->observer.query_timeout_ms ? data->observer.query_timeout_ms : 60000,
+        data->observer.cancelled,data->observer.baton,0);
     free(types);
     svn_error_t *error = NULL;
     char sqlstate[6] = "00000";
@@ -89,7 +96,7 @@ static svn_error_t *pgfs_query_format(PGresult **result, svn_fs_t *fs, const cha
     }
     status = apr_thread_mutex_unlock(data->mutex);
     if (data->observer.query)
-        data->observer.query(data->observer.baton, sqlstate, apr_time_now() - started);
+        data->observer.query(data->observer.baton, sqlstate, pgfs_pq_clock() - started);
     if (status && !error) error = svn_error_wrap_apr(status, "PgFS connection unlock failed");
     return error;
 }
@@ -135,7 +142,9 @@ static svn_error_t *pgfs_attach(svn_fs_t *fs, const char *path, const char *dsn,
 static svn_error_t *pgfs_connect(svn_fs_t *fs, const char *path, const char *dsn,
                                 const char *repository_id)
 {
-    return pgfs_attach(fs, path, dsn, repository_id, PQconnectdb(dsn), NULL);
+    const char *keys[]={"dbname","connect_timeout","client_encoding",NULL};
+    const char *values[]={dsn,"3","UTF8",NULL};
+    return pgfs_attach(fs, path, dsn, repository_id, PQconnectdbParams(keys,values,1), NULL);
 }
 
 static const char *pgfs_uuid(apr_pool_t *pool)

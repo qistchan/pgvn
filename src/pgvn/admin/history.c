@@ -85,7 +85,7 @@ static svn_error_t *tree(svn_fs_root_t *root,const char *initial,admin_command *
         svn_node_kind_t kind; SVN_ERR(svn_fs_check_path(&kind,root,item.path,scratch));
         if(kind==svn_node_none) return svn_error_create(SVN_ERR_FS_NOT_FOUND,NULL,"Tree path does not exist");
         if(json) {
-            if(emitted++) putchar(','); fputs("{\"path\":",stdout); admin_json_cstr(stdout,item.path);
+            if(emitted++) { putchar(','); } fputs("{\"path\":",stdout); admin_json_cstr(stdout,item.path);
             fputs(",\"kind\":",stdout); admin_json_cstr(stdout,kind==svn_node_dir ? "dir" : "file"); putchar('}');
         } else {
             if(!(command->flags & OPTION(OPT_FULL_PATHS))) for(int i=0;i<item.depth;++i) putchar(' ');
@@ -137,7 +137,7 @@ static svn_error_t *changed(svn_fs_root_t *root,admin_command *command)
         const char *action=change->change_kind==svn_fs_path_change_add ? "add" : change->change_kind==svn_fs_path_change_delete ? "delete" :
             change->change_kind==svn_fs_path_change_replace ? "replace" : "modify";
         if(json) {
-            if(i) putchar(','); fputs("{\"path\":",stdout); admin_json_string(stdout,change->path.data,change->path.len);
+            if(i) { putchar(','); } fputs("{\"path\":",stdout); admin_json_string(stdout,change->path.data,change->path.len);
             fputs(",\"action\":",stdout); admin_json_cstr(stdout,action);
             fputs(",\"kind\":",stdout); admin_json_cstr(stdout,change->node_kind==svn_node_dir ? "dir" : change->node_kind==svn_node_file ? "file" : "unknown");
             printf(",\"text_mod\":%s,\"prop_mod\":%s,\"copyfrom_rev\":%ld,\"copyfrom_path\":",
@@ -183,7 +183,7 @@ static svn_error_t *properties(admin_command *command,svn_fs_t *fs,svn_fs_root_t
     for(int i=0;i<names->nelts;++i) {
         name=APR_ARRAY_IDX(names,i,const char *); svn_string_t *value=apr_hash_get(properties,name,APR_HASH_KEY_STRING);
         if(json) {
-            if(i) putchar(','); fputs("{\"name\":",stdout); admin_json_cstr(stdout,name);
+            if(i) { putchar(','); } fputs("{\"name\":",stdout); admin_json_cstr(stdout,name);
             if(command->flags & OPTION(OPT_VERBOSE)) { fputs(",\"encoding\":\"base64\",\"value\":\"",stdout); base64(value->data,value->len); putchar('"'); }
             putchar('}');
         } else {
@@ -266,7 +266,7 @@ svn_error_t *admin_history(admin_command *command)
         qsort(names->elts,names->nelts,sizeof(const char *),compare_strings);
         if(json) fputs("{\"transactions\":[",stdout);
         for(int i=0;i<names->nelts;++i) {
-            if(json) { if(i) putchar(','); admin_json_cstr(stdout,APR_ARRAY_IDX(names,i,const char *)); }
+            if(json) { if(i) { putchar(','); } admin_json_cstr(stdout,APR_ARRAY_IDX(names,i,const char *)); }
             else puts(APR_ARRAY_IDX(names,i,const char *));
         }
         if(json) puts("]}");

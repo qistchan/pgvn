@@ -7,7 +7,9 @@
 #include "dav_state.h"
 #include "dav_svn.h"
 
-#ifdef PGVN_DAV_BUILD
+#ifndef _WIN32
+#define PGVN_HTTP_API __attribute__((visibility("default")))
+#elif defined(PGVN_DAV_BUILD)
 #define PGVN_HTTP_API __declspec(dllexport)
 #else
 #define PGVN_HTTP_API __declspec(dllimport)

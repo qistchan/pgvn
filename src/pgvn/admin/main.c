@@ -1,5 +1,12 @@
 #include <fcntl.h>
+#ifdef _WIN32
 #include <io.h>
+#else
+#include <signal.h>
+#include <locale.h>
+#include "svn_utf.h"
+#include "../platform/credentials.h"
+#endif
 #include <string.h>
 #include "admin.h"
 #include <apr_general.h>
@@ -7,6 +14,7 @@
 #include "svn_pools.h"
 #include "svn_dirent_uri.h"
 
+#ifdef _WIN32
 static volatile LONG cancelled;
 static HANDLE cancellation_event;
 static BOOL WINAPI console_control(DWORD control)
@@ -23,6 +31,17 @@ svn_error_t *admin_cancel(void *baton)
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN administrative command cancelled");
     return SVN_NO_ERROR;
 }
+
+#else
+static pgvn_cancel_state cancel_state;
+static pgvn_cancel_event cancellation_event=&cancel_state;
+static void console_signal(int number) { (void)number; pgvn_cancel_signal(cancellation_event); }
+svn_error_t *admin_cancel(void *baton)
+{
+    (void)baton;
+    return pgvn_cancel_is_set(cancellation_event) ? svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN administrative command cancelled") : SVN_NO_ERROR;
+}
+#endif
 
 static svn_error_t *run(admin_command *command)
 {
@@ -65,11 +84,14 @@ static svn_error_t *run(admin_command *command)
     }
     command->context->hook_root=hook_root;
     SVN_ERR(pgvn_hooks_configure(command->context,config,command->pool));
+    SVN_ERR(pgvn_cache_configure(command->context,config,command->pool));
     command->context->cancellation_event=cancellation_event;
+    command->context->query_cancellation_event=cancellation_event;
     if(command->values[OPT_CONFIG]) SVN_ERR(svn_dirent_get_absolute(&command->context->configuration_path,command->values[OPT_CONFIG],command->pool));
     return admin_dispatch(command);
 }
 
+#ifdef _WIN32
 int wmain(int argc,wchar_t **wide)
 {
     if(GetACP()!=CP_UTF8) {
@@ -102,3 +124,28 @@ int wmain(int argc,wchar_t **wide)
     svn_pool_destroy(pool); CloseHandle(cancellation_event); apr_terminate();
     return code;
 }
+#else
+int main(int argc,char **arguments)
+{
+    if(!setlocale(LC_ALL,"C.UTF-8")) { fputs("PgVN requires the C.UTF-8 locale\n",stderr); return PGVN_EXIT_USAGE; }
+    if(apr_initialize()!=APR_SUCCESS) return PGVN_EXIT_FAILURE;
+    apr_pool_t *pool=svn_pool_create(NULL); svn_utf_initialize2(TRUE,pool);
+    const char **argv=apr_pcalloc(pool,(size_t)(argc+1)*sizeof(*argv));
+    for(int i=0;i<argc;++i) {
+        if(!pgvn_utf8_valid(arguments[i])) { svn_pool_destroy(pool); apr_terminate(); return PGVN_EXIT_USAGE; }
+        argv[i]=arguments[i];
+    }
+    struct sigaction action={0}; action.sa_handler=console_signal; sigemptyset(&action.sa_mask);
+    sigaction(SIGTERM,&action,NULL); sigaction(SIGINT,&action,NULL);
+    signal(SIGPIPE,SIG_IGN);
+    admin_command command={0}; command.pool=pool;
+    svn_boolean_t structured_errors=FALSE;
+    for(int i=1;i<argc && strcmp(argv[i],"--");++i) if(!strcmp(argv[i],"--json")) structured_errors=TRUE;
+    svn_error_t *error=admin_parse(&command,argc,argv);
+    if(!error) error=run(&command);
+    int code=error ? admin_error(error,structured_errors) : PGVN_EXIT_OK;
+    svn_error_clear(error);
+    if(!code && (ferror(stdout) || fflush(stdout)==EOF)) code=PGVN_EXIT_FAILURE;
+    svn_pool_destroy(pool); apr_terminate(); return code;
+}
+#endif

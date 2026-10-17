@@ -24,16 +24,17 @@ void pgvn_metric_closed(void *baton)
 svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connection,
     const char *sql,int count,const char *const *values)
 {
-    apr_time_t start=apr_time_now();
+    apr_time_t start=pgfs_pq_clock();
     Oid types[32];
     if(count<0 || count>32) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN parameter limit exceeded");
     for(int i=0;i<count;++i) types[i]=25;
     pgvn_telemetry_query_start();
-    *result=PQexecParams(connection,sql,count,types,values,NULL,NULL,0);
+    *result=pgfs_pq_exchange(connection,sql,count,types,values,NULL,NULL,0,
+        context->statement_timeout_ms+1000,pgvn_query_cancelled,context,0);
     if(!*result || (PQresultStatus(*result)!=PGRES_COMMAND_OK && PQresultStatus(*result)!=PGRES_TUPLES_OK)) {
         const char *state=*result ? PQresultErrorField(*result,PG_DIAG_SQLSTATE) : NULL;
         if(!state) state="08006";
-        pgvn_metric_query(context,state,apr_time_now()-start);
+        pgvn_metric_query(context,state,pgfs_pq_clock()-start);
         apr_status_t code=!strcmp(state,"23505") ? SVN_ERR_FS_ALREADY_EXISTS :
             !strcmp(state,"40001") || !strcmp(state,"40P01") || !strcmp(state,"55P03") ? SVN_ERR_FS_TXN_OUT_OF_DATE :
             !strcmp(state,"22P02") ? SVN_ERR_INCORRECT_PARAMS :
@@ -46,7 +47,7 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
         *result=NULL;
         return error;
     }
-    pgvn_metric_query(context,"00000",apr_time_now()-start);
+    pgvn_metric_query(context,"00000",pgfs_pq_clock()-start);
     return SVN_NO_ERROR;
 }
 
@@ -63,8 +64,8 @@ svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
     char timeout[16],options[64];
     snprintf(timeout,sizeof(timeout),"%d",context->connect_timeout_seconds);
     snprintf(options,sizeof(options),"-c statement_timeout=%d",context->statement_timeout_ms);
-    const char *keywords[]={"dbname","connect_timeout","options","application_name",NULL};
-    const char *values[]={context->connection_string,timeout,options,"pgvn",NULL};
+    const char *keywords[]={"dbname","connect_timeout","options","application_name","client_encoding",NULL};
+    const char *values[]={context->connection_string,timeout,options,"pgvn","UTF8",NULL};
     *connection=PQconnectdbParams(keywords,values,1);
     if(!*connection || PQstatus(*connection)!=CONNECTION_OK) {
         pgvn_telemetry_connection(0,0,1);
@@ -72,10 +73,6 @@ svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
         *connection=NULL;
         pgvn_metric_closed(context);
         return svn_error_create(PGVN_ERR_DATABASE,NULL,"PgVN database connection unavailable");
-    }
-    if(PQsetClientEncoding(*connection,"UTF8")) {
-        PQfinish(*connection); *connection=NULL; pgvn_metric_closed(context);
-        return svn_error_create(SVN_ERR_FS_GENERAL,NULL,"PgVN requires UTF-8 database communication");
     }
     return SVN_NO_ERROR;
 }

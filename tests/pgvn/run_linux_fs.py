@@ -82,7 +82,7 @@ def main():
 
     def in_builder(arguments, shared_network=False, expected=0):
         return command(docker + ["run", "--rm", "--network", "container:" + run_id if shared_network else "none",
-                                 "--cpus", "4", "--memory", "1g", "--user", "1000:1000",
+                                 "--cpus", "4", "--memory", "1g", "--user", str(os.getuid())+":"+str(os.getgid()),
                                  "--mount", "type=bind,src=" + str(ROOT) + ",dst=" + str(ROOT),
                                  "-w", ROOT, "-e", "PGVN_FS_TEST_DSN=host=127.0.0.1 dbname=pgvn_fs user=pgvn_fixture_owner",
                                  "-e", "PGVN_FS_TEST_REPOSITORY=" + repository_id,
@@ -95,9 +95,10 @@ def main():
     try:
         for image in (args.builder_image, args.postgres_image):
             images[image] = command(docker + ["image", "inspect", "--format", "{{.Id}}", image])
-        for variant in ("hex", "binary"):
+        for variant in ("hex", "binary", "binary-per-node"):
             output = in_builder(["python3", "scripts/pgvn/build.py", "--target", "linux", "--components", "fs",
-                                 "--configuration", "Release", "--linux-sdk", sdk, "--fs-content-transfer", variant])
+                                 "--configuration", "Release", "--linux-sdk", sdk, "--fs-content-transfer", "hex" if variant=="hex" else "binary",
+                                 "--fs-directory-mode", "per-node" if variant.endswith("per-node") else "batch"])
             builds[variant] = json.loads(Path(json.loads(output)["manifest"]).read_text())
             check(variant + " ELF build with pinned principal dependencies", builds[variant]["runtime"]["libpq_version"] == 180006)
         relocated = artifacts / "relocated"
@@ -164,7 +165,7 @@ print(json.dumps({'runtime':runtime,'dependencies':dependencies}))
 phase=[0.0]
 barrier=threading.Barrier(int(sys.argv[2]),action=lambda:phase.__setitem__(0,time.monotonic()))
 def worker(i):
- p=subprocess.Popen([sys.argv[1],'bench',sys.argv[3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,env=dict(os.environ,PGVN_FS_BENCH_SYNC='1'))
+ p=subprocess.Popen([sys.argv[1],sys.argv[4] if len(sys.argv)>4 else 'bench',sys.argv[3]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,env=dict(os.environ,PGVN_FS_BENCH_SYNC='1'))
  try:
   warmup=p.stdout.readline()
   json.loads(warmup)
@@ -184,12 +185,24 @@ print(json.dumps({'workers':rows,'phase_elapsed_seconds':time.monotonic()-phase[
                     expected = 8388639 * (2 if variant == "hex" else 1)
                     check(f"{variant} concurrency {concurrency} round {round_number+1}: payload and result integrity",
                           len(samples) == concurrency * args.repetitions and all(s["chunk_column_bytes"] == expected for s in samples))
-                    group = {"variant": variant, "concurrency": concurrency, "round": round_number + 1,
+                    group = {"workload": "file-8MiB", "variant": variant, "concurrency": concurrency, "round": round_number + 1,
                              "samples": samples, "summary": summarize(samples),
                              "phase_elapsed_seconds": measurement["phase_elapsed_seconds"],
                              "operations_per_second": len(samples) / measurement["phase_elapsed_seconds"],
                              "harness_elapsed_seconds": time.monotonic() - start}
                     groups.append(group)
+        for concurrency in args.concurrency:
+            for round_number in range(args.rounds):
+                order=("binary-per-node","binary") if round_number%2==0 else ("binary","binary-per-node")
+                for variant in order:
+                    binary=ROOT/"build/pgvn/linux"/("release-"+variant)/"bin/fs_linux_probe"
+                    measurement=json.loads(in_builder(["python3","-c",script,binary,str(concurrency),str(args.repetitions+1),"dirbench"],shared_network=True))
+                    samples=[sample for worker in measurement["workers"] for sample in worker]
+                    check(f"directory {variant} concurrency {concurrency} round {round_number+1}: all entries and bounded queries",
+                          len(samples)==concurrency*args.repetitions and all(s["entries"]==256 and s["queries"]==(260 if variant.endswith("per-node") else 4) for s in samples))
+                    groups.append({"workload":"directory-256","variant":variant,"concurrency":concurrency,"round":round_number+1,
+                                   "samples":samples,"summary":summarize(samples),"phase_elapsed_seconds":measurement["phase_elapsed_seconds"],
+                                   "operations_per_second":len(samples)/measurement["phase_elapsed_seconds"]})
         check("read-only benchmark leaves HEAD at revision 1", sql("SELECT max(rev) FROM pgfs.revisions;") == "1")
         check("source snapshot unchanged", collect(ROOT, "linux", "Release") == metadata)
     except Exception:
@@ -203,12 +216,12 @@ print(json.dumps({'workers':rows,'phase_elapsed_seconds':time.monotonic()-phase[
             except Exception:
                 failures.append(traceback.format_exc())
         report = {"format": 1, "run_id": run_id, "time_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-                  "status": "PASS" if not failures else "FAIL", "scope": "Linux FS API / content transport exploration; no SVN/DAV server acceptance",
+                  "status": "PASS" if not failures else "FAIL", "scope": "Linux FS API / binary transfer and directory batching exploration; no SVN/DAV server acceptance",
                   "build_identity": metadata["build_identity"], "images": images,
                   "sdk_manifest_sha256": sha256(sdk / "sdk-manifest.json"), "builds": builds,
                   "checks": checks, "groups": groups, "failures": failures, "container_removed": cleaned,
                   "method": {"warmup_reads_per_worker": 1, "rounds": args.rounds, "repetitions": args.repetitions,
-                             "dataset_bytes": 8388639, "seed": "0x73b198ac integer mixing by byte offset",
+                             "dataset_bytes": 8388639, "directory_entries":256, "seed": "0x73b198ac integer mixing by byte offset",
                              "cache": "same dataset prewarmed for each worker; no OS/PG cold-cache claim; no Redis/L1",
                              "payload": "sum PQgetlength on content chunk columns, excludes protocol overhead",
                              "limits": "shared container host; local PG only; client CPU includes SHA1; PG CPU/I/O and wire protocols not measured",

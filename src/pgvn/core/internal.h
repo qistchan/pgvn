@@ -6,6 +6,8 @@
 #include <libpq-fe.h>
 #include "pgvn.h"
 #include "telemetry.h"
+#include "pgfs_pq.h"
+#include "cache.h"
 
 struct pgvn_context {
     const char *connection_string;
@@ -17,14 +19,17 @@ struct pgvn_context {
     int minimum_catalog_version;
     int catalog_version;
     const char *hook_root;
+    const char *hook_runner;
     apr_hash_t *hook_implementations; /* Immutable node-local logical-name mapping. */
     const char *configuration_path;
     pgvn_cancel_event cancellation_event;
+    pgvn_cancel_event query_cancellation_event;
     volatile pgvn_atomic32 leases;
     volatile pgvn_atomic64 sql_calls;
     volatile pgvn_atomic64 sql_errors;
     volatile pgvn_atomic64 sql_microseconds;
     apr_time_t schema_checked_at;
+    pgvn_cache *cache;
     const char *instance_id;
     apr_pool_t *pool;
 };
@@ -72,6 +77,9 @@ svn_error_t *pgvn_policy_load_protocol(pgvn_policy *policy,apr_pool_t *pool);
 svn_error_t *pgvn_hooks_configure(pgvn_context *context,svn_config_t *config,apr_pool_t *pool);
 svn_boolean_t pgvn_hook_filename_valid(const char *name,svn_boolean_t windows);
 svn_error_t *pgvn_hook_resolve(pgvn_hook_handler *handler,pgvn_context *context,const char *name,apr_pool_t *pool);
+svn_error_t *pgvn_hook_event_json(svn_stringbuf_t **output,const pgvn_hook_context *event,apr_pool_t *pool);
+svn_error_t *pgvn_hook_result(const pgvn_hook_context *event,unsigned exit_code,const char *output,size_t output_size,
+    int output_truncated,const char *error_output,size_t error_size,apr_pool_t *pool);
 svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_context *event,apr_pool_t *pool);
 svn_error_t *pgvn_require_admin(pgvn_context *context);
 svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **policy,pgvn_context *context,
@@ -79,6 +87,11 @@ svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **policy,pgvn_context *con
 svn_error_t *pgvn_exec(PGresult **result, pgvn_context *context, PGconn *connection,
                        const char *sql, int count, const char *const *values);
 svn_error_t *pgvn_connect(PGconn **connection, pgvn_context *context);
+static inline int pgvn_query_cancelled(void *baton)
+{
+    pgvn_context *context=baton;
+    return pgvn_cancel_is_set(context->query_cancellation_event);
+}
 void pgvn_metric_query(void *baton, const char *sqlstate, apr_interval_time_t elapsed);
 void pgvn_metric_closed(void *baton);
 svn_error_t *pgvn_control_begin(pgvn_context *context);

@@ -1,0 +1,17 @@
+[pgvn]
+connection = service=pgvn-service
+monitor-connection = service=pgvn-monitor
+credential-key-file = /etc/pgvn/keys/current.key
+identity-domain = pgvn
+listen-host = 127.0.0.1
+listen-port = 3690
+max-connections = 32
+node-id = linux-svn-1
+hook-root = /etc/pgvn/hooks
+cache-mode = off
+cache-local-mib = 16
+
+# Logical external Hooks are declared in the versioned repository config.
+# Map implementations below; paths are relative to the protected hook-root.
+#[pgvn-hooks]
+#pre-commit-policy = pre-commit-policy

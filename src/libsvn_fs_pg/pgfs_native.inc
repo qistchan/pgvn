@@ -3,7 +3,7 @@ svn_error_t *pgfs_native_create_records(PGconn *connection,const char *id,
     const char *uuid,const char *instance,const char *date)
 {
     const char *values[]={id,uuid,instance,date};
-    PGresult *result=PQexecParams(connection,
+    PGresult *result=pgfs_pq_exchange(connection,
         "WITH repo AS (INSERT INTO pgfs.repositories(repository_id,svn_uuid,instance_id,format_version) "
         "VALUES($1::uuid,$2::uuid,$3::uuid,1) RETURNING repository_id), "
         "node AS (INSERT INTO pgfs.node_revisions(repository_id,node_id,kind,created_rev,created_path) "
@@ -11,7 +11,7 @@ svn_error_t *pgfs_native_create_records(PGconn *connection,const char *id,
         "rev AS (INSERT INTO pgfs.revisions(repository_id,rev,root_node_revision_id) "
         "SELECT repository_id,0,node_revision_id FROM node RETURNING repository_id,rev) "
         "INSERT INTO pgfs.revision_properties(repository_id,rev,name,value) "
-        "SELECT repository_id,rev,'svn:date',convert_to($4,'UTF8') FROM rev",4,NULL,values,NULL,NULL,0);
+        "SELECT repository_id,rev,'svn:date',convert_to($4,'UTF8') FROM rev",4,NULL,values,NULL,NULL,0,6000,NULL,NULL,0);
     if(!result || PQresultStatus(result)!=PGRES_COMMAND_OK) {
         const char *state=result ? PQresultErrorField(result,PG_DIAG_SQLSTATE) : NULL;
         svn_error_t *error=svn_error_createf(SVN_ERR_FS_GENERAL,NULL,

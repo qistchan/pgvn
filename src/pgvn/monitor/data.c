@@ -1,10 +1,11 @@
+#include "../platform/runtime.h"
+#include "../platform/credentials.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include "data.h"
-#include <bcrypt.h>
-#include <psapi.h>
+#include "cache.h"
 #include <libpq-fe.h>
 #include <apr_strings.h>
 #include <apr_uuid.h>
@@ -13,6 +14,7 @@
 #include "svn_string.h"
 #include "telemetry.h"
 #include "data.h"
+#include "cache.h"
 #include "pgvn_web.h"
 
 #define COLLECTIONS 6
@@ -24,59 +26,61 @@ typedef struct monitor_collection {
     char **items,**names; char (*ids)[37];
     int count,truncated,capacity;
 } monitor_collection;
-typedef struct monitor_token { unsigned char hash[32]; ULONGLONG expires; } monitor_token;
+typedef struct monitor_token { unsigned char hash[32]; uint64_t expires; } monitor_token;
 typedef struct monitor_sample {
     monitor_collection collections[COLLECTIONS];
     monitor_token tokens[CACHED_ITEMS]; int token_count;
     char *database;
     char sampled_at[32];
-    ULONGLONG tick;
+    uint64_t tick;
     int valid,configuration_healthy,reader_restricted;
-    LONG64 configuration_generation;
+    pgvn_atomic64 configuration_generation;
 } monitor_sample;
 typedef struct monitor_trend {
-    char at[32]; LONG64 commands,errors,sql_calls,command_microseconds; double database_ms;
+    char at[32]; pgvn_atomic64 commands,errors,sql_calls,command_microseconds; double database_ms;
     int database_available;
-    LONG64 bytes_received,bytes_sent;
+    pgvn_atomic64 bytes_received,bytes_sent;
     double rate,error_percent,latency_ms,cpu_percent;
-    LONG64 working_set,private_bytes;
+    pgvn_atomic64 working_set,private_bytes;
     int rate_valid,cpu_valid,activity_valid,resource_valid;
-    ULONGLONG tick;
+    uint64_t tick;
 } monitor_trend;
 struct pgvn_monitor_data {
-    SRWLOCK lock;
-    HANDLE thread,stop;
+    pgvn_rwlock lock;
+    pgvn_thread thread; pgvn_cancel_event stop;
     apr_pool_t *pool;
     const char *dsn,*reader_dsn,*node;
     char instance[37],started_at[32];
-    volatile LONG business_ready;
-    volatile LONG stopping;
-    volatile LONG64 main_tick;
+    volatile pgvn_atomic32 business_ready;
+    volatile pgvn_atomic32 stopping;
+    volatile pgvn_atomic64 main_tick;
     monitor_sample sample;
     int last_attempt_ok;
     const char *reason;
     unsigned long sequence;
-    ULONGLONG started_tick;
+    uint64_t started_tick;
     monitor_trend trends[180]; unsigned trend_count,trend_next;
     unsigned sample_failures;
     double sampler_ms;
     int writer_ok,resource_valid,cpu_valid;
-    LONG64 dropped_batches,sampler_queries,sampler_query_errors;
-    ULONGLONG cpu_ticks,last_cpu_tick,working_set,private_bytes;
+    pgvn_atomic64 dropped_batches,sampler_queries,sampler_query_errors;
+    uint64_t cpu_ticks,last_cpu_tick,working_set,private_bytes;
     double cpu_percent;
-    LONG business_connections,backend_lock_waits;
+    pgvn_atomic32 business_connections,backend_lock_waits;
     char resource_at[32];
 };
 static const char *collection_names[]={"repositories","nodes","transactions","locks","lock_items","revisions"};
-static _Thread_local HANDLE sampler_stop;
+static _Thread_local pgvn_cancel_event sampler_stop;
 static _Thread_local pgvn_monitor_data *sampler_data;
 static _Thread_local int sampler_final;
 
 static void timestamp(char out[32])
 {
-    SYSTEMTIME now; GetSystemTime(&now);
-    snprintf(out,32,"%04u-%02u-%02uT%02u:%02u:%02uZ",now.wYear,now.wMonth,now.wDay,now.wHour,now.wMinute,now.wSecond);
+    pgvn_timestamp(out);
 }
+#ifndef _WIN32
+static void append(svn_stringbuf_t *out,apr_pool_t *pool,const char *format,...) __attribute__((format(printf,3,4)));
+#endif
 static void append(svn_stringbuf_t *out,apr_pool_t *pool,const char *format,...)
 {
     /* The installed APR was built with MSVC and its formatter does not accept
@@ -100,9 +104,9 @@ static void quote(svn_stringbuf_t *out,const char *text)
     }
     svn_stringbuf_appendbyte(out,'"');
 }
-static LONG64 total_commands(const pgvn_process_metrics *metrics,int errors)
+static pgvn_atomic64 total_commands(const pgvn_process_metrics *metrics,int errors)
 {
-    LONG64 count=0;
+    pgvn_atomic64 count=0;
     for(int i=0;i<PGVN_OPERATION_COUNT;++i) for(int j=errors ? 1 : 0;j<PGVN_RESULT_COUNT;++j) count+=metrics->commands[i][j];
     return count;
 }
@@ -113,17 +117,17 @@ static void free_sample(monitor_sample *sample)
         for(int i=0;i<collection->count;++i) { free(collection->items[i]); if(collection->names) free(collection->names[i]); }
         free(collection->items); free(collection->names); free(collection->ids);
     }
-    free(sample->database); SecureZeroMemory(sample,sizeof(*sample));
+    free(sample->database); pgvn_secure_zero(sample,sizeof(*sample));
 }
 static PGresult *query(PGconn *connection,const char *sql,int count,const char *const *values)
 {
     /* statement_timeout is server-side; a blackholed TCP connection must not
      * trap the sampler or service shutdown in a blocking PQexec. */
-    InterlockedIncrement64(&sampler_data->sampler_queries);
-    if(!PQsendQueryParams(connection,sql,count,NULL,values,NULL,NULL,0)) { InterlockedIncrement64(&sampler_data->sampler_query_errors); return NULL; }
-    ULONGLONG deadline=GetTickCount64()+(sampler_final ? 200 : 2000); PGresult *result=NULL;
+    pgvn_atomic_increment64(&sampler_data->sampler_queries);
+    if(!PQsendQueryParams(connection,sql,count,NULL,values,NULL,NULL,0)) { pgvn_atomic_increment64(&sampler_data->sampler_query_errors); return NULL; }
+    uint64_t deadline=pgvn_tick()+(sampler_final ? 200 : 2000); PGresult *result=NULL;
     for(;;) {
-        if((!sampler_final && WaitForSingleObject(sampler_stop,0)!=WAIT_TIMEOUT) || GetTickCount64()>=deadline) break;
+        if((!sampler_final && pgvn_wait_stop(sampler_stop,0)) || pgvn_tick()>=deadline) break;
         int pending=PQflush(connection);
         if(pending<0 || !PQconsumeInput(connection)) break;
         if(!pending && !PQisBusy(connection)) {
@@ -132,15 +136,12 @@ static PGresult *query(PGconn *connection,const char *sql,int count,const char *
                 if(result && (PQresultStatus(result)==PGRES_TUPLES_OK || PQresultStatus(result)==PGRES_COMMAND_OK)) return result;
                 break;
             }
-            if(result) PQclear(result); result=next;
+            if(result) { PQclear(result); } result=next;
             continue;
         }
-        WSAPOLLFD descriptor={0}; descriptor.fd=(SOCKET)PQsocket(connection);
-        descriptor.events=POLLRDNORM | (pending ? POLLWRNORM : 0);
-        int ready=WSAPoll(&descriptor,1,100);
-        if(ready==SOCKET_ERROR || (ready>0 && (descriptor.revents&(POLLERR|POLLHUP|POLLNVAL)))) break;
+        if(pgvn_socket_poll(PQsocket(connection),pending,100)<0) break;
     }
-    if(result) PQclear(result); InterlockedIncrement64(&sampler_data->sampler_query_errors); return NULL;
+    if(result) { PQclear(result); } pgvn_atomic_increment64(&sampler_data->sampler_query_errors); return NULL;
 }
 static int nibble(char c)
 {
@@ -151,22 +152,6 @@ static int hash_decode(unsigned char out[32],const char *text)
     if(strlen(text)!=64) return 0;
     for(int i=0;i<32;++i) { int a=nibble(text[2*i]),b=nibble(text[2*i+1]); if(a<0 || b<0) return 0; out[i]=(unsigned char)((a<<4)|b); }
     return 1;
-}
-static int sha256(unsigned char digest[32],const unsigned char *value,ULONG length)
-{
-    BCRYPT_ALG_HANDLE algorithm=NULL; BCRYPT_HASH_HANDLE hash=NULL;
-    DWORD size=0,received=0; unsigned char *object=NULL;
-    NTSTATUS status=BCryptOpenAlgorithmProvider(&algorithm,BCRYPT_SHA256_ALGORITHM,NULL,0);
-    if(!status) status=BCryptGetProperty(algorithm,BCRYPT_OBJECT_LENGTH,(PUCHAR)&size,sizeof(size),&received,0);
-    if(!status && (!size || size>1048576)) status=(NTSTATUS)0xc000000d;
-    if(!status && !(object=malloc(size))) status=(NTSTATUS)0xc0000017;
-    if(!status) status=BCryptCreateHash(algorithm,&hash,object,size,NULL,0,0);
-    if(!status) status=BCryptHashData(hash,(PUCHAR)value,length,0);
-    if(!status) status=BCryptFinishHash(hash,digest,32,0);
-    if(hash) BCryptDestroyHash(hash);
-    if(object) { SecureZeroMemory(object,size); free(object); }
-    if(algorithm) BCryptCloseAlgorithmProvider(algorithm,0);
-    return !status;
 }
 
 /* All rows are built by fixed SQL using JSON constructors. Each collection is
@@ -223,7 +208,8 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
     /* A repeatable snapshot keeps counts, pages and token revocations aligned.
      * Readiness uses the primary/default setting above, outside this read-only txn. */
     result=query(connection,"BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY",0,NULL);
-    if(!result) return 0; PQclear(result);
+    if(!result) return 0;
+    PQclear(result);
     result=query(connection,sample_sql,0,NULL);
     if(!result) return 0;
     size_t bytes=0;
@@ -232,7 +218,7 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
         size_t length=(size_t)PQgetlength(result,i,1); bytes+=length;
         if(bytes>JSON_BUDGET) { PQclear(result); *reason="snapshot_capacity"; return 0; }
         if(!strcmp(kind,"database")) {
-            sample->database=_strdup(json); if(!sample->database) { PQclear(result); return 0; }
+            sample->database=pgvn_strdup(json); if(!sample->database) { PQclear(result); return 0; }
         } else for(int c=0;c<COLLECTIONS;++c) if(!strcmp(kind,collection_names[c])) {
             monitor_collection *collection=&sample->collections[c];
             if(!collection->capacity) {
@@ -245,8 +231,8 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
             if(collection->count==collection->capacity) collection->truncated=1;
             else {
                 int index=collection->count++;
-                collection->items[index]=_strdup(json);
-                if(c==0) collection->names[index]=_strdup(PQgetvalue(result,i,3));
+                collection->items[index]=pgvn_strdup(json);
+                if(c==0) collection->names[index]=pgvn_strdup(PQgetvalue(result,i,3));
                 snprintf(collection->ids[index],37,"%s",PQgetvalue(result,i,2));
                 if(!collection->items[index] || (c==0 && !collection->names[index])) { PQclear(result); return 0; }
             }
@@ -257,18 +243,19 @@ static int read_sample(PGconn *connection,monitor_sample *sample,const char **re
     result=query(connection,"SELECT hash_hex,remaining_seconds FROM pgvn_monitor.token_snapshot()",0,NULL);
     if(!result) return 0;
     if(PQntuples(result)>CACHED_ITEMS) { PQclear(result); *reason="token_capacity"; return 0; }
-    ULONGLONG now=GetTickCount64();
+    uint64_t now=pgvn_tick();
     for(int i=0;i<PQntuples(result);++i) {
         double seconds=strtod(PQgetvalue(result,i,1),NULL);
         if(seconds<=0) continue;
         if(seconds>TOKEN_OFFLINE_SECONDS) seconds=TOKEN_OFFLINE_SECONDS;
         monitor_token *token=&sample->tokens[sample->token_count];
         if(!hash_decode(token->hash,PQgetvalue(result,i,0))) { PQclear(result); return 0; }
-        token->expires=now+(ULONGLONG)(seconds*1000); sample->token_count++;
+        token->expires=now+(uint64_t)(seconds*1000); sample->token_count++;
     }
     PQclear(result);
-    result=query(connection,"COMMIT",0,NULL); if(!result) return 0; PQclear(result);
-    timestamp(sample->sampled_at); sample->tick=GetTickCount64(); sample->valid=1;
+    result=query(connection,"COMMIT",0,NULL); if(!result) return 0;
+    PQclear(result);
+    timestamp(sample->sampled_at); sample->tick=pgvn_tick(); sample->valid=1;
     return 1;
 }
 static PGconn *monitor_connect(const char *dsn,int reading)
@@ -280,7 +267,7 @@ static PGconn *monitor_connect(const char *dsn,int reading)
     if(connection && (PQstatus(connection)!=CONNECTION_OK || PQsetnonblocking(connection,1))) { PQfinish(connection); connection=NULL; }
     return connection;
 }
-static int writer_probe(PGconn *connection,LONG *connections,LONG *waits)
+static int writer_probe(PGconn *connection,pgvn_atomic32 *connections,pgvn_atomic32 *waits)
 {
     PGresult *result=query(connection,
         "SELECT NOT pg_is_in_recovery() AND current_setting('default_transaction_read_only')='off' AND "
@@ -290,93 +277,88 @@ static int writer_probe(PGconn *connection,LONG *connections,LONG *waits)
         "FROM pg_stat_activity WHERE datname=current_database() AND usename=current_user",0,NULL);
     if(!result) return 0;
     int ready=PQntuples(result)==1 && !strcmp(PQgetvalue(result,0,0),"t");
-    if(ready) { *connections=(LONG)atoi(PQgetvalue(result,0,1)); *waits=(LONG)atoi(PQgetvalue(result,0,2)); }
+    if(ready) { *connections=(pgvn_atomic32)atoi(PQgetvalue(result,0,1)); *waits=(pgvn_atomic32)atoi(PQgetvalue(result,0,2)); }
     PQclear(result); return ready;
 }
 static void resources(pgvn_monitor_data *data)
 {
-    PROCESS_MEMORY_COUNTERS_EX memory={0}; memory.cb=sizeof(memory);
-    int available=GetProcessMemoryInfo(GetCurrentProcess(),(PROCESS_MEMORY_COUNTERS *)&memory,sizeof(memory))!=0;
-    FILETIME created,exited,kernel,user;
-    int cpu=GetProcessTimes(GetCurrentProcess(),&created,&exited,&kernel,&user)!=0;
-    ULONGLONG now=GetTickCount64(),ticks=0;
-    if(cpu) { ULARGE_INTEGER k,u; k.LowPart=kernel.dwLowDateTime; k.HighPart=kernel.dwHighDateTime;
-        u.LowPart=user.dwLowDateTime; u.HighPart=user.dwHighDateTime; ticks=k.QuadPart+u.QuadPart; }
-    DWORD processors=GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
-    AcquireSRWLockExclusive(&data->lock);
+    uint64_t working_set=0,private_bytes=0,ticks=0,now=pgvn_tick(); unsigned processors=0;
+    int available=pgvn_process_resources(&working_set,&private_bytes,&ticks,&processors),cpu=available;
+    pgvn_write_lock(&data->lock);
     data->resource_valid=available;
-    if(available) { data->working_set=memory.WorkingSetSize; data->private_bytes=memory.PrivateUsage; }
+    if(available) { data->working_set=working_set; data->private_bytes=private_bytes; }
     data->cpu_valid=cpu && processors && data->last_cpu_tick && now>data->last_cpu_tick && ticks>=data->cpu_ticks;
     if(data->cpu_valid) data->cpu_percent=(double)(ticks-data->cpu_ticks)/((now-data->last_cpu_tick)*10000.0*processors)*100.0;
     if(cpu) { data->cpu_ticks=ticks; data->last_cpu_tick=now; }
     timestamp(data->resource_at);
-    ReleaseSRWLockExclusive(&data->lock);
+    pgvn_write_unlock(&data->lock);
 }
 static int heartbeat(PGconn *connection,pgvn_monitor_data *data,const pgvn_process_metrics *metrics,const monitor_sample *sample,apr_pool_t *pool)
 {
     svn_stringbuf_t *body=svn_stringbuf_create_empty(pool);
-    append(body,pool,"{\"commands\":%lld,\"errors\":%lld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,\"sessions_limit\":%s,"
-        "\"sql_calls\":%lld,\"connections\":%ld,\"configuration_generation\":",
+    append(body,pool,"{\"commands\":%lld,\"errors\":%lld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%d,\"sessions_limit\":%s,"
+        "\"sql_calls\":%lld,\"connections\":%d,\"configuration_generation\":",
         (long long)total_commands(metrics,0),(long long)total_commands(metrics,1),(long long)metrics->published_revisions,
-        (long long)metrics->receipt_confirmations,(long)metrics->sessions_active,
-        metrics->sessions_limit>0 ? apr_psprintf(pool,"%ld",(long)metrics->sessions_limit) : "null",(long long)metrics->sql_calls,(long)metrics->connections_active);
+        (long long)metrics->receipt_confirmations,(int)metrics->sessions_active,
+        metrics->sessions_limit>0 ? apr_psprintf(pool,"%d",(int)metrics->sessions_limit) : "null",(long long)metrics->sql_calls,(int)metrics->connections_active);
     if(sample->configuration_generation>=0) append(body,pool,"%lld",(long long)sample->configuration_generation); else svn_stringbuf_appendcstr(body,"null");
-    append(body,pool,",\"ready\":%s,\"stopped\":%s,\"cpu_percent\":",pgvn_monitor_live(data) && data->writer_ok && sample->configuration_healthy && InterlockedCompareExchange(&data->business_ready,0,0) ? "true" : "false",InterlockedCompareExchange(&data->stopping,0,0) ? "true" : "false");
-    AcquireSRWLockShared(&data->lock);
+    append(body,pool,",\"ready\":%s,\"stopped\":%s,\"cpu_percent\":",pgvn_monitor_live(data) && data->writer_ok && sample->configuration_healthy && pgvn_compare32(&data->business_ready,0,0) ? "true" : "false",pgvn_compare32(&data->stopping,0,0) ? "true" : "false");
+    pgvn_read_lock(&data->lock);
     if(data->cpu_valid) append(body,pool,"%.3f",data->cpu_percent); else svn_stringbuf_appendcstr(body,"null");
-    if(data->resource_valid) append(body,pool,",\"working_set_bytes\":%llu,\"private_bytes\":%llu",data->working_set,data->private_bytes);
+    if(data->resource_valid) append(body,pool,",\"working_set_bytes\":%llu,\"private_bytes\":%llu",(unsigned long long)data->working_set,(unsigned long long)data->private_bytes);
     else svn_stringbuf_appendcstr(body,",\"working_set_bytes\":null,\"private_bytes\":null");
-    ReleaseSRWLockShared(&data->lock);
+    pgvn_read_unlock(&data->lock);
     svn_stringbuf_appendbyte(body,'}');
-    const char *values[]={data->instance,data->node,"svn",PGVN_VERSION "/" PGVN_MILESTONE,apr_psprintf(pool,"%lu",(unsigned long)GetCurrentProcessId()),data->started_at,body->data};
+    const char *values[]={data->instance,data->node,"svn",PGVN_VERSION "/" PGVN_MILESTONE,apr_psprintf(pool,"%lu",(unsigned long)pgvn_process_id()),data->started_at,body->data};
     PGresult *result=query(connection,"SELECT pgvn_monitor.publish($1::uuid,$2,$3,$4,$5::integer,$6::timestamptz,$7::jsonb)",7,values);
-    if(!result) return 0; PQclear(result); return 1;
+    if(!result) return 0;
+    PQclear(result); return 1;
 }
-static DWORD WINAPI sampler(void *baton)
+static PGVN_THREAD_PROC sampler(void *baton)
 {
     pgvn_monitor_data *data=baton; sampler_stop=data->stop; sampler_data=data;
     PGconn *reader=NULL,*writer=NULL;
     apr_pool_t *pool=svn_pool_create(NULL);
-    while(WaitForSingleObject(data->stop,0)==WAIT_TIMEOUT) {
-        ULONGLONG start=GetTickCount64(); const char *reason="database_unavailable";
+    while(!pgvn_wait_stop(data->stop,0)) {
+        uint64_t start=pgvn_tick(); const char *reason="database_unavailable";
         monitor_sample *sample=calloc(1,sizeof(*sample));
         if(!reader) reader=monitor_connect(data->reader_dsn,1);
         int ok=sample && reader && read_sample(reader,sample,&reason);
         if(!ok && reader) { PQfinish(reader); reader=NULL; }
-        if(!writer && WaitForSingleObject(data->stop,0)==WAIT_TIMEOUT) writer=monitor_connect(data->dsn,0);
-        LONG connections=0,waits=0;
+        if(!writer && !pgvn_wait_stop(data->stop,0)) writer=monitor_connect(data->dsn,0);
+        pgvn_atomic32 connections=0,waits=0;
         int writable=writer && writer_probe(writer,&connections,&waits);
         if(!writable && writer) { PQfinish(writer); writer=NULL; }
         resources(data);
         pgvn_process_metrics metrics; pgvn_process_snapshot(&metrics);
-        AcquireSRWLockExclusive(&data->lock); data->writer_ok=writable; data->business_connections=connections; data->backend_lock_waits=waits; ReleaseSRWLockExclusive(&data->lock);
+        pgvn_write_lock(&data->lock); data->writer_ok=writable; data->business_connections=connections; data->backend_lock_waits=waits; pgvn_write_unlock(&data->lock);
         if(ok && writable && !heartbeat(writer,data,&metrics,sample,pool)) {
             pgvn_telemetry_event("sampler","heartbeat_unavailable",0);
-            AcquireSRWLockExclusive(&data->lock); data->dropped_batches++; ReleaseSRWLockExclusive(&data->lock);
+            pgvn_write_lock(&data->lock); data->dropped_batches++; pgvn_write_unlock(&data->lock);
             PQfinish(writer); writer=NULL;
         }
-        monitor_trend point={0}; timestamp(point.at); point.tick=GetTickCount64();
+        monitor_trend point={0}; timestamp(point.at); point.tick=pgvn_tick();
         point.command_microseconds=metrics.command_microseconds;
         point.commands=total_commands(&metrics,0); point.errors=total_commands(&metrics,1); point.sql_calls=metrics.sql_calls;
         point.bytes_received=metrics.bytes_received; point.bytes_sent=metrics.bytes_sent;
-        point.database_available=ok; point.database_ms=(double)(GetTickCount64()-start);
-        AcquireSRWLockExclusive(&data->lock);
+        point.database_available=ok; point.database_ms=(double)(pgvn_tick()-start);
+        pgvn_write_lock(&data->lock);
         const char *state= !ok ? reason : !writable ? "writer_unavailable" : !sample->configuration_healthy ? "configuration_unavailable" : "ok";
         if(strcmp(data->reason,state)) pgvn_telemetry_event("sampler",state,0);
         if(ok) { monitor_sample old=data->sample; data->sample=*sample; *sample=old; data->sequence++; }
         else if(!strcmp(reason,"token_capacity")) {
-            SecureZeroMemory(data->sample.tokens,sizeof(data->sample.tokens)); data->sample.token_count=0;
+            pgvn_secure_zero(data->sample.tokens,sizeof(data->sample.tokens)); data->sample.token_count=0;
         }
         data->last_attempt_ok=ok; data->reason=state;
         if(!ok) data->sample_failures++;
         data->sampler_ms=point.database_ms;
         point.cpu_valid=data->cpu_valid; point.cpu_percent=data->cpu_percent; point.resource_valid=data->resource_valid;
-        point.working_set=(LONG64)data->working_set; point.private_bytes=(LONG64)data->private_bytes;
+        point.working_set=(pgvn_atomic64)data->working_set; point.private_bytes=(pgvn_atomic64)data->private_bytes;
         if(data->trend_count) {
             monitor_trend *previous=&data->trends[(data->trend_next+179)%180];
             if(point.tick>previous->tick && point.commands>=previous->commands && point.errors>=previous->errors) {
                 point.rate_valid=1; point.rate=(point.commands-previous->commands)*1000.0/(point.tick-previous->tick);
-                LONG64 completed=point.commands-previous->commands;
+                pgvn_atomic64 completed=point.commands-previous->commands;
                 point.activity_valid=completed>0;
                 if(completed) { point.error_percent=(point.errors-previous->errors)*100.0/completed;
                     point.latency_ms=(point.command_microseconds-previous->command_microseconds)/1000.0/completed; }
@@ -384,12 +366,12 @@ static DWORD WINAPI sampler(void *baton)
         }
         data->trends[data->trend_next]=point; data->trend_next=(data->trend_next+1)%180;
         if(data->trend_count<180) data->trend_count++;
-        ReleaseSRWLockExclusive(&data->lock);
+        pgvn_write_unlock(&data->lock);
         if(sample) { free_sample(sample); free(sample); }
         svn_pool_clear(pool);
-        ULONGLONG elapsed=GetTickCount64()-start;
-        DWORD delay=elapsed<5000 ? (DWORD)(5000-elapsed) : 1;
-        if(WaitForSingleObject(data->stop,delay)!=WAIT_TIMEOUT) break;
+        uint64_t elapsed=pgvn_tick()-start;
+        uint32_t delay=elapsed<5000 ? (uint32_t)(5000-elapsed) : 1;
+        if(pgvn_wait_stop(data->stop,delay)) break;
     }
     /* Best effort final status uses only an existing connection and at most
      * 200 ms of polling. Missing acknowledgement leaves peers to detect loss;
@@ -398,76 +380,76 @@ static DWORD WINAPI sampler(void *baton)
         sampler_final=1; pgvn_process_metrics final; pgvn_process_snapshot(&final);
         (void)heartbeat(writer,data,&final,&data->sample,pool);
     }
-    if(reader) PQfinish(reader); if(writer) PQfinish(writer); svn_pool_destroy(pool); return 0;
+    if(reader) { PQfinish(reader); } if(writer) { PQfinish(writer); } svn_pool_destroy(pool); return 0;
 }
 
-DWORD pgvn_monitor_data_start(pgvn_monitor_data **output,const char *configuration)
+uint32_t pgvn_monitor_data_start(pgvn_monitor_data **output,const char *configuration)
 {
     *output=NULL; pgvn_monitor_data *data=calloc(1,sizeof(*data));
-    if(!data) return ERROR_NOT_ENOUGH_MEMORY;
-    InitializeSRWLock(&data->lock); data->pool=svn_pool_create(NULL); data->reason="not_configured";
+    if(!data) return PGVN_OS_NOMEM;
+    pgvn_rwlock_init(&data->lock); data->pool=svn_pool_create(NULL); data->reason="not_configured";
     apr_uuid_t id; apr_uuid_get(&id); apr_uuid_format(data->instance,&id);
-    timestamp(data->started_at); data->started_tick=GetTickCount64(); pgvn_monitor_tick(data);
+    timestamp(data->started_at); data->started_tick=pgvn_tick(); pgvn_monitor_tick(data);
     data->node="local";
     if(configuration) {
         svn_config_t *config; svn_error_t *error=svn_config_read3(&config,configuration,TRUE,TRUE,TRUE,data->pool);
-        if(error) { svn_error_clear(error); pgvn_monitor_data_stop(data); return ERROR_INVALID_PARAMETER; }
+        if(error) { svn_error_clear(error); pgvn_monitor_data_stop(data); return PGVN_OS_INVALID; }
         svn_config_get(config,&data->dsn,"pgvn","connection",NULL);
         svn_config_get(config,&data->reader_dsn,"pgvn","monitor-connection",NULL);
         svn_config_get(config,&data->node,"pgvn","node-id",NULL);
         if(!data->node) {
-            char host[64]; DWORD length=sizeof(host); const char *port;
-            if(!GetComputerNameA(host,&length)) strcpy(host,"node");
+            char host[64]; const char *port;
+            if(!pgvn_hostname(host,sizeof(host))) strcpy(host,"node");
             svn_config_get(config,&port,"pgvn","listen-port","3690");
             data->node=apr_pstrcat(data->pool,host,":",port,NULL);
         }
         int valid=data->dsn && *data->dsn && data->reader_dsn && *data->reader_dsn && *data->node && strlen(data->node)<=80;
         for(const unsigned char *p=(const unsigned char *)data->node;*p;++p)
             if(!((*p>='a' && *p<='z') || (*p>='A' && *p<='Z') || (*p>='0' && *p<='9') || strchr("_.:-",*p))) valid=0;
-        if(!valid) { pgvn_monitor_data_stop(data); return ERROR_INVALID_PARAMETER; }
+        if(!valid) { pgvn_monitor_data_stop(data); return PGVN_OS_INVALID; }
         data->reason="awaiting_sample";
-        data->stop=CreateEventW(NULL,TRUE,FALSE,NULL);
-        if(!data->stop) { DWORD result=GetLastError(); pgvn_monitor_data_stop(data); return result; }
-        data->thread=CreateThread(NULL,0,sampler,data,0,NULL);
-        if(!data->thread) { DWORD result=GetLastError(); pgvn_monitor_data_stop(data); return result; }
+        data->stop=pgvn_event_create();
+        if(!data->stop) { uint32_t result=PGVN_OS_ERROR(); pgvn_monitor_data_stop(data); return result; }
+        data->thread=pgvn_thread_create(sampler,data);
+        if(!data->thread) { uint32_t result=PGVN_OS_ERROR(); pgvn_monitor_data_stop(data); return result; }
     }
-    *output=data; return NO_ERROR;
+    *output=data; return 0;
 }
 void pgvn_monitor_data_stop(pgvn_monitor_data *data)
 {
     if(!data) return;
-    InterlockedExchange(&data->stopping,1); InterlockedExchange(&data->business_ready,0);
-    if(data->stop) SetEvent(data->stop);
-    if(data->thread) { WaitForSingleObject(data->thread,INFINITE); CloseHandle(data->thread); }
-    if(data->stop) CloseHandle(data->stop);
-    free_sample(&data->sample); if(data->pool) svn_pool_destroy(data->pool); free(data);
+    pgvn_exchange32(&data->stopping,1); pgvn_exchange32(&data->business_ready,0);
+    if(data->stop) pgvn_cancel_signal(data->stop);
+    if(data->thread) { pgvn_thread_wait(data->thread,UINT32_MAX); pgvn_thread_close(data->thread); }
+    if(data->stop) pgvn_event_close(data->stop);
+    free_sample(&data->sample); if(data->pool) svn_pool_destroy(data->pool); pgvn_rwlock_destroy(&data->lock); free(data);
 }
-void pgvn_monitor_business(pgvn_monitor_data *data,int ready) { if(data) InterlockedExchange(&data->business_ready,ready); }
-void pgvn_monitor_tick(pgvn_monitor_data *data) { if(data) InterlockedExchange64(&data->main_tick,(LONG64)GetTickCount64()); }
+void pgvn_monitor_business(pgvn_monitor_data *data,int ready) { if(data) pgvn_exchange32(&data->business_ready,ready); }
+void pgvn_monitor_tick(pgvn_monitor_data *data) { if(data) pgvn_exchange64(&data->main_tick,(pgvn_atomic64)pgvn_tick()); }
 int pgvn_monitor_live(pgvn_monitor_data *data)
 {
-    return data && GetTickCount64()-(ULONGLONG)InterlockedCompareExchange64(&data->main_tick,0,0)<=15000;
+    return data && pgvn_tick()-(uint64_t)pgvn_compare64(&data->main_tick,0,0)<=15000;
 }
 int pgvn_monitor_ready(pgvn_monitor_data *data)
 {
     if(!pgvn_monitor_live(data)) return 0;
-    AcquireSRWLockShared(&data->lock);
-    int ready=data->sample.valid && data->last_attempt_ok && data->writer_ok && data->sample.configuration_healthy && GetTickCount64()-data->sample.tick<=15000
-        && InterlockedCompareExchange(&data->business_ready,0,0);
-    ReleaseSRWLockShared(&data->lock); return ready;
+    pgvn_read_lock(&data->lock);
+    int ready=data->sample.valid && data->last_attempt_ok && data->writer_ok && data->sample.configuration_healthy && pgvn_tick()-data->sample.tick<=15000
+        && pgvn_compare32(&data->business_ready,0,0);
+    pgvn_read_unlock(&data->lock); return ready;
 }
 int pgvn_monitor_authorize(pgvn_monitor_data *data,const char *header,size_t length)
 {
     if(length!=76 || memcmp(header,"Bearer pgvn_",12)) return 0;
     for(size_t i=12;i<length;++i) if(nibble(header[i])<0) return 0;
-    unsigned char hash[32]; if(!sha256(hash,(const unsigned char *)header+7,69)) return 0;
-    int found=0; ULONGLONG now=GetTickCount64();
-    AcquireSRWLockShared(&data->lock);
+    unsigned char hash[32]; if(!pgvn_sha256(hash,(const unsigned char *)header+7,69)) return 0;
+    int found=0; uint64_t now=pgvn_tick();
+    pgvn_read_lock(&data->lock);
     for(int i=0;i<data->sample.token_count;++i) {
         unsigned different=0; for(int n=0;n<32;++n) different|=hash[n]^data->sample.tokens[i].hash[n];
         found|=different==0 && now<data->sample.tokens[i].expires;
     }
-    ReleaseSRWLockShared(&data->lock); SecureZeroMemory(hash,sizeof(hash)); return found;
+    pgvn_read_unlock(&data->lock); pgvn_secure_zero(hash,sizeof(hash)); return found;
 }
 
 static void metadata(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_t *pool)
@@ -475,36 +457,36 @@ static void metadata(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_t *po
     monitor_sample *sample=&data->sample;
     svn_stringbuf_appendcstr(out,"\"sampled_at\":");
     if(sample->valid) quote(out,sample->sampled_at); else svn_stringbuf_appendcstr(out,"null");
-    if(sample->valid) append(out,pool,",\"age_seconds\":%.3f",(GetTickCount64()-sample->tick)/1000.0);
+    if(sample->valid) append(out,pool,",\"age_seconds\":%.3f",(pgvn_tick()-sample->tick)/1000.0);
     else svn_stringbuf_appendcstr(out,",\"age_seconds\":null");
-    const char *freshness=!sample->valid ? "unknown" : GetTickCount64()-sample->tick>15000 ? "stale" : "fresh";
+    const char *freshness=!sample->valid ? "unknown" : pgvn_tick()-sample->tick>15000 ? "stale" : "fresh";
     append(out,pool,",\"freshness\":\"%s\",\"source\":\"postgresql_sample\",\"node_id\":",freshness); quote(out,data->node);
     append(out,pool,",\"instance_id\":\"%s\",\"sample_id\":%lu,\"last_attempt_ok\":%s,\"reason\":\"%s\"",
         data->instance,data->sequence,data->last_attempt_ok ? "true" : "false",data->reason);
 }
-static int p95_bound(const LONG64 *buckets,LONG64 count)
+static int p95_bound(const pgvn_atomic64 *buckets,pgvn_atomic64 count)
 {
     static const int milliseconds[]={5,20,100,500,2000};
     if(!count) return 0;
-    LONG64 threshold=count-count/20;
+    pgvn_atomic64 threshold=count-count/20;
     for(int i=0;i<5;++i) if(buckets[i]>=threshold) return milliseconds[i];
     return -1;
 }
 static void process_json(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_t *pool)
 {
     pgvn_process_metrics m; pgvn_process_snapshot(&m);
-    LONG64 count=total_commands(&m,0); int p95=p95_bound(m.latency,count);
+    pgvn_atomic64 count=total_commands(&m,0); int p95=p95_bound(m.latency,count);
     append(out,pool,"{\"source\":\"process\",\"version\":\"%s/%s\",\"started_at\":\"%s\",\"uptime_seconds\":%.3f,\"pid\":%lu,\"commands\":%lld,\"errors\":%lld,"
-        "\"commands_active\":%ld,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%ld,\"sessions_limit\":%s,\"sessions_started\":%lld,\"sessions_rejected\":%lld,"
-        "\"sql_calls\":%lld,\"sql_errors\":%lld,\"sql_milliseconds\":%.3f,\"sql_active\":%ld,\"connections_leased\":%ld,\"connection_limit\":32,"
-        "\"connection_rejections\":%lld,\"connection_failures\":%lld,\"control_waiters\":%ld,\"writers_active\":%ld,\"bytes_received\":%lld,\"bytes_sent\":%lld,"
-        "\"byte_source\":\"svn_ra_svn_socket\",\"monitor_requests\":%lld,\"monitor_errors\":%lld,\"monitor_active\":%ld,\"command_mean_milliseconds\":",
-        PGVN_VERSION,PGVN_MILESTONE,data->started_at,(GetTickCount64()-data->started_tick)/1000.0,(unsigned long)GetCurrentProcessId(),(long long)count,(long long)total_commands(&m,1),
-        (long)m.commands_active,(long long)m.published_revisions,(long long)m.receipt_confirmations,(long)m.sessions_active,
-        m.sessions_limit>0 ? apr_psprintf(pool,"%ld",(long)m.sessions_limit) : "null",(long long)m.sessions_started,(long long)m.sessions_rejected,
-        (long long)m.sql_calls,(long long)m.sql_errors,m.sql_microseconds/1000.0,(long)m.sql_active,(long)m.connections_active,
-        (long long)m.connection_rejections,(long long)m.connection_failures,(long)m.control_waiters,(long)m.writers_active,(long long)m.bytes_received,(long long)m.bytes_sent,
-        (long long)m.monitor_requests,(long long)m.monitor_errors,(long)m.monitor_active);
+        "\"commands_active\":%d,\"published_revisions\":%lld,\"receipt_confirmations\":%lld,\"sessions_active\":%d,\"sessions_limit\":%s,\"sessions_started\":%lld,\"sessions_rejected\":%lld,"
+        "\"sql_calls\":%lld,\"sql_errors\":%lld,\"sql_milliseconds\":%.3f,\"sql_active\":%d,\"connections_leased\":%d,\"connection_limit\":32,"
+        "\"connection_rejections\":%lld,\"connection_failures\":%lld,\"control_waiters\":%d,\"writers_active\":%d,\"bytes_received\":%lld,\"bytes_sent\":%lld,"
+        "\"byte_source\":\"svn_ra_svn_socket\",\"monitor_requests\":%lld,\"monitor_errors\":%lld,\"monitor_active\":%d,\"command_mean_milliseconds\":",
+        PGVN_VERSION,PGVN_MILESTONE,data->started_at,(pgvn_tick()-data->started_tick)/1000.0,(unsigned long)pgvn_process_id(),(long long)count,(long long)total_commands(&m,1),
+        (int)m.commands_active,(long long)m.published_revisions,(long long)m.receipt_confirmations,(int)m.sessions_active,
+        m.sessions_limit>0 ? apr_psprintf(pool,"%d",(int)m.sessions_limit) : "null",(long long)m.sessions_started,(long long)m.sessions_rejected,
+        (long long)m.sql_calls,(long long)m.sql_errors,m.sql_microseconds/1000.0,(int)m.sql_active,(int)m.connections_active,
+        (long long)m.connection_rejections,(long long)m.connection_failures,(int)m.control_waiters,(int)m.writers_active,(long long)m.bytes_received,(long long)m.bytes_sent,
+        (long long)m.monitor_requests,(long long)m.monitor_errors,(int)m.monitor_active);
     if(count) append(out,pool,"%.3f",m.command_microseconds/1000.0/count); else svn_stringbuf_appendcstr(out,"null");
     svn_stringbuf_appendcstr(out,",\"command_p95_upper_bound_ms\":");
     if(p95>0) append(out,pool,"%d",p95); else svn_stringbuf_appendcstr(out,"null");
@@ -512,7 +494,7 @@ static void process_json(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_t
     if(*data->resource_at) quote(out,data->resource_at); else svn_stringbuf_appendcstr(out,"null");
     svn_stringbuf_appendcstr(out,",\"cpu_percent_of_machine\":");
     if(data->cpu_valid) append(out,pool,"%.3f",data->cpu_percent); else svn_stringbuf_appendcstr(out,"null");
-    if(data->resource_valid) append(out,pool,",\"working_set_bytes\":%llu,\"private_bytes\":%llu",data->working_set,data->private_bytes);
+    if(data->resource_valid) append(out,pool,",\"working_set_bytes\":%llu,\"private_bytes\":%llu",(unsigned long long)data->working_set,(unsigned long long)data->private_bytes);
     else svn_stringbuf_appendcstr(out,",\"working_set_bytes\":null,\"private_bytes\":null");
     svn_stringbuf_appendcstr(out,",\"sqlstate_classes\":{");
     for(int i=0;i<PGVN_SQL_CLASS_COUNT;++i) append(out,pool,"%s\"%s\":%lld",i ? "," : "",pgvn_sql_class_name(i),(long long)m.sql_classes[i]);
@@ -525,7 +507,7 @@ static void database_json(svn_stringbuf_t *out,pgvn_monitor_data *data,apr_pool_
     svn_stringbuf_appendbytes(out,data->sample.database,length-1);
     append(out,pool,",\"writable\":%s,\"reader_restricted\":%s,\"configuration_healthy\":%s,\"application_connections_same_role\":",
         data->writer_ok ? "true" : "null",data->sample.reader_restricted ? "true" : "false",data->sample.configuration_healthy ? "true" : "false");
-    if(data->writer_ok) append(out,pool,"%ld,\"backend_lock_waits_same_role\":%ld",(long)data->business_connections,(long)data->backend_lock_waits);
+    if(data->writer_ok) append(out,pool,"%d,\"backend_lock_waits_same_role\":%d",(int)data->business_connections,(int)data->backend_lock_waits);
     else svn_stringbuf_appendcstr(out,"null,\"backend_lock_waits_same_role\":null");
     svn_stringbuf_appendbyte(out,'}');
 }
@@ -555,7 +537,7 @@ static int decode_value(char *out,size_t capacity,const char *input,size_t lengt
         out[size++]=(char)value;
     }
     out[size]=0;
-    return !size || MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,out,(int)size,NULL,0)>0;
+    return !size || pgvn_utf8_valid(out);
 }
 static int parse_options(api_options *options,const char *query_text,unsigned allowed)
 {
@@ -615,7 +597,7 @@ static void collection_json(svn_stringbuf_t *out,monitor_collection *collection,
     for(int i=0;i<collection->count;++i) if(row_matches(collection,i,options)) {
         if(matched++<options->offset) continue;
         if(returned==options->limit) { more=1; break; }
-        if(returned++) svn_stringbuf_appendbyte(out,','); svn_stringbuf_appendcstr(out,collection->items[i]);
+        if(returned++) { svn_stringbuf_appendbyte(out,','); } svn_stringbuf_appendcstr(out,collection->items[i]);
     }
     append(out,pool,"],\"limit\":%d,\"cached_count\":%d,\"truncated\":%s,\"next_cursor\":",options->limit,collection->count,collection->truncated ? "true" : "false");
     if(more) append(out,pool,"\"%lu:%d\"",sequence,options->offset+returned); else svn_stringbuf_appendcstr(out,"null");
@@ -623,13 +605,14 @@ static void collection_json(svn_stringbuf_t *out,monitor_collection *collection,
 static void event_json(svn_stringbuf_t *out,const pgvn_monitor_event *event,apr_pool_t *pool)
 {
     apr_time_exp_t stamp; apr_time_exp_gmt(&stamp,event->at);
-    append(out,pool,"{\"sampled_at\":\"%04d-%02d-%02dT%02d:%02d:%02dZ\",\"source\":\"%s\",\"code\":\"%s\",\"operation\":\"%s\",\"error_code\":%ld,"
+    append(out,pool,"{\"sampled_at\":\"%04d-%02d-%02dT%02d:%02d:%02dZ\",\"source\":\"%s\",\"code\":\"%s\",\"operation\":\"%s\",\"error_code\":%d,"
         "\"repository_id\":\"%s\",\"request_id\":\"%s\",\"sequence\":%llu}",stamp.tm_year+1900,stamp.tm_mon+1,stamp.tm_mday,stamp.tm_hour,stamp.tm_min,stamp.tm_sec,
-        event->source,event->code,event->operation,(long)event->error_code,event->repository_id,event->request_id,event->sequence);
+        event->source,event->code,event->operation,(int)event->error_code,event->repository_id,event->request_id,event->sequence);
 }
 static int decimal64(const char *text,unsigned long long *result)
 {
-    if(!*text) return 0; *result=0;
+    if(!*text) return 0;
+    *result=0;
     for(;*text;++text) { if(*text<'0' || *text>'9' || *result>(~0ULL-(unsigned)(*text-'0'))/10) return 0; *result=*result*10+(unsigned)(*text-'0'); }
     return 1;
 }
@@ -647,7 +630,7 @@ static int events_json(svn_stringbuf_t *out,const api_options *options,apr_pool_
         pgvn_monitor_event *event=&snapshot->events[i-1];
         if(event->sequence>=before || (*options->repository && strcmp(options->repository,event->repository_id))) continue;
         if(returned==(unsigned)options->limit) { more=1; break; }
-        if(returned++) svn_stringbuf_appendbyte(out,','); event_json(out,event,pool); last=event->sequence;
+        if(returned++) { svn_stringbuf_appendbyte(out,','); } event_json(out,event,pool); last=event->sequence;
     }
     append(out,pool,"],\"limit\":%d,\"capacity\":200,\"next_cursor\":",options->limit);
     if(more) append(out,pool,"\"e%llu\"",last); else svn_stringbuf_appendcstr(out,"null");
@@ -671,12 +654,12 @@ static int series_json(svn_stringbuf_t *out,pgvn_monitor_data *data,const api_op
 {
     monitor_trend zero={0}; double probe;
     if(series_metric(&zero,options->metric,&probe)<0) return 400;
-    ULONGLONG now=GetTickCount64(); int last_bucket=-1,count=0,emitted=0; double sum=0,last_value=0; const char *stamp=NULL;
+    uint64_t now=pgvn_tick(); int last_bucket=-1,count=0,emitted=0; double sum=0,last_value=0; const char *stamp=NULL;
     int cumulative=!strcmp(options->metric,"bytes_received") || !strcmp(options->metric,"bytes_sent") || !strcmp(options->metric,"sql_calls");
     append(out,pool,"\"series_source\":\"process\",\"metric\":\"%s\",\"window_seconds\":%d,\"step_seconds\":%d,\"aggregation\":\"%s\",\"items\":[",options->metric,options->window,options->step,cumulative ? "last" : "mean");
     for(unsigned i=0;i<=data->trend_count;++i) {
         monitor_trend *point=i<data->trend_count ? &data->trends[(data->trend_next+180-data->trend_count+i)%180] : NULL;
-        if(point && now-point->tick>(ULONGLONG)options->window*1000) continue;
+        if(point && now-point->tick>(uint64_t)options->window*1000) continue;
         int bucket=point ? (int)((now-point->tick)/(1000*(unsigned)options->step)) : -2;
         if(stamp && bucket!=last_bucket) {
             append(out,pool,"%s{\"sampled_at\":\"%s\",\"value\":",emitted++ ? "," : "",stamp);
@@ -698,36 +681,36 @@ const char *pgvn_monitor_api(pgvn_monitor_data *data,const char *path,const char
     int series=!strcmp(name,"series"),events=!strcmp(name,"events");
     if(collection<0 && !detail && !series && !events && strcmp(name,"overview") && strcmp(name,"trends") && strcmp(name,"requests")) { *status=404; return "not_found"; }
     unsigned allowed=detail || !strcmp(name,"overview") || !strcmp(name,"requests") ? 0 : collection>=0 ? OPT_LIMIT|OPT_CURSOR : events ? OPT_LIMIT|OPT_CURSOR|OPT_REPO : series ? OPT_METRIC|OPT_WINDOW|OPT_STEP : 0;
-    if(collection==0) allowed|=OPT_SEARCH; if(collection==2 || collection==3) allowed|=OPT_REPO;
+    if(collection==0) { allowed|=OPT_SEARCH; } if(collection==2 || collection==3) allowed|=OPT_REPO;
     api_options options;
     if(!parse_options(&options,query_text,allowed)) { *status=400; return "invalid_query"; }
     svn_stringbuf_t *out=svn_stringbuf_create("{",pool);
-    AcquireSRWLockShared(&data->lock);
-    if(collection>=0) { int parsed=page_offset(&options,data->sequence); if(parsed!=1) { ReleaseSRWLockShared(&data->lock); *status=parsed<0 ? 409 : 400; return parsed<0 ? "cursor_expired" : "invalid_query"; } }
+    pgvn_read_lock(&data->lock);
+    if(collection>=0) { int parsed=page_offset(&options,data->sequence); if(parsed!=1) { pgvn_read_unlock(&data->lock); *status=parsed<0 ? 409 : 400; return parsed<0 ? "cursor_expired" : "invalid_query"; } }
     metadata(out,data,pool);
     if(!strcmp(name,"overview")) {
-        int ready=pgvn_monitor_live(data) && data->sample.valid && data->last_attempt_ok && data->writer_ok && data->sample.configuration_healthy && GetTickCount64()-data->sample.tick<=15000
-            && InterlockedCompareExchange(&data->business_ready,0,0);
+        int ready=pgvn_monitor_live(data) && data->sample.valid && data->last_attempt_ok && data->writer_ok && data->sample.configuration_healthy && pgvn_tick()-data->sample.tick<=15000
+            && pgvn_compare32(&data->business_ready,0,0);
         append(out,pool,",\"ready\":%s,\"sampler_milliseconds\":%.3f,\"sample_failures\":%u,\"sampler_sql_calls\":%lld,\"sampler_sql_errors\":%lld,\"dropped_telemetry_batches\":%lld,\"database\":",
-            ready ? "true" : "false",data->sampler_ms,data->sample_failures,(long long)InterlockedCompareExchange64(&data->sampler_queries,0,0),
-            (long long)InterlockedCompareExchange64(&data->sampler_query_errors,0,0),(long long)data->dropped_batches);
+            ready ? "true" : "false",data->sampler_ms,data->sample_failures,(long long)pgvn_compare64(&data->sampler_queries,0,0),
+            (long long)pgvn_compare64(&data->sampler_query_errors,0,0),(long long)data->dropped_batches);
         database_json(out,data,pool); svn_stringbuf_appendcstr(out,",\"process\":"); process_json(out,data,pool);
     } else if(collection>=0) { svn_stringbuf_appendbyte(out,','); collection_json(out,&data->sample.collections[collection],&options,data->sequence,pool); }
     else if(detail) {
         apr_uuid_t uuid; apr_uuid_parse(&uuid,name+6); char id[37]; apr_uuid_format(id,&uuid);
         monitor_collection *repos=&data->sample.collections[0]; int found=-1;
         for(int i=0;i<repos->count;++i) if(!strcmp(repos->ids[i],id)) { found=i; break; }
-        if(found<0) { ReleaseSRWLockShared(&data->lock); *status=repos->truncated || !data->sample.valid ? 503 : 404; return *status==503 ? "repository_not_in_snapshot" : "not_found"; }
+        if(found<0) { pgvn_read_unlock(&data->lock); *status=repos->truncated || !data->sample.valid ? 503 : 404; return *status==503 ? "repository_not_in_snapshot" : "not_found"; }
         append(out,pool,",\"repository\":%s",repos->items[found]); strcpy(options.repository,id);
         const char *keys[]={"transactions","locks","recent_revisions"}; const int indices[]={2,4,5};
         for(int c=0;c<3;++c) { append(out,pool,",\"%s\":{",keys[c]); collection_json(out,&data->sample.collections[indices[c]],&options,data->sequence,pool); svn_stringbuf_appendbyte(out,'}'); }
         svn_stringbuf_appendcstr(out,",\"recent_errors\":{"); int code=events_json(out,&options,pool); (void)code; svn_stringbuf_appendbyte(out,'}');
     } else if(series) {
         svn_stringbuf_appendbyte(out,','); int code=series_json(out,data,&options,pool);
-        if(code!=200) { ReleaseSRWLockShared(&data->lock); *status=400; return "invalid_query"; }
+        if(code!=200) { pgvn_read_unlock(&data->lock); *status=400; return "invalid_query"; }
     } else if(!strcmp(name,"trends")) {
         svn_stringbuf_appendcstr(out,",\"window_seconds\":900,\"items\":[");
-        int emitted=0; ULONGLONG now=GetTickCount64();
+        int emitted=0; uint64_t now=pgvn_tick();
         for(unsigned i=0;i<data->trend_count;++i) {
             monitor_trend *point=&data->trends[(data->trend_next+180-data->trend_count+i)%180];
             if(now-point->tick>900000) continue;
@@ -745,9 +728,9 @@ const char *pgvn_monitor_api(pgvn_monitor_data *data,const char *path,const char
         svn_stringbuf_appendcstr(out,"],\"next_cursor\":null");
     } else {
         svn_stringbuf_appendbyte(out,','); int code=events_json(out,&options,pool);
-        if(code!=200) { ReleaseSRWLockShared(&data->lock); *status=code; return code==409 ? "cursor_expired" : "invalid_query"; }
+        if(code!=200) { pgvn_read_unlock(&data->lock); *status=code; return code==409 ? "cursor_expired" : "invalid_query"; }
     }
-    svn_stringbuf_appendcstr(out,"}\n"); ReleaseSRWLockShared(&data->lock); *status=200; return out->data;
+    svn_stringbuf_appendcstr(out,"}\n"); pgvn_read_unlock(&data->lock); *status=200; return out->data;
 }
 static void metric_type(svn_stringbuf_t *out,const char *name,const char *type,const char *help,apr_pool_t *pool)
 {
@@ -756,6 +739,13 @@ static void metric_type(svn_stringbuf_t *out,const char *name,const char *type,c
 const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
 {
     pgvn_process_metrics m; pgvn_process_snapshot(&m); svn_stringbuf_t *out=svn_stringbuf_create_empty(pool);
+    pgvn_cache_stats cache; pgvn_cache_snapshot(&cache);
+    append(out,pool,"# TYPE pgvn_cache_local_hits_total counter\npgvn_cache_local_hits_total %lld\n"
+        "# TYPE pgvn_cache_local_misses_total counter\npgvn_cache_local_misses_total %lld\n"
+        "# TYPE pgvn_cache_local_evictions_total counter\npgvn_cache_local_evictions_total %lld\n"
+        "# TYPE pgvn_cache_local_errors_total counter\npgvn_cache_local_errors_total %lld\n"
+        "# TYPE pgvn_cache_local_bytes gauge\npgvn_cache_local_bytes %lld\n",
+        (long long)cache.hits,(long long)cache.misses,(long long)cache.evictions,(long long)cache.errors,(long long)cache.bytes);
     metric_type(out,"pgvn_commands_total","counter","Completed top-level SVN commands by operation and result.",pool);
     for(int i=0;i<PGVN_OPERATION_COUNT;++i) for(int r=0;r<PGVN_RESULT_COUNT;++r)
         append(out,pool,"pgvn_commands_total{component=\"svn\",instance_id=\"%s\",operation=\"%s\",result=\"%s\"} %lld\n",data->instance,pgvn_operation_name(i),pgvn_result_name(r),(long long)m.commands[i][r]);
@@ -770,7 +760,7 @@ const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
     metric_type(out,"pgvn_sessions_active","gauge","Active SVN transport sessions.",pool);
     append(out,pool,"pgvn_sessions_active{instance_id=\"%s\"} %lld\n",data->instance,(long long)m.sessions_active);
     metric_type(out,"pgvn_sessions_limit","gauge","Effective SVN transport session capacity; absent when no listener is running.",pool);
-    if(m.sessions_limit>0) append(out,pool,"pgvn_sessions_limit{instance_id=\"%s\"} %ld\n",data->instance,(long)m.sessions_limit);
+    if(m.sessions_limit>0) append(out,pool,"pgvn_sessions_limit{instance_id=\"%s\"} %d\n",data->instance,(int)m.sessions_limit);
     metric_type(out,"pgvn_commands_active","gauge","SVN commands in progress.",pool);
     append(out,pool,"pgvn_commands_active{instance_id=\"%s\"} %lld\n",data->instance,(long long)m.commands_active);
     metric_type(out,"pgvn_sql_active","gauge","Business libpq execution calls in progress.",pool);
@@ -797,15 +787,15 @@ const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
     for(int i=0;i<PGVN_SQL_CLASS_COUNT;++i) append(out,pool,"pgvn_sql_results_total{instance_id=\"%s\",sqlstate_class=\"%s\"} %lld\n",data->instance,pgvn_sql_class_name(i),(long long)m.sql_classes[i]);
     static const char *bounds[]={"0.005","0.02","0.1","0.5","2","+Inf"};
     const char *names[]={"pgvn_command_duration_seconds","pgvn_sql_duration_seconds"};
-    const LONG64 *counts[]={m.latency,m.sql_latency};
+    const pgvn_atomic64 *counts[]={m.latency,m.sql_latency};
     for(int n=0;n<2;++n) {
         metric_type(out,names[n],"histogram",n==0 ? "Completed SVN command elapsed time." : "Completed business libpq call elapsed time.",pool);
         for(int i=0;i<PGVN_BUCKET_COUNT;++i) append(out,pool,"%s_bucket{instance_id=\"%s\",le=\"%s\"} %lld\n",names[n],data->instance,bounds[i],(long long)counts[n][i]);
         append(out,pool,"%s_sum{instance_id=\"%s\"} %.6f\n%s_count{instance_id=\"%s\"} %lld\n",names[n],data->instance,(n==0 ? m.command_microseconds : m.sql_microseconds)/1000000.0,names[n],data->instance,(long long)(n==0 ? total_commands(&m,0) : m.sql_calls));
     }
-    AcquireSRWLockShared(&data->lock);
+    pgvn_read_lock(&data->lock);
     metric_type(out,"pgvn_sampler_sql_calls_total","counter","Completed or attempted sampler libpq calls, separate from business calls.",pool);
-    append(out,pool,"pgvn_sampler_sql_calls_total{instance_id=\"%s\"} %lld\n",data->instance,(long long)InterlockedCompareExchange64(&data->sampler_queries,0,0));
+    append(out,pool,"pgvn_sampler_sql_calls_total{instance_id=\"%s\"} %lld\n",data->instance,(long long)pgvn_compare64(&data->sampler_queries,0,0));
     metric_type(out,"pgvn_dropped_telemetry_batches_total","counter","Telemetry publication batches that failed.",pool);
     append(out,pool,"pgvn_dropped_telemetry_batches_total{instance_id=\"%s\"} %lld\n",data->instance,(long long)data->dropped_batches);
     if(data->last_cpu_tick) {
@@ -814,15 +804,15 @@ const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
     }
     if(data->resource_valid) {
         metric_type(out,"pgvn_process_working_set_bytes","gauge","Windows working set bytes, sampled independently of database success.",pool);
-        append(out,pool,"pgvn_process_working_set_bytes{instance_id=\"%s\"} %llu\n",data->instance,data->working_set);
+        append(out,pool,"pgvn_process_working_set_bytes{instance_id=\"%s\"} %llu\n",data->instance,(unsigned long long)data->working_set);
         metric_type(out,"pgvn_process_private_bytes","gauge","Windows process private committed bytes.",pool);
-        append(out,pool,"pgvn_process_private_bytes{instance_id=\"%s\"} %llu\n",data->instance,data->private_bytes);
+        append(out,pool,"pgvn_process_private_bytes{instance_id=\"%s\"} %llu\n",data->instance,(unsigned long long)data->private_bytes);
     }
     if(data->sample.valid) {
         metric_type(out,"pgvn_database_sample_age_seconds","gauge","Age of the last successful database sample.",pool);
-        append(out,pool,"pgvn_database_sample_age_seconds{instance_id=\"%s\"} %.3f\n",data->instance,(GetTickCount64()-data->sample.tick)/1000.0);
+        append(out,pool,"pgvn_database_sample_age_seconds{instance_id=\"%s\"} %.3f\n",data->instance,(pgvn_tick()-data->sample.tick)/1000.0);
     }
-    ReleaseSRWLockShared(&data->lock);
+    pgvn_read_unlock(&data->lock);
     metric_type(out,"pgvn_ready","gauge","One when the local business listener and validated dependencies are ready.",pool);
     append(out,pool,"pgvn_ready{instance_id=\"%s\"} %d\n",data->instance,pgvn_monitor_ready(data));
     return out->data;

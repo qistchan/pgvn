@@ -1,7 +1,12 @@
 #include <string.h>
+#ifdef _WIN32
 #include <io.h>
+#else
+#include <unistd.h>
+#endif
 #include "admin.h"
 #include "credentials.h"
+#include "../platform/credentials.h"
 
 svn_error_t *admin_credentials(admin_command *command)
 {
@@ -37,17 +42,22 @@ svn_error_t *admin_credentials(admin_command *command)
         SVN_ERR(pgvn_credential_rekey(command->context,old_key,key,domain,user,command->pool));
         admin_ok("user_rekeyed"); return SVN_NO_ERROR;
     }
+#ifdef _WIN32
     DWORD mode;
-    if(GetConsoleMode((HANDLE)_get_osfhandle(_fileno(stdin)),&mode))
+    int terminal=GetConsoleMode((HANDLE)_get_osfhandle(_fileno(stdin)),&mode)!=0;
+#else
+    int terminal=isatty(fileno(stdin));
+#endif
+    if(terminal)
         return admin_usage("Provide the SVN password on redirected standard input; interactive echo is not permitted");
     char password[4099]; size_t size=fread(password,1,sizeof(password),stdin);
     if(ferror(stdin) || size==sizeof(password) || memchr(password,0,size)) {
-        SecureZeroMemory(password,sizeof(password)); return admin_usage("Invalid SVN password on standard input");
+        pgvn_secure_zero(password,sizeof(password)); return admin_usage("Invalid SVN password on standard input");
     }
     if(size && password[size-1]=='\n') { --size; if(size && password[size-1]=='\r') --size; }
     password[size]=0;
     svn_error_t *error=pgvn_credential_put(command->context,key,domain,user,password,command->pool);
-    SecureZeroMemory(password,sizeof(password));
+    pgvn_secure_zero(password,sizeof(password));
     if(error) return error;
     admin_ok("user_set"); return SVN_NO_ERROR;
 }

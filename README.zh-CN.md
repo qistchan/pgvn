@@ -25,6 +25,8 @@
 > [!IMPORTANT]
 > **首个可用预览版本（Windows）。** 2026-10-17，项目维护者确认本机 Polarion 已成功使用 PgVN 运行，详见[本机运行记录](docs/pgvn/progress.zh-CN.md#first-usable-preview)。M0–M5 已完成本机验收记录；M6 兼容性、故障注入与性能验证仍在推进中。全新机器安装、整机重启恢复、跨主机故障切换及完整 Polarion 应用场景验收仍待完成，当前版本面向内部试用与验证。
 
+Linux x86_64 开发快照已提供原生 SVN、Apache DAV、监控、CLI、受监督 Hook、打包与离线恢复。见 [Linux 构建与部署指南](docs/pgvn/linux.zh-CN.md)。容器集成已通过；真实主机 systemd/重启及同版本 Windows 验收继续单独记录。
+
 ## 从这里开始
 
 | 你的目标 | 阅读入口 |

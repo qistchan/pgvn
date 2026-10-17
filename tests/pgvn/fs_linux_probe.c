@@ -47,17 +47,26 @@ static svn_error_t *check_initializer(apr_pool_t *pool)
     return SVN_NO_ERROR;
 }
 
-PGresult *PQexecParams(PGconn *connection,const char *sql,int count,const Oid *types,
+static int content_query;
+int PQsendQueryParams(PGconn *connection,const char *sql,int count,const Oid *types,
     const char *const *values,const int *lengths,const int *formats,int result_format)
 {
-    typedef PGresult *(*execute)(PGconn *,const char *,int,const Oid *,const char *const *,const int *,const int *,int);
+    typedef int (*execute)(PGconn *,const char *,int,const Oid *,const char *const *,const int *,const int *,int);
     static execute original;
-    if(!original) { original=(execute)dlsym(RTLD_NEXT,"PQexecParams"); if(!original) abort(); }
-    PGresult *result=original(connection,sql,count,types,values,lengths,formats,result_format);
-    ++queries;
-    if(result && strstr(sql,"FROM pgfs.content_chunks"))
+    if(!original) { original=(execute)dlsym(RTLD_NEXT,"PQsendQueryParams"); if(!original) abort(); }
+    ++queries; content_query=strstr(sql,"FROM pgfs.content_chunks")!=NULL;
+    return original(connection,sql,count,types,values,lengths,formats,result_format);
+}
+PGresult *PQgetResult(PGconn *connection)
+{
+    typedef PGresult *(*receive)(PGconn *);
+    static receive original;
+    if(!original) { original=(receive)dlsym(RTLD_NEXT,"PQgetResult"); if(!original) abort(); }
+    PGresult *result=original(connection);
+    if(result && content_query)
         for(int row=0;row<PQntuples(result);++row)
             for(int col=0;col<PQnfields(result);++col) payload+=(unsigned)PQgetlength(result,row,col);
+    if(!result) content_query=0;
     return result;
 }
 
@@ -87,6 +96,8 @@ static svn_error_t *prepare(svn_fs_t *fs,apr_pool_t *pool)
     SVN_ERR(svn_fs_begin_txn2(&txn,fs,0,0,pool)); SVN_ERR(svn_fs_txn_root(&root,txn,pool));
     SVN_ERR(svn_fs_make_dir(root,"数据",pool));
     for(int i=0;i<7;++i) SVN_ERR(write_pattern(root,apr_psprintf(pool,"数据/f%d",i),sizes[i],pool));
+    SVN_ERR(svn_fs_make_dir(root,"大目录",pool));
+    for(int i=0;i<256;++i) SVN_ERR(svn_fs_make_file(root,apr_psprintf(pool,"大目录/file-%04d",i),pool));
     const char raw[]={0,'x',(char)0xff};
     SVN_ERR(svn_fs_change_node_prop(root,"数据/f6","test:binary",svn_string_ncreate(raw,sizeof(raw),pool),pool));
     svn_revnum_t rev; const char *conflict;
@@ -153,6 +164,27 @@ static double milliseconds(clockid_t clock)
     return value.tv_sec*1000.0+value.tv_nsec/1000000.0;
 }
 
+static svn_error_t *directory_benchmark(svn_fs_t *fs,int repetitions,apr_pool_t *pool)
+{
+    svn_fs_root_t *root; SVN_ERR(svn_fs_revision_root(&root,fs,1,pool));
+    for(int repeat=0;repeat<repetitions;++repeat) {
+        apr_pool_t *scratch=svn_pool_create(pool); queries=0;
+        double start=milliseconds(CLOCK_MONOTONIC),cpu=milliseconds(CLOCK_PROCESS_CPUTIME_ID);
+        apr_hash_t *entries; SVN_ERR(svn_fs_dir_entries(&entries,root,"大目录",scratch));
+        double elapsed=milliseconds(CLOCK_MONOTONIC)-start,cpu_ms=milliseconds(CLOCK_PROCESS_CPUTIME_ID)-cpu;
+        CHECK(apr_hash_count(entries)==256);
+        for(int i=0;i<256;++i) {
+            const char *name=apr_psprintf(scratch,"file-%04d",i);
+            svn_fs_dirent_t *entry=apr_hash_get(entries,name,APR_HASH_KEY_STRING);
+            CHECK(entry && entry->kind==svn_node_file && entry->id);
+        }
+        printf("{\"elapsed_ms\":%.6f,\"cpu_ms\":%.6f,\"queries\":%llu,\"entries\":256,\"chunk_column_bytes\":0}\n",elapsed,cpu_ms,queries);
+        fflush(stdout); svn_pool_destroy(scratch);
+        if(!repeat && getenv("PGVN_FS_BENCH_SYNC")) CHECK(getchar()=='G');
+    }
+    return SVN_NO_ERROR;
+}
+
 static svn_error_t *benchmark(svn_fs_t *fs,int repetitions,apr_pool_t *pool)
 {
     svn_fs_root_t *root; SVN_ERR(svn_fs_revision_root(&root,fs,1,pool));
@@ -198,6 +230,7 @@ static svn_error_t *run(int argc,char **argv,apr_pool_t *pool)
     SVN_ERR(pgfs_native_bind(fs,connection,dsn,id,NULL,pool));
     if(!strcmp(argv[1],"prepare")) SVN_ERR(prepare(fs,pool));
     else if(!strcmp(argv[1],"check")) SVN_ERR(check_fs(fs,pool));
+    else if(!strcmp(argv[1],"dirbench")) return directory_benchmark(fs,argc>2 ? atoi(argv[2]) : 1,pool);
     else if(!strcmp(argv[1],"bench")) return benchmark(fs,argc>2 ? atoi(argv[2]) : 1,pool);
     else if(!strcmp(argv[1],"read")) {
         svn_fs_root_t *root; svn_stream_t *stream; SVN_ERR(svn_fs_revision_root(&root,fs,1,pool));

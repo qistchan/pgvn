@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #ifdef _WIN32
+#include <winsock2.h>
 #include <windows.h>
 typedef LONG pgvn_atomic32;
 typedef LONG64 pgvn_atomic64;

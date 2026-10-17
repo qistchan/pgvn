@@ -69,6 +69,7 @@ static svn_error_t *context(pgvn_context **output,request_rec *r)
             worker_context->configuration_path=apr_pstrdup(pool,config_path);
             svn_config_get(config,&worker_context->hook_root,"pgvn","hook-root",NULL);
             error=pgvn_hooks_configure(worker_context,config,pool);
+            if(!error) error=pgvn_cache_configure(worker_context,config,pool);
             if(!error) pgvn_dav_status_initialized();
         }
         if(error) {

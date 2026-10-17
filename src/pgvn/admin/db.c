@@ -107,10 +107,12 @@ svn_error_t *admin_db_check(pgvn_context *context,svn_boolean_t latest,apr_pool_
 
 static svn_error_t *script(pgvn_context *context,const char *sql)
 {
-    apr_time_t start=apr_time_now(); pgvn_telemetry_query_start(); PGresult *result=PQexec(context->control,sql);
+    apr_time_t start=pgfs_pq_clock(); pgvn_telemetry_query_start();
+    PGresult *result=pgfs_pq_exchange(context->control,sql,0,NULL,NULL,NULL,NULL,0,
+        context->statement_timeout_ms+1000,pgvn_query_cancelled,context,1);
     const char *state=result ? PQresultErrorField(result,PG_DIAG_SQLSTATE) : NULL;
     svn_boolean_t success=result && (PQresultStatus(result)==PGRES_COMMAND_OK || PQresultStatus(result)==PGRES_TUPLES_OK);
-    pgvn_metric_query(context,success ? "00000" : state ? state : "08006",apr_time_now()-start);
+    pgvn_metric_query(context,success ? "00000" : state ? state : "08006",pgfs_pq_clock()-start);
     svn_error_t *error=success ? NULL : svn_error_createf(state && !strcmp(state,"42501") ? SVN_ERR_AUTHZ_UNWRITABLE : PGVN_ERR_SCHEMA,
         NULL,"PgVN migration operation failed (SQLSTATE %s)",state ? state : "08006");
     if(result) PQclear(result);
