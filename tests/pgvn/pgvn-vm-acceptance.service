@@ -1,0 +1,13 @@
+[Unit]
+Description=Disposable PgVN Ubuntu VM acceptance fixture
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/fixture/linux_vm_guest.py
+TimeoutStartSec=1200
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

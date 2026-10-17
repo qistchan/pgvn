@@ -25,6 +25,7 @@ def package(product, output, allow_dirty=False):
     stem = "PgVN-" + identity["version"] + "-linux-x64-" + sha256(product / "build-manifest.json")[:16]
     destination = output / stem
     destination.mkdir(parents=True, exist_ok=False)
+    destination.chmod(0o755)
     files = {}
 
     def copy(relative, source, expected=None):
@@ -52,11 +53,13 @@ def package(product, output, allow_dirty=False):
         for name, expected in migrations.items():
             relative = ("pgvn/" if namespace == "pgvn" else "") + name
             copy("schema-reference/" + relative, ROOT / "sql" / relative, expected)
+    for directory in destination.rglob("*"):
+        if directory.is_dir(): directory.chmod(0o755)
     info = {"format": 1, "package_kind": "development-snapshot", "version": identity["version"],
             "git_base_commit": identity["git_commit"], "build_identity": identity,
             "build_manifest_sha256": sha256(product / "build-manifest.json"), "files": files,
             "acceptance": {"release_accepted": False, "windows": "deferred-by-user",
-                           "systemd_reboot": "requires-real-host", "evidence": "recorded separately"}}
+                           "systemd_reboot": "separate-package-bound-evidence", "evidence": "recorded separately"}}
     manifest = destination / "package-manifest.json"
     manifest.write_bytes(json.dumps(info, indent=2, sort_keys=True).encode() + b"\n")
     (destination / "package-manifest.json.sha256").write_text(sha256(manifest) + "  package-manifest.json\n")

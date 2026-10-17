@@ -799,13 +799,13 @@ const char *pgvn_monitor_metrics(pgvn_monitor_data *data,apr_pool_t *pool)
     metric_type(out,"pgvn_dropped_telemetry_batches_total","counter","Telemetry publication batches that failed.",pool);
     append(out,pool,"pgvn_dropped_telemetry_batches_total{instance_id=\"%s\"} %lld\n",data->instance,(long long)data->dropped_batches);
     if(data->last_cpu_tick) {
-        metric_type(out,"pgvn_process_cpu_seconds_total","counter","Process kernel and user CPU seconds from Windows.",pool);
+        metric_type(out,"pgvn_process_cpu_seconds_total","counter","Process kernel and user CPU seconds.",pool);
         append(out,pool,"pgvn_process_cpu_seconds_total{instance_id=\"%s\"} %.6f\n",data->instance,data->cpu_ticks/10000000.0);
     }
     if(data->resource_valid) {
-        metric_type(out,"pgvn_process_working_set_bytes","gauge","Windows working set bytes, sampled independently of database success.",pool);
+        metric_type(out,"pgvn_process_working_set_bytes","gauge","Process resident working set bytes, sampled independently of database success.",pool);
         append(out,pool,"pgvn_process_working_set_bytes{instance_id=\"%s\"} %llu\n",data->instance,(unsigned long long)data->working_set);
-        metric_type(out,"pgvn_process_private_bytes","gauge","Windows process private committed bytes.",pool);
+        metric_type(out,"pgvn_process_private_bytes","gauge","Process private memory bytes using platform accounting.",pool);
         append(out,pool,"pgvn_process_private_bytes{instance_id=\"%s\"} %llu\n",data->instance,(unsigned long long)data->private_bytes);
     }
     if(data->sample.valid) {

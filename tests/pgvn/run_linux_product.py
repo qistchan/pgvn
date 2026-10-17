@@ -13,6 +13,7 @@ from package_linux import package
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--product',type=Path,required=True)
+ parser.add_argument('--performance',action='store_true')
  parser.add_argument('--sdk',type=Path,required=True)
  parser.add_argument('--builder-image',default='pgvn-linux-product-builder:ubuntu24')
  parser.add_argument('--postgres-image',default='postgres:18.6')
@@ -43,9 +44,11 @@ def main():
   report['hook_output']=client(['python3',ROOT/'tests/pgvn/linux_hook_process.py','--product',product,'--sdk',sdk,'--work',work/'hooks'],timeout=180)
   print('Native Hook execution PASS',flush=True)
   from linux_browser import execute
-  browser_args=docker+['run','--rm','--name',run_id+'-client','--init','--network','container:'+run_id,'--user',str(os.getuid())+':'+str(os.getgid()),'--memory','1g','--pids-limit','512','--mount','type=bind,src='+str(ROOT)+',dst='+str(ROOT),'-w',ROOT,options.builder_image,'python3',ROOT/'tests/pgvn/linux_product_client.py',work/'client',product,packaged['directory'],sdk]
+  performance_env=['-e','PGVN_TEST_PERFORMANCE=1'] if options.performance else []
+  browser_args=docker+['run','--rm','--name',run_id+'-client','--init','--network','container:'+run_id,'--user',str(os.getuid())+':'+str(os.getgid()),'--memory','1g','--pids-limit','512','--mount','type=bind,src='+str(ROOT)+',dst='+str(ROOT),'-w',ROOT,*performance_env,options.builder_image,'python3',ROOT/'tests/pgvn/linux_product_client.py',work/'client',product,packaged['directory'],sdk]
   output,report['browser']=execute(browser_args,docker,run_id+'-client',work,env,ROOT)
   (work/'client-output.jsonl').write_text(output);report['integration']=json.loads(output.splitlines()[-1])
+  if options.performance:report['performance']=json.loads((work/'client/wire-benchmark.json').read_text())
   report['source_unchanged']=collect(ROOT,'linux',build['build_identity']['configuration'])==frozen
   if not report['source_unchanged']:raise ValueError('Build inputs changed during testing')
   report['status']='PASS'

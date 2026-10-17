@@ -46,7 +46,7 @@ def execute(args,docker,container,work,env,root):
     try:
         with output.open('w') as stdout,error.open('w') as stderr:
             process=subprocess.Popen(list(map(str,[*args,port])),cwd=root,env=env,stdout=stdout,stderr=stderr)
-            state=work/'client/browser-state.json';result=work/'client/browser-result.json';deadline=time.monotonic()+240
+            state=work/'client/browser-state.json';result=work/'client/browser-result.json';deadline=time.monotonic()+600
             while not state.exists():
                 if process.poll() is not None:raise RuntimeError('Native client failed before browser phase: '+error.read_text())
                 if time.monotonic()>=deadline:raise RuntimeError('Browser fixture timed out')

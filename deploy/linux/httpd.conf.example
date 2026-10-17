@@ -3,7 +3,7 @@ ServerRoot "${PGVN_HOME}/apache"
 ServerName localhost
 Listen 127.0.0.1:8080
 LoadModule unixd_module "${PGVN_HOME}/apache/modules/mod_unixd.so"
-LoadModule mpm_event_module "${PGVN_HOME}/apache/modules/mod_mpm_event.so"
+# The pinned Apache host embeds the event MPM.
 LoadModule authn_core_module "${PGVN_HOME}/apache/modules/mod_authn_core.so"
 LoadModule authn_file_module "${PGVN_HOME}/apache/modules/mod_authn_file.so"
 LoadModule auth_basic_module "${PGVN_HOME}/apache/modules/mod_auth_basic.so"
@@ -24,7 +24,7 @@ MinSpareThreads 1
 MaxSpareThreads 32
 DefaultRuntimeDir /run/pgvnhttpd
 PidFile /run/pgvnhttpd/httpd.pid
-ErrorLog /proc/self/fd/2
+ErrorLog /var/log/pgvn/httpd-error.log
 LogLevel warn
 PgVNConfig /etc/pgvn/pgvn.ini
 <Location /svn>

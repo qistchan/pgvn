@@ -1,6 +1,6 @@
 # PgVN Linux 开发与部署
 
-首轮目标为 Ubuntu 24.04 LTS、x86_64、systemd。Linux 与 Windows 使用同一套仓库核心、SQL、协议补丁、网页和版本描述。当前包仍为 `development-snapshot`；真实主机开机启动、重启与 Windows 同版本回归需分别验收，不能由容器测试替代。原 M6/M7 的既有失败状态继续保留。
+首轮目标为 Ubuntu 24.04 LTS、x86_64、systemd。Linux 与 Windows 使用同一套仓库核心、SQL、协议补丁、网页和版本描述。当前包仍为 `development-snapshot`。提供真实 Ubuntu 内核的 QEMU VM 验收，覆盖 systemd、开机启动、崩溃恢复、系统重启和兼容包升级/回退；容器集成测试另行覆盖协议与恢复。Windows 同版本回归按本次约定暂缓。原 M6/M7 的既有失败状态继续保留。
 
 ## 构建与依赖
 
@@ -19,7 +19,7 @@ python3 tests/pgvn/run_linux_product.py --product build/pgvn/linux/release-produ
 python3 scripts/pgvn/package_linux.py --product build/pgvn/linux/release-product
 ```
 
-命令在构建容器中运行；集成测试宿主需要访问 Docker socket。`--sanitize` 为完整自有 C 实现启用 ASan/UBSan。源码发生变化后须重新构建，不复用先前清单或验收。正常包要求已提交构建输入；`--allow-dirty` 只用于显式标记的开发测试包。
+命令在构建容器中运行；集成测试宿主需要访问 Docker socket。`--sanitize` 为完整自有 C 实现启用 ASan/UBSan。源码发生变化后须重新构建，不复用先前清单或验收。SDK 等第三方共享库保持独立构建，不应将自有代码的 sanitizer 覆盖解释为全部依赖已插桩。正常包要求已提交构建输入；`--allow-dirty` 只用于显式标记的开发测试包。
 
 运行库通过相对 RPATH 加载。不要全局设置 `LD_LIBRARY_PATH` 指向 PgVN 的 lib 目录，否则系统 SVN 等客户端可能混入另一套 APR/SVN ABI。Linux 包展开后可迁移安装路径；模块必须使用包内匹配的 Apache 宿主。
 
@@ -30,12 +30,12 @@ python3 scripts/pgvn/package_linux.py --product build/pgvn/linux/release-product
 先校验 tar.gz 附带的 SHA-256，再解包。安装脚本再次检查所有文件、构建身份及迁移摘要；摘要用于完整性检查，包来源信任由交付渠道保证。
 
 ```bash
-sudo useradd --system --home-dir /var/lib/pgvn --shell /usr/sbin/nologin pgvn
+sudo useradd --system --user-group --home-dir /var/lib/pgvn --shell /usr/sbin/nologin pgvn
 sudo python3 PACKAGE/deploy/linux/pgvnctl.py install --package PACKAGE
 sudo python3 /opt/pgvn/current/deploy/linux/pgvnctl.py init
 ```
 
-安装操作可重复执行；`init` 已有配置时保持原文件。布局为 `/opt/pgvn/<version>-<digest>`、`current` 和 `previous` 链接，配置位于 `/etc/pgvn`，状态位于 `/var/lib/pgvn`，日志使用 journald。`--root DIR` 可演练目录安装，不调用宿主 systemd。安装不会自动启动服务或执行数据库迁移。
+安装操作可重复执行；`init` 已有配置时保持原文件。布局为 `/opt/pgvn/<version>-<digest>`、`current` 和 `previous` 链接，配置位于 `/etc/pgvn`，状态位于 `/var/lib/pgvn`，原生服务日志使用 journald，Apache 错误日志位于 `/var/log/pgvn/httpd-error.log`。`--root DIR` 可演练目录安装，不调用宿主 systemd。安装不会自动启动服务或执行数据库迁移。
 
 将模板 `pg_service.conf.example` 复制到 `/etc/pgvn/pg_service.conf`，配置 owner、service 和 monitor 三个独立 PostgreSQL 登录角色。先由数据库管理员建立数据库及非超级用户角色，给 owner 数据库 CREATE 权限。使用 `verify-full` 和受信任 CA；密码保存在服务账号拥有的 `0600` `/etc/pgvn/pgpass`，不要放入命令行或普通日志。服务文件可用 root:pgvn、0640。`environment` 提供 `PGSERVICEFILE` 和 `PGPASSFILE` 路径。
 
@@ -105,3 +105,17 @@ sudo python3 /opt/pgvn/current/deploy/linux/pgvnctl.py rollback \
 升级不会隐式运行迁移或启动服务。回退先用 previous 包校验当前数据库 schema/迁移摘要，失败则不切换；不可逆迁移需要新空库恢复匹配备份，不承诺原地降级。保存配置和密钥时不要覆盖仍需用于解密的旧 key。
 
 诊断可用 `pgvnctl.py diagnose --config OWNER_CONFIG`、`journalctl -u pgvnserve -u pgvnhttpd` 及包内清单；脚本只导出原生脱敏诊断，不输出整个环境或配置文件。真实主机验收应执行启停、崩溃重启、PG 晚启动、端口占用、开机启动及重启恢复，并保存与该包摘要对应的证据。
+
+## 可重复的 Linux 验收
+
+完整产品集成覆盖原生 SVN、HTTP/HTTPS、SVNKit、浏览器监控、Hook、取消与排空，以及全库备份恢复。恢复后重新授权角色，验证原密钥实际认证、二进制内容、控制面数据摘要、锁令牌及新缓存实例。`run_linux_product.py --performance` 另测两个原生节点在并发 1/8/32 下关闭/启用本地缓存的三轮数据。缓存默认关闭；Redis 未采用，不能宣称已经过 Redis 性能验证。
+
+实际 systemd 验收使用独立 Ubuntu 24.04 rootfs 和发行版内核，不依赖 KVM，也不为 VM 配置网卡：
+
+```bash
+docker build -t pgvn-linux-vm-tools:ubuntu24 -f tests/pgvn/linux-vm-tools.Dockerfile .
+python3 tests/pgvn/run_linux_vm.py --package RELEASE_PACKAGE \
+  --previous-package DEBUG_PACKAGE --hook-artifacts PRODUCT_TEST_ARTIFACTS/hooks
+```
+
+两包须来自同一干净提交且 schema 相同，Debug 包用于兼容包切换演练；不代表旧 schema 的逆向迁移。测试记录包摘要、镜像 ID、内核、两次 boot ID、systemd 状态、Hook 后代回收、停止时长和离线 `e2fsck`，成功后删除临时磁盘。VM 使用 TCG，仅提供功能证据。部署到目标机器仍应按实际用户、PG、证书和网络配置执行现场验收。

@@ -117,6 +117,8 @@ def build_product(sdk,httpd,tools,configuration,sanitize=False):
         for name in paths:
             if (source/name).exists(): shutil.copy2(source/name,target/name)
     shutil.copy2(ROOT/"LICENSE",work/"licenses/PgVN-LICENSE"); shutil.copy2(ROOT/"NOTICE",work/"licenses/PgVN-NOTICE")
+    apache_compiled_modules=run([work/"apache/bin/httpd","-l"])
+    if "event.c" not in apache_compiled_modules.split(): raise ValueError("Pinned Apache host must embed the event MPM")
     runtime={}
     for name in ("pgvnserve","pgvnadmin"):
         runtime[name]=json.loads(run([work/"bin"/name,"--version"])); check_runtime(runtime[name],metadata["build_identity"])
@@ -131,8 +133,8 @@ def build_product(sdk,httpd,tools,configuration,sanitize=False):
     if collect(ROOT,"linux",configuration)!=metadata: raise ValueError("Source changed during product build")
     products={"runtime/pgvn/"+p.relative_to(work).as_posix():{"sha256":sha256(p)} for directory in ("bin","lib","apache","licenses") for p in sorted((work/directory).rglob("*")) if p.is_file() and p.suffix!=".a"}
     result={**metadata,"format":1,"scope":"Linux native server, admin, supervised processes and Apache modules; acceptance recorded separately",
-            "complete_product":True,"sdk_manifest_sha256":sha256(sdk/"sdk-manifest.json"),"httpd_manifest_sha256":sha256(host_manifest),"tools_manifest_sha256":sha256(tool_manifest),"core_archive_sha256":sha256(archive),
+            "complete_product":True,"sanitizers":["address","undefined"] if sanitize else [],"sdk_manifest_sha256":sha256(sdk/"sdk-manifest.json"),"httpd_manifest_sha256":sha256(host_manifest),"tools_manifest_sha256":sha256(tool_manifest),"core_archive_sha256":sha256(archive),
             "patches":patches,"runtime_build_info":runtime,"dependencies":dependencies,"products":products,
-            "compiler":run(["cc","--version"]).splitlines()[0],"system_packages":run(["dpkg-query","-W","-f=${Package}=${Version}\n"]).splitlines()}
+            "apache_compiled_modules":apache_compiled_modules,"compiler":run(["cc","--version"]).splitlines()[0],"system_packages":run(["dpkg-query","-W","-f=${Package}=${Version}\n"]).splitlines()}
     (work/"build-manifest.json").write_text(json.dumps(result,indent=2)+"\n")
     return {"output":str(work),"manifest":str(work/"build-manifest.json"),"complete_product":True}

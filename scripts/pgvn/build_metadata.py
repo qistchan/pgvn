@@ -12,7 +12,7 @@ SOURCE_GROUPS = (
     ("deploy/linux", {".py", ".service", ".example", ".md"}),
     ("src", None), ("web", None), ("sql", None), ("patches/pgvn", None),
     ("scripts/pgvn", {".py", ".ps1", ".json", ".Dockerfile"}),
-    ("tests/pgvn", {".py", ".ps1", ".c", ".h", ".inc", ".java", ".Dockerfile"}),
+    ("tests/pgvn", {".py", ".ps1", ".c", ".h", ".inc", ".java", ".Dockerfile", ".service"}),
 )
 SEMVER = r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?"
 

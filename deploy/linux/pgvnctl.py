@@ -60,7 +60,9 @@ def safe_directory(path, mode=0o755):
     for component in (path, *path.parents):
         if component.is_symlink():
             raise ValueError("Managed directories must not contain symlinks: " + str(component))
+    created = not path.exists()
     path.mkdir(parents=True, exist_ok=True, mode=mode)
+    if created: path.chmod(mode)
     if not path.is_dir():
         raise ValueError("Expected a directory")
 
@@ -89,6 +91,9 @@ def install(options):
         raise ValueError("Expected a Linux x86_64 package")
     base = options.root / "opt/pgvn"
     safe_directory(base)
+    base.chmod(0o755)
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.+-]{0,100}", identity["version"]):
+        raise ValueError("Invalid installation version component")
     name = identity["version"] + "-" + digest(options.package / "package-manifest.json")[:16]
     destination = base / name
     if destination.exists():
@@ -98,8 +103,10 @@ def install(options):
         temporary = Path(tempfile.mkdtemp(prefix=".install-", dir=base))
         try:
             shutil.copytree(options.package, temporary, dirs_exist_ok=True)
-            verify(temporary)
-            temporary.chmod(0o755)
+            if verify(temporary) != info:
+                raise ValueError("Package changed while copying")
+            for directory in (temporary, *temporary.rglob("*")):
+                if directory.is_dir(): directory.chmod(0o755)
             temporary.rename(destination)
         finally:
             if temporary.exists():

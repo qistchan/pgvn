@@ -16,8 +16,12 @@ static void consume(FILE *target)
 }
 static void stamp(const char *path)
 {
-    FILE *file=fopen(path,"w"); if(!file) exit(31);
-    fprintf(file,"%ld\n",(long)getpid()); fflush(file); fsync(fileno(file)); fclose(file);
+    char temporary[8192];
+    int size=snprintf(temporary,sizeof(temporary),"%s.tmp.%ld",path,(long)getpid());
+    if(size<0 || (size_t)size>=sizeof(temporary)) exit(31);
+    FILE *file=fopen(temporary,"wx"); if(!file) exit(31);
+    fprintf(file,"%ld\n",(long)getpid());
+    if(fflush(file) || fsync(fileno(file)) || fclose(file) || rename(temporary,path)) exit(31);
 }
 static void sleeper(void) { for(;;) pause(); }
 int main(int argc,char **argv)
