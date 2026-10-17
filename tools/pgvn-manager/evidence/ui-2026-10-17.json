@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "scope": "Native desktop layout and read-only interaction on final build",
+  "verified_utc": "2026-10-17T07:12:18Z",
+  "gui_sha256": "9f03870b387ef5839b88b8765ab75aec8c32a99de75eb901ba895cbcafd25c45",
+  "backend_sha256": "15bc8f2e1697cce4f0c728ded194112bc875c4b5dd1c9fc1e45773665587a077",
+  "read_only_fixture": "runtime/pgvn/tests/manager-f84b33f2b7bd/runtime",
+  "checks": [
+    "Native WPF startup and six-page navigation",
+    "Load runtime package configuration and integrity result",
+    "Initialized database configuration values displayed",
+    "Both recorded service names and uninstalled status displayed",
+    "Two real repository rows, revision and generation values displayed",
+    "Read current authz rules into editor",
+    "Service endpoint values and maintenance instructions displayed",
+    "Read Apache error and access log tails into session log",
+    "Busy state disables action controls and restores them after completion"
+  ],
+  "screenshots": [
+    "docs/pgvn/images/manager-overview.jpg",
+    "docs/pgvn/images/manager-repositories.jpg"
+  ],
+  "writes_performed_via_desktop_ui": false,
+  "not_verified": [
+    "All mutating confirmation dialogs through UI automation",
+    "UAC from standard account",
+    "Different DPI or minimum window size",
+    "Fresh Windows installation or reboot",
+    "Remote PostgreSQL TLS, HA, Polarion acceptance, full restore"
+  ]
+}

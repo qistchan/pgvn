@@ -1,0 +1,154 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="PgVN Manager · 配置与维护" Width="1280" Height="860" MinWidth="1040" MinHeight="700" WindowStartupLocation="CenterScreen"
+ FontFamily="Segoe UI, Microsoft YaHei UI" FontSize="14" Background="#F5F7FB" Foreground="#1E293B">
+ <Window.Resources>
+  <SolidColorBrush x:Key="Accent" Color="#2563EB"/>
+  <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
+  <Style x:Key="Muted" TargetType="TextBlock"><Setter Property="Foreground" Value="#64748B"/><Setter Property="Margin" Value="0,5,0,12"/><Setter Property="TextWrapping" Value="Wrap"/></Style>
+  <Style x:Key="Heading" TargetType="TextBlock"><Setter Property="FontSize" Value="26"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="0,0,0,4"/></Style>
+  <Style x:Key="Subheading" TargetType="TextBlock"><Setter Property="FontSize" Value="17"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Margin" Value="0,0,0,14"/></Style>
+  <Style x:Key="Card" TargetType="Border"><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#E2E8F0"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="10"/><Setter Property="Padding" Value="22"/><Setter Property="Margin" Value="0,0,0,18"/></Style>
+  <Style TargetType="TextBox"><Setter Property="Padding" Value="10,7"/><Setter Property="MinHeight" Value="36"/><Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="Margin" Value="0,5,0,13"/></Style>
+  <Style TargetType="PasswordBox"><Setter Property="Padding" Value="10,7"/><Setter Property="MinHeight" Value="36"/><Setter Property="BorderBrush" Value="#CBD5E1"/><Setter Property="Margin" Value="0,5,0,13"/></Style>
+  <Style TargetType="ComboBox"><Setter Property="Padding" Value="8,7"/><Setter Property="MinHeight" Value="36"/><Setter Property="Margin" Value="0,5,0,13"/></Style>
+  <Style TargetType="Button">
+   <Setter Property="Background" Value="White"/><Setter Property="Foreground" Value="#1E293B"/><Setter Property="BorderBrush" Value="#CBD5E1"/>
+   <Setter Property="Padding" Value="15,8"/><Setter Property="Margin" Value="0,0,10,8"/><Setter Property="MinHeight" Value="38"/><Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="IsEnabled" Value="{Binding Available}"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Frame" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Frame" Property="Opacity" Value="0.82"/></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Frame" Property="BorderBrush" Value="#1D4ED8"/><Setter TargetName="Frame" Property="BorderThickness" Value="2"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="Frame" Property="Opacity" Value="0.45"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Background" Value="#2563EB"/><Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="#2563EB"/></Style>
+  <Style x:Key="Danger" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Foreground" Value="#B91C1C"/><Setter Property="BorderBrush" Value="#FCA5A5"/></Style>
+  <Style TargetType="TabItem"><Setter Property="Visibility" Value="Collapsed"/></Style>
+ </Window.Resources>
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="208"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+  <Border Grid.Column="0" Background="#0F172A">
+   <DockPanel Margin="18,28,18,20">
+    <StackPanel DockPanel.Dock="Top" Margin="10,0,0,30"><TextBlock Text="PgVN" FontSize="29" FontWeight="Bold" Foreground="White"/><TextBlock Text="配置与维护" Foreground="#94A3B8" Margin="0,7,0,0"/></StackPanel>
+    <TextBlock DockPanel.Dock="Bottom" Text="Windows · 内部验证版&#10;PostgreSQL backed SVN" FontSize="11" Foreground="#94A3B8" Margin="10,20,0,0"/>
+    <ListBox x:Name="Navigation" Background="Transparent" BorderThickness="0" Foreground="#CBD5E1" SelectedIndex="0">
+     <ListBox.Resources><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="14,13"/><Setter Property="Margin" Value="0,3"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><Border x:Name="NavFrame" CornerRadius="7" Background="Transparent" Padding="{TemplateBinding Padding}"><ContentPresenter/></Border><ControlTemplate.Triggers><Trigger Property="IsSelected" Value="True"><Setter TargetName="NavFrame" Property="Background" Value="#1E40AF"/><Setter Property="Foreground" Value="White"/></Trigger><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="NavFrame" Property="BorderBrush" Value="#64748B"/><Setter TargetName="NavFrame" Property="BorderThickness" Value="1"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style></ListBox.Resources>
+     <ListBoxItem Content="概览"/><ListBoxItem Content="初始化与连接"/><ListBoxItem Content="服务管理"/><ListBoxItem Content="仓库与用户"/><ListBoxItem Content="备份与维护"/><ListBoxItem Content="操作日志"/>
+    </ListBox>
+   </DockPanel>
+  </Border>
+  <Grid Grid.Column="1">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Border Background="White" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="26,17">
+    <Grid IsEnabled="{Binding Available}"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <StackPanel><TextBlock Text="运行包目录" FontSize="12" Foreground="#64748B"/><TextBox x:Name="RootPath" Text="" Margin="0,4,12,0" AutomationProperties.Name="运行包目录"/></StackPanel>
+     <Button Grid.Column="1" Content="选择目录" Tag="pick.root" Margin="0,20,10,0"/>
+     <Button Grid.Column="2" Content="加载配置" Tag="inspect" Style="{StaticResource Primary}" Margin="0,20,0,0"/>
+    </Grid>
+   </Border>
+   <TabControl x:Name="Pages" Grid.Row="1" Background="Transparent" BorderThickness="0" Padding="26,22,26,0">
+    <TabItem><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="部署工作台" Style="{StaticResource Heading}"/><TextBlock Text="从首次初始化到日常运维，在一个窗口中完成。" Style="{StaticResource Muted}"/>
+     <Border Style="{StaticResource Card}" Background="#EFF6FF" BorderBrush="#BFDBFE"><StackPanel>
+      <TextBlock Text="{Binding AdminLabel}" FontSize="17" FontWeight="SemiBold"/>
+      <TextBlock Text="配置、数据库初始化及服务管理需要管理员权限。打开程序时不会自动修改数据库或服务。" Style="{StaticResource Muted}"/>
+      <WrapPanel><Button x:Name="ElevateButton" Content="以管理员身份重新打开" Tag="elevate"/><Button Content="打开监控网页" Tag="monitor"/></WrapPanel>
+     </StackPanel></Border>
+     <UniformGrid Columns="3" Margin="0,0,-14,0">
+      <Border Style="{StaticResource Card}" Margin="0,0,14,18"><StackPanel><TextBlock Text="运行包" Foreground="#64748B"/><TextBlock Text="{Binding PackageLabel}" FontWeight="SemiBold" Margin="0,12,0,0"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Margin="0,0,14,18"><StackPanel><TextBlock Text="数据库配置" Foreground="#64748B"/><TextBlock Text="{Binding DatabaseLabel}" FontWeight="SemiBold" Margin="0,12,0,0"/></StackPanel></Border>
+      <Border Style="{StaticResource Card}" Margin="0,0,14,18"><StackPanel><TextBlock Text="本机服务" Foreground="#64748B"/><TextBlock Text="{Binding ServicesLabel}" FontWeight="SemiBold" Margin="0,12,0,0"/></StackPanel></Border>
+     </UniformGrid>
+     <Border Style="{StaticResource Card}"><StackPanel>
+      <TextBlock Text="首次使用" Style="{StaticResource Subheading}"/>
+      <TextBlock Text="1   选择已解压的完整 PgVN Windows 运行包。&#10;&#10;2   在「初始化与连接」测试 PostgreSQL 连接，创建专用数据库与角色。&#10;&#10;3   在「仓库与用户」创建仓库、设置账号并发布访问规则。&#10;&#10;4   安装并启动服务，运行健康检查，再接入 SVN 客户端。"/>
+      <WrapPanel Margin="0,20,0,0"><Button Content="开始初始化" Tag="nav.1" Style="{StaticResource Primary}"/><Button Content="查看部署指南" Tag="guide"/></WrapPanel>
+     </StackPanel></Border>
+    </StackPanel></ScrollViewer></TabItem>
+    <TabItem><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="初始化与连接" Style="{StaticResource Heading}"/><TextBlock Text="连接已有 PostgreSQL；创建新的专用数据库，不自动安装或更改 PostgreSQL 服务。" Style="{StaticResource Muted}"/>
+     <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
+      <TextBlock Text="PostgreSQL" Style="{StaticResource Subheading}"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <StackPanel><Label Target="{Binding ElementName=DbHost}" Content="主机" Padding="0"/><TextBox x:Name="DbHost" Text="127.0.0.1"/></StackPanel>
+       <StackPanel Grid.Column="2"><Label Target="{Binding ElementName=DbPort}" Content="端口" Padding="0"/><TextBox x:Name="DbPort" Text="5432"/></StackPanel>
+      </Grid>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <StackPanel><Label Target="{Binding ElementName=Database}" Content="专用数据库名称" Padding="0"/><TextBox x:Name="Database" Text="pgvn"/></StackPanel>
+       <StackPanel Grid.Column="2"><Label Target="{Binding ElementName=RolePrefix}" Content="新建角色前缀" Padding="0"/><TextBox x:Name="RolePrefix" Text="pgvn"/></StackPanel>
+      </Grid>
+      <TextBlock Text="自动创建 migrate、admin、service、monitor、restore 五个非超级用户角色；若名称已存在则停止。角色密码自动生成，保存在受 Windows ACL 保护的密码文件中。" Style="{StaticResource Muted}"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="16"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+       <StackPanel><Label Target="{Binding ElementName=SslMode}" Content="SSL 模式" Padding="0"/><ComboBox x:Name="SslMode" SelectedIndex="0"><ComboBoxItem Content="disable"/><ComboBoxItem Content="require"/><ComboBoxItem Content="verify-full"/></ComboBox></StackPanel>
+       <StackPanel Grid.Column="2"><Label Target="{Binding ElementName=CaFile}" Content="CA 证书文件（verify-full 必填）" Padding="0"/><DockPanel><Button DockPanel.Dock="Right" Content="选择" Tag="pick.ca" Margin="8,5,0,13"/><TextBox x:Name="CaFile"/></DockPanel></StackPanel>
+      </Grid>
+      <TextBlock Text="远程连接推荐 verify-full。require 仅加密连接，不校验服务器身份。" Style="{StaticResource Muted}"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <StackPanel><Label Target="{Binding ElementName=DbaUser}" Content="DBA 用户（仅测试 / 首次创建时使用）" Padding="0"/><TextBox x:Name="DbaUser" Text="postgres"/></StackPanel>
+       <StackPanel Grid.Column="2"><Label Target="{Binding ElementName=DbaPassword}" Content="DBA 密码（不保存）" Padding="0"/><PasswordBox x:Name="DbaPassword"/></StackPanel>
+      </Grid>
+      <WrapPanel><Button Content="测试 DBA 连接" Tag="connect"/></WrapPanel>
+     </StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
+      <TextBlock Text="PgVN 节点与端口" Style="{StaticResource Subheading}"/>
+      <TextBlock Text="本版默认监听 127.0.0.1。对外接入、TLS 与防火墙配置请按部署指南配置。" Style="{StaticResource Muted}"/>
+      <Label Target="{Binding ElementName=NodeId}" Content="节点 ID" Padding="0"/><TextBox x:Name="NodeId" Text="node-1"/>
+      <UniformGrid Columns="3" Margin="0,0,-16,0">
+       <StackPanel Margin="0,0,16,0"><Label Target="{Binding ElementName=SvnPort}" Content="SVN 端口" Padding="0"/><TextBox x:Name="SvnPort" Text="14690"/></StackPanel>
+       <StackPanel Margin="0,0,16,0"><Label Target="{Binding ElementName=MonitorPort}" Content="监控端口" Padding="0"/><TextBox x:Name="MonitorPort" Text="14691"/></StackPanel>
+       <StackPanel Margin="0,0,16,0"><Label Target="{Binding ElementName=HttpPort}" Content="HTTP / DAV 端口" Padding="0"/><TextBox x:Name="HttpPort" Text="14980"/></StackPanel>
+      </UniformGrid>
+      <WrapPanel><Button Content="创建数据库并初始化" Tag="provision" Style="{StaticResource Primary}"/><Button Content="继续初始化已有配置" Tag="initialize"/><Button Content="保存配置" Tag="configure"/></WrapPanel>
+      <TextBlock Text="保存配置适用于当前数据库的 SSL、节点和监听端口调整，并保留一份原配置。更改数据库地址或角色密码请使用独立目录及迁移流程。修改监控端口前需卸载服务。" Style="{StaticResource Muted}"/>
+     </StackPanel></Border>
+    </StackPanel></ScrollViewer></TabItem>
+    <TabItem><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="服务管理" Style="{StaticResource Heading}"/><TextBlock Text="只管理当前运行目录登记的 Windows 服务。安装后采用手动启动。" Style="{StaticResource Muted}"/>
+     <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
+      <TextBlock Text="{Binding ServicesLabel}" Style="{StaticResource Subheading}"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
+       <StackPanel><Label Target="{Binding ElementName=ServiceName}" Content="pgvnserve 服务名称" Padding="0"/><TextBox x:Name="ServiceName" Text="PgVN"/></StackPanel>
+       <StackPanel Grid.Column="2"><Label Target="{Binding ElementName=DavServiceName}" Content="DAV 服务名称" Padding="0"/><TextBox x:Name="DavServiceName" Text="PgVNDAV"/></StackPanel>
+      </Grid>
+      <CheckBox x:Name="WithDav" Content="同时安装 HTTP / DAV 服务（需先创建并同步 DAV 账号）" IsChecked="True" Margin="0,0,0,20"/>
+      <WrapPanel><Button Content="安装服务" Tag="services.install"/><Button Content="启动" Tag="services.start" Style="{StaticResource Primary}"/><Button Content="停止" Tag="services.stop"/><Button Content="重启" Tag="services.restart"/><Button Content="卸载服务" Tag="services.uninstall" Style="{StaticResource Danger}"/></WrapPanel>
+      <TextBlock Text="卸载会停止并移除本目录的服务及监控 URL 登记，保留数据库、配置和凭据。更改服务名称请先卸载原服务。" Style="{StaticResource Muted}"/>
+     </StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="接入与健康检查" Style="{StaticResource Subheading}"/><TextBlock Text="{Binding EndpointLabel}" FontFamily="Consolas, Microsoft YaHei UI" Margin="0,0,0,18"/><WrapPanel><Button Content="运行健康检查" Tag="health"/><Button Content="打开监控网页" Tag="monitor"/><Button Content="刷新服务状态" Tag="inspect"/></WrapPanel><TextBlock Text="监控网页使用现有只读令牌登录。管理工具不自动生成或保存监控令牌。" Style="{StaticResource Muted}"/></StackPanel></Border>
+    </StackPanel></ScrollViewer></TabItem>
+    <TabItem><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="仓库与用户" Style="{StaticResource Heading}"/><TextBlock Text="仓库、SVN 用户凭据和访问规则存储在 PostgreSQL；DAV 凭据同步到本目录。" Style="{StaticResource Muted}"/>
+     <Border Style="{StaticResource Card}"><StackPanel>
+      <DockPanel><Button DockPanel.Dock="Right" Content="刷新列表" Tag="repo.list"/><TextBlock Text="仓库" Style="{StaticResource Subheading}"/></DockPanel>
+      <DataGrid x:Name="RepositoryList" Height="180" IsEnabled="{Binding Available}" IsReadOnly="True" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderBrush="#E2E8F0" Margin="0,0,0,18">
+       <DataGrid.Columns><DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="*"/><DataGridTextColumn Header="最新修订" Binding="{Binding Head}" Width="110"/><DataGridTextColumn Header="配置代数" Binding="{Binding Generation}" Width="110"/><DataGridTextColumn Header="启用" Binding="{Binding Enabled}" Width="90"/></DataGrid.Columns>
+      </DataGrid>
+      <Grid IsEnabled="{Binding Available}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel><Label Target="{Binding ElementName=Repository}" Content="仓库名称（选择列表或手动输入）" Padding="0"/><TextBox x:Name="Repository" Text="demo"/></StackPanel><StackPanel Grid.Column="2"><Label Target="{Binding ElementName=Route}" Content="新仓库路由" Padding="0"/><TextBox x:Name="Route" Text="/svn/demo"/></StackPanel></Grid>
+      <WrapPanel><Button Content="创建空仓库" Tag="repo.create" Style="{StaticResource Primary}"/><Button Content="启用仓库" Tag="repo.enable"/><Button Content="禁用仓库" Tag="repo.disable" Style="{StaticResource Danger}"/></WrapPanel>
+      <TextBlock Text="禁用仓库会中断后续访问；数据与历史保留。列表显示前 1000 个仓库。" Style="{StaticResource Muted}"/>
+     </StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
+      <TextBlock Text="设置 SVN 用户" Style="{StaticResource Subheading}"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions><StackPanel><Label Target="{Binding ElementName=UserName}" Content="用户名" Padding="0"/><TextBox x:Name="UserName" Text=""/></StackPanel><StackPanel Grid.Column="2"><Label Target="{Binding ElementName=UserPassword}" Content="密码（至少 8 位）" Padding="0"/><PasswordBox x:Name="UserPassword"/></StackPanel></Grid>
+      <CheckBox x:Name="UserDav" Content="同步 DAV / HTTP Basic 凭据" IsChecked="True" Margin="0,0,0,18"/><WrapPanel><Button Content="创建 / 更新用户凭据" Tag="user.set"/></WrapPanel>
+      <TextBlock Text="同名用户会更新密码。凭据创建后还需发布下方 authz 规则，才可访问仓库。" Style="{StaticResource Muted}"/>
+     </StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel IsEnabled="{Binding Available}">
+      <TextBlock Text="当前仓库的访问规则" Style="{StaticResource Subheading}"/><TextBlock Text="先读取当前规则，再编辑并发布；若期间被其他管理员更新，程序会拒绝覆盖。其他 groups/hooks/settings 保留。示例给 alice 读写权限，其余用户无权限。" Style="{StaticResource Muted}"/>
+      <WrapPanel><Button Content="读取当前规则" Tag="authz.read"/></WrapPanel>
+      <TextBox x:Name="Authz" Text="[/]&#10;alice = rw&#10;* =" AcceptsReturn="True" Height="135" VerticalScrollBarVisibility="Auto" FontFamily="Consolas, Microsoft YaHei UI" VerticalContentAlignment="Top"/>
+      <WrapPanel><Button Content="验证并发布规则" Tag="authz.publish" Style="{StaticResource Primary}"/></WrapPanel>
+     </StackPanel></Border>
+    </StackPanel></ScrollViewer></TabItem>
+    <TabItem><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+     <TextBlock Text="备份与维护" Style="{StaticResource Heading}"/><TextBlock Text="较大的历史校验、导入或备份可能耗时数分钟。任务执行期间请保持窗口打开。" Style="{StaticResource Muted}"/>
+     <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="一致性检查" Style="{StaticResource Subheading}"/><TextBlock Text="{Binding RepositoryLabel}" Style="{StaticResource Muted}"/><WrapPanel><Button Content="检查数据库结构" Tag="db.check"/><Button Content="校验当前仓库历史" Tag="repo.verify"/><Button Content="服务健康检查" Tag="health"/></WrapPanel></StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="SVN 历史导入 / 导出" Style="{StaticResource Subheading}"/><TextBlock Text="导出为标准 SVN dump 文件。导入仅允许空仓库（r0），程序先禁用仓库，导入后保持禁用；校验通过后再到「仓库与用户」启用。失败后请使用新空仓库重试。" Style="{StaticResource Muted}"/><WrapPanel><Button Content="导出当前仓库…" Tag="repo.dump"/><Button Content="导入到当前空仓库…" Tag="repo.load"/></WrapPanel></StackPanel></Border>
+     <Border Style="{StaticResource Card}"><StackPanel><TextBlock Text="完整部署备份" Style="{StaticResource Subheading}"/><TextBlock Text="选择运行目录之外的父目录，程序将在其中新建独立备份文件夹。备份会短暂停止当前目录服务，并在完成后恢复原来的运行状态；多节点需另行协调。备份包含数据库、配置、密钥和密码。" Style="{StaticResource Muted}"/><WrapPanel><Button Content="创建完整备份…" Tag="backup" Style="{StaticResource Primary}"/><Button Content="查看恢复步骤" Tag="guide.restore"/></WrapPanel><TextBlock Text="完整恢复需使用独立空数据库及 Restore-PgVN.ps1，按部署指南人工核对目标与角色映射。此版 GUI 不执行覆盖恢复。" Style="{StaticResource Muted}"/></StackPanel></Border>
+    </StackPanel></ScrollViewer></TabItem>
+    <TabItem><Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <StackPanel><TextBlock Text="操作日志" Style="{StaticResource Heading}"/><TextBlock Text="显示本次会话的操作进度与结果；密码不写入命令行或日志。最多保留 200,000 字符。" Style="{StaticResource Muted}"/></StackPanel>
+     <WrapPanel Grid.Row="1"><Button Content="读取服务日志末尾" Tag="logs"/><Button Content="导出操作日志…" Tag="export.logs"/><Button Content="清空会话日志" Tag="clear.logs"/></WrapPanel>
+     <TextBox x:Name="LogView" Grid.Row="2" Text="{Binding LogText, Mode=OneWay}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" FontFamily="Consolas, Microsoft YaHei UI" FontSize="12" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" Background="#0F172A" Foreground="#E2E8F0" Padding="16" BorderThickness="0"/>
+    </Grid></TabItem>
+   </TabControl>
+   <Border Grid.Row="2" Background="White" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Padding="26,12"><StackPanel><TextBlock Text="{Binding Status}" Foreground="{Binding StatusBrush}"/><ProgressBar Height="3" Margin="0,8,0,0" IsIndeterminate="{Binding Busy}" Visibility="{Binding ProgressVisibility}" Foreground="#2563EB"/></StackPanel></Border>
+  </Grid>
+ </Grid>
+</Window>

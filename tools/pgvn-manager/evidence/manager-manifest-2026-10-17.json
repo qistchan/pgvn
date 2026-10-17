@@ -1,0 +1,26 @@
+{
+    "format":  1,
+    "product":  "PgVN Manager",
+    "version":  "0.1.0-internal",
+    "platform":  "windows-x64",
+    "framework":  ".NET Framework 4.8",
+    "created_utc":  "2026-10-17T07:06:40.5755056Z",
+    "compiler":  "14.8.10001.0 built by: bd501acdc000004",
+    "sources":  {
+                    "App.cs":  "904fe0911ef5300b6e17546059e33f7c0d413c523d7b14de1de1c8cb3be38f30",
+                    "BackendClient.cs":  "ff21b04efa831ccade81f9306a75b518a266de5539fa33dbab71bb9b0e8359f3",
+                    "MainWindow.xaml":  "33bc248d4d7c4fe278cdfb59a44d2064daf0b3345f79f33fe871809933098f0e",
+                    "App.config":  "a1368a56854ac3cdcec33749b0e556ce656ce7bc855bebc726132fd155e85b62",
+                    "app.manifest":  "35321b5be20fdf8edb85247fdd219de2d15493a9005d1288d422a650ec60e8e8",
+                    "PgVN.Manager.csproj":  "0ecd41d4c2281031df8f9bc00a4f087e6f2f436410cbc62fd9fdb291bfe9b24a",
+                    "Invoke-PgVNManager.ps1":  "15bc8f2e1697cce4f0c728ded194112bc875c4b5dd1c9fc1e45773665587a077",
+                    "Build-PgVNManager.ps1":  "74123ea0f13426686a13a313986e251c349582c7236cb8fadeb732af012a4030",
+                    "README.zh-CN.md":  "ad6030ab082ba1da66068d89255c58add40c336aa0fa71749a91b42e25ede094"
+                },
+    "files":  {
+                  "PgVNManager.exe":  "9f03870b387ef5839b88b8765ab75aec8c32a99de75eb901ba895cbcafd25c45",
+                  "PgVNManager.exe.config":  "a1368a56854ac3cdcec33749b0e556ce656ce7bc855bebc726132fd155e85b62",
+                  "Invoke-PgVNManager.ps1":  "15bc8f2e1697cce4f0c728ded194112bc875c4b5dd1c9fc1e45773665587a077",
+                  "README.zh-CN.md":  "ad6030ab082ba1da66068d89255c58add40c336aa0fa71749a91b42e25ede094"
+              }
+}

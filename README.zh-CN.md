@@ -135,6 +135,16 @@ flowchart TB
 
 **高可用边界。** 多个服务进程可连接同一 PostgreSQL 后端；数据库复制、选主、fencing 和连接路由由数据库部署负责。PgVN 不执行 PostgreSQL 选主，本机多进程验证也不代表跨主机高可用或分布式多主写入已经验收。
 
+## Windows 配置与维护 GUI
+
+![PgVN Manager 桌面配置与维护工作台](docs/pgvn/images/manager-overview.jpg)
+
+[PgVN Manager](tools/pgvn-manager/README.zh-CN.md) 提供原生 Windows 图形界面，集中完成 PostgreSQL 连接测试、创建专用数据库与五个非超级用户角色、初始化结构和密钥、保存配置、安装和启停 PgVN / DAV 服务，以及仓库、用户和访问规则管理。日常维护包括健康检查、历史校验、SVN dump 导入导出、完整备份和日志查看。访问规则先读取再发布，并检查配置代数，防止覆盖其他管理员的更新。
+
+安装 .NET Framework 4.8 后，可直接运行组合包中的 `manager\PgVNManager.exe`；选择运行目录，加载配置，再按界面的首次使用步骤操作。使用已有 PostgreSQL 服务端，配置与服务管理需要管理员权限。完整恢复仍使用已有脚本，跨主机 HA 和 Polarion 应用验收的状态不变。
+
+开发者运行 `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`，产物位于 `runtime/pgvn-manager`。传入 `-RuntimePackageZip <已验证运行包.zip>` 可生成包含完整运行依赖与 GUI 的组合包；GUI 有独立构建清单。使用说明、测试入口和恢复边界见 [Manager 指南](tools/pgvn-manager/README.zh-CN.md)；本轮证据见 [本机验证记录](docs/pgvn/manager-validation.zh-CN.md)。
+
 ## 快速部署
 
 在同一个管理员 PowerShell 会话中依次执行第 1–5 步。PostgreSQL 服务端单独部署；PgVN 运行包附带数据库客户端工具。

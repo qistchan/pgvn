@@ -135,6 +135,16 @@ The shared core is linked into each service process; deployment requires no sepa
 
 **High availability.** Multiple service processes can use the same PostgreSQL backend. Replication, primary election, fencing and connection routing belong to the database deployment. PgVN does not elect a primary; local multi-process tests do not establish cross-host high availability or distributed multi-primary writes.
 
+## Windows configuration GUI
+
+![PgVN Manager desktop configuration and maintenance workspace](docs/pgvn/images/manager-overview.jpg)
+
+[PgVN Manager](tools/pgvn-manager/README.zh-CN.md) is a native Windows configuration and maintenance app. It tests PostgreSQL connections, creates a dedicated database and five non-superuser roles, initializes the schema and key, saves configuration, installs and controls PgVN / DAV services, and manages repositories, users and access rules. Maintenance includes health checks, history verification, SVN dump import/export, full backups and log viewing. Access-rule publication checks the generation loaded for editing to prevent overwriting another administrator's changes.
+
+With .NET Framework 4.8 installed, run `manager\PgVNManager.exe` from the combined bundle, load the runtime directory and follow the first-use steps in the Chinese UI. PostgreSQL must be installed separately; configuration and service operations require administrator privileges. Full restore uses the existing scripts. Cross-host HA and Polarion acceptance remain pending.
+
+Build with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn-manager\Build-PgVNManager.ps1`; outputs go to `runtime/pgvn-manager`. Add `-RuntimePackageZip <verified-runtime.zip>` to create a combined runtime and GUI archive. The GUI records its own build manifest. See the [Manager guide](tools/pgvn-manager/README.zh-CN.md) for usage, tests and restore limitations, and the [local validation record](docs/pgvn/manager-validation.zh-CN.md) for this build.
+
 ## Quick start
 
 Follow steps 1–5 in the same elevated PowerShell session. Deploy PostgreSQL separately; the PgVN package includes database client tools.
