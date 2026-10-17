@@ -448,13 +448,26 @@ docs/pgvn/            Architecture, guides and validation evidence
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
 | M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
 
-The [merge and patch checkpoint](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md) records the first 18 completed groups: 17 PASS and 1 FAIL. The failing group retains the original patch test failure on both backends, with local security-software interference documented. This partial checkpoint does not establish complete compatibility; follow [progress and evidence](docs/pgvn/progress.zh-CN.md) for subsequent results.
+Recent validation records are listed below. Each result binds to the build identified in its report; completion of a test run does not establish full compatibility or production readiness.
+
+| Record | Recorded scope and result |
+| --- | --- |
+| [Complete merge and patch matrix](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | All 45 groups completed across SVN, HTTP and HTTPS. The matrix remains **FAIL**, retaining the original patch failures on both backends and a strict diagnostic difference. |
+| [Enabled shelf profiles](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | 63 original functions: 330 PASS, 48 original XFAIL and zero SKIP. Two printed-order differences keep the strict diagnostic audit at **FAIL**; XFAILs remain unaccepted. |
+| [Real-history roundtrip](docs/pgvn/M6-history-frozen.zh-CN.md) | All 638 revisions verified, with changed paths and binary revision properties compared to FSFS, five complete snapshots matched, and a standard dump/load roundtrip checked. |
+| [Stateful backup and restore](docs/pgvn/M6-backup-frozen.zh-CN.md) | Synthetic SVN/DAV state restored into a separate database, with full row/sequence ledgers, credentials, locks, receipts and a resumed DAV transaction checked. |
+| [Commit-reply loss](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | A repository-core retry after a lost PostgreSQL COMMIT reply retained one published revision. SVN/DAV client acknowledgment loss and database failover remain separate requirements. |
+
+<details>
+<summary>Additional compatibility records and coverage</summary>
 
 Recorded [working-copy upgrade acceptance](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) covers 36 original functions over SVN, HTTP and HTTPS: all 216 FSFS/PgVN outcomes passed, alongside 21 offline fixture checks. The [properties, inheritance and externals acceptance](docs/pgvn/M6-network-client-properties.zh-CN.md) covers 280 original functions in ten complete suites. Each report identifies its tested build; these results are not combined into a single-build acceptance claim.
 
 The [coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) catalogs all 62 suites and 1,984 functions. Its earlier frozen build has matching three-protocol results for 568 functions; historical results and outstanding functions are listed separately. These counts belong to the build identified in that report; later builds need matching evidence. Original SKIP and XFAIL remain explicit; client-only cases do not establish backend I/O.
 
 Earlier recorded work includes [working-copy state](docs/pgvn/M6-network-wc-state.zh-CN.md), [working-copy semantics](docs/pgvn/M6-network-wc-workflows.zh-CN.md), [repository workflows](docs/pgvn/M6-network-workflows.zh-CN.md), [authorization](docs/pgvn/M6-network-authz.zh-CN.md), [commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md), [copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md) and [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md). Each report binds to its identified build; these results do not establish complete SVN compatibility or representative production performance. See the [upstream suite entry](docs/pgvn/M6-upstream-network.zh-CN.md) for the validation method and remaining scope.
+
+</details>
 
 Known client boundaries include SVNKit 1.10.1 revision-property changes on Unicode repository URLs and a pinned `svnmucc` Unicode-user issue reproduced against stock FSFS. Use ASCII repository routes for this SVNKit version. See [DAV compatibility](docs/pgvn/M5-DAV.zh-CN.md) and [Windows UTF-8 validation](docs/pgvn/Windows-UTF8.zh-CN.md).
 
@@ -473,7 +486,11 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Schema design](docs/pgvn/schema-design.zh-CN.md) | Database structures and storage/control boundaries |
 | [Compatibility validation](docs/pgvn/M6-upstream-network.zh-CN.md) | Original SVN suites, FSFS comparisons and three-protocol results |
 | [Working-copy upgrades](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) | Legacy client working-copy fixtures and three-protocol acceptance |
-| [Merge and patch checkpoint](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md) | Partial original-suite results, retained failure and environment diagnosis |
+| [Merge and patch matrix](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | All 45 groups, retained original failures and strict diagnostic differences |
+| [Enabled shelf profiles](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | Original shelf2/shelf3 execution, XFAILs and printed-order review |
+| [Real-history validation](docs/pgvn/M6-history-frozen.zh-CN.md) | All 638 revisions, FSFS comparisons and standard dump/load roundtrip |
+| [Stateful backup and restore](docs/pgvn/M6-backup-frozen.zh-CN.md) | Separate-database restore, logical data, permissions and durable DAV state |
+| [Commit-reply loss](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | Repository-core retry, receipt and revision-count verification |
 | [Coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) | Per-function current, historical and pending results across all 62 suites |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |

@@ -448,13 +448,26 @@ docs/pgvn/            架构、指南和验证证据
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
 | M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
 
-[合并与 patch 检查点](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md)记录首批完成的 18 组结果：17 组 PASS、1 组 FAIL。失败组保留两后端的原版 patch 用例失败，并记录本机安全软件干扰的证据。这份局部检查点不表示完整兼容性通过，后续结果见[进展与验证](docs/pgvn/progress.zh-CN.md)。
+近期验证记录如下，各项结果绑定报告注明的构建；测试执行完成不表示完整兼容性或生产就绪已经验收。
+
+| 记录 | 实测范围与结果 |
+| --- | --- |
+| [完整合并与 patch 矩阵](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | SVN、HTTP、HTTPS 的 45 组已全部结束。矩阵仍为 **FAIL**，保留两后端的原版 patch 失败及一处严格诊断差异。 |
+| [启用 shelf 配置](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | 63 个原版函数，330 PASS、48 个原有 XFAIL、零 SKIP。两处打印顺序差异使严格诊断保持 **FAIL**，XFAIL 不计验收通过。 |
+| [真实历史往返](docs/pgvn/M6-history-frozen.zh-CN.md) | 完整 verify 覆盖 638 个修订，与 FSFS 对照修改路径及二进制修订属性，核对五个完整快照并完成标准 dump/load 往返。 |
+| [有状态备份恢复](docs/pgvn/M6-backup-frozen.zh-CN.md) | 合成 SVN/DAV 状态恢复至独立数据库，核对完整行/序列账本、凭据、锁、回执及 DAV 事务续提。 |
+| [提交回包丢失](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | PostgreSQL COMMIT 回包丢失后，仓库核心重试仍只有一次修订发布；SVN/DAV 客户端确认丢失及数据库切换另需验证。 |
+
+<details>
+<summary>其他兼容性记录与覆盖范围</summary>
 
 已记录的[工作副本升级验收](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md)覆盖 36 个原版函数的 SVN、HTTP、HTTPS 对照：两后端共 216 个结果全部通过，另有 21 项离线夹具检查通过。[属性、继承与外部引用验收](docs/pgvn/M6-network-client-properties.zh-CN.md)覆盖十个完整套件、280 个原版函数。各报告标明其测试构建，这些结果不合并为同一构建的验收结论。
 
 [覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md)核对全部 62 套件、1,984 个函数，其较早冻结构建中有 568 个函数取得三协议一致结果；历史结果与待验证函数分别列出。这些数字绑定报告注明的构建，后续构建需要匹配的验证证据。原有 SKIP/XFAIL 单独保留，客户端局部用例不证明后端 I/O。
 
 此前已记录[工作副本状态](docs/pgvn/M6-network-wc-state.zh-CN.md)、[工作副本语义](docs/pgvn/M6-network-wc-workflows.zh-CN.md)、[仓库工作流](docs/pgvn/M6-network-workflows.zh-CN.md)、[授权](docs/pgvn/M6-network-authz.zh-CN.md)、[commit/update](docs/pgvn/M6-network-commit-update.zh-CN.md)、[copy/prop](docs/pgvn/M6-network-copy-prop.zh-CN.md)及 [log/diff](docs/pgvn/M6-network-log-diff.zh-CN.md) 验证。每份报告绑定其标明的构建，不据此宣告完整 SVN 兼容或代表性生产性能已验收；验证方法和剩余范围见[上游套件入口](docs/pgvn/M6-upstream-network.zh-CN.md)。
+
+</details>
 
 已知客户端差异包括 SVNKit 1.10.1 对中文仓库 URL 修改修订属性的重复编码，以及固定版本 `svnmucc` 的中文用户问题，均有原版 FSFS 对照。该 SVNKit 版本建议采用 ASCII 仓库路由，详见 [DAV 兼容性](docs/pgvn/M5-DAV.zh-CN.md)和 [Windows UTF-8 验证](docs/pgvn/Windows-UTF8.zh-CN.md)。
 
@@ -473,7 +486,11 @@ docs/pgvn/            架构、指南和验证证据
 | [Schema 设计](docs/pgvn/schema-design.zh-CN.md) | 数据结构、存储与控制边界 |
 | [兼容性验证](docs/pgvn/M6-upstream-network.zh-CN.md) | 原版 SVN 套件、FSFS 对照与三协议实测 |
 | [工作副本升级](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) | 旧客户端工作副本夹具与三协议验收 |
-| [合并与 patch 检查点](docs/pgvn/M6-network-merge-patch-checkpoint.zh-CN.md) | 首批原版结果、保留的失败与环境诊断 |
+| [合并与 patch 矩阵](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | 全部 45 组、保留的原失败及严格诊断差异 |
+| [启用 shelf 配置](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | 原版 shelf2/shelf3 执行、XFAIL 与打印顺序审计 |
+| [真实历史验证](docs/pgvn/M6-history-frozen.zh-CN.md) | 全部 638 个修订、FSFS 对照及标准 dump/load 往返 |
+| [有状态备份恢复](docs/pgvn/M6-backup-frozen.zh-CN.md) | 独立数据库恢复、逻辑数据、权限和持久化 DAV 状态 |
+| [提交回包丢失](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | 仓库核心重试、回执与修订次数核对 |
 | [兼容性覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md) | 全部 62 个套件逐函数的当前、历史和待验证结果 |
 | [进展与验证](docs/pgvn/progress.zh-CN.md) | 已验收构建、结果与待办 |
 | [实施计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | 里程碑及验收要求 |
