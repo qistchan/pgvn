@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "status": "PASS_RECEIPT_FAULT_COMPONENT_AUDIT",
+  "test_id": "m6-receipt-fault-net-15ea372cf9c7",
+  "created_at": "2026-10-17T06:18:36.488957+00:00",
+  "manifest_sha256": "5e3d4cc3f2f8491a27b6aaede96e1ec921b31f908ec4324574bc580ef323b1e9",
+  "plan_sha256": "c831ba2f702e4661af5624c9dbb4be09f4e99c8407ec167ae85fa2fe80d65392",
+  "report_sha256": "24927020f15381c58ae57e1af307baa06b8674d638efa9ac24eb1b57215c860c",
+  "component_report_sha256": "9c8c6cdf2f77e087195bf18d98a9b8fa0f7b89550ce905098c19b76f5a73b07c",
+  "details": {
+    "server_commit_ack_observed_then_client_reply_dropped": true,
+    "ledger": {
+      "first": 1,
+      "repeat": 1,
+      "receipt": 1,
+      "head": 1,
+      "published_delta": 1,
+      "receipt_delta": 3,
+      "sql_calls_delta": 75,
+      "sql_results_delta": 75,
+      "sql_errors_delta": 2,
+      "sql_class_08_delta": 2,
+      "sql_active": 0,
+      "writers_active": 0
+    },
+    "exactly_one_persisted_revision": true,
+    "full_verify": true
+  },
+  "validation_seconds": 7.328000000008615,
+  "post_terminal_residual": {
+    "owner": "pgvn_migrate_15ea372cf9c7",
+    "owner_superuser": false,
+    "client_backends": 0,
+    "monitor_tokens": 0
+  },
+  "owned_job_active_processes": 0,
+  "core_probe_sha256": "1bead1003cd8c0df6fd5fc3498220075386ab14870e4a648366fd683fe9832bd",
+  "original_assertions_unchanged": true,
+  "original_checks_function_sha256": "2f91341fb70b2fe707878a6cd39766f8d7415b7e7c11886aeac378882f492bdd",
+  "fixture_adaptations": [
+    "Fresh authorized database and non-superuser owner; no Fixture.initialize.",
+    "Record original admin-command results without changing expectations."
+  ],
+  "first_failure": {
+    "test_id": "m6-receipt-fault-net-cde905817367",
+    "status": "FAIL",
+    "before_database_creation": true,
+    "database_count": 0,
+    "role_count": 0,
+    "report_sha256": "f40462550e9aabf93219a5672a11b4a3e6357dba4a84bacec4679a47265cf44f",
+    "plan_sha256": "f9fc60edb63c6ffd029bf751ce0c6b5ff3036b1cd9af806e2ec16f09321532a0",
+    "reason": "Relative plan argument resolved in the child repository cwd; retried as a new plan with an absolute path, without source changes."
+  },
+  "milestone_complete": false,
+  "frozen_evidence": {
+    "path": "runtime/pgvn/baselines/m6-receipt-fault-15ea372cf9c7",
+    "index_sha256": "616e780a2521cd45945bb1c520c2f11cd2cd287c290a444e777b566dd147c272",
+    "files": 341
+  },
+  "registered_source_inputs_unchanged": 155,
+  "production_products_unchanged": {
+    "runtime/pgvn/bin/pgvnserve.exe": "89538f98d58fb738d927a8cbc47459fa025b6ec8c8288c01a592dfffd4d994e1",
+    "runtime/pgvn/bin/pgvnadmin.exe": "c9f5f968ce555d19e976c253d65fc2b3a27103e71ee1a1ac662268556db26d16",
+    "runtime/pgvn/apache/modules/mod_dav_pgvn.so": "0ee4445764f85b9b4b3092f29f61ac1edce4402a73f0ca90c048d9968c58a489",
+    "runtime/pgvn/apache/modules/mod_authz_pgvn.so": "c92c2e9a4835d64345ab1cb2e1b706098bcb28780c1d6db278d74f4b365e9461",
+    "runtime/pgvn/apache/bin/pgvnhttpd.exe": "cf038d1a5ec9cd17156a714148c3dc922ea6b7bd83ce58a3ab41618ae44c2e96"
+  },
+  "build_git_base_commit": "c036339e18021fa523ccc106efb366c81ca88667",
+  "build_git_worktree_dirty": true,
+  "browser_m5_package_rerun": false,
+  "limitations": [
+    "Direct repository-core probe, not SVN/DAV client acknowledgement loss.",
+    "Observed committed publication response loss, not PostgreSQL failover or rollback.",
+    "Single local cluster and one publication, not a performance or HA result."
+  ]
+}
