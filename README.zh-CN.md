@@ -6,7 +6,7 @@
 
 以 PostgreSQL 为存储后端的 Windows Subversion 服务端，提供原生 SVN/DAV 接入、集中式仓库管理和内置监控网页。
 
-[![状态：实验阶段](https://img.shields.io/badge/status-experimental-orange?style=flat-square)](#项目状态)
+[![状态：首个可用预览版本](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#项目状态)
 [![平台：Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#快速部署)
 [![Subversion：1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#环境要求)
 [![PostgreSQL：18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#环境要求)
@@ -22,7 +22,7 @@
 *内置监控控制台，截图来自已记录的本机验证。[查看网页功能](#监控网页)。*
 
 > [!IMPORTANT]
-> **开发快照。** M0–M5 已有本机验收记录；M6 的兼容性、故障与性能验证正在推进。全新机器安装、整机重启、跨主机故障切换和 Polarion 应用验收尚待完成。各项结果的实测范围和构建身份以[进展与验证](docs/pgvn/progress.zh-CN.md)为准。
+> **首个可用预览版本（Windows）。** 2026-10-17，项目维护者确认本机 Polarion 已成功使用 PgVN 运行，见[本机运行记录](docs/pgvn/progress.zh-CN.md#first-usable-preview)。M0–M5 已有本机验收记录；M6 兼容性、故障与性能验证仍在推进。全新机器安装、整机重启、跨主机故障切换及完整 Polarion 应用验收仍待完成，当前可用于内部试用验证。
 
 ## 从这里开始
 
@@ -40,7 +40,7 @@ PgVN 将 SVN 仓库历史、配置和持久化协议状态统一保存在 Postgr
 
 PgVN 面向希望保留 SVN 客户端工作流、通过统一 PostgreSQL 后端管理仓库存储与策略的团队。产品由专用服务端、Apache 模块和管理工具组成，公共仓库核心分别链接到各组件进程。
 
-早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。Polarion 是目标集成场景，仍需完成应用层验收。
+早期 PgFS 文件系统插件 PoC 是其存储基础，部署使用完整 PgVN 运行包。本机 Polarion 已有成功运行的用户确认，完整应用场景继续按[验证记录](docs/pgvn/progress.zh-CN.md#first-usable-preview)推进。
 
 ## 产品特性
 
@@ -142,7 +142,7 @@ flowchart TB
 
 [PgVN Manager](tools/pgvn-manager/README.zh-CN.md) 提供原生 Windows 图形界面，集中完成 PostgreSQL 连接测试、创建专用数据库与五个非超级用户角色、初始化结构和密钥、保存配置、安装和启停 PgVN / DAV 服务，以及仓库、用户和访问规则管理。日常维护包括健康检查、历史校验、SVN dump 导入导出、完整备份和日志查看。访问规则先读取再发布，并检查配置代数，防止覆盖其他管理员的更新。
 
-安装 .NET Framework 4.8 后，可直接运行组合包中的 `manager\PgVNManager.exe`；选择运行目录，加载配置，再按界面的首次使用步骤操作。使用已有 PostgreSQL 服务端，配置与服务管理需要管理员权限。完整恢复仍使用已有脚本，跨主机 HA 和 Polarion 应用验收的状态不变。
+安装 .NET Framework 4.8 后，可直接运行组合包中的 `manager\PgVNManager.exe`；选择运行目录，加载配置，再按界面的首次使用步骤操作。使用已有 PostgreSQL 服务端，配置与服务管理需要管理员权限。完整恢复仍使用已有脚本。本机 Polarion 运行已由项目维护者确认，完整应用验收及跨主机 HA 继续推进。
 
 **完整组合包**是把 PgVN 运行组件与 Manager GUI 合并后的 ZIP，包含 `pgvnserve`、Apache / DAV 模块、`pgvnadmin`、配套 DLL、客户端工具、部署脚本及 `manager` 目录。本轮已生成并记录验证的文件为 `runtime/pgvn-manager-bundle-9dce96de.zip`（约 23 MiB），旁边的 `.zip.sha256` 用于校验，详见[交付记录](docs/pgvn/manager-validation.zh-CN.md#交付与使用)。这些文件是本机构建输出，不随 Git 源码分发；复制 ZIP 与摘要文件到目标机，校验后解压即可得到运行目录。解压目录下直接包含 `bin`、`apache`、`deploy`、`tools` 和 `manager`，从 `manager\PgVNManager.exe` 启动。`pgvn-manager.zip` 仅为 GUI 附加包，需要另备完整运行包。组合包不包含 PostgreSQL 服务端安装程序、.NET Framework 或 Polarion 程序及数据。
 
@@ -152,7 +152,7 @@ flowchart TB
 
 ## 用 GUI 迁移 Windows 单机 Polarion 的 SVN
 
-本节用于 **同机、隔离副本的替换演练**：把 Polarion 默认 SVN 仓库的完整历史迁入 PostgreSQL，再让 Polarion 通过 PgVN 的 HTTP / SVN 服务访问。GUI 负责 PgVN 初始化、导入和运维；源 SVN 导出、Polarion 配置修改及应用验收仍需手工完成。当前尚无 Polarion 应用验收结论，不能把完成以下配置视为生产替换已经通过。
+本节用于 **同机、隔离副本的替换演练**：把 Polarion 默认 SVN 仓库的完整历史迁入 PostgreSQL，再让 Polarion 通过 PgVN 的 HTTP / SVN 服务访问。GUI 负责 PgVN 初始化、导入和运维；源 SVN 导出、Polarion 配置修改及应用验收仍需手工完成。项目维护者已[确认本机 Polarion 成功运行](docs/pgvn/progress.zh-CN.md#first-usable-preview)；下述完整应用清单仍需逐项记录验收结果。
 
 ### 1. 准备运行目录与回退点
 
@@ -246,7 +246,7 @@ repoSystem=svn://127.0.0.1:14690/svn/polarion
 
 ### 7. 应用验收与回退
 
-从 Polarion 登录并验证项目列表、工作项读写、LiveDoc、附件、历史 / 基线、锁、普通用户路径权限，以及用户 / 组 / 密码 / 权限变更同步。按该版本维护指南验证索引 / 重建流程，确认新修订只出现在 PgVN、旧库 HEAD 保持冻结，并用 GUI 创建一次完整备份。记录结果后再决定扩大试用；目前这些应用检查仍待实际执行。
+从 Polarion 登录并验证项目列表、工作项读写、LiveDoc、附件、历史 / 基线、锁、普通用户路径权限，以及用户 / 组 / 密码 / 权限变更同步。按该版本维护指南验证索引 / 重建流程，确认新修订只出现在 PgVN、旧库 HEAD 保持冻结，并用 GUI 创建一次完整备份。记录结果后再决定扩大试用。本机启动运行已有成功反馈；该反馈不代表清单中每个应用场景均已验收通过。
 
 需要回退时，先停止 Polarion 应用和所有写入，通过 GUI 停止本目录 PgVN / DAV。**若尚无新写入**，恢复原 `polarion.properties`、Apache 配置及匹配的应用数据 / 索引回退点，再按原顺序启用旧 SVN 和 Polarion。**若 PgVN 已有新提交或修订属性等变更**，先保留完整 PgVN 备份和新历史，由管理员迁回独立 FSFS 并核对；不能直接启用停留在旧 HEAD 的原仓库，否则会丢失切换后的变更。
 
@@ -517,7 +517,7 @@ max-connections = 64
 <details>
 <summary>现在可以直接替换 Polarion 的生产 SVN 后端吗？</summary>
 
-当前仍处于开发与隔离验证阶段。标准 SVN 协议检查已有记录，Polarion 应用级集成、全新机器安装和重启演练尚未完成；完成相应验收前，应在隔离环境评估。
+首个可用预览版本已由项目维护者确认在本机 Polarion 成功运行，可开展内部试用验证。完整应用场景、全新机器安装、重启及跨主机故障切换仍需验收记录；剩余范围见下方里程碑表。
 
 </details>
 
@@ -555,18 +555,21 @@ docs/pgvn/            架构、指南和验证证据
 
 ## 项目状态
 
+**首个可用预览版本：Windows，2026-10-17。** 项目维护者确认本机 Polarion 已成功运行，[运行记录](docs/pgvn/progress.zh-CN.md#first-usable-preview)注明了反馈范围；既有兼容性结果和未完成里程碑继续保留。
+
 | 里程碑 | 范围 | 状态 |
 | --- | --- | --- |
 | M0–M2 | 运行契约、公共仓库核心与管理工具 | 已有本机验收记录 |
 | M3 | 原生 SVN 服务、凭据与 hooks | 已有本机验收记录 |
 | M4–M5 | 监控、DAV、授权及工作进程遥测 | 已有本机验收记录，结果绑定具体构建 |
 | M6 | 完整上游兼容性、故障场景与代表性性能 | 推进中 |
-| M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证，独立环境待准备 |
+| M7 | 全新 Windows 部署、重启与 Polarion 验收 | 已有本机包验证及用户确认的 Polarion 运行记录；干净机器、重启及完整应用验收待完成 |
 
 近期验证记录如下，各项结果绑定报告注明的构建；测试执行完成不表示完整兼容性或生产就绪已经验收。
 
 | 记录 | 实测范围与结果 |
 | --- | --- |
+| [首个可用预览版本](docs/pgvn/progress.zh-CN.md#first-usable-preview) | 2026-10-17 项目维护者确认本机 Polarion 成功运行；完整应用验收另行记录。 |
 | [完整合并与 patch 矩阵](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | SVN、HTTP、HTTPS 的 45 组已全部结束。矩阵仍为 **FAIL**，保留两后端的原版 patch 失败及一处严格诊断差异。 |
 | [启用 shelf 配置](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | 63 个原版函数，330 PASS、48 个原有 XFAIL、零 SKIP。两处打印顺序差异使严格诊断保持 **FAIL**，XFAIL 不计验收通过。 |
 | [真实历史往返](docs/pgvn/M6-history-frozen.zh-CN.md) | 完整 verify 覆盖 638 个修订，与 FSFS 对照修改路径及二进制修订属性，核对五个完整快照并完成标准 dump/load 往返。 |
@@ -608,4 +611,5 @@ docs/pgvn/            架构、指南和验证证据
 | [提交回包丢失](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | 仓库核心重试、回执与修订次数核对 |
 | [兼容性覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md) | 全部 62 个套件逐函数的当前、历史和待验证结果 |
 | [进展与验证](docs/pgvn/progress.zh-CN.md) | 已验收构建、结果与待办 |
+| [下一阶段计划](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | 规划中的 Linux 支持、双平台版本同步、原生 SVN 权限 bypass 与性能优化 |
 | [实施计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | 里程碑及验收要求 |

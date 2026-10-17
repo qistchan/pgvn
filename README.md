@@ -6,7 +6,7 @@
 
 A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, centralized repository administration and an embedded monitoring console.
 
-[![Status: experimental](https://img.shields.io/badge/status-experimental-orange?style=flat-square)](#project-status)
+[![Status: first usable preview](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#project-status)
 [![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#quick-start)
 [![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#prerequisites)
 [![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#prerequisites)
@@ -22,7 +22,7 @@ A PostgreSQL-backed Subversion server for Windows, with native SVN/DAV access, c
 *The embedded monitoring console, captured from a recorded local validation run. [Explore the console](#web-console).*
 
 > [!IMPORTANT]
-> **Development snapshot.** M0–M5 have recorded local acceptance runs. M6 compatibility, failure and performance validation is in progress. Clean-machine installation, reboot recovery, cross-host failover and Polarion application acceptance remain pending. See [validation progress](docs/pgvn/progress.zh-CN.md) for the scope and build identity of each result.
+> **First usable preview for Windows.** On 2026-10-17, the project owner confirmed that their local Polarion instance was running successfully with PgVN. See the [local operation record](docs/pgvn/progress.zh-CN.md#first-usable-preview). M0–M5 have recorded local acceptance runs; M6 compatibility, failure and performance validation remains in progress. Clean-machine installation, reboot recovery, cross-host failover and full Polarion application acceptance remain pending. This is an initial version for internal evaluation.
 
 ## Start here
 
@@ -40,7 +40,7 @@ PgVN brings SVN repository history, configuration and durable protocol state int
 
 It is designed for teams that want to retain SVN client workflows while managing repository storage and policy through a common PostgreSQL backend. The product consists of a dedicated server, Apache modules and an administration tool, with the shared repository core linked into each component.
 
-The earlier PgFS filesystem-plugin PoC is the storage foundation; deployment uses the complete PgVN runtime. Polarion is a target integration and still requires application-level acceptance.
+The earlier PgFS filesystem-plugin PoC is the storage foundation; deployment uses the complete PgVN runtime. A local Polarion instance has been reported running successfully with PgVN; broader application acceptance remains part of the [validation work](docs/pgvn/progress.zh-CN.md#first-usable-preview).
 
 ## Features
 
@@ -142,7 +142,7 @@ The shared core is linked into each service process; deployment requires no sepa
 
 [PgVN Manager](tools/pgvn-manager/README.zh-CN.md) is a native Windows configuration and maintenance app. It tests PostgreSQL connections, creates a dedicated database and five non-superuser roles, initializes the schema and key, saves configuration, installs and controls PgVN / DAV services, and manages repositories, users and access rules. Maintenance includes health checks, history verification, SVN dump import/export, full backups and log viewing. Access-rule publication checks the generation loaded for editing to prevent overwriting another administrator's changes.
 
-With .NET Framework 4.8 installed, run `manager\PgVNManager.exe` from the combined bundle, load the runtime directory and follow the first-use steps in the Chinese UI. PostgreSQL must be installed separately; configuration and service operations require administrator privileges. Full restore uses the existing scripts. Cross-host HA and Polarion acceptance remain pending.
+With .NET Framework 4.8 installed, run `manager\PgVNManager.exe` from the combined bundle, load the runtime directory and follow the first-use steps in the Chinese UI. PostgreSQL must be installed separately; configuration and service operations require administrator privileges. Full restore uses the existing scripts. Local Polarion operation has been confirmed by the project owner; full application acceptance and cross-host HA remain pending.
 
 The **combined bundle** is a ZIP containing both the complete PgVN runtime and Manager GUI: `pgvnserve`, Apache / DAV modules, `pgvnadmin`, matching DLLs, client tools, deployment scripts and the `manager` directory. The locally built archive recorded for this iteration is `runtime/pgvn-manager-bundle-9dce96de.zip` (about 23 MiB), accompanied by `.zip.sha256` for verification; see the [delivery record](docs/pgvn/manager-validation.zh-CN.md#交付与使用). These are local build outputs, distributed separately from Git source. Copy the ZIP and checksum to the target machine, verify and extract them to obtain the runtime directory. Its root directly contains `bin`, `apache`, `deploy`, `tools` and `manager`; launch `manager\PgVNManager.exe`. The smaller `pgvn-manager.zip` is a GUI-only add-on requiring a separate complete runtime. The combined bundle excludes the PostgreSQL server installer, .NET Framework, and Polarion programs and data.
 
@@ -152,7 +152,7 @@ Build with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\pgvn
 
 ## Migrate single-host Polarion SVN with the GUI on Windows
 
-This procedure is for an **isolated Polarion copy on the same Windows host**: move its default SVN repository history into PostgreSQL, then connect Polarion to PgVN over HTTP / SVN. Manager handles PgVN initialization, import and maintenance; exporting the source, editing Polarion configuration and application acceptance remain manual. Polarion application acceptance is still pending; completing configuration does not establish production readiness.
+This procedure is for an **isolated Polarion copy on the same Windows host**: move its default SVN repository history into PostgreSQL, then connect Polarion to PgVN over HTTP / SVN. Manager handles PgVN initialization, import and maintenance; exporting the source, editing Polarion configuration and application acceptance remain manual. The project owner has [confirmed local Polarion operation](docs/pgvn/progress.zh-CN.md#first-usable-preview); the full application checklist below still needs per-scenario acceptance records.
 
 ### 1. Prepare the runtime and rollback point
 
@@ -246,7 +246,7 @@ These URLs are for same-host evaluation. Remote SVN clients or browsers need a r
 
 ### 7. Validate the application and roll back
 
-Log in to Polarion and validate projects, work-item reads / writes, LiveDocs, attachments, history / baselines, locks, ordinary-user path restrictions and synchronization of user / group / password / permission changes. Test indexing / reindexing using the version-specific maintenance procedure. Confirm that new revisions appear only in PgVN and the old HEAD remains frozen, then create a full backup with Manager. Record results before expanding evaluation; these application checks have not yet been executed.
+Log in to Polarion and validate projects, work-item reads / writes, LiveDocs, attachments, history / baselines, locks, ordinary-user path restrictions and synchronization of user / group / password / permission changes. Test indexing / reindexing using the version-specific maintenance procedure. Confirm that new revisions appear only in PgVN and the old HEAD remains frozen, then create a full backup with Manager. Record results before expanding evaluation. Local startup and operation have been reported successful; this feedback does not establish that every application scenario in this checklist has passed.
 
 To roll back, first stop Polarion and all writers, then stop this runtime's PgVN / DAV services with Manager. **Before any new writes**, restore original `polarion.properties`, Apache configuration and the matching application data / index rollback point, then restore the original SVN and Polarion startup sequence. **After new commits, revision-property edits or other writes**, first preserve a complete PgVN backup and new history, then have an administrator migrate back to a separate FSFS repository and verify it. Restarting the original repository at its old HEAD would lose post-cutover changes.
 
@@ -517,7 +517,7 @@ Multiple service processes can share one PostgreSQL backend. PostgreSQL deployme
 <details>
 <summary>Can I replace Polarion's production SVN backend now?</summary>
 
-PgVN is still in development and isolated validation. Standard SVN protocol checks have recorded results; Polarion application integration, clean-machine installation and reboot exercises remain pending. Evaluate in an isolated environment until those acceptance steps are complete.
+The first usable preview has been reported running successfully with a local Polarion instance. It is available for internal evaluation; full application scenarios, clean-machine installation, reboot exercises and cross-host failover still need acceptance records. The milestone table below tracks those remaining checks.
 
 </details>
 
@@ -555,13 +555,15 @@ docs/pgvn/            Architecture, guides and validation evidence
 
 ## Project status
 
+**First usable preview — Windows, 2026-10-17.** The project owner confirmed successful local Polarion operation. The [operation record](docs/pgvn/progress.zh-CN.md#first-usable-preview) identifies the scope of this feedback; existing compatibility results and open milestones are retained.
+
 | Milestone | Scope | Status |
 | --- | --- | --- |
 | M0–M2 | Runtime contracts, repository core and administration | Local acceptance recorded |
 | M3 | Native SVN service, credentials and hooks | Local acceptance recorded |
 | M4–M5 | Console, DAV, authorization and worker telemetry | Local acceptance recorded; results bind to specific builds |
 | M6 | Full upstream compatibility, failure scenarios and representative performance | In progress |
-| M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks recorded; independent environment pending |
+| M7 | Clean Windows deployment, reboot and Polarion acceptance | Local package checks and user-confirmed Polarion operation recorded; clean-host, reboot and full application acceptance remain pending |
 
 Recent validation records are listed below. Each result binds to the build identified in its report; completion of a test run does not establish full compatibility or production readiness.
 
@@ -601,6 +603,7 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Schema design](docs/pgvn/schema-design.zh-CN.md) | Database structures and storage/control boundaries |
 | [Compatibility validation](docs/pgvn/M6-upstream-network.zh-CN.md) | Original SVN suites, FSFS comparisons and three-protocol results |
 | [Working-copy upgrades](docs/pgvn/M6-network-upgrade-fixtures.zh-CN.md) | Legacy client working-copy fixtures and three-protocol acceptance |
+| [First usable preview](docs/pgvn/progress.zh-CN.md#first-usable-preview) | Local Polarion operation confirmed by the project owner on 2026-10-17; full application acceptance remains separate. |
 | [Merge and patch matrix](docs/pgvn/M6-network-merge-patch-matrix.zh-CN.md) | All 45 groups, retained original failures and strict diagnostic differences |
 | [Enabled shelf profiles](docs/pgvn/M6-network-shelf-enabled.zh-CN.md) | Original shelf2/shelf3 execution, XFAILs and printed-order review |
 | [Real-history validation](docs/pgvn/M6-history-frozen.zh-CN.md) | All 638 revisions, FSFS comparisons and standard dump/load roundtrip |
@@ -608,4 +611,5 @@ Detailed guides currently use Chinese; both README editions cover the same intro
 | [Commit-reply loss](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | Repository-core retry, receipt and revision-count verification |
 | [Coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) | Per-function current, historical and pending results across all 62 suites |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Accepted builds, results and outstanding work |
+| [Next iteration plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | Planned Linux support, Windows/Linux version parity, native SVN authorization bypass and measured performance optimization |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestones and acceptance requirements |

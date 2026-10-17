@@ -1,6 +1,6 @@
 # PgVN 实施进展
 
-目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0–M5，继续进行 M6 本机验证和 M7 部署包；尚不能替代 Polarion 的生产 SVN 后端。
+目标仓库：`C:\Project\PgVN\pgvn`，远程 `git@github.com:qistchan/pgvn.git`。每个完成的里程碑提交一次代码。当前已完成 M0–M5；2026-10-17 用户确认本机 Polarion 已成功使用 PgVN 运行，作为首个可用预览版本记录。M6 完整兼容性与 M7 干净机器、重启及完整应用验收继续推进。
 
 ## M0：完成
 
@@ -290,3 +290,13 @@ PGVN-601、PGVN-602、M6、M7 仍未完成。HTTPS、启用 shelf、SVN 失败�
 六组完整原版套件在 SVN、HTTP、HTTPS 完成 FSFS/PgVN 对照，378 个结果为 330 PASS、48 原有 XFAIL，零 SKIP。严格诊断为 22/24 对完全一致、2 对不同，保持 FAIL；独立 AST 审计确认两差异仅为完整状态树的打印键序，全部节点/属性和异常相同，两后端仍未满足相同的原有冲突状态预期，不据此验收。仅添加原版环境开关，原条件、装饰器、函数和断言保持不变。63 个函数与默认未启用配置相同，不重复增加唯一覆盖数；此前合并/patch 矩阵 FAIL 不变。
 
 155 项输入及五个产物保持 `5e3d4cc3…`，28/6 个内外层 Job 排空，六库非超级用户所有者、零令牌及零残留连接，原始材料和调度前置条件调整均冻结。未新增浏览器/M5/包验收，PGVN-601、PGVN-602、M6、M7 保持未完成，详见[启用 shelf 记录](M6-network-shelf-enabled.zh-CN.md)及结构化证据。
+
+<a id="first-usable-preview"></a>
+
+## 2026-10-17：首个可用预览版本，本机 Polarion 运行成功
+
+用户确认：本地 Polarion 已经成功使用 PgVN 运行。以此记录项目的第一个可用预览版本，当前交付形态为 Windows x64 原生服务、Apache DAV 模块、管理 CLI、监控网页及 Windows 维护 GUI，可开展内部试用验证。
+
+本条来源为用户的实际运行反馈，确认范围为本机 Polarion 启动运行成功。反馈没有逐项提供工作项、LiveDoc、附件、索引重建、用户权限同步等完整应用验收结果；这些场景按原计划继续记录。M6、M7、PGVN-601/602 及既有严格差分 FAIL 状态不因此改写，独立干净机器、重启、跨主机 HA 与代表性性能仍待验收。
+
+本次仅更新双语 README、运行状态说明，并纳入[下一阶段计划](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md)。该计划中的 Linux、原生 SVN 权限 bypass 和缓存加速为后续工作，尚未实现。本次文档提交不重建二进制或重跑门禁，程序版本仍为 `0.1.0-dev`；既有构建及测试身份以各报告为准。
