@@ -104,7 +104,7 @@ static inline int pgvn_monotonic_milliseconds(uint64_t *milliseconds)
     *milliseconds=GetTickCount64();
 #else
     struct timespec now;
-    if(clock_gettime(CLOCK_MONOTONIC,&now)) return errno;
+    if(clock_gettime(CLOCK_MONOTONIC,&now)) { int error=errno; return error ? error : EIO; }
     *milliseconds=(uint64_t)now.tv_sec*1000+(uint64_t)now.tv_nsec/1000000;
 #endif
     return 0;
