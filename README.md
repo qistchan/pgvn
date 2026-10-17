@@ -4,10 +4,11 @@
 
 **Subversion protocols · PostgreSQL storage · No per-repository directories**
 
-A PostgreSQL-backed Subversion server for Windows, offering native SVN/DAV access, centralized repository administration, and an embedded monitoring console.
+A PostgreSQL-backed Subversion server for Windows and Linux, offering native SVN/DAV access, centralized repository administration, and an embedded monitoring console.
 
 [![Status: first usable preview](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#project-status)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
+[![Platform: Linux x86_64](https://img.shields.io/badge/platform-Linux_x86__64-E95420?style=flat-square)](docs/pgvn/linux.zh-CN.md)
 [![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#quick-start)
 [![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#prerequisites)
 [![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#prerequisites)
@@ -25,7 +26,7 @@ A PostgreSQL-backed Subversion server for Windows, offering native SVN/DAV acces
 > [!IMPORTANT]
 > **First usable preview for Windows.** On 2026-10-17, the project owner confirmed that their local Polarion instance is running successfully with PgVN; see the [local operation record](docs/pgvn/progress.zh-CN.md#first-usable-preview). Milestones M0–M5 have recorded local acceptance runs, while M6 compatibility, fault-injection, and performance validation remains in progress. Clean-machine installation, reboot recovery, cross-host failover, and full Polarion application acceptance remain pending. This preview release is intended for internal evaluation.
 
-Linux x86_64 development snapshots now include native SVN, Apache DAV, the monitor, CLI, supervised Hooks, packaging and offline recovery. See the [Linux build and deployment guide](docs/pgvn/linux.zh-CN.md). Container integration has passed; real-host systemd/reboot and same-version Windows acceptance remain separate gates.
+Linux x86_64 development snapshots now include native SVN, Apache DAV, the monitor, CLI, supervised Hooks, packaging and offline recovery. See the [Linux build and deployment guide](docs/pgvn/linux.zh-CN.md). Release and sanitizer integration, real-browser flows, and a real Ubuntu VM with systemd, reboot, upgrade/rollback and recovery have passed. See the [delivery evidence](docs/pgvn/linux-delivery.zh-CN.md). Windows acceptance remains deferred.
 
 ## Start here
 
@@ -557,13 +558,13 @@ python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
 
 `--metadata-only` prepares the version header and source/migration inventories under `build/pgvn/metadata/linux/`; it does not build Linux server or module binaries. See the [execution checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata) for package pairing, remaining Windows validation, and the implementation sequence.
 
-Linux development now includes native components: catalog schema 7 adds native-SVN-only bypass settings, and the shared context and protocol I/O use POSIX counter, cancellation, and monotonic-clock interfaces. Components were checked on Ubuntu 24.04 with an isolated PostgreSQL 18.6 server. Windows acceptance is deferred as requested; complete Linux hosts and client protocol matrices remain pending. A pinned Linux FS SDK and ELF development build are now available for isolated validation and content-transfer experiments (see the next checkpoint). Historical runtime packages do not support the new setting. See the [execution record and reproduction entry point](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components).
+The earlier Linux component checkpoint introduced the foundations: catalog schema 7 adds native-SVN-only bypass settings, and the shared context and protocol I/O use POSIX counter, cancellation, and monotonic-clock interfaces. Components were checked on Ubuntu 24.04 with an isolated PostgreSQL 18.6 server. Windows acceptance is deferred as requested. Complete Linux hosts and protocol integration are now covered by the [Linux delivery record](docs/pgvn/linux-delivery.zh-CN.md). A pinned Linux FS SDK and ELF development build are now available for isolated validation and content-transfer experiments (see the next checkpoint). Historical runtime packages do not support the new setting. See the [execution record and reproduction entry point](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components).
 
-The [Linux FS build and performance checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) documents the pinned SDK, ELF checks, reproduction commands, and limits of the binary-content experiment. These FS artifacts are not a complete Linux server or installation package.
+The [Linux FS build and performance checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) documents the pinned SDK, ELF checks, reproduction commands, and limits of the binary-content experiment. That earlier checkpoint covered FS artifacts; complete products are now documented in the Linux delivery record.
 
-Linux credential components now use OpenSSL EVP and descriptor-based key-file checks. Release and ASan/UBSan probes passed vector, permission, real SQL and rotation checks. The [credential checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials) documents the owner-only key policy, artifacts and remaining cross-OS validation; the Linux admin/server hosts remain pending.
+Linux credential components now use OpenSSL EVP and descriptor-based key-file checks. Release and ASan/UBSan probes passed vector, permission, real SQL and rotation checks. The [credential checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials) documents the owner-only key policy, artifacts and remaining cross-OS validation; complete Linux admin/server hosts and restored-key authentication are now covered by the Linux delivery record.
 
-Catalog schema 8 adds versioned logical Hook declarations and node-local filename mappings. The [Hook configuration checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) records compatibility, missing-implementation rejection, and native component checks; POSIX process execution remains pending.
+Catalog schema 8 adds versioned logical Hook declarations and node-local filename mappings. The [Hook configuration checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) records compatibility, missing-implementation rejection, and native component checks; POSIX process execution and escaped descendant cleanup are now covered by the Linux delivery record.
 
 Run test gates via `scripts/pgvn` and `tests/pgvn`. Full M5 validation requires real-browser evidence, a configured JDK + SVNKit environment, and the dedicated test PostgreSQL cluster; see [Browser and test prerequisites](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径) and the [M5 development notes](docs/pgvn/M5-development.zh-CN.md). Because test gates provision isolated databases, register temporary services, and occasionally restart the **test** PostgreSQL cluster, never point test scripts at a deployment database. Legacy PgFS scripts and test outputs are retained as historical references only and do not represent current PgVN acceptance.
 
@@ -644,7 +645,9 @@ Both the English and Chinese READMEs cover the product overview, Polarion GUI mi
 | [Commit-reply loss](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | Repository-core retry behavior, commit receipts, and revision-count verification |
 | [Coverage ledger](docs/pgvn/M6-network-coverage.zh-CN.md) | Per-function current, historical, and pending status across all 62 upstream suites |
 | [Progress and evidence](docs/pgvn/progress.zh-CN.md) | Chronological milestone log, build hashes, and open items |
-| [Next iteration plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | Planned Linux port, Windows/Linux parity, native SVN authz bypass, and performance work |
+| [Linux build and deployment](docs/pgvn/linux.zh-CN.md) | Native build, installation, systemd, backup and recovery |
+| [Linux delivery evidence](docs/pgvn/linux-delivery.zh-CN.md) | Release/sanitizer/VM results and cache performance decision |
+| [Next iteration plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | Linux delivery, remaining Windows/Linux parity, native SVN authz bypass, and performance work |
 | [Implementation plan](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | Milestone definitions and acceptance criteria |
 
 ## License

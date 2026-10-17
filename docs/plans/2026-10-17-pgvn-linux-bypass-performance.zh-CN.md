@@ -2,7 +2,7 @@
 
 日期：2026-10-17
 
-状态：执行中；共享版本、bypass、固定 FS SDK、内容传输探索及 Linux 凭据组件已推进，详见第 9–12 节。按用户最新要求先跳过 Windows 验收，继续 Linux 开发；W1/W2 保留未验状态。
+状态：Linux 原生开发快照及本平台集成、真实 Ubuntu VM 部署/重启、恢复和兼容升级/回退已完成，详见第 14 节；缓存默认 off，Redis 不采用。按用户要求 Windows W1/W2 及跨 OS 联合验收继续暂缓，原 M6/M7 与既有 FAIL 保留。
 
 源码基线：`c718a6319830853c4218d8241f66c712705c29aa`。
 
@@ -538,3 +538,11 @@ python3 scripts/pgvn/build.py --target linux --components hook-config \
 本节验证结果与原始日志索引见 [Hook 配置证据](../pgvn/evidence/linux-hook-config-components.json)。源输入和产物保留构建时的 `55f1996` + dirty 身份；后续提交不会将它们改称 clean 构建。
 
 下一步接入 POSIX 进程执行器：共享事件 JSON、无 shell argv、环境白名单、输入/输出上限、单调超时、停止取消与后代清理。逃离进程组的后代必须采用专用 cgroup 等已验证边界，不能用仅终止主进程的检查替代。随后推进 listener/信号排空、监控 HTTP、实际主程序/Apache 和部署。完整 Linux 服务、线协议、Windows W1/W2、M6/M7、PGVN-601/602 及原严格差分 FAIL 状态不变。
+
+<a id="linux-product-delivery"></a>
+
+## 14. Linux 原生开发交付完成（2026-10-17）
+
+PX-L01–10 的 Linux 实现与本平台验收已交付：完整 ELF 主程序/CLI/Apache 包、POSIX Hook、监控、部署恢复与真实 Ubuntu VM 生命周期。冻结提交、Release/sanitizer/浏览器/VM 结果、性能数据及任务对应关系见 [Linux 交付记录](../pgvn/linux-delivery.zh-CN.md) 与 [结构化证据](../pgvn/evidence/linux-product-delivery.json)。本节是最新状态，前述章节继续保留各自历史边界。
+
+基础 SQL/二进制传输实验保留原测量身份；最终协议对照未显示 local 稳定收益，默认 off。Redis 作出“不采用”决策，未声称已执行 Redis PoC。Windows W1/W2、PX-L04/PX-L10 的真实跨 OS 环节和 P1 双平台/代表性负载准入继续待验；原 M6/M7 与既有严格差分 FAIL 不变。

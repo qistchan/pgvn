@@ -1,0 +1,312 @@
+{
+  "format": 1,
+  "status": "PASS",
+  "scope": "Ubuntu 24.04 x86_64 Linux development snapshot; Linux-specific delivery only",
+  "build_identity": {
+    "product": "PgVN",
+    "version": "0.1.0-dev",
+    "milestone": "M5",
+    "upstream": {
+      "subversion": "1.14.5",
+      "apr": "1.7.6",
+      "apr_util": "1.6.3",
+      "httpd": "2.4.68",
+      "postgresql": "18.6"
+    },
+    "schemas": {
+      "catalog": 8,
+      "fs": 4
+    },
+    "api_version": 1,
+    "cache_format_version": 1,
+    "capabilities": {
+      "repository_by_id": true,
+      "svn_protocol": true,
+      "dav_protocol": true,
+      "monitor": "full",
+      "svn_authz_bypass": true,
+      "cache_local": true,
+      "cache_redis": false
+    },
+    "identity_format": 1,
+    "svn_base": "1.14.5",
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "configuration": "Release",
+    "git_commit": "011bea1c5249ad49e2a5eac3f0311b21055d7fa3",
+    "git_worktree_dirty": false,
+    "source_manifest_sha256": "7071a611b526e00b933a0eb4e7acc44b02b82a7128fd86375b0028399fe91cbb",
+    "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+  },
+  "source_files": 230,
+  "release": {
+    "path": "artifacts/pgvn/tests/linux-product-331e45bdbb33/summary.json",
+    "sha256": "353ddcecb547fd027936bb499fb00b77f965ef40e4fbb33971e08a9fef5d0781",
+    "integration_checks": 53,
+    "browser": {
+      "status": "PASS",
+      "browser": "154.0.8037.57",
+      "checks": [
+        "real token login",
+        "real overview view",
+        "real nodes view",
+        "real repositories view",
+        "real database view",
+        "real requests view",
+        "theme and pause",
+        "mobile layout",
+        "reload clears token"
+      ],
+      "page_errors": [],
+      "transport": "opaque host loopback/stdin bridge; no Docker published ports"
+    },
+    "package": {
+      "directory": "/workspace/pgvn/artifacts/pgvn/tests/linux-product-331e45bdbb33/package/PgVN-0.1.0-dev-linux-x64-73d256a5ffc8b3b3",
+      "archive": "/workspace/pgvn/artifacts/pgvn/tests/linux-product-331e45bdbb33/package/PgVN-0.1.0-dev-linux-x64-73d256a5ffc8b3b3.tar.gz",
+      "sha256": "bb1d21fcd1ee3665587f0c7f863f917993764b0a0cc21528f86b4e589a004f2c"
+    },
+    "package_manifest_sha256": "8bdd1ee3892111a07ca515c40cd0f67e66d35e5fa207b6f18bca63966358b3ae",
+    "product_manifest_sha256": "73d256a5ffc8b3b34d2d80edb6f5d36fe861f40f2d28af454d74cac0dddc9519"
+  },
+  "sanitized": {
+    "path": "artifacts/pgvn/tests/linux-product-fc891e90290b/summary.json",
+    "sha256": "be6020befa8b2fbc243f94bec872de97988c650c50be605390464aa410503e96",
+    "integration_checks": 52,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "limits": "Own C code and embedded protocol sources instrumented; SDK shared libraries uninstrumented; Apache host leak detection disabled, native executables retain default leak checks"
+  },
+  "vm": {
+    "path": "artifacts/pgvn/tests/linux-vm-36f1ee6a9caf/summary.json",
+    "sha256": "0f863e27dfa9bd93086148cc4de18dcfc83bdc7607930445682cfd54b92854cc",
+    "guest_summary": {
+      "path": "artifacts/pgvn/tests/linux-vm-36f1ee6a9caf/guest-summary.json",
+      "sha256": "a8d204c4c5fdc4cc66f4d2562bff38b4ac83ff1980167bad651b7ae020706d92"
+    },
+    "checks": 34,
+    "preflight": false,
+    "kernel": "Linux localhost 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:33:16 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+    "stop_seconds": 0.537089960000003,
+    "first_boot_id": "f72b9216-1369-47be-b09d-bef98a138a48",
+    "second_boot_id": "19025078-f24e-4c8b-9582-f457aeb3264e",
+    "previous_package_identity": {
+      "api_version": 1,
+      "cache_format_version": 1,
+      "capabilities": {
+        "cache_local": true,
+        "cache_redis": false,
+        "dav_protocol": true,
+        "monitor": "full",
+        "repository_by_id": true,
+        "svn_authz_bypass": true,
+        "svn_protocol": true
+      },
+      "configuration": "Debug",
+      "git_commit": "011bea1c5249ad49e2a5eac3f0311b21055d7fa3",
+      "git_worktree_dirty": false,
+      "identity_format": 1,
+      "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2",
+      "milestone": "M5",
+      "product": "PgVN",
+      "schemas": {
+        "catalog": 8,
+        "fs": 4
+      },
+      "source_manifest_sha256": "7071a611b526e00b933a0eb4e7acc44b02b82a7128fd86375b0028399fe91cbb",
+      "svn_base": "1.14.5",
+      "target_arch": "x86_64",
+      "target_os": "linux",
+      "upstream": {
+        "apr": "1.7.6",
+        "apr_util": "1.6.3",
+        "httpd": "2.4.68",
+        "postgresql": "18.6",
+        "subversion": "1.14.5"
+      },
+      "version": "0.1.0-dev"
+    },
+    "filesystem_check": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\npgvn-root: 25939/131072 files (0.2% non-contiguous), 395498/524288 blocks\n",
+    "images": {
+      "guest": "sha256:08493acb33ccc733655189c4bee053a1e0064c8fcd6bbe2b411bb7619f2befd4",
+      "tools": "sha256:f6e58a7fb3e6bec768dafa8b0a9df2d373cb133745940e4c9ab1852008f8cb5d"
+    },
+    "disk_removed": true
+  },
+  "hook_and_cache_probes": {
+    "hook_native_assertions": 58,
+    "cache_assertions": 8222,
+    "note": "8192 cache assertions check individual bytes; independent Python checks verify Hook JSON/argv/environment/FD contract; Hook probe also rerun in the real VM"
+  },
+  "wire_performance": {
+    "path": "artifacts/pgvn/tests/linux-product-331e45bdbb33/client/wire-benchmark.json",
+    "sha256": "5e2ea614fd731397adaec75453d48f8b00cd13c5cd19c4f761d4b8a53122b081",
+    "operations": 336,
+    "errors": 0,
+    "method": {
+      "rounds": 3,
+      "concurrency": [
+        1,
+        8,
+        32
+      ],
+      "nodes": 2,
+      "transport": "native SVN; fresh CLI session per read",
+      "cache_state": "same PG objects prewarmed; fresh node contexts per mode/round; 2 warm-up reads per node",
+      "limits": "shared cloud host, local PG network namespace; no remote RTT, PG CPU/I/O attribution, HTTP or Polarion performance claim"
+    },
+    "medians": [
+      {
+        "concurrency": 1,
+        "off": {
+          "median_round_p95_ms": 28.13328000047477,
+          "median_throughput_operations_per_second": 39.79810936448473,
+          "sql_per_operation": [
+            51.0
+          ],
+          "round_p95_ms": [
+            28.707870998914586,
+            28.13328000047477,
+            24.256431999674533
+          ]
+        },
+        "local": {
+          "median_round_p95_ms": 32.08055299910484,
+          "median_throughput_operations_per_second": 38.008128893594794,
+          "sql_per_operation": [
+            50.0
+          ],
+          "round_p95_ms": [
+            36.42341600061627,
+            29.553276999649825,
+            32.08055299910484
+          ]
+        }
+      },
+      {
+        "concurrency": 8,
+        "off": {
+          "median_round_p95_ms": 63.70300499838777,
+          "median_throughput_operations_per_second": 129.40848087235693,
+          "sql_per_operation": [
+            51.0
+          ],
+          "round_p95_ms": [
+            83.73257899802411,
+            62.769364998530364,
+            63.70300499838777
+          ]
+        },
+        "local": {
+          "median_round_p95_ms": 82.88802000242868,
+          "median_throughput_operations_per_second": 108.5201061572129,
+          "sql_per_operation": [
+            50.0
+          ],
+          "round_p95_ms": [
+            77.36101100090309,
+            82.88802000242868,
+            83.40682400012156
+          ]
+        }
+      },
+      {
+        "concurrency": 32,
+        "off": {
+          "median_round_p95_ms": 252.69226399905165,
+          "median_throughput_operations_per_second": 108.78506137353156,
+          "sql_per_operation": [
+            51.0
+          ],
+          "round_p95_ms": [
+            269.48111900128424,
+            252.69226399905165,
+            234.8280629994406
+          ]
+        },
+        "local": {
+          "median_round_p95_ms": 266.51050500004203,
+          "median_throughput_operations_per_second": 108.24598350428522,
+          "sql_per_operation": [
+            50.0
+          ],
+          "round_p95_ms": [
+            266.51050500004203,
+            274.8575299992808,
+            258.828669997456
+          ]
+        }
+      }
+    ],
+    "decision": "Keep cache default off; local cache remains opt-in. Redis is not adopted and was not benchmarked."
+  },
+  "fs_performance": {
+    "path": "artifacts/pgvn/tests/linux-fs-d210eaafcb90/report.json",
+    "sha256": "9e0cc07635ec08e209229fb91da6b2426013034f5a42fe2a7c5a46839a6c6233",
+    "status": "PASS",
+    "build_identity": {
+      "product": "PgVN",
+      "version": "0.1.0-dev",
+      "milestone": "M5",
+      "upstream": {
+        "subversion": "1.14.5",
+        "apr": "1.7.6",
+        "apr_util": "1.6.3",
+        "httpd": "2.4.68",
+        "postgresql": "18.6"
+      },
+      "schemas": {
+        "catalog": 8,
+        "fs": 4
+      },
+      "api_version": 1,
+      "cache_format_version": 1,
+      "capabilities": {
+        "repository_by_id": true,
+        "svn_protocol": true,
+        "dav_protocol": true,
+        "monitor": "full",
+        "svn_authz_bypass": true,
+        "cache_local": true,
+        "cache_redis": false
+      },
+      "identity_format": 1,
+      "svn_base": "1.14.5",
+      "target_os": "linux",
+      "target_arch": "x86_64",
+      "configuration": "Release",
+      "git_commit": "4f822ad795de8b9ed17fc370f6b892dd375f577c",
+      "git_worktree_dirty": false,
+      "source_manifest_sha256": "246b17f9a9daa1b96269adf5e4f1a228033a380b492b77de51f62570013b1b1d",
+      "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+    },
+    "scope": "Linux FS API / binary transfer and directory batching exploration; no SVN/DAV server acceptance",
+    "note": "Separate earlier clean commit; direct FS API results, not final protocol throughput. Original report identity retained."
+  },
+  "dependency_manifests": {
+    "sdk_manifest_sha256": "811d3084d7c6292a0c48608a335dbacc09e3e7cf2bc54eeb9eabe7b05ee8365c",
+    "httpd_manifest_sha256": "25af223353e9c0bb4fc93de7a063920cff9ba19100f034b8ff58571b91c5e661",
+    "tools_manifest_sha256": "c2a970792c3b61dcbfeb797be26d6d21037cd9315cc2fa2675a2675cc7d9a226"
+  },
+  "images": {
+    "pgvn-linux-product-builder:ubuntu24": "sha256:7010b4fe9553902889d44deff44c3f8e5197660705915d8100a8e421a8e3b054",
+    "postgres:18.6": "sha256:29754c7520f4b9654cf8ff98e19ac73b88e255c3a53f6236ebe9d52249bb6df3"
+  },
+  "regression_components": [
+    {
+      "path": "artifacts/pgvn/tests/linux-credentials-25b483373e99/report.json",
+      "sha256": "fff4f3e15ed14062a697742e671b1af25489f5298628daccdfa75ec156ad9324"
+    },
+    {
+      "path": "artifacts/pgvn/tests/linux-hook-config-d9104a368b73/report.json",
+      "sha256": "20336c6071bcff31b9ead0c22dda307ddfb0bfc7d1d66957c5a34e32a9c51716"
+    }
+  ],
+  "limits": [
+    "Windows W1/W2, actual CNG/OpenSSL OS round trip and mixed-OS nodes deferred by user",
+    "Original M6/M7, PGVN-601/602, protocol differential and strict shelf failures retain their prior status",
+    "No Polarion workload, cross-host failover, remote-PG or production performance acceptance",
+    "Git stores this curated evidence and source; full logs/binaries remain in the current workspace artifacts directory"
+  ]
+}

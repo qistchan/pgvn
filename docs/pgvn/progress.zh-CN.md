@@ -341,3 +341,9 @@ Release 与 ASan/UBSan 各 573 项 C 断言、28 项编排/迁移检查及 20 �
 固定 SDK 的 Release 与 ASan/UBSan 各 114 项 C 断言、69 项编排/迁移检查、Python/便携 PowerShell 元数据各 20 项通过；bypass 回归另有 37 项编排、96 项 C 断言通过。实际源输入、产物和日志已冻结，临时数据库容器已清理。见 [Hook 配置证据](evidence/linux-hook-config-components.json)和[计划第 13 节](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)。
 
 本轮进程分派仍为显式返回不支持的测试适配器，文件检查仅是启动前可用性预检；没有验证实际 Hook 执行、超时/取消或后代隔离。下一项为 POSIX Hook 执行器及其系统场景，PX-L05 尚未完成。完整 Linux 服务/安装包、Windows W1/W2、M6/M7 及既有 FAIL 保留原状态。
+
+## 2026-10-17：Linux 原生产品及 Ubuntu VM 验收交付
+
+完整 Linux 服务、CLI、Apache 模块、共享监控、POSIX Hook、固定依赖构建及开发快照包已交付。干净同源码 Release 与 ASan/UBSan 集成通过，覆盖 SVN/HTTP/受信 HTTPS/SVNKit、实际浏览器、双节点、bypass 边界、取消排空及全库恢复后认证/锁/内容校验。真实 Ubuntu VM 完成非 root systemd、PG 晚启动、崩溃恢复、兼容包升级/回退、内核重启和开机启动；离线文件系统检查通过。
+
+最终协议缓存对照 336 次读取零错误，但 local 无稳定延迟收益、SQL 仅 51→50/次，默认保持 off，Redis 不采用。详细构建/包摘要、各项覆盖、此前 FS 性能实验身份和剩余边界见 [Linux 交付记录](linux-delivery.zh-CN.md)。Windows W1/W2 及真实跨 OS 验收按用户要求暂缓，原 M6/M7、PGVN-601/602 及已知严格差分 FAIL 不变。

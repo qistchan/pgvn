@@ -4,10 +4,11 @@
 
 **标准 Subversion 协议 · PostgreSQL 存储 · 无每库本地目录**
 
-以 PostgreSQL 为存储后端的 Windows Subversion 服务端，提供原生 SVN/DAV 接入、集中式仓库管理与内置监控控制台。
+以 PostgreSQL 为存储后端的 Windows / Linux Subversion 服务端，提供原生 SVN/DAV 接入、集中式仓库管理与内置监控控制台。
 
 [![状态：首个可用预览版本](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#项目状态)
 [![许可：Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
+[![平台：Linux x86_64](https://img.shields.io/badge/platform-Linux_x86__64-E95420?style=flat-square)](docs/pgvn/linux.zh-CN.md)
 [![平台：Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#快速部署)
 [![Subversion：1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#环境要求)
 [![PostgreSQL：18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#环境要求)
@@ -25,7 +26,7 @@
 > [!IMPORTANT]
 > **首个可用预览版本（Windows）。** 2026-10-17，项目维护者确认本机 Polarion 已成功使用 PgVN 运行，详见[本机运行记录](docs/pgvn/progress.zh-CN.md#first-usable-preview)。M0–M5 已完成本机验收记录；M6 兼容性、故障注入与性能验证仍在推进中。全新机器安装、整机重启恢复、跨主机故障切换及完整 Polarion 应用场景验收仍待完成，当前版本面向内部试用与验证。
 
-Linux x86_64 开发快照已提供原生 SVN、Apache DAV、监控、CLI、受监督 Hook、打包与离线恢复。见 [Linux 构建与部署指南](docs/pgvn/linux.zh-CN.md)。容器集成已通过；真实主机 systemd/重启及同版本 Windows 验收继续单独记录。
+Linux x86_64 开发快照已提供原生 SVN、Apache DAV、监控、CLI、受监督 Hook、打包与离线恢复。见 [Linux 构建与部署指南](docs/pgvn/linux.zh-CN.md)。Release/sanitizer 集成、真实浏览器及实际 Ubuntu VM 的 systemd、重启、升级/回退和恢复已通过，见[交付证据](docs/pgvn/linux-delivery.zh-CN.md)。Windows 验收继续暂缓。
 
 ## 从这里开始
 
@@ -557,13 +558,13 @@ python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
 
 `--metadata-only` 仅生成 `build/pgvn/metadata/linux/` 下的版本头和源码/迁移清单，尚不构建 Linux 服务端或模块。完整推进顺序、包配对命令及 Windows 待验项目见[计划执行检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata)。
 
-Linux 开发已推进到原生组件阶段：schema 7 新增仅限原生 SVN 的 bypass 配置，公共上下文与协议 I/O 已接入 POSIX 计数、取消和单调时钟接口，并在 Ubuntu 24.04 + PostgreSQL 18.6 隔离组件验证。Windows 验收按本轮要求暂缓；完整 Linux 主机程序及客户端协议矩阵仍待完成；现已新增固定版本 FS SDK 和 ELF 开发构建，用于隔离验证及内容传输实验，历史运行包不支持新配置。详见[本轮执行记录与复现入口](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components)。
+此前 Linux 原生组件检查点建立了基础：schema 7 新增仅限原生 SVN 的 bypass 配置，公共上下文与协议 I/O 已接入 POSIX 计数、取消和单调时钟接口，并在 Ubuntu 24.04 + PostgreSQL 18.6 隔离组件验证。Windows 验收按本轮要求暂缓；完整 Linux 服务与协议集成现见[Linux 交付记录](docs/pgvn/linux-delivery.zh-CN.md)。现已新增固定版本 FS SDK 和 ELF 开发构建，用于隔离验证及内容传输实验，历史运行包不支持新配置。详见[本轮执行记录与复现入口](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components)。
 
-固定 FS SDK、ELF 检查、内容二进制传输实验及复现命令见[Linux FS 与性能检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)。这些 FS 产物尚不构成完整 Linux 服务端或安装包。
+固定 FS SDK、ELF 检查、内容二进制传输实验及复现命令见[Linux FS 与性能检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)。该历史检查点只覆盖 FS；完整产品及包现见 Linux 交付记录。
 
-Linux 凭据组件已接入 OpenSSL EVP 和基于描述符的密钥文件校验，Release 与 ASan/UBSan 的向量、权限、真实 SQL 和轮换检查通过。[凭据检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)记录了权限策略、产物及跨 OS 待验项；正式 Linux 管理/服务主程序仍待完成。
+Linux 凭据组件已接入 OpenSSL EVP 和基于描述符的密钥文件校验，Release 与 ASan/UBSan 的向量、权限、真实 SQL 和轮换检查通过。[凭据检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)记录了权限策略、产物及跨 OS 待验项；完整 Linux 管理/服务主程序和恢复后实际认证现见 Linux 交付记录。
 
-Catalog schema 8 新增版本化逻辑 Hook 声明与节点本地文件名映射。[Hook 配置检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)记录了旧节点兼容、缺实现拒绝及原生组件验证；POSIX 子进程执行仍待完成。
+Catalog schema 8 新增版本化逻辑 Hook 声明与节点本地文件名映射。[Hook 配置检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)记录了旧节点兼容、缺实现拒绝及原生组件验证；POSIX 子进程执行及逃逸后代回收现见 Linux 交付记录。
 
 验证测试统一通过 `scripts/pgvn` 与 `tests/pgvn` 执行。运行完整的 M5 门禁需要真实浏览器验证环境、配置好的 JDK/SVNKit 以及专用测试 PostgreSQL 集群，详见[浏览器与测试准备](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径)和 [M5 开发记录](docs/pgvn/M5-development.zh-CN.md)。由于测试门禁会创建隔离数据库、注册临时服务，且部分故障测试会重启**测试数据库集群**，请切勿将测试脚本指向业务部署库。仓库中保留的早期 PgFS 脚本与记录仅供历史参考，不作为当前 PgVN 构建的验收依据。
 
@@ -644,7 +645,9 @@ docs/pgvn/            架构规范、运维指南与验证证据归档
 | [提交回包丢失探针](docs/pgvn/M6-receipt-fault-frozen.zh-CN.md) | 仓库核心重试机制、提交回执与修订发布次数核对 |
 | [兼容性覆盖账本](docs/pgvn/M6-network-coverage.zh-CN.md) | 全部 62 个套件逐函数的当前、历史与待验证状态台账 |
 | [进展与验证记录](docs/pgvn/progress.zh-CN.md) | 里程碑推进记录、构建哈希与待办事项 |
-| [下一阶段计划](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | 规划中的 Linux 原生支持、双平台同版本、原生 SVN 权限 bypass 与性能优化 |
+| [Linux 构建与部署](docs/pgvn/linux.zh-CN.md) | 原生构建、安装、systemd、备份恢复 |
+| [Linux 交付证据](docs/pgvn/linux-delivery.zh-CN.md) | Release/sanitizer/VM 结果与缓存性能决策 |
+| [下一阶段计划](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md) | Linux 交付、双平台剩余验收、原生 SVN 权限 bypass 与性能优化 |
 | [实施计划](docs/plans/2026-10-15-pgvn-implementation-plan.zh-CN.md) | 各里程碑定义与退出验收标准 |
 
 ## 开源协议
