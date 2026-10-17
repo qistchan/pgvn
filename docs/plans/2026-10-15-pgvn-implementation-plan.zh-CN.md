@@ -487,3 +487,13 @@ Debug 与 Release 分别记录编译选项和摘要。实际发布的 Release �
 PGVN-601、M6、M7 保持未完成。继续另外 45 个新计划及完整适用性、最终构建复跑、维护/真实历史备份、确认账本与跨故障域 HA、代表性性能、独立 Windows/Polarion 验收。
 
 详见[升级夹具组件](../pgvn/M6-network-upgrade-fixtures.zh-CN.md)和[结构化证据](../pgvn/evidence/m6-network-upgrade-fixtures.json)。
+
+## 2026-10-17：合并与 patch 首批检查点
+
+原版合并、patch、shelf/shelf2 与 svnmucc 的首批 18 组结束：17 组 PASS、1 组 FAIL；830 个结果为 666 PASS、26 原有 XFAIL、136 原有 SKIP、2 FAIL。patch69 两侧 EICAR 文件消失由对应火绒事件、相同原始字节哈希和进程/时间关联确认，原失败不改写；需要受控环境复测。默认未启用的 shelf 贡献 126 个 SKIP，不计后端实际进入。13 对原有 XFAIL 诊断相同，没有修改原断言或新增排除。
+
+155 项输入及五个生产产物保持 `5e3d4cc3…`；首批 75/18 个内外层 Job 清空，18 个隔离库无超级用户所有者、监控令牌或残留连接。首批结束时的零进程/服务观察与随后续跑分开记录。仅恢复从未启动的 27 个原计划，全部失败继续保留，任何失败使总轮次为 FAIL。独立 svnauthz 候选完成 15 组本地 stock 对照及 7 项连接前守卫检查，尚未纳入正式工具绑定或验证事务；当前工具路径缺口已确认。
+
+PGVN-601、PGVN-602、M6、M7 均保持未完成。剩余矩阵、EICAR 定点复测、启用的 shelf 配置、正式管理工具绑定、最终构建复跑、维护/历史备份、确认账本与跨故障域 HA、代表性性能及独立 Windows/Polarion 验收继续推进。
+
+详见[首批检查点](../pgvn/M6-network-merge-patch-checkpoint.zh-CN.md)及其结构化证据；原始队列、失败与所有未执行计划保持原身份。
