@@ -44,11 +44,12 @@ read-only = false
 ```
 
 The database role must have the privileges required by the PgVN catalog and
-repository APIs. Create and protect the credential key using `pgvnadmin` or the
-public credential API; do not place a key or database password in source
-control. The configuration path and file must be valid UTF-8. Startup checks
-the catalog and credential key before binding. A readiness line is emitted
-only after the listener is bound. Connection strings and credentials are not
+repository APIs. The Linux `pgvnadmin` executable is not currently built;
+create the credential key and store credentials through the public core
+credential API. Do not place a key or database password in source control.
+The configuration path and file must be valid UTF-8. Startup checks the
+catalog and credential key before binding. A readiness line is emitted only
+after the listener is bound. Connection strings and credentials are not
 included in service diagnostics.
 
 The service remains in the foreground. SIGINT and SIGTERM stop acceptance,
@@ -73,11 +74,15 @@ applies checked migrations as a non-superuser, freezes the product and source
 inputs, then exercises a standard SVN client. Evidence is written below
 `artifacts/pgvn/linux-native-serve/`. The current suite verifies authenticated
 info/checkout/commit/update/cat, wrong-password denial, startup validation,
-bind collision, capacity/slot reuse, stalled-client drain, signal shutdown and
-port reuse. It also holds the PgFS transaction table lock while a real
-SVN commit is in flight, signals the service, then releases the lock and
-checks that the commit completes within the ten-second drain grace and remains
-readable. Database retry coverage stops startup while the isolated database is
+bind collision, capacity/slot reuse, concurrent handshake/disconnect stress,
+stalled-client drain, signal shutdown and port reuse. It also holds the PgFS
+transaction table lock while a real SVN commit is in flight, waits for the
+PgVN SQL session to block on that lock, signals the service, then releases the
+lock and checks that the commit completes within the ten-second drain grace
+and remains readable. Startup validation includes an empty-schema database.
+Database retry coverage stops startup while the isolated database is
 unavailable, verifies that retry waiting is interruptible, and pauses then
 resumes PostgreSQL to exercise recovery to readiness. These checks do not
-replace broader Linux product acceptance or test a deployed database.
+replace broader Linux product acceptance or test a deployed database. The
+serve entry point currently initializes telemetry as disabled;
+telemetry-enabled serving was not validated.

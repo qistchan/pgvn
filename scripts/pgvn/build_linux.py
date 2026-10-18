@@ -1,7 +1,7 @@
-"""Native Linux FS build against an explicitly verified, pinned SDK.
+"""Native Linux component build against an explicitly verified, pinned SDK.
 
 This stage produces ELF development artifacts, not a deployable PgVN package.
-The remaining hosts (serve/admin/Apache/monitor) are separate L1 work.
+Administrative, monitoring, Apache/DAV and packaging components remain separate.
 """
 from pathlib import Path
 import importlib.util
@@ -35,11 +35,17 @@ def verify_subversion_inputs(svn,work):
     directories=("libsvn_repos","svnserve","libsvn_ra_svn","libsvn_fs_util","libsvn_diff","libsvn_delta")
     with tarfile.open(archive) as bundle:
         archive_names=set(bundle.getnames())
-        names.update("subversion-1.14.5/subversion/"+p.relative_to(svn).as_posix()
-                     for directory in directories
-                     for p in sorted((svn/directory).iterdir())
-                     if p.is_file() and p.suffix in (".c",".h")
-                     and "subversion-1.14.5/subversion/"+p.relative_to(svn).as_posix() in archive_names)
+        for directory in directories:
+            source_directory=svn/directory
+            if not source_directory.is_dir():
+                raise ValueError("Missing consumed Subversion source directory: "+directory)
+            for path in sorted(source_directory.rglob("*")):
+                if not path.is_file() or path.suffix not in (".c",".h"):
+                    continue
+                name="subversion-1.14.5/subversion/"+path.relative_to(svn).as_posix()
+                if name not in archive_names:
+                    raise ValueError("Unpinned Subversion source in consumed directory: "+name)
+                names.add(name)
         for name in sorted(names):
             member=bundle.extractfile(name)
             if member is None or sha256_bytes(member.read())!=sha256(svn/name.split("/subversion/",1)[1]):
@@ -259,7 +265,10 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         raise ValueError("Unexpected ELF architecture")
     if collect(ROOT, "linux", configuration) != metadata:
         raise ValueError("Source changed during Linux build")
-    result = {"format": 1, "scope": "Linux " + component + " development artifacts; hosts/package not built",
+    scope=("Native Linux foreground SVN listener and production protocol/core; administration, monitoring, Apache/DAV and packages not built"
+           if component=="serve" else
+           "Linux "+component+" development artifacts; remaining hosts/package not built")
+    result = {"format": 1, "scope": scope,
               "build_identity": metadata["build_identity"], "sdk_manifest_sha256": sha256(manifest_path),
               "fs_loader_header_sha256": sha256(svn / "libsvn_fs/fs-loader.h") if component == "fs" else None,
               "component": component, "sanitizers": ["address", "undefined"] if sanitize else [],

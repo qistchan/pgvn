@@ -1,6 +1,7 @@
 """Build, freeze and exercise the native Linux foreground SVN service."""
 from pathlib import Path
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import datetime as dt
 import hashlib
 import json
@@ -39,6 +40,12 @@ def safe_arguments(arguments):
 def run_suite(product,artifacts):
     artifacts=Path(artifacts)
     manifest=json.loads((product/"build-manifest.json").read_text())
+    frozen_build_inputs=json.loads((product/"generated/build-inputs.json").read_text())
+    evidence_build_inputs=json.loads((artifacts/"inputs/build-metadata.json").read_text())
+    if frozen_build_inputs!=evidence_build_inputs:
+        raise RuntimeError("Frozen generated build inputs differ from the evidence snapshot")
+    if frozen_build_inputs["build_identity"]!=manifest["build_identity"]:
+        raise RuntimeError("Frozen generated build identity differs from the build manifest")
     for relative,expected in manifest["files"].items():
         if sha256(product/relative)!=expected:
             raise RuntimeError("Frozen serve product hash mismatch: "+relative)
@@ -47,6 +54,8 @@ def run_suite(product,artifacts):
         raise RuntimeError("Frozen serve executable identity differs from its build manifest")
     if os.environ.get("PGVN_SERVE_DSN") is None:
         raise RuntimeError("Isolated PostgreSQL test connection was not provided")
+    if os.environ.get("PGVN_EMPTY_DSN") is None:
+        raise RuntimeError("Isolated empty-schema test connection was not provided")
     environment=dict(os.environ)
     environment["LC_ALL"]="C.UTF-8"
     environment["HOME"]=str(artifacts/"home")
@@ -60,6 +69,7 @@ def run_suite(product,artifacts):
     temp_root=Path(tempfile.mkdtemp(prefix="serve-",dir=artifacts))
     owned_processes=[]
     owned_clients=[]
+    service_stderr_logs=[]
     config_dir=temp_root/"svn-config"
     config_dir.mkdir()
 
@@ -99,12 +109,14 @@ def run_suite(product,artifacts):
 
     def start_service(config,name,timeout=15,expected_ready=True):
         output=open(artifacts/(name+"-stdout.log"),"wb")
-        error=open(artifacts/(name+"-stderr.log"),"wb")
+        error_path=artifacts/(name+"-stderr.log")
+        error=open(error_path,"wb")
         process=subprocess.Popen([server,"--config",config,"--monitor-disabled"],
             cwd=temp_root,env=environment,stdin=subprocess.DEVNULL,stdout=output,stderr=error)
         output.close()
         error.close()
         owned_processes.append(process)
+        service_stderr_logs.append(error_path)
         deadline=time.monotonic()+timeout
         stdout_path=artifacts/(name+"-stdout.log")
         while time.monotonic()<deadline:
@@ -120,17 +132,23 @@ def run_suite(product,artifacts):
         return process
 
     def stop_service(process,signum=signal.SIGTERM,timeout=22):
+        started=time.monotonic()
         if process.poll() is None:
-            started=time.monotonic()
-            process.send_signal(signum)
             try:
-                process.wait(timeout=timeout)
+                process.send_signal(signum)
+            except ProcessLookupError:
+                pass
+            try:
+                code=process.wait(timeout=timeout)
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait(timeout=5)
                 raise TimeoutError("Owned pgvnserve process failed to stop")
-            return time.monotonic()-started
-        return 0.0
+        else:
+            code=process.returncode
+        if code!=0:
+            raise RuntimeError("Owned pgvnserve exited with status "+str(code))
+        return time.monotonic()-started
 
     def svn_arguments(arguments):
         return [svn_cli,*arguments,"--non-interactive","--no-auth-cache","--config-dir",
@@ -148,6 +166,11 @@ def run_suite(product,artifacts):
         for args in (["--service"],["--monitor-url","http://127.0.0.1:18080"],["--monitor-disabled"]):
             result=command([server,*args],expected=PGVN_USAGE)
             check("unsupported CLI rejected: "+args[0],result.returncode==PGVN_USAGE)
+        empty_config=temp_root/"empty-schema.conf"
+        write_config(empty_config,free_port(),dsn=os.environ["PGVN_EMPTY_DSN"])
+        empty_schema=start_service(empty_config,"empty-schema",timeout=4,expected_ready=False)
+        check("empty database startup is classified as schema mismatch",
+            empty_schema.wait(timeout=5)==PGVN_SCHEMA)
         port=free_port()
         config=temp_root/"service.conf"
         write_config(config,port)
@@ -189,9 +212,16 @@ def run_suite(product,artifacts):
         inflight=subprocess.Popen(list(map(str,inflight_args)),cwd=temp_root,env=environment,
             stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
         owned_clients.append(inflight)
-        time.sleep(.1)
-        if inflight.poll() is not None:
-            raise RuntimeError("Large SVN commit completed before the drain signal")
+        command_request=artifacts/"inflight-command.request"
+        command_blocked=artifacts/"inflight-command.blocked"
+        command_request.write_text("wait until the PgVN commit is blocked on the held transaction-table lock\n")
+        deadline=time.monotonic()+15
+        while not command_blocked.exists() and time.monotonic()<deadline:
+            if inflight.poll() is not None:
+                raise RuntimeError("Large SVN commit completed before the lock rendezvous")
+            time.sleep(.05)
+        if not command_blocked.exists():
+            raise TimeoutError("Outer runner did not observe the PgVN commit blocked on pgfs.transactions")
         signal_time=time.monotonic()
         main_process.send_signal(signal.SIGTERM)
         try:
@@ -268,7 +298,18 @@ def run_suite(product,artifacts):
         stop_service(capacity_server,signal.SIGINT,timeout=5)
         capacity_server=None
         recovered=start_service(config,"serve-after-drain")
-        svn(["info",url])
+        def handshake_and_disconnect(_):
+            with socket.create_connection(("127.0.0.1",port),timeout=3) as client:
+                client.settimeout(3)
+                return bool(client.recv(1))
+        for _ in range(3):
+            with ThreadPoolExecutor(max_workers=16) as executor:
+                handshakes=list(executor.map(handshake_and_disconnect,range(16)))
+            if not all(handshakes):
+                raise RuntimeError("Concurrent SVN handshake was not accepted")
+        info=svn(["info",url])
+        check("concurrent disconnect and slot reuse followed by SVN info",
+            len(handshakes)==16 and info.returncode==0)
         stop_service(recovered,signal.SIGTERM)
         recovered=None
         check("listener port reused and committed transaction remains readable",True)
@@ -297,23 +338,62 @@ def run_suite(product,artifacts):
         stop_service(recovery,signal.SIGTERM)
         recovery=None
     finally:
+        active_exception=sys.exc_info()[0] is not None
+        cleanup_errors=[]
         for process in owned_clients:
             if process.poll() is None:
-                process.terminate()
-                try: process.wait(timeout=3)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait(timeout=3)
+                try:
+                    process.terminate()
+                    try:
+                        process.wait(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait(timeout=5)
+                except Exception as error:
+                    cleanup_errors.append("client cleanup: "+str(error))
         for process in owned_processes:
             if process.poll() is None:
-                stop_service(process,timeout=25)
+                try:
+                    process.send_signal(signal.SIGTERM)
+                    process.wait(timeout=25)
+                except subprocess.TimeoutExpired:
+                    try:
+                        process.kill()
+                        process.wait(timeout=5)
+                    except Exception as error:
+                        cleanup_errors.append("service kill: "+str(error))
+                except ProcessLookupError:
+                    try:
+                        process.wait(timeout=5)
+                    except Exception as error:
+                        cleanup_errors.append("service reap: "+str(error))
+                except Exception as error:
+                    cleanup_errors.append("service cleanup: "+str(error))
+        sanitizer_markers=("ERROR: AddressSanitizer","ERROR: LeakSanitizer",
+            "LeakSanitizer: detected memory leaks","UndefinedBehaviorSanitizer","runtime error:")
+        diagnostic_logs=[]
+        for path in service_stderr_logs:
+            if path.exists():
+                diagnostic_logs.append((str(path),path.read_text(errors="replace")))
+        diagnostic_logs.extend((str(item.get("args","<command>")),str(item.get("stderr","")))
+            for item in commands)
+        sanitizer_diagnostics=[name+": "+marker for name,text in diagnostic_logs
+            for marker in sanitizer_markers if marker in text]
+        if sanitizer_diagnostics:
+            cleanup_errors.extend(sanitizer_diagnostics)
+        if cleanup_errors:
+            commands.append({"cleanup_errors":cleanup_errors})
         (artifacts/"svn-commands.jsonl").write_text("".join(json.dumps(item)+"\n" for item in commands))
         shutil.rmtree(temp_root,ignore_errors=True)
+        if cleanup_errors and not active_exception:
+            raise RuntimeError("; ".join(cleanup_errors))
     return {"checks":checks,"elapsed_seconds":elapsed,"runtime":runtime,"commands":commands,
-        "limitations":["The native host, remaining Linux admin/monitor/Apache/package milestones, deployment setup and full Linux product acceptance are outside this component suite."]}
+        "limitations":["This suite validates the native foreground listener and production svn:// protocol/core only; Linux pgvnadmin, monitoring, Apache/DAV, packaging, deployment setup and full Linux product acceptance remain outside scope.",
+            "Telemetry-enabled serve operation was not validated; this host currently initializes telemetry as disabled."]}
 
 
 PGVN_USAGE=2
+PGVN_SCHEMA=4
 PGVN_DENIED=5
 PGVN_CONFLICT=7
 
@@ -340,6 +420,7 @@ def main():
         return 0
 
     run_id="linux-serve-"+uuid.uuid4().hex[:12]
+    test_container_name=run_id+"-suite"
     artifacts=ROOT/"artifacts/pgvn/linux-native-serve"/run_id
     artifacts.mkdir(parents=True)
     environment=dict(os.environ)
@@ -370,48 +451,88 @@ def main():
     def run_test_with_recovery(arguments,timeout,extra_env):
         nonlocal postgres_paused
         env=dict(environment,**extra_env)
-        process=subprocess.Popen(list(map(str,arguments)),cwd=ROOT,env=env,
-            stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
-        deadline=time.monotonic()+timeout
-        request=artifacts/"db-recovery.request"
-        lock_request=artifacts/"inflight-lock.request"
-        lock_started=False
-        while process.poll() is None and time.monotonic()<deadline:
-            if lock_request.exists() and not lock_started:
-                lock_command=docker+["exec","-d",run_id,"psql","-h","127.0.0.1","-X",
-                    "-v","ON_ERROR_STOP=1","-U","postgres","-d","pgvn_serve","-c",
-                    "BEGIN; LOCK TABLE pgfs.transactions IN ACCESS EXCLUSIVE MODE; SELECT pg_sleep(5); COMMIT;"]
-                command(lock_command,timeout=30)
-                lock_deadline=time.monotonic()+15
-                while time.monotonic()<lock_deadline:
-                    query=command(docker+["exec",run_id,"psql","-h","127.0.0.1","-X","-At",
-                        "-U","postgres","-d","pgvn_serve","-c",
-                        "SELECT count(*) FROM pg_stat_activity WHERE datname='pgvn_serve' AND query LIKE '%pg_sleep(5)%';"],
-                        timeout=10)
-                    if int(query.stdout.strip()):
-                        break
+        process=None
+        output_path=artifacts/"tests.log"
+        try:
+            with output_path.open("wb") as output_file:
+                process=subprocess.Popen(list(map(str,arguments)),cwd=ROOT,env=env,
+                    stdout=output_file,stderr=subprocess.STDOUT)
+                deadline=time.monotonic()+timeout
+                request=artifacts/"db-recovery.request"
+                lock_request=artifacts/"inflight-lock.request"
+                command_request=artifacts/"inflight-command.request"
+                lock_started=False
+                command_checked=False
+                while process.poll() is None and time.monotonic()<deadline:
+                    if lock_request.exists() and not lock_started:
+                        lock_command=docker+["exec","-d",run_id,"psql","-h","127.0.0.1","-X",
+                            "-v","ON_ERROR_STOP=1","-U","postgres","-d","pgvn_serve","-c",
+                            "BEGIN; LOCK TABLE pgfs.transactions IN ACCESS EXCLUSIVE MODE; SELECT pg_sleep(5); COMMIT;"]
+                        command(lock_command,timeout=30)
+                        holder_sql=("SELECT count(*) FROM pg_locks l JOIN pg_stat_activity a ON a.pid=l.pid "
+                            "WHERE a.datname=current_database() AND a.pid<>pg_backend_pid() "
+                            "AND l.locktype='relation' AND l.relation='pgfs.transactions'::regclass "
+                            "AND l.mode='AccessExclusiveLock' AND l.granted;")
+                        lock_deadline=time.monotonic()+15
+                        while time.monotonic()<lock_deadline:
+                            query=command(docker+["exec",run_id,"psql","-h","127.0.0.1","-X","-At",
+                                "-U","postgres","-d","pgvn_serve","-c",holder_sql],timeout=10)
+                            if int(query.stdout.strip()):
+                                break
+                            time.sleep(.05)
+                        else:
+                            raise TimeoutError("Isolated PostgreSQL did not hold pgfs.transactions exclusively")
+                        (artifacts/"inflight-lock.held").write_text(holder_sql+"\n")
+                        lock_started=True
+                    if command_request.exists() and not command_checked:
+                        blocked_sql=("SELECT count(*) FROM pg_locks l JOIN pg_stat_activity a ON a.pid=l.pid "
+                            "WHERE a.datname=current_database() AND a.application_name='pgvn' "
+                            "AND a.pid<>pg_backend_pid() AND l.locktype='relation' "
+                            "AND l.relation='pgfs.transactions'::regclass AND NOT l.granted "
+                            "AND a.wait_event_type='Lock';")
+                        blocked_deadline=time.monotonic()+15
+                        while time.monotonic()<blocked_deadline:
+                            query=command(docker+["exec",run_id,"psql","-h","127.0.0.1","-X","-At",
+                                "-U","postgres","-d","pgvn_serve","-c",blocked_sql],timeout=10)
+                            if int(query.stdout.strip()):
+                                (artifacts/"inflight-command.blocked").write_text(blocked_sql+"\n")
+                                break
+                            time.sleep(.05)
+                        else:
+                            diagnostics=command(docker+["exec",run_id,"psql","-h","127.0.0.1","-X","-At",
+                                "-F","\t","-U","postgres","-d","pgvn_serve","-c",
+                                "SELECT pid,application_name,state,wait_event_type,wait_event,query "
+                                "FROM pg_stat_activity WHERE datname=current_database() "
+                                "AND pid<>pg_backend_pid() ORDER BY pid;"],timeout=10,check=False)
+                            (artifacts/"inflight-command-diagnostics.txt").write_text(
+                                "predicate:\n"+blocked_sql+"\nactivity:\n"+diagnostics.stdout+diagnostics.stderr)
+                            raise TimeoutError("PgVN command was not observed waiting on the held relation lock; see inflight-command-diagnostics.txt")
+                        command_checked=True
+                    if request.exists() and not postgres_paused:
+                        command(docker+["pause",run_id],timeout=30)
+                        postgres_paused=True
+                        (artifacts/"db-recovery.paused").write_text("PostgreSQL paused\n")
+                        try:
+                            time.sleep(4)
+                        finally:
+                            command(docker+["unpause",run_id],timeout=30)
+                            postgres_paused=False
+                            (artifacts/"db-recovery.released").write_text("PostgreSQL resumed\n")
                     time.sleep(.05)
-                else:
-                    raise TimeoutError("Isolated PostgreSQL did not acquire the in-flight test lock")
-                (artifacts/"inflight-lock.held").write_text("PgFS transaction table lock held\n")
-                lock_started=True
-            if request.exists() and not postgres_paused:
-                command(docker+["pause",run_id],timeout=30)
-                postgres_paused=True
-                (artifacts/"db-recovery.paused").write_text("PostgreSQL paused\n")
+                if process.poll() is None:
+                    raise TimeoutError("Native serve test runner exceeded its timeout")
+                code=process.wait(timeout=5)
+                output=output_path.read_text(errors="replace")
+        finally:
+            if process is not None and process.poll() is None:
                 try:
-                    time.sleep(4)
-                finally:
-                    command(docker+["unpause",run_id],timeout=30)
-                    postgres_paused=False
-                    (artifacts/"db-recovery.released").write_text("PostgreSQL resumed\n")
-            time.sleep(.05)
-        if process.poll() is None:
-            process.kill()
-            process.wait(timeout=5)
-            raise TimeoutError("Native serve test runner exceeded its timeout")
-        output=process.communicate()[0]
-        (artifacts/"tests.log").write_text(output)
+                    process.terminate()
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+            command(docker+["rm","-f",test_container_name],timeout=30,check=False)
+        output=output_path.read_text(errors="replace")
         record={"args":safe_arguments(arguments),"exit_code":process.returncode,
             "stdout":output,"stderr":""}
         commands.append(record)
@@ -441,14 +562,30 @@ def main():
         (artifacts/"build.log").write_text(built.stdout+built.stderr)
         build_result=json.loads(built.stdout.strip().splitlines()[-1])
         work=Path(build_result["output"])
+        build_manifest=json.loads((work/"build-manifest.json").read_text())
+        metadata=collect(ROOT,"linux",args.configuration)
+        generated_inputs=json.loads((work/"generated/build-inputs.json").read_text())
+        if generated_inputs!=metadata:
+            raise RuntimeError("Current collected metadata differs from generated build-inputs.json")
+        if build_manifest["build_identity"]!=metadata["build_identity"]:
+            raise RuntimeError("Current collected build identity differs from the build manifest")
+        sdk_manifest_source=sdk/"sdk-manifest.json"
+        sdk_manifest_hash=sha256(sdk_manifest_source)
+        if sdk_manifest_hash!=build_manifest["sdk_manifest_sha256"]:
+            raise RuntimeError("SDK manifest differs from the native serve build input")
         product=artifacts/"frozen-product"
         shutil.copytree(work,product,ignore=shutil.ignore_patterns("*.o","commands.jsonl"))
         manifest=json.loads((product/"build-manifest.json").read_text())
         check("built runtime files match build manifest",all(sha256(product/name)==value
             for name,value in manifest["files"].items()))
-        metadata=collect(ROOT,"linux",args.configuration)
+        if json.loads((product/"generated/build-inputs.json").read_text())!=metadata:
+            raise RuntimeError("Frozen generated build inputs differ from pre-freeze metadata")
         shutil.copytree(product/"generated",artifacts/"inputs/generated")
         (artifacts/"inputs/build-metadata.json").write_text(json.dumps(metadata,indent=2)+"\n")
+        sdk_manifest_copy=artifacts/"inputs/sdk-manifest.json"
+        shutil.copy2(sdk_manifest_source,sdk_manifest_copy)
+        if sha256(sdk_manifest_copy)!=sdk_manifest_hash:
+            raise RuntimeError("SDK manifest changed while freezing test inputs")
         for relative,expected in metadata["sources"].items():
             source=ROOT/relative
             target=artifacts/"inputs/source"/relative
@@ -509,6 +646,8 @@ def main():
         psql=docker+["exec","-i",run_id,"psql","-h","127.0.0.1","-X","-v","ON_ERROR_STOP=1",
             "-At","-U","postgres","-d","pgvn_serve"]
         command(psql,data="CREATE ROLE pgvn_owner LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE; GRANT CREATE ON DATABASE pgvn_serve TO pgvn_owner;")
+        command(docker+["exec",run_id,"createdb","-h","127.0.0.1","-U","postgres",
+            "-O","pgvn_owner","pgvn_serve_empty"])
         from build_metadata import sha256 as file_sha256
         from embed_migrations import CATALOG as catalog,STORAGE as storage
         for directory,names in ((ROOT/"sql",storage),(ROOT/"sql/pgvn",catalog)):
@@ -519,15 +658,19 @@ def main():
         migrated=command(psql,data="SELECT string_agg(version::text,',' ORDER BY version) FROM pgvn.schema_versions;").stdout.strip()
         check("all catalog migrations applied by non-superuser",migrated=="1,2,3,4,5,6,7,8")
         dsn="host=127.0.0.1 port=5432 dbname=pgvn_serve user=pgvn_owner connect_timeout=2"
-        builder_test=["docker","--host=unix:///var/run/docker.sock","run","--rm",
+        builder_test=["docker","--host=unix:///var/run/docker.sock","run",
+            "--name",test_container_name,
             "--network","container:"+run_id,"--user",str(os.getuid())+":"+str(os.getgid()),
             "--memory","1g","--cpus","2","--read-only","--tmpfs","/tmp:rw,nosuid,nodev,exec,size=64m",
             "--mount","type=bind,src="+str(ROOT)+",dst="+str(ROOT),
-            "-w",ROOT,"-e","PGVN_SERVE_DSN","-e","ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
+            "-w",ROOT,"-e","PGVN_SERVE_DSN","-e","PGVN_EMPTY_DSN",
+            "-e","ASAN_OPTIONS=detect_leaks=1:abort_on_error=1",
             "-e","UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1",args.builder_image,
             "python3","tests/pgvn/run_linux_serve.py","--in-container","--sdk",sdk,
             "--configuration",args.configuration,"--product",product,"--artifacts",artifacts]
-        tested=run_test_with_recovery(builder_test,timeout=240,extra_env={"PGVN_SERVE_DSN":dsn})
+        empty_dsn="host=127.0.0.1 port=5432 dbname=pgvn_serve_empty user=pgvn_owner connect_timeout=2"
+        tested=run_test_with_recovery(builder_test,timeout=240,
+            extra_env={"PGVN_SERVE_DSN":dsn,"PGVN_EMPTY_DSN":empty_dsn})
         report=json.loads((artifacts/"serve-suite-report.json").read_text())
         check("native serve integration suite",report["status"]=="PASS")
         check("source and migration inventory unchanged",collect(ROOT,"linux",args.configuration)==metadata)
@@ -535,6 +678,10 @@ def main():
         errors.append(traceback.format_exc())
         print(errors[-1],file=sys.stderr,flush=True)
     finally:
+        try:
+            command(docker+["rm","-f",test_container_name],timeout=30,check=False)
+        except Exception:
+            errors.append(traceback.format_exc())
         if postgres_started:
             try:
                 if postgres_paused:
@@ -567,8 +714,8 @@ def main():
             "- Catalog migrations were applied after `SET ROLE pgvn_owner`; the role was created NOSUPERUSER.",
             "- Compiler: "+str(result["compiler"]),
             "- The native listener uses no host systemd service or cgroup delegation; no cgroup setup steps were used. Supabase/shared databases and frozen hook-runtime evidence were not accessed or modified.",
-            "- `docker pull postgres:18.6` was run before this test; the image used here is identified above by its local immutable image ID.",
-            "- Product, generated metadata and source inputs were frozen below `inputs/` and `frozen-product/` before the suite.",
+            "- The runner does not pull images; it records immutable local image IDs for the builder and PostgreSQL image.",
+            "- Product, generated metadata, source inputs and `sdk-manifest.json` were frozen below `inputs/` and `frozen-product/` before the suite.",
             "",
             "## Commands",
             ""]
