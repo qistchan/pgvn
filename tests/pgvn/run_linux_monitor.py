@@ -473,9 +473,13 @@ def main():
         def wait_for_bad_reader(reader,timeout=15):
             deadline=time.monotonic()+timeout
             while time.monotonic()<deadline:
-                value=reader.request("ready",timeout=3)
-                if value=="ready 0":
-                    return value
+                response=reader.request("api /api/monitor/v1/overview",timeout=3)
+                if not response.startswith("api 200 "):
+                    raise RuntimeError("invalid restricted-reader overview response")
+                state=json.loads(response[8:])
+                if (state.get("reason")=="reader_role_not_restricted" and
+                    state.get("last_attempt_ok") is False and state.get("ready") is False):
+                    return reader.request("ready",timeout=3)
                 time.sleep(.25)
             raise RuntimeError("timed out waiting for restricted reader denial")
         check("initial configured state is not business-ready",

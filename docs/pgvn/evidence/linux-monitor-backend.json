@@ -15,9 +15,9 @@
   "image_ids_observed_by": "docker image inspect",
   "postgres_server_version_num": "180006",
   "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
-  "source_manifest_sha256": "47214a8a57cae77cd62b531dd2c723d54812a6849aeafcc114c806eff169240b",
+  "source_manifest_sha256": "61e52b333c423f0f523fa485bd153ad4b2a485ea12ddd8e6d793d5538f196ddb",
   "build_identity": {
-    "git_commit": "41beceba65ab74142fe1f39aa899c4dcb3250a41",
+    "git_commit": "c77e6d63444ee2a75a29251f806c873799a2124f",
     "git_worktree_dirty": true,
     "target_os": "linux",
     "target_arch": "x86_64",
@@ -25,55 +25,55 @@
   },
   "runs": {
     "release": {
-      "run_id": "linux-monitor-0f158271268e",
+      "run_id": "linux-monitor-d5d9b83c3fa0",
       "status": "PASS",
       "configuration": "Release",
       "checks": 39,
       "sanitizers": [],
       "sampler_sessions_after_stop": 0,
       "sampler_locks_after_stop": 0,
-      "sampler_session_release_wait_seconds": 0.526,
+      "sampler_session_release_wait_seconds": 0.401,
       "evidence": [
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/report.json",
-          "sha256": "8c6837894cd745714a556e9df0e47d9cf3e481d00eeb9ff17be785a09bac9888"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/report.json",
+          "sha256": "d4d025c43fc0e700a6b162c5411dddd38c4ec89514166c2227c949fb0ebb9f8e"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/reproducibility.md",
-          "sha256": "9b3792d06f9417a234caf8c4c4fce9d26361198d90911d96b9806d13344bfecb"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/reproducibility.md",
+          "sha256": "f77deab6e875280236460a0840bcc71d73086fe03bcd70f39b3d22d1817ff556"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/process.json",
-          "sha256": "83ccc668ee678efa27ea3ef35fdbc1f22336a01f1d78041d07df99bf02d558b1"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/process.json",
+          "sha256": "12430557b25fc4f5cbd993dc67b0bd345d23c49d67fc97795adcfb2e9602ef10"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/metrics.prom",
-          "sha256": "5f1fba9c6fcae8b391a9f7ccec08e5daba4ebc11d78274e6dc65dfd2fb2a3ed8"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/metrics.prom",
+          "sha256": "7ae6ad9be1d9b16442d2d0ce35fe9c3c630af3e0273a54af65c1256b05939528"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/probe-output.txt",
-          "sha256": "e3c8b3759d2a902e3b94831056df2e0504249f1338449bc9ed3edf5b22cabd2b"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/probe-output.txt",
+          "sha256": "ff1a1e409328fc752b12574d49e6adbfc7a72c859ddb182df4a80b41b1303786"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/postgres.log",
-          "sha256": "42e80d1b27d41bee493c8d97cf849baec90cfe17d54713bf934aeff11364ad43"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/postgres.log",
+          "sha256": "6fb1af4cffd23526866c351643d587cb2b9c1ee80274d226f384a67b320cad9c"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/inputs/monitor/build-manifest.json",
-          "sha256": "46ee77509565c578e2ed8ad1531cef6ac9991c9bb56cd52f8c69432464e4fbed"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/build-manifest.json",
+          "sha256": "e55ef4dfb8e1d0c7cc0eddabc908e7d5c7d5edc2eecc5760e317ee1d79d574b3"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/inputs/monitor/build-inputs.json",
-          "sha256": "dc3be371728b226a3d2eadd63fd0bfaf0ce8a480bb5265f0f698635e58b19966"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/build-inputs.json",
+          "sha256": "83298e293afdb8f6975390b9c4e324c70a500b3c445da91eb3fe3a5fb5b6eb7b"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/inputs/monitor/sdk-manifest.json",
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/sdk-manifest.json",
           "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
         }
       ]
     },
     "debug_sanitized": {
-      "run_id": "linux-monitor-1addffb8a852",
+      "run_id": "linux-monitor-81f1a9c26908",
       "status": "PASS",
       "configuration": "Debug",
       "checks": 39,
@@ -83,42 +83,42 @@
       ],
       "sampler_sessions_after_stop": 0,
       "sampler_locks_after_stop": 0,
-      "sampler_session_release_wait_seconds": 0.413,
+      "sampler_session_release_wait_seconds": 0.395,
       "evidence": [
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/report.json",
-          "sha256": "aaf78a2c3d0f1e32c7bbcca1622ed372f56a7625378a9a06a9bb3a5348716400"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/report.json",
+          "sha256": "6e0b29c8d0fbe37588a5e010c258a0eb4f1057dafbb0f992423254de7e102662"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/reproducibility.md",
-          "sha256": "5cab19e608394924ae1b144e88a86397e8d27f9ed2c1e5cab5e8dcc4671b4a71"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/reproducibility.md",
+          "sha256": "d6f6ddd918978ccd919229d719805c567fc286fa204867c6d8b6bae02d7455df"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/process.json",
-          "sha256": "826e29cf5a8f3dda9fd7c9ee5300a7a981a0c253adb9e7bdc071feff75c7ddd1"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/process.json",
+          "sha256": "4418cc59b82c3dedb971b1542564ab2a54233cd3553254db8ddd146e2181bab6"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/metrics.prom",
-          "sha256": "8e8a059b8d1df300fff5f97aaeca720d8a1fa29905e060fa26518e36d600352b"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/metrics.prom",
+          "sha256": "e25fa97a1d0befbec37e94461d63b0ce5e752d62e0c5bd2675b46ac78037c640"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/probe-output.txt",
-          "sha256": "4540ce3868e35094fb6f814311dffee0506267410e81a7d997650418b2c5e4ae"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/probe-output.txt",
+          "sha256": "f5800c5d3823d0f4724af1165563a8e707733185a4bf1cd52b0f342dc84e6f6d"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/postgres.log",
-          "sha256": "d78affffe754be752568f60a8bab3e07790084af85fcdb59de34badbf30b6ecd"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/postgres.log",
+          "sha256": "bf90257eb43c6b3fb7cc6258f8ba593eaaace97e8170f4be8c1c805c4c9edc86"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/inputs/monitor/build-manifest.json",
-          "sha256": "06b3e1803957e7208637673738a084a23d2539cdb0c3686b608f3fa68ae7595e"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/build-manifest.json",
+          "sha256": "ef2af82b1ca73dea0ae00cb751b6f1bd242f8aa23d7fec899dfad83c56953683"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/inputs/monitor/build-inputs.json",
-          "sha256": "cf142fdbddba6a1b2c95d62c9bdfd3579b1b9d1b27c1b16f7bafda4703e188c0"
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/build-inputs.json",
+          "sha256": "718ff5dc1799c1b8a80b2ae7d713cc35051a766191f05a2a2cb2125392367770"
         },
         {
-          "path": "artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/inputs/monitor/sdk-manifest.json",
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/sdk-manifest.json",
           "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
         }
       ]
