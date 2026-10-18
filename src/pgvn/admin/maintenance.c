@@ -4,6 +4,7 @@
 #include "pgfs_native.h"
 #include "dav_state.h"
 
+#ifdef _WIN32
 static wchar_t *wide(const char *text,apr_pool_t *pool)
 {
     int size=MultiByteToWideChar(CP_UTF8,MB_ERR_INVALID_CHARS,text,-1,NULL,0);
@@ -105,6 +106,12 @@ cleanup:
     if(win_error) error=svn_error_compose_create(error,svn_error_wrap_apr(win_error,"Unable to execute freeze child"));
     return error;
 }
+#else
+static svn_error_t *freeze_child(void *baton,apr_pool_t *pool)
+{
+    return admin_usage("Linux maintenance freeze is not implemented");
+}
+#endif
 
 svn_error_t *admin_maintenance(admin_command *command)
 {

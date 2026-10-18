@@ -47,6 +47,10 @@ svn_error_t *admin_preflight(admin_command *command)
            (command->argc>1 && !strcmp(command->argv[1],commands[i].verb)))) { definition=&commands[i]; break; }
     if(!definition) return admin_usage("Unknown command; see pgvnadmin --help");
     SVN_ERR(admin_options(command,definition->options,definition->minimum,definition->maximum));
+#ifndef _WIN32
+    if(!strcmp(definition->group,"maintenance") && !strcmp(definition->verb,"freeze"))
+        return admin_usage("Linux maintenance freeze requires contained child execution and is not implemented");
+#endif
     if(command->values[OPT_TXN] && command->values[OPT_REVISION]) return admin_usage("Choose either a revision or a transaction");
     if((command->flags & O(FORCE_UUID)) && (command->flags & O(IGNORE_UUID))) return admin_usage("UUID options are mutually exclusive");
     if(!strcmp(definition->group,"dump") && (command->flags & O(JSON))) return admin_usage("A dump is a binary SVN stream; --json is not accepted");
