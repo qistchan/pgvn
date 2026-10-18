@@ -4,14 +4,6 @@
 #include <apr_strings.h>
 #include "svn_io.h"
 
-static const char *events[]={"start-commit","pre-commit","post-commit","pre-revprop-change",
-    "post-revprop-change","pre-lock","post-lock","pre-unlock","post-unlock"};
-
-const char *pgvn_hook_name(pgvn_hook_event event)
-{
-    return event>=0 && event<=PGVN_HOOK_POST_UNLOCK ? events[event] : "unknown";
-}
-
 static svn_error_t *parse_authz(svn_authz_t **authz,const char *text,const char *groups,apr_pool_t *pool)
 {
     if(!text || strlen(text)>1048576 || (groups && strlen(groups)>1048576))

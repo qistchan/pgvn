@@ -84,7 +84,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
     legacy.BUILD, legacy.SVN, legacy.ROOT = work, svn, ROOT
     callbacks = legacy.generate_stubs()[1] if component == "fs" else []
     includes = [work / "generated", ROOT / "src/libsvn_fs_pg", ROOT / "src/pgvn/core",
-                svn / "include", svn / "libsvn_fs", sdk / "include/subversion-1",
+                svn / "include", svn / "libsvn_fs", svn / "libsvn_subr", sdk / "include/subversion-1",
                 sdk / "include/apr-1", sdk / "include"]
     flags = ["-std=c17", "-D_POSIX_C_SOURCE=200809L", "-pthread", "-fPIC",
              "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter"]
@@ -111,11 +111,16 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc", *flags, ROOT / "tests/pgvn/fs_linux_probe.c", ROOT / "src/pgvn/core/build_info.c",
              "-Wl,--export-dynamic", "-ldl", "-lsvn_fs_pg-1", *libraries, "-o", probe])
         elf = library
-    elif component in ("credentials", "hook-config"):
+    elif component in ("credentials", "hook-config", "hooks"):
         objects = []
-        sources = ("core/context.c", "core/credentials.c", "platform/credentials_posix.c") if component == "credentials" else (
-            "core/context.c", "core/catalog.c", "core/policy.c", "core/policy_protocol.c", "core/hooks_config.c")
-        if component == "hook-config":
+        if component == "credentials":
+            sources = ("core/context.c", "core/credentials.c", "platform/credentials_posix.c")
+        elif component == "hook-config":
+            sources = ("core/context.c", "core/catalog.c", "core/policy.c", "core/policy_protocol.c",
+                       "core/hooks_config.c", "core/hooks_common.c")
+        else:
+            sources = ("core/hooks_config.c", "core/hooks_common.c", "core/hooks_posix.c")
+        if component in ("hook-config", "hooks"):
             flags += ["-ffunction-sections", "-fdata-sections"]
         for relative in sources:
             source = ROOT / "src/pgvn" / relative
@@ -125,7 +130,8 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         library = work / ("lib/libpgvn_" + component.replace("-", "_") + ".a")
         library.unlink(missing_ok=True)
         run(["ar", "rcs", library, *objects])
-        probe_name = "credential_probe" if component == "credentials" else "hook_config_probe"
+        probe_name = {"credentials": "credential_probe", "hook-config": "hook_config_probe",
+                      "hooks": "hook_runner_probe"}[component]
         probe = work / "bin" / probe_name
         extras = ["-lcrypto"] if component == "credentials" else ["-lsvn_repos-1", "-Wl,--gc-sections"]
         run(["cc", *flags, ROOT / "tests/pgvn" / (probe_name + ".c"), ROOT / "src/pgvn/core/build_info.c",
@@ -160,7 +166,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         raise ValueError("Source changed during Linux build")
     result = {"format": 1, "scope": "Linux " + component + " development artifacts; hosts/package not built",
               "build_identity": metadata["build_identity"], "sdk_manifest_sha256": sha256(manifest_path),
-              "fs_loader_header_sha256": sha256(svn / "libsvn_fs/fs-loader.h"),
+              "fs_loader_header_sha256": sha256(svn / "libsvn_fs/fs-loader.h") if component == "fs" else None,
               "component": component, "sanitizers": ["address", "undefined"] if sanitize else [],
               "content_transfer": content_transfer if component == "fs" else None,
               "runtime": runtime, "dependencies": paths,

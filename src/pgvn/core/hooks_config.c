@@ -62,10 +62,17 @@ static svn_boolean_t mapping(const char *name,const char *value,void *baton,apr_
 svn_error_t *pgvn_hooks_configure(pgvn_context *context,svn_config_t *config,apr_pool_t *pool)
 {
     mapping_baton state={apr_hash_make(pool),pool,TRUE,0};
+    const char *cgroup_root=NULL;
     if(config) svn_config_enumerate2(config,"pgvn-hooks",mapping,&state,pool);
     if(!state.valid) return invalid("Invalid PgVN node hook mapping");
+#ifndef _WIN32
+    if(config) svn_config_get(config,&cgroup_root,"pgvn","hook-cgroup-root",NULL);
+    if(cgroup_root && *cgroup_root && !svn_dirent_is_absolute(cgroup_root))
+        return invalid("PgVN hook-cgroup-root must be an absolute path");
+#endif
     /* Publish only a complete, validated snapshot. */
     context->hook_implementations=state.mappings;
+    context->hook_cgroup_root=cgroup_root && *cgroup_root ? apr_pstrdup(pool,cgroup_root) : NULL;
     return SVN_NO_ERROR;
 }
 

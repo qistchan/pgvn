@@ -17,6 +17,7 @@ struct pgvn_context {
     int minimum_catalog_version;
     int catalog_version;
     const char *hook_root;
+    const char *hook_cgroup_root;
     apr_hash_t *hook_implementations; /* Immutable node-local logical-name mapping. */
     const char *configuration_path;
     pgvn_cancel_event cancellation_event;
@@ -73,6 +74,9 @@ svn_error_t *pgvn_hooks_configure(pgvn_context *context,svn_config_t *config,apr
 svn_boolean_t pgvn_hook_filename_valid(const char *name,svn_boolean_t windows);
 svn_error_t *pgvn_hook_resolve(pgvn_hook_handler *handler,pgvn_context *context,const char *name,apr_pool_t *pool);
 svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_context *event,apr_pool_t *pool);
+svn_error_t *pgvn_hook_event_json(svn_stringbuf_t **output,const pgvn_hook_context *event,apr_pool_t *pool);
+svn_error_t *pgvn_hook_result(const pgvn_hook_context *event,const char *stdout_data,size_t stdout_size,
+    svn_boolean_t stdout_truncated,const char *stderr_data,size_t stderr_size,unsigned long exit_code,apr_pool_t *pool);
 svn_error_t *pgvn_require_admin(pgvn_context *context);
 svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **policy,pgvn_context *context,
     const char *repository_id,apr_int64_t generation,svn_boolean_t allow_disabled,apr_pool_t *pool);
