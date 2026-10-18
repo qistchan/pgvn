@@ -1,0 +1,227 @@
+{
+  "format": 1,
+  "checkpoint": "Linux native administrative CLI and supporting foreground SVN service",
+  "date": "2026-10-18",
+  "status": "PASS",
+  "complete_product": false,
+  "milestone_complete": false,
+  "host_os": "Ubuntu 22.04.5 LTS",
+  "builder_os": "Ubuntu 24.04.5 LTS",
+  "runs": {
+    "release": {
+      "status": "PASS",
+      "checks": 38,
+      "sanitizers": [],
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Release",
+        "git_commit": "1b1400f81d172be2f4286b53acdc0886d4571b65",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "9f46c142885e80cfd0d5f279b68039285d64a85b5fa329a9fce62e432bb34a71",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "source_count": 195,
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "elapsed_seconds": {
+        "blocked_sql_statement_timeout_after_sigint_seconds": 4.862209365000126,
+        "lock_holder_release_seconds": 2.8068828099999337
+      },
+      "images": {
+        "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+        "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+      },
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "reports": [
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/report.json",
+          "sha256": "53950b5d96474c1ba7c391ad3e80efe25eb7857c7cb9a3e6b943fbb8f823fb51"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/admin-suite-report.json",
+          "sha256": "75432e1b44dba1d555952ff0c169f297f15a5464454a8235c332ad01e783afe7"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/reproducibility.md",
+          "sha256": "a0e9557f165de549aa853d957af5bb112eb1f8adb9b23644f48db9981c6d5d2f"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/inputs/build-metadata.json",
+          "sha256": "abb2ee17995bb54d2356f300acc815c3fcef67791ad4a7fd9096423e47ac3cff"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/inputs/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/inputs/build-manifest.json",
+          "sha256": "dafd61a4133415d34f643c7322b0d60f174113ce406724702b33baca1f1a4bc3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/admin-commands.jsonl",
+          "sha256": "135af1bdac720c838da0e4a4fc721235488bab6165c01c540528dbdf9084ee9f"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/orchestration-commands.jsonl",
+          "sha256": "6ad0a55e954e7c31b742b75f172ccf5d2aba9e297a6ece3d7992f7b06c7231f0"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/postgres.log",
+          "sha256": "123b245bd80cf0e35c845de3e02417e0f2005a2bcd8b73d1d4ec148c75d883d4"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/tests.log",
+          "sha256": "c42bc14dbc2833f978fc5f402f3ea17e129c6151161c2819822fd195cac3bf3c"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-2e0276e00e43/lock-wait.session-clean",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+        }
+      ]
+    },
+    "sanitized": {
+      "status": "PASS",
+      "checks": 38,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Debug",
+        "git_commit": "1b1400f81d172be2f4286b53acdc0886d4571b65",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "9f46c142885e80cfd0d5f279b68039285d64a85b5fa329a9fce62e432bb34a71",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "source_count": 195,
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "elapsed_seconds": {
+        "blocked_sql_statement_timeout_after_sigint_seconds": 4.929081392999706,
+        "lock_holder_release_seconds": 2.9087824700000056
+      },
+      "images": {
+        "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+        "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+      },
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "reports": [
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/report.json",
+          "sha256": "c2c1c171085a71cbab3619430c2a5e2815d1340495e4c909af5a089d8b56c4d3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/admin-suite-report.json",
+          "sha256": "c445076cbb5dac6cf66137160b0fecb6ff21ae7ea2877258bfe6fd0a8ed236d7"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/reproducibility.md",
+          "sha256": "cbe42bd64cf7f5f041cc26599427d22bad0171740ddfd316c1a85b268bb938c5"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/inputs/build-metadata.json",
+          "sha256": "a21eb85f08bcac79dce0055bacac604258af9fa4c3d1d51c529856471d6d3dc9"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/inputs/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/inputs/build-manifest.json",
+          "sha256": "d69ca15b4db25aaf9851f38b15d8701f29d7b46786763f34a6aa6c5f35363ce3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/admin-commands.jsonl",
+          "sha256": "0cb0abf051cb19e27b4ab2f53cf0618f21c84f211d3f70f79b6f15eb74661884"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/orchestration-commands.jsonl",
+          "sha256": "2627c9c6ef8b9b09b2c5cff4b76a7ecab002128adc5a279ad403497fc1cd13a1"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/postgres.log",
+          "sha256": "208ebc15509eb67149889255c6a9594d46d0dc7967219cff54723bdd97fd89c5"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/tests.log",
+          "sha256": "5f6031f63f4073e73d1e892d63458f3fd65f51072cce2b375d2647a0b0a9b1c2"
+        },
+        {
+          "path": "artifacts/pgvn/linux-admin/linux-admin-e762054d5709/lock-wait.session-clean",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+        }
+      ]
+    }
+  },
+  "additional_checks": {
+    "metadata": "20/20 at initial build-integration handoff; not rerun after CLI/test-only corrections",
+    "python_syntax": "PASS on final sources (verification handoff)",
+    "c_warnings": "-Wall -Wextra -Werror in both builds",
+    "whitespace": "PASS (CRLF-aware verification handoff)"
+  },
+  "limitations": [
+    "Linux maintenance freeze is explicitly rejected before database access and child launch.",
+    "SIGINT/SIGTERM are cooperative; synchronous PQexecParams is not actively cancelled. Blocked SQL exits at PostgreSQL statement_timeout, not due to active signal cancellation.",
+    "SYS_PTRACE was used only in the disposable test container to inspect its own child stdin poll; not a production capability requirement.",
+    "Linux monitor HTTP, telemetry-enabled serving, Apache/DAV, systemd/service-account/cgroup delegation, production packaging, backup/restore automation and full protocol acceptance remain pending.",
+    "Native host plus external Hook integration and Windows W1/W2 were not tested here. M6/M7, PGVN-601/602 and existing strict-difference FAIL status remain unchanged.",
+    "Unchanged Hook/bypass suites were not rerun in this stage; prior evidence remains separate.",
+    "No shared or Supabase database was used. SQL precreated disposable roles/databases; schema and privilege grants used the real CLI.",
+    "Recorded dirty build identities are preserved; not relabelled as a later clean commit."
+  ]
+}

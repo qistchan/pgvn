@@ -44,9 +44,10 @@ read-only = false
 ```
 
 The database role must have the privileges required by the PgVN catalog and
-repository APIs. The Linux `pgvnadmin` executable is not currently built;
-create the credential key and store credentials through the public core
-credential API. Do not place a key or database password in source control.
+repository APIs. The separate [Linux `admin` component](linux-native-admin.md)
+builds `pgvnadmin` for database initialization, role grants, repository/policy
+configuration and credential management. Do not place a key or database
+password in source control.
 The configuration path and file must be valid UTF-8. Startup checks the
 catalog and credential key before binding. A readiness line is emitted only
 after the listener is bound. Connection strings and credentials are not
