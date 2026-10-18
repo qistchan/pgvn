@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import platform
+import pty
 import re
 import secrets as secret_factory
 import shutil
@@ -64,7 +65,7 @@ def safe_arguments(arguments, secrets=()):
     return output
 
 
-def run_suite(product, artifacts):
+def run_suite(product, artifacts, configuration):
     product = Path(product)
     artifacts = Path(artifacts)
     manifest = json.loads((product / "build-manifest.json").read_text())
@@ -74,6 +75,8 @@ def run_suite(product, artifacts):
         raise RuntimeError("Frozen generated build inputs differ from evidence")
     if frozen_inputs["build_identity"] != manifest["build_identity"]:
         raise RuntimeError("Frozen build identity differs from build manifest")
+    if sha256(artifacts / "inputs/sdk-manifest.json") != manifest["sdk_manifest_sha256"]:
+        raise RuntimeError("Frozen SDK manifest differs from build manifest")
     for relative, expected in manifest["files"].items():
         if sha256(product / relative) != expected:
             raise RuntimeError("Frozen product hash mismatch: " + relative)
@@ -122,17 +125,51 @@ def run_suite(product, artifacts):
     def command(arguments, timeout=60, expected=0, input_data=None, env=None,
                 binary=False, sensitive_input=False, sensitive_output=False):
         arguments = list(map(str, arguments))
-        result = subprocess.run(
-            arguments,
-            cwd=temp_root,
-            env=env or environment,
-            input=input_data,
-            text=not binary,
-            capture_output=True,
-            timeout=timeout,
-        )
         if sensitive_input and input_data is not None:
             secrets.append(scrub(input_data, ()).strip())
+        for index, argument in enumerate(arguments[:-1]):
+            if argument in ("--password", "--passphrase") and arguments[index + 1] not in secrets:
+                secrets.append(arguments[index + 1])
+        try:
+            result = subprocess.run(
+                arguments,
+                cwd=temp_root,
+                env=env or environment,
+                input=input_data,
+                text=not binary,
+                capture_output=True,
+                timeout=timeout,
+            )
+        except subprocess.TimeoutExpired as error:
+            stdout = scrub(error.stdout or "", secrets)
+            stderr = scrub(error.stderr or "", secrets)
+            safe_args = safe_arguments(arguments, secrets)
+            commands.append({
+                "args": safe_args,
+                "exit_code": None,
+                "stdout": stdout,
+                "stderr": stderr,
+                "stdin": "redacted" if sensitive_input else ("present" if input_data is not None else None),
+                "timed_out_after_seconds": timeout,
+            })
+            raise RuntimeError(
+                "Command timed out after " + str(timeout) + " seconds: " +
+                str(safe_args) + "\n" + stdout + stderr
+            ) from None
+        except OSError as error:
+            safe_args = safe_arguments(arguments, secrets)
+            message = scrub(error.strerror or "process launch failed", secrets)
+            commands.append({
+                "args": safe_args,
+                "exit_code": None,
+                "stdout": "",
+                "stderr": message,
+                "stdin": "redacted" if sensitive_input else ("present" if input_data is not None else None),
+                "launch_error": error.errno,
+            })
+            raise RuntimeError(
+                "Unable to launch command " + str(safe_args) + ": " + message
+            ) from None
         if sensitive_output:
             match = re.search(r'"token"\s*:\s*"([^"]+)"', result.stdout)
             if match:
@@ -313,6 +350,22 @@ def run_suite(product, artifacts):
 
     main_service = None
     try:
+        timeout_marker = "admin-timeout-" + uuid.uuid4().hex
+        try:
+            command(
+                [sys.executable, "-c",
+                 "import sys,time; print(sys.argv[2],flush=True); time.sleep(10)",
+                 "--password", timeout_marker],
+                timeout=0.1,
+                expected=None,
+            )
+        except RuntimeError as error:
+            timeout_diagnostic = "".join(traceback.format_exception(error))
+            check("command timeout diagnostics redact password argv and output",
+                  timeout_marker not in timeout_diagnostic and
+                  timeout_marker not in json.dumps(commands))
+        else:
+            raise AssertionError("Command timeout regression process did not time out")
         check("frozen admin product hashes", True)
         check("admin manifest runtime identity", json_output(
             admin_command(["--version"], dsn=None)
@@ -344,6 +397,23 @@ def run_suite(product, artifacts):
                        "--service-role", "pgvn_service",
                        "--monitor-role", "pgvn_monitor"], dsn=owner)
         check("database grants provisioned by the CLI", True)
+        config_dsn = temp_root / "dsn-override.conf"
+        config_dsn.write_text("[pgvn]\nconnection = " + admin_dsn + "\n", encoding="utf-8")
+        config_override = admin_command(
+            ["db", "check", "--config", config_dsn],
+            dsn=admin_dsn,
+            env_extra={"PGVN_DSN": "\udcff"},
+        )
+        invalid_dsn = admin_command(
+            ["db", "check", "--json"],
+            dsn=None,
+            expected=USAGE,
+            env_extra={"PGVN_DSN": "\udcff"},
+        )
+        check("selected connection UTF-8 validation respects config precedence",
+              config_override.returncode == 0 and invalid_dsn.returncode == USAGE and
+              '"code":"invalid_arguments"' in invalid_dsn.stderr and
+              "connection setting must be valid UTF-8" in invalid_dsn.stderr)
 
         key = temp_root / "credential.key"
         admin_command(["key", "create", key, "primary"], dsn=None)
@@ -362,16 +432,54 @@ def run_suite(product, artifacts):
                       dsn=admin_dsn, input_data=test_password + "\n", sensitive_input=True)
         user_list = admin_command(["user", "list", "pgvn"], dsn=admin_dsn)
         check("credential set and list", '"alice"' in user_list.stdout)
+        def user_present(name):
+            return '"' + name + '"' in admin_command(
+                ["user", "list", "pgvn"], dsn=admin_dsn
+            ).stdout
+
+        failed_users = ("pty-user", "nul-user", "oversized-user")
+        before_failed_inputs = user_list.stdout
+        master, slave = pty.openpty()
+        pty_process = subprocess.Popen(
+            [admin, "user", "set", "pgvn", failed_users[0], "--key-file", key],
+            cwd=temp_root, env=dict(environment, PGVN_DSN=admin_dsn),
+            stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        )
+        os.close(slave)
+        pty_stdout, pty_stderr = pty_process.communicate(timeout=5)
+        os.close(master)
+        commands.append({"args": safe_arguments([admin, "user", "set", "pgvn",
+                         failed_users[0], "--key-file", key], secrets),
+                         "exit_code": pty_process.returncode,
+                         "stdout": scrub(pty_stdout, secrets), "stderr": scrub(pty_stderr, secrets),
+                         "stdin": "interactive-pty"})
+        nul_result = admin_command(
+            ["user", "set", "pgvn", failed_users[1], "--key-file", key],
+            dsn=admin_dsn, input_data="bad\x00password\n", sensitive_input=True, expected=None
+        )
+        oversized_result = admin_command(
+            ["user", "set", "pgvn", failed_users[2], "--key-file", key],
+            dsn=admin_dsn, input_data=("x" * 65536) + "\n",
+            sensitive_input=True, expected=None
+        )
+        check("password input rejects PTY NUL and oversized data without row changes",
+              pty_process.returncode != 0 and nul_result.returncode != 0 and
+              oversized_result.returncode != 0 and
+              all(not user_present(name) for name in failed_users) and
+              '"alice"' in before_failed_inputs)
+        crlf_user = "crlf-user"
+        crlf_result = admin_command(
+            ["user", "set", "pgvn", crlf_user, "--key-file", key],
+            dsn=admin_dsn, input_data=test_password + "\r\n", sensitive_input=True
+        )
+        check("CRLF password input is accepted", crlf_result.returncode == 0 and user_present(crlf_user))
+        admin_command(["user", "disable", "pgvn", crlf_user], dsn=admin_dsn)
         admin_command(["user", "rekey", "pgvn", "alice", "--key-file", second_key,
                        "--old-key-file", key], dsn=admin_dsn)
-        admin_command(["user", "disable", "pgvn", "alice"], dsn=admin_dsn)
-        check("credential disable and rekey", True)
         check("credential key failure denied", admin_command(
             ["user", "rekey", "pgvn", "alice", "--key-file", key,
              "--old-key-file", temp_root / "missing.key"], dsn=admin_dsn, expected=None
         ).returncode != 0)
-        admin_command(["user", "set", "pgvn", "alice", "--key-file", key],
-                      dsn=admin_dsn, input_data=test_password + "\n", sensitive_input=True)
 
         created = json_output(admin_command(
             ["repo", "create", "demo", "--route", "/svn/demo"], dsn=admin_dsn
@@ -497,13 +605,23 @@ def run_suite(product, artifacts):
 
         port = free_port()
         service_config = temp_root / "service.conf"
-        write_config(service_config, port, os.environ["PGVN_SERVICE_DSN"], key)
+        write_config(service_config, port, os.environ["PGVN_SERVICE_DSN"], second_key)
         main_service = start_service(service_config, "admin-service")
         url = "svn://127.0.0.1:" + str(port) + "/svn/demo"
         info = svn_command(["info", url])
         wrong = svn_command(["info", url], password=wrong_password, expected=None)
-        check("real authenticated SVN info and wrong-password denial",
-              info.returncode == 0 and wrong.returncode != 0 and "Authentication" in wrong.stderr)
+        admin_command(["user", "disable", "pgvn", "alice"], dsn=admin_dsn)
+        disabled = svn_command(["info", url], expected=None)
+        stop_service(main_service)
+        main_service = None
+        admin_command(["user", "set", "pgvn", "alice", "--key-file", key],
+                      dsn=admin_dsn, input_data=test_password + "\n", sensitive_input=True)
+        write_config(service_config, port, os.environ["PGVN_SERVICE_DSN"], key)
+        main_service = start_service(service_config, "admin-service-restored")
+        restored = svn_command(["info", url])
+        check("rekey authentication, disable denial, and credential restoration",
+              info.returncode == 0 and disabled.returncode != 0 and restored.returncode == 0 and
+              wrong.returncode != 0 and "Authentication" in wrong.stderr)
         checkout = temp_root / "checkout"
         svn_command(["checkout", url, checkout])
         (checkout / "cli.bin").write_bytes(b"CLI-created repository \x00\xff\n")
@@ -543,7 +661,10 @@ def run_suite(product, artifacts):
         lock_released = artifacts / "lock-holder.released"
         lock_wait = artifacts / "lock-wait.request"
         lock_blocked = artifacts / "lock-wait.blocked"
-        for path in (lock_request, lock_held, lock_released, lock_wait, lock_blocked):
+        lock_done = artifacts / "lock-wait.done"
+        lock_session_clean = artifacts / "lock-wait.session-clean"
+        for path in (lock_request, lock_held, lock_released, lock_wait, lock_blocked,
+                     lock_done, lock_session_clean):
             path.unlink(missing_ok=True)
         lock_request.write_text("pgfs.transactions", encoding="ascii")
         deadline = time.monotonic() + 15
@@ -572,18 +693,25 @@ def run_suite(product, artifacts):
         waiter.send_signal(signal.SIGINT)
         waiter_stdout, waiter_stderr = waiter.communicate(timeout=8)
         captured_processes.add(id(waiter))
-        elapsed["lock_wait_cancellation_seconds"] = time.monotonic() - cancelled_at
+        elapsed["blocked_sql_statement_timeout_after_sigint_seconds"] = time.monotonic() - cancelled_at
         commands.append({"args": safe_arguments([admin, "look", "transactions", "name:imported"], secrets),
                          "exit_code": waiter.returncode, "stdout": scrub(waiter_stdout, secrets),
                          "stderr": scrub(waiter_stderr, secrets), "stdin": None})
+        lock_done.write_text("waiter-exited\n", encoding="ascii")
+        deadline = time.monotonic() + 10
+        while not lock_session_clean.exists() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        if not lock_session_clean.exists():
+            raise TimeoutError("PgVN lock/session cleanup was not observed")
         release_wait_started = time.monotonic()
         deadline = time.monotonic() + 12
         while not lock_released.exists() and time.monotonic() < deadline:
             time.sleep(0.05)
         elapsed["lock_holder_release_seconds"] = time.monotonic() - release_wait_started
-        check("SIGINT cancels an admitted PostgreSQL lock wait", waiter.returncode != 0 and
-              ("cancel" in waiter_stderr.lower() or "57014" in waiter_stderr) and
-              elapsed["lock_wait_cancellation_seconds"] < 8 and lock_released.exists() and
+        check("blocked SQL exits at statement timeout after SIGINT (not active query cancellation)",
+              waiter.returncode != 0 and "SQLSTATE 57014" in waiter_stderr and
+              elapsed["blocked_sql_statement_timeout_after_sigint_seconds"] < 8 and
+              lock_session_clean.read_text().strip() == "0" and lock_released.exists() and
               elapsed["lock_holder_release_seconds"] < 12)
 
         freeze_child = temp_root / "freeze-child-ran"
@@ -650,6 +778,8 @@ def run_suite(product, artifacts):
         shutil.rmtree(temp_root, ignore_errors=True)
         if cleanup_errors:
             raise RuntimeError("; ".join(cleanup_errors))
+    if collect(ROOT, "linux", configuration) != frozen_inputs:
+        raise RuntimeError("Source/build metadata changed during the admin suite")
     return {
         "checks": checks,
         "elapsed_seconds": elapsed,
@@ -661,6 +791,8 @@ def run_suite(product, artifacts):
             "remain outside scope.",
             "Linux maintenance freeze is intentionally rejected before database access because "
             "contained child execution is not implemented.",
+            "SIGINT does not actively cancel synchronous PQexecParams; blocked SQL exits at "
+            "PostgreSQL statement_timeout with SQLSTATE 57014.",
             "Telemetry-enabled operation was not validated; this run exercises the disabled "
             "telemetry build configuration.",
         ],
@@ -681,7 +813,8 @@ def main():
     if args.in_container:
         report_path = args.artifacts / "admin-suite-report.json"
         try:
-            result = run_suite(args.product.resolve(strict=True), args.artifacts.resolve(strict=True))
+            result = run_suite(args.product.resolve(strict=True), args.artifacts.resolve(strict=True),
+                               args.configuration)
             report = {
                 "format": 1,
                 "status": "PASS",
@@ -801,6 +934,8 @@ def main():
             json.dumps(metadata, indent=2) + "\n", encoding="utf-8"
         )
         shutil.copy2(sdk_manifest_source, artifacts / "inputs/sdk-manifest.json")
+        if sha256(artifacts / "inputs/sdk-manifest.json") != manifest["sdk_manifest_sha256"]:
+            raise RuntimeError("Copied SDK manifest hash mismatch")
         for relative, expected in metadata["sources"].items():
             source = ROOT / relative
             target = artifacts / "inputs/source" / relative
@@ -839,6 +974,9 @@ def main():
             target = artifacts / "inputs/patches" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
+            expected = upstream["repository_patch_sha256"] if name == "repos.json" else upstream["protocol_patch_sha256"]
+            if sha256(target) != expected:
+                raise RuntimeError("Copied patch hash mismatch: " + name)
         (artifacts / "inputs/build-manifest.json").write_bytes(
             (product / "build-manifest.json").read_bytes()
         )
@@ -981,6 +1119,20 @@ def main():
                                    "-U", "postgres", "-d", "pgvn_admin", "-c", unlocked])
                 if current.stdout.strip() == "0":
                     lock_released.write_text(unlocked + "\n", encoding="utf-8")
+            lock_done = artifacts / "lock-wait.done"
+            lock_session_clean = artifacts / "lock-wait.session-clean"
+            if lock_done.exists() and not lock_session_clean.exists():
+                sessions = (
+                    "SELECT count(*) FROM pg_stat_activity a "
+                    "WHERE a.datname=current_database() AND a.application_name='pgvn' "
+                    "AND a.pid<>pg_backend_pid() AND "
+                    "(a.wait_event_type='Lock' OR EXISTS (SELECT 1 FROM pg_locks l "
+                    "WHERE l.pid=a.pid AND l.locktype='relation' AND "
+                    "l.relation='pgfs.transactions'::regclass));"
+                )
+                current = db_exec(["psql", "-h", "127.0.0.1", "-X", "-At",
+                                   "-U", "postgres", "-d", "pgvn_admin", "-c", sessions])
+                lock_session_clean.write_text(current.stdout.strip() + "\n", encoding="ascii")
             time.sleep(0.05)
         if process.poll() is None:
             process.kill()
@@ -989,6 +1141,18 @@ def main():
         if process.returncode != 0:
             raise RuntimeError("Linux admin suite failed; see tests.log")
         report = json.loads((artifacts / "admin-suite-report.json").read_text())
+        postgres_log = outer_command(docker + ["logs", db_name], timeout=30, expected=None)
+        postgres_text = postgres_log.stdout + postgres_log.stderr
+        if ("canceling statement due to statement timeout" not in postgres_text or
+                "SELECT txn_id FROM pgfs.transactions" not in postgres_text):
+            raise RuntimeError("PostgreSQL log did not identify statement_timeout for blocked PgFS SQL")
+        report["checks"].append("PostgreSQL log confirms statement_timeout for blocked SQL after SIGINT")
+        report["limitations"].append(
+            "The SIGINT blocked-SQL case is statement_timeout behavior, not active query cancellation."
+        )
+        (artifacts / "admin-suite-report.json").write_text(
+            json.dumps(report, indent=2) + "\n", encoding="utf-8"
+        )
         if report["status"] != "PASS":
             raise RuntimeError("Linux admin suite reported failure")
     except Exception:
@@ -1027,6 +1191,7 @@ def main():
             "build_manifest": str(artifacts / "frozen-product/build-manifest.json"),
             "source_snapshot": str(artifacts / "inputs"),
             "checks": report.get("checks", []),
+            "limitations": report.get("limitations", []),
             "errors": errors,
             "complete_product": False,
             "artifacts": str(artifacts),
@@ -1042,8 +1207,12 @@ def main():
             "- SDK manifest SHA-256: " + result["sdk_manifest_sha256"],
             "- PostgreSQL ran in a `--network none` container with tmpfs data and no published ports; "
             "the test container joined only its network namespace.",
-            "- Database roles and migrations were provisioned through the real CLI; SQL was limited "
-            "to disposable roles/database and lock/token validation fixtures.",
+            "- SQL precreated disposable roles/databases; the real CLI provisioned grants and "
+            "initialized/migrated schemas, while SQL supplied only lock and token-hash fixtures.",
+            "- SYS_PTRACE was granted only to the disposable test container to inspect its own "
+            "child's stdin poll rendezvous; it is not a runtime deployment capability.",
+            "- SIGINT does not actively cancel synchronous SQL; the blocked statement exits at "
+            "PostgreSQL statement_timeout with SQLSTATE 57014.",
             "- Generated metadata, source inputs, migrations, upstream sources, product files and "
             "`sdk-manifest.json` were frozen under `inputs/` and `frozen-product/`.",
             "- The runner records local image identities; it does not pull images.",

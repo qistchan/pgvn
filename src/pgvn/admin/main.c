@@ -64,7 +64,6 @@ static svn_error_t *run(admin_command *command)
     const char *dsn=admin_env(L"PGVN_DSN",command->pool);
 #else
     const char *dsn=admin_env("PGVN_DSN",command->pool);
-    if(dsn && !pgvn_utf8_valid(dsn)) return admin_usage("PGVN_DSN must be valid UTF-8");
 #endif
     const char *hook_root=NULL;
     svn_config_t *config=NULL;
@@ -76,6 +75,10 @@ static svn_error_t *run(admin_command *command)
         svn_config_get(config,&command->old_credential_key_file,"pgvn","credential-previous-key-file",NULL);
         svn_config_get(config,&hook_root,"pgvn","hook-root",NULL);
     }
+#ifndef _WIN32
+    if(dsn && !pgvn_utf8_valid(dsn))
+        return admin_usage("PgVN connection setting must be valid UTF-8");
+#endif
     if((!dsn || !*dsn) && !strcmp(command->argv[0],"diagnose")) {
         char buffer[PGVN_BUILD_JSON_SIZE]; pgvn_build_json(buffer,sizeof(buffer));
         fputs("{\"database\":\"not_configured\",\"build\":",stdout); fputs(buffer,stdout); puts("}");
