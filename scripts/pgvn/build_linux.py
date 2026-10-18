@@ -1,7 +1,8 @@
 """Native Linux component build against an explicitly verified, pinned SDK.
 
 This stage produces ELF development artifacts, not a deployable PgVN package.
-Administrative, monitoring, Apache/DAV and packaging components remain separate.
+The admin component shares the production listener/core build; monitoring,
+Apache/DAV and packaging remain separate.
 """
 from pathlib import Path
 import importlib.util
@@ -16,6 +17,7 @@ import tarfile
 from build_metadata import collect, sha256, write_metadata, check_runtime
 from prepare_upstream import prepare as prepare_upstream
 from prepare_protocol import prepare_protocol
+from embed_migrations import CATALOG, STORAGE, embed
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -180,7 +182,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc", *flags, ROOT / "tests/pgvn" / (probe_name + ".c"), ROOT / "src/pgvn/core/build_info.c",
              library, *libraries, *extras, "-o", probe])
         elf = probe
-    elif component == "serve":
+    elif component in ("serve", "admin"):
         upstream_inputs=verify_subversion_inputs(svn,work)
         flags += ["-I",svn,"-I",ROOT/"src/pgvn/serve"]
         repository_source=work/"upstream/libsvn_repos"
@@ -190,6 +192,13 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
             ROOT/"patches/pgvn/subversion-1.14.5/protocol.json")
         legacy.BUILD,legacy.SVN,legacy.ROOT=work,svn,ROOT
         callbacks=legacy.generate_stubs()[1]
+        migration_inputs=None
+        if component=="admin":
+            embed(ROOT,work/"generated/pgvn_migrations.h")
+            migration_inputs={
+                "catalog":{name:sha256(ROOT/"sql/pgvn"/name) for name in CATALOG},
+                "storage":{name:sha256(ROOT/"sql"/name) for name in STORAGE},
+                "embedded_header_sha256":sha256(work/"generated/pgvn_migrations.h")}
         for path in (work/"upstream/svnserve",work/"upstream/libsvn_ra_svn",repository_source,
                      svn/"svnserve",svn/"libsvn_repos",svn/"libsvn_ra_svn",svn/"libsvn_delta",
                      svn/"libsvn_diff",svn/"libsvn_fs_util"):
@@ -228,9 +237,19 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc",*flags,"-DPGVN_STATIC",*server_sources,*protocol_objects,library,
              *libraries,"-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread",
              "-Wl,-z,defs","-o",probe])
-        fixture=work/"bin/serve_fixture"
-        run(["cc",*flags,"-DPGVN_STATIC",ROOT/"tests/pgvn/serve_fixture.c",library,*libraries,
-             "-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread","-Wl,-z,defs","-o",fixture])
+        products=[{"name":"pgvnserve","path":"bin/pgvnserve","role":"supporting_service"}]
+        if component=="serve":
+            fixture=work/"bin/serve_fixture"
+            run(["cc",*flags,"-DPGVN_STATIC",ROOT/"tests/pgvn/serve_fixture.c",library,*libraries,
+                 "-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread","-Wl,-z,defs","-o",fixture])
+            products.append({"name":"serve_fixture","path":"bin/serve_fixture","role":"test_fixture"})
+        else:
+            admin=work/"bin/pgvnadmin"
+            admin_sources=sorted((ROOT/"src/pgvn/admin").glob("*.c"))
+            run(["cc",*flags,"-DPGVN_STATIC",*admin_sources,library,*libraries,
+                 "-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread",
+                 "-Wl,-z,defs","-o",admin])
+            products.insert(0,{"name":"pgvnadmin","path":"bin/pgvnadmin","role":"administrative_cli"})
         upstream_inputs.update({"repository_patch_sha256":sha256(ROOT/"patches/pgvn/subversion-1.14.5/repos.json"),
             "protocol_patch_sha256":sha256(ROOT/"patches/pgvn/subversion-1.14.5/protocol.json"),
             "repository_source_sha256":repository_hashes,"protocol_source_sha256":protocol_hashes,
@@ -240,6 +259,9 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         elf=probe
     else:
         raise ValueError("Unknown Linux component")
+    if component=="admin":
+        admin_runtime=json.loads(run([work/"bin/pgvnadmin","--version"]))
+        check_runtime(admin_runtime,metadata["build_identity"])
     runtime = json.loads(run([probe, "--version"]))
     check_runtime(runtime, metadata["build_identity"])
     if run([work / "bin/svn", "--version", "--quiet"]).strip() != metadata["build_identity"]["svn_base"]:
@@ -267,6 +289,8 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         raise ValueError("Source changed during Linux build")
     scope=("Native Linux foreground SVN listener and production protocol/core; administration, monitoring, Apache/DAV and packages not built"
            if component=="serve" else
+           "Native Linux administrative CLI and supporting foreground SVN listener using production protocol/core; monitoring, Apache/DAV and packages not built"
+           if component=="admin" else
            "Linux "+component+" development artifacts; remaining hosts/package not built")
     result = {"format": 1, "scope": scope,
               "build_identity": metadata["build_identity"], "sdk_manifest_sha256": sha256(manifest_path),
@@ -279,7 +303,10 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
               "compiler": run(["cc", "--version"]).splitlines()[0],
               "sdk_dependencies": copied,
               "elf_dynamic": run(["readelf", "-d", elf]), "callbacks": callbacks,
-              "upstream_inputs":upstream_inputs if component=="serve" else None,
+              "products":products if component in ("serve","admin") else [],
+              "admin_runtime":admin_runtime if component=="admin" else None,
+              "admin_migrations":migration_inputs if component=="admin" else None,
+              "upstream_inputs":upstream_inputs if component in ("serve","admin") else None,
               "files": {p.relative_to(work).as_posix(): sha256(p) for directory in ("bin", "lib")
                         for p in sorted((work / directory).iterdir()) if p.is_file()}}
     (work / "build-manifest.json").write_text(json.dumps(result, indent=2) + "\n")

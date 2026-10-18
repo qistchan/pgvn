@@ -1,7 +1,47 @@
 #include <string.h>
+#ifdef _WIN32
 #include <io.h>
+#else
+#include <errno.h>
+#include <poll.h>
+#include <unistd.h>
+#endif
 #include "admin.h"
 #include "credentials.h"
+#include "../platform/credentials.h"
+
+static svn_error_t *read_password(char *password,size_t capacity,size_t *size)
+{
+#ifdef _WIN32
+    DWORD mode;
+    if(GetConsoleMode((HANDLE)_get_osfhandle(_fileno(stdin)),&mode))
+        return admin_usage("Provide the SVN password on redirected standard input; interactive echo is not permitted");
+    *size=fread(password,1,capacity,stdin);
+    if(ferror(stdin)) return admin_usage("Unable to read SVN password on standard input");
+#else
+    if(isatty(STDIN_FILENO))
+        return admin_usage("Provide the SVN password on redirected standard input; interactive echo is not permitted");
+    *size=0;
+    while(*size<capacity) {
+        SVN_ERR(admin_cancel(NULL));
+        struct pollfd input={STDIN_FILENO,POLLIN,0};
+        int ready=poll(&input,1,100);
+        if(ready<0) {
+            if(errno==EINTR) continue;
+            return admin_usage("Unable to poll standard input");
+        }
+        if(!ready) continue;
+        ssize_t amount=read(STDIN_FILENO,password+*size,capacity-*size);
+        if(amount<0) {
+            if(errno==EINTR) continue;
+            return admin_usage("Unable to read SVN password on standard input");
+        }
+        if(!amount) break;
+        *size+=(size_t)amount;
+    }
+#endif
+    return SVN_NO_ERROR;
+}
 
 svn_error_t *admin_credentials(admin_command *command)
 {
@@ -37,17 +77,20 @@ svn_error_t *admin_credentials(admin_command *command)
         SVN_ERR(pgvn_credential_rekey(command->context,old_key,key,domain,user,command->pool));
         admin_ok("user_rekeyed"); return SVN_NO_ERROR;
     }
-    DWORD mode;
-    if(GetConsoleMode((HANDLE)_get_osfhandle(_fileno(stdin)),&mode))
-        return admin_usage("Provide the SVN password on redirected standard input; interactive echo is not permitted");
-    char password[4099]; size_t size=fread(password,1,sizeof(password),stdin);
-    if(ferror(stdin) || size==sizeof(password) || memchr(password,0,size)) {
-        SecureZeroMemory(password,sizeof(password)); return admin_usage("Invalid SVN password on standard input");
+    char password[4099]; size_t size=0;
+    svn_error_t *error=read_password(password,sizeof(password),&size);
+    if(error) { pgvn_secure_zero(password,sizeof(password)); return error; }
+    if(size>=sizeof(password)) {
+        pgvn_secure_zero(password,sizeof(password)); return admin_usage("Invalid SVN password on standard input");
+    }
+    if(memchr(password,0,size)) {
+        pgvn_secure_zero(password,sizeof(password)); return admin_usage("Invalid SVN password on standard input");
     }
     if(size && password[size-1]=='\n') { --size; if(size && password[size-1]=='\r') --size; }
     password[size]=0;
-    svn_error_t *error=pgvn_credential_put(command->context,key,domain,user,password,command->pool);
-    SecureZeroMemory(password,sizeof(password));
+    error=admin_cancel(NULL);
+    if(!error) error=pgvn_credential_put(command->context,key,domain,user,password,command->pool);
+    pgvn_secure_zero(password,sizeof(password));
     if(error) return error;
     admin_ok("user_set"); return SVN_NO_ERROR;
 }

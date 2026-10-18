@@ -71,6 +71,7 @@ svn_error_t *admin_number(apr_int64_t *number,const char *value,apr_int64_t mini
     return SVN_NO_ERROR;
 }
 
+#ifdef _WIN32
 const char *admin_utf8(const wchar_t *value,apr_pool_t *pool)
 {
     int length=WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,value,-1,NULL,0,NULL,NULL);
@@ -88,6 +89,13 @@ const char *admin_env(const wchar_t *name,apr_pool_t *pool)
     if(!GetEnvironmentVariableW(name,value,size)) return NULL;
     return admin_utf8(value,pool);
 }
+#else
+const char *admin_env(const char *name,apr_pool_t *pool)
+{
+    const char *value=getenv(name);
+    return value ? apr_pstrdup(pool,value) : NULL;
+}
+#endif
 
 void admin_json_string(FILE *file,const char *value,apr_size_t length)
 {
@@ -176,7 +184,11 @@ int admin_error(svn_error_t *error,svn_boolean_t json)
 
 void admin_help(void)
 {
+#ifdef _WIN32
     puts("PgVN administrative CLI (Windows x64)\n"
+#else
+    puts("PgVN administrative CLI (Linux x64)\n"
+#endif
          "Connection: PGVN_DSN environment variable or --config FILE ([pgvn] connection=...).\n"
          "Metadata commands emit JSON; --json also structures errors and look results.\n"
          "  db init|migrate|check\n"
@@ -199,7 +211,7 @@ void admin_help(void)
          "  authz validate --authz FILE [--groups FILE] | authz check SELECTOR USER PATH read|write\n"
          "  monitor-token create --label LABEL [--expires-in SECONDS]\n"
          "  monitor-token list | monitor-token revoke ID | monitor-token expire ID --expires-in SECONDS\n"
-         "  key create FILE KEY_ID             Create an ACL-protected deployment key (offline)\n"
+         "  key create FILE KEY_ID             Create a protected deployment key (offline)\n"
          "  user set DOMAIN USER [--key-file FILE]  Password from redirected stdin\n"
          "  user rekey DOMAIN USER [--key-file NEW] [--old-key-file OLD]\n"
          "  user list [DOMAIN] | user disable DOMAIN USER\n"
@@ -207,4 +219,7 @@ void admin_help(void)
          "SELECTOR accepts name:NAME, id:UUID, or an unambiguous name/ID.\n"
          "Look accepts the trusted service DB role for enabled repositories; other administration requires admin privileges.\n"
          "Exit codes: 0 success, 1 failure, 2 usage, 3 database, 4 schema, 5 denied, 6 missing, 7 conflict.");
+#ifndef _WIN32
+    puts("Linux: maintenance freeze is unavailable until contained child execution is implemented.");
+#endif
 }

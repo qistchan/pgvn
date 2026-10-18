@@ -1,5 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
+#ifndef _WIN32
+#include <errno.h>
+#include <poll.h>
+#include <unistd.h>
+#endif
 #include "admin.h"
 #include <apr_base64.h>
 #include <apr_strings.h>
@@ -7,6 +12,30 @@
 #include "svn_pools.h"
 #include "svn_props.h"
 #include "pgfs_native.h"
+
+#ifndef _WIN32
+static svn_error_t *read_stdin(void *baton,char *buffer,apr_size_t *length)
+{
+    if(!*length) return admin_cancel(NULL);
+    for(;;) {
+        SVN_ERR(admin_cancel(NULL));
+        struct pollfd input={STDIN_FILENO,POLLIN,0};
+        int ready=poll(&input,1,100);
+        if(ready<0) {
+            if(errno==EINTR) continue;
+            return svn_error_wrap_apr(errno,"Unable to poll standard input");
+        }
+        if(!ready) continue;
+        ssize_t amount=read(STDIN_FILENO,buffer,*length);
+        if(amount<0) {
+            if(errno==EINTR) continue;
+            return svn_error_wrap_apr(errno,"Unable to read standard input");
+        }
+        *length=(apr_size_t)amount;
+        return SVN_NO_ERROR;
+    }
+}
+#endif
 
 static int compare_strings(const void *a,const void *b)
 {
@@ -85,7 +114,8 @@ static svn_error_t *tree(svn_fs_root_t *root,const char *initial,admin_command *
         svn_node_kind_t kind; SVN_ERR(svn_fs_check_path(&kind,root,item.path,scratch));
         if(kind==svn_node_none) return svn_error_create(SVN_ERR_FS_NOT_FOUND,NULL,"Tree path does not exist");
         if(json) {
-            if(emitted++) putchar(','); fputs("{\"path\":",stdout); admin_json_cstr(stdout,item.path);
+            if(emitted++) putchar(',');
+            fputs("{\"path\":",stdout); admin_json_cstr(stdout,item.path);
             fputs(",\"kind\":",stdout); admin_json_cstr(stdout,kind==svn_node_dir ? "dir" : "file"); putchar('}');
         } else {
             if(!(command->flags & OPTION(OPT_FULL_PATHS))) for(int i=0;i<item.depth;++i) putchar(' ');
@@ -137,7 +167,8 @@ static svn_error_t *changed(svn_fs_root_t *root,admin_command *command)
         const char *action=change->change_kind==svn_fs_path_change_add ? "add" : change->change_kind==svn_fs_path_change_delete ? "delete" :
             change->change_kind==svn_fs_path_change_replace ? "replace" : "modify";
         if(json) {
-            if(i) putchar(','); fputs("{\"path\":",stdout); admin_json_string(stdout,change->path.data,change->path.len);
+            if(i) putchar(',');
+            fputs("{\"path\":",stdout); admin_json_string(stdout,change->path.data,change->path.len);
             fputs(",\"action\":",stdout); admin_json_cstr(stdout,action);
             fputs(",\"kind\":",stdout); admin_json_cstr(stdout,change->node_kind==svn_node_dir ? "dir" : change->node_kind==svn_node_file ? "file" : "unknown");
             printf(",\"text_mod\":%s,\"prop_mod\":%s,\"copyfrom_rev\":%ld,\"copyfrom_path\":",
@@ -183,7 +214,8 @@ static svn_error_t *properties(admin_command *command,svn_fs_t *fs,svn_fs_root_t
     for(int i=0;i<names->nelts;++i) {
         name=APR_ARRAY_IDX(names,i,const char *); svn_string_t *value=apr_hash_get(properties,name,APR_HASH_KEY_STRING);
         if(json) {
-            if(i) putchar(','); fputs("{\"name\":",stdout); admin_json_cstr(stdout,name);
+            if(i) putchar(',');
+            fputs("{\"name\":",stdout); admin_json_cstr(stdout,name);
             if(command->flags & OPTION(OPT_VERBOSE)) { fputs(",\"encoding\":\"base64\",\"value\":\"",stdout); base64(value->data,value->len); putchar('"'); }
             putchar('}');
         } else {
@@ -223,8 +255,14 @@ static svn_error_t *dump_load_verify(admin_command *command,pgvn_repository *rep
             SVN_ERR(svn_io_file_open(&file,command->values[OPT_FILE],APR_WRITE|APR_CREATE|APR_EXCL|APR_BINARY,APR_OS_DEFAULT,command->pool));
             stream=svn_stream_from_aprfile2(file,FALSE,command->pool);
         }
-    } else if(loading) SVN_ERR(svn_stream_for_stdin2(&stream,TRUE,command->pool));
-    else SVN_ERR(svn_stream_for_stdout(&stream,command->pool));
+    } else if(loading) {
+#ifdef _WIN32
+        SVN_ERR(svn_stream_for_stdin2(&stream,TRUE,command->pool));
+#else
+        stream=svn_stream_create(NULL,command->pool);
+        svn_stream_set_read2(stream,read_stdin,NULL);
+#endif
+    } else SVN_ERR(svn_stream_for_stdout(&stream,command->pool));
     svn_error_t *error;
     if(loading) {
         enum svn_repos_load_uuid uuid_action=command->flags & OPTION(OPT_FORCE_UUID) ? svn_repos_load_uuid_force :

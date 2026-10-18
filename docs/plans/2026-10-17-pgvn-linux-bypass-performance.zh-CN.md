@@ -611,3 +611,41 @@ Supabase 仅查询了管理 API 元数据：可用项目为 PostgreSQL 17.11，�
 ### 15.3 剩余验收
 
 下一步仍需 Linux 监控 HTTP/启用遥测验证、原生 pgvnadmin、Apache/DAV、生产服务账号与 systemd/cgroup 委派、部署和备份恢复，以及更完整的 SVN CLI/SVNKit/HTTP/HTTPS/Hook/锁/配置切换协议矩阵。本节没有验证真实外部 Hook 与原生服务组合运行，也没有完成 Windows W1/W2、M6/M7、PGVN-601/602 或修复原严格差分 FAIL。
+
+## 16. Linux 原生管理 CLI 检查点（2026-10-18，非完整产品验收）
+
+### 16.1 交付范围
+
+新增 `--components admin`，复用原生服务的固定 SDK、生产 PgVN/PgFS、修补后的 SVN 仓库层与协议代码，产出真实 `pgvnadmin` 及配套前台 `pgvnserve`，不包含 `serve_fixture`。迁移 SQL 与摘要编译进管理程序。命令层共享 Windows 实现；平台分支处理 UTF-8 参数/环境、标准输入、信号、随机数、SHA-256 与安全清零，保留 Windows 入口、CNG 与 Job Object 代码。
+
+通过真实 CLI 完成 schema 初始化/迁移/检查、角色授权、仓库与配置发布、凭据及监控令牌管理，以及 dump/load/verify/look 和 hotcopy/purge。测试数据库及登录角色由隔离 fixture 预先建立，**schema 和角色授权由 CLI 执行**，不是通过直接运行 SQL 迁移或测试夹具替代产品入口。监控令牌可创建不代表 Linux 监控 HTTP 已实现。
+
+`maintenance freeze` 在 Linux 预检阶段明确拒绝，不连接数据库、不启动子进程；任意管理子进程的安全进程树隔离尚未实现，不以只杀直接子进程替代。运行方式和安全边界见 [Linux 管理 CLI 指南](../pgvn/linux-native-admin.md)。
+
+### 16.2 验证与证据
+
+固定 PostgreSQL **18.6** 下，最终 Release 和 Debug + ASan/UBSan **各 38 项检查通过**。覆盖：
+
+- 离线版本/帮助/诊断、JSON 错误类别、非超级用户初始化及幂等迁移、真实角色授权和服务角色权限限制；
+- mode-0600 key、覆盖/链接拒绝、密码 PTY/NUL/超长拒绝和 CRLF 输入；重加密后用新 key 认证成功，禁用后认证拒绝，恢复后继续访问；
+- 仓库 CRUD 中本阶段使用的创建/列表/查询/启停操作，authz 验证、检查、发布及过期 generation 冲突；
+- 标准 `svnadmin` 生成的二进制/Unicode 历史经 CLI load/verify/look/dump 往返一致，CLI 配置的仓库可真实 SVN checkout/commit/cat，含并发断连及槽位复用；
+- 监控令牌创建/列表/过期/撤销及数据库 SHA-256 比对，日志不保留令牌明文或密码；命令超时异常也验证脱敏；
+- hotcopy/verify/确认 ID 后 purge，坏 UTF-8 参数、配置优先于无效环境 DSN，以及不执行 freeze 子进程。
+
+密码 stdin 的 SIGINT 和 load stdin 的 SIGTERM 在确认进程确实阻塞于 fd 0 的 poll 后执行，返回取消错误。该 rendezvous 仅给隔离测试容器增加 `SYS_PTRACE`，没有为生产程序增加权限要求。
+
+**同步 SQL 取消能力仍有限制**：原锁等待测试将 SQLSTATE 57014 误判为主动信号取消，已修正。最终测试确认真实关系锁阻塞、发送 SIGINT 后约 **4.86/4.93 秒**返回，并检查 PostgreSQL 日志的 `statement timeout` 及 PgVN 相关锁清理。这里验证的是既有 **5 秒 statement_timeout**，不是即时取消 `PQexecParams`，也不是网络故障下的全面时限保证。
+
+测试运行于 Ubuntu **24.04.5 构建容器**、GCC 13.3.0；外层主机仍为 Ubuntu **22.04.5**，不计为 Ubuntu 24.04 主机部署验收。隔离 PostgreSQL 使用 tmpfs、无公开端口，未访问 Supabase 或其他共享数据库。元数据测试 **20/20**（首轮构建集成时）；最终 Python 语法和 C `-Wall -Wextra -Werror` 检查通过。源/生成文件/SDK/上游输入和运行产物已冻结，195 个源输入保留实际 `1b1400f` + dirty 构建身份，不重新标记为最终 clean 提交。详见 [管理 CLI 证据索引](../pgvn/evidence/linux-native-admin.json)。
+
+复现：
+
+```sh
+python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release
+python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
+```
+
+### 16.3 剩余工作
+
+原生管理 CLI 的已测命令不再列为未移植，但 Linux freeze、安全备份恢复编排及主动 SQL 取消仍需后续工作。监控 HTTP/启用遥测、Apache/DAV、systemd/生产账号/cgroup 委派、部署包、完整协议矩阵和原生服务结合真实外部 Hook 的验收仍未完成。Windows W1/W2、M6/M7、PGVN-601/602 和既有严格差分 FAIL 状态不变；本轮未重跑未改动的 Hook/bypass 回归。继续保留 `complete_product: false`。

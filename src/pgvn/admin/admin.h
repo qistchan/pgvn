@@ -53,8 +53,12 @@ svn_error_t *admin_db_migrate(pgvn_context *context,apr_pool_t *pool);
 void admin_json_string(FILE *file,const char *value,apr_size_t length);
 void admin_json_cstr(FILE *file,const char *value);
 void admin_ok(const char *action);
+#ifdef _WIN32
 const char *admin_env(const wchar_t *name,apr_pool_t *pool);
 const char *admin_utf8(const wchar_t *value,apr_pool_t *pool);
+#else
+const char *admin_env(const char *name,apr_pool_t *pool);
+#endif
 void admin_help(void);
 int admin_error(svn_error_t *error,svn_boolean_t json);
 #endif
