@@ -12,6 +12,29 @@ static void usage(void)
     exit(2);
 }
 
+static void respond(const char *value)
+{
+    size_t length=strlen(value);
+    printf("PGVN_RESPONSE %zu\n",length);
+    fwrite(value,1,length,stdout);
+    fputc('\n',stdout);
+    fflush(stdout);
+}
+
+static void respond_pair(const char *prefix,const char *value)
+{
+    size_t prefix_length=strlen(prefix),value_length=strlen(value);
+    char *response=malloc(prefix_length+value_length+1);
+    if(!response) {
+        respond("probe_response_allocation_failed");
+        return;
+    }
+    memcpy(response,prefix,prefix_length);
+    memcpy(response+prefix_length,value,value_length+1);
+    respond(response);
+    free(response);
+}
+
 int main(int argc,char **argv)
 {
     if(argc==2 && !strcmp(argv[1],"--version")) {
@@ -33,31 +56,39 @@ int main(int argc,char **argv)
     char line[8192];
     while(fgets(line,sizeof(line),stdin)) {
         line[strcspn(line,"\r\n")]=0;
-        if(!strcmp(line,"business 0")) pgvn_monitor_business(data,0);
-        else if(!strcmp(line,"business 1")) pgvn_monitor_business(data,1);
-        else if(!strcmp(line,"tick")) pgvn_monitor_tick(data);
-        else if(!strcmp(line,"live")) printf("live %d\n",pgvn_monitor_live(data));
-        else if(!strcmp(line,"ready")) printf("ready %d\n",pgvn_monitor_ready(data));
+        if(!strcmp(line,"business 0")) { pgvn_monitor_business(data,0); respond("ok"); }
+        else if(!strcmp(line,"business 1")) { pgvn_monitor_business(data,1); respond("ok"); }
+        else if(!strcmp(line,"tick")) { pgvn_monitor_tick(data); respond("ok"); }
+        else if(!strcmp(line,"live")) {
+            char value[16]; snprintf(value,sizeof(value),"live %d",pgvn_monitor_live(data));
+            respond(value);
+        }
+        else if(!strcmp(line,"ready")) {
+            char value[16]; snprintf(value,sizeof(value),"ready %d",pgvn_monitor_ready(data));
+            respond(value);
+        }
         else if(!strcmp(line,"metrics")) {
             apr_pool_clear(pool);
             const char *metrics=pgvn_monitor_metrics(data,pool);
-            fputs(metrics ? metrics : "",stdout); fputc('\n',stdout);
+            respond(metrics ? metrics : "");
         } else if(!strncmp(line,"api ",4)) {
             char *path=line+4,*query=strchr(path,'?');
             if(query) { *query++=0; } else query="";
             int code=0;
             apr_pool_clear(pool);
             const char *body=pgvn_monitor_api(data,path,query,&code,pool);
-            printf("api %d %s\n",code,body ? body : "");
+            char status[32]; snprintf(status,sizeof(status),"api %d ",code);
+            respond_pair(status,body ? body : "");
         } else if(!strncmp(line,"authorize ",10)) {
             const char *header=line+10;
-            printf("authorize %d\n",pgvn_monitor_authorize(data,header,strlen(header)));
+            char value[32]; snprintf(value,sizeof(value),"authorize %d",
+                pgvn_monitor_authorize(data,header,strlen(header)));
+            respond(value);
         } else if(!strcmp(line,"stop")) {
-            pgvn_monitor_data_stop(data); data=NULL; puts("stopped"); fflush(stdout); break;
+            pgvn_monitor_data_stop(data); data=NULL; respond("stopped"); break;
         } else if(*line) {
-            fputs("unknown\n",stdout);
+            respond("unknown");
         }
-        fflush(stdout);
     }
     if(data) pgvn_monitor_data_stop(data);
     apr_pool_destroy(pool); apr_terminate();

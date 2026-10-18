@@ -661,16 +661,16 @@ python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration
 
 ### 17.2 实测与证据
 
-固定 PostgreSQL **18.6** 下，Release 与 Debug + ASan/UBSan **各 23 项检查通过**。测试使用 `pgvn-linux-builder:24.04` 和 `postgres:18.6` 固定镜像；数据库容器无公开端口并处于隔离网络，探针只加入该数据库的网络命名空间。构建/测试环境为 Ubuntu **24.04.5** 容器，外层 Ubuntu **22.04.5** 主机；SDK 清单 SHA-256 为 `ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055`。
+原提交的 Release/Debug 各 23 项报告仍保留在旧路径作为历史记录，不再代表当前验收。修正后的 Release 与 Debug + ASan/UBSan 在固定 PostgreSQL `server_version_num=180006` 下**各 39 项检查通过**。runner 使用本机管理的 Docker daemon、无公开端口的隔离数据库，并让探针只加入该数据库的网络命名空间。通过 `docker image inspect` 记录实际 `pgvn-linux-builder:24.04`（`sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7`）与 `postgres:18.6`（`sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336`）；不以固定镜像摘要作为接受门槛。主机 OS 为 Ubuntu **22.04.5 LTS**，builder OS 为 Ubuntu **24.04.5 LTS**；SDK 清单 SHA-256 为 `ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055`。
 
-检查覆盖初始化与就绪/模拟业务就绪、tick 过期及恢复、生产 API 的有效与异常查询、受限 reader/writer 采样、令牌授权/撤销、数据库中断恢复、阻塞查询期间有界停止、停止后采样数据库会话释放、CPU/RSS 采样及 private-byte 缺失语义。Release 结束后剩余采样会话数为 0（轮询确认时间 **0.369 秒**）；Debug + ASan/UBSan 为 0（**0.385 秒**）。探针输出另保存了代表性的进程 JSON 与 Prometheus 指标。
+检查覆盖“已配置但尚未业务就绪”的初始状态（没有声称测试未配置 bootstrap）、数据库采样后就绪、主 tick 过期后的 `live 0`/`ready 0` 及显式 tick 恢复；逐项验证有效、重复、格式错误、无效 UTF-8 API 请求和有效/错误/过期/撤销令牌。数据库断连时轮询确认失败采样与未就绪，恢复后等待 sample ID 增长、新鲜状态及就绪。非空 private-byte series 的所有值均为 null；只保存单帧 `metrics.prom`，`process.json` 来自一次成功解析的 overview。另在确认采样查询确实等待关系锁后检查有界停止；锁持有者正常退出，采样器停止后 PostgreSQL 会话和锁均为 0。Release 结束后会话释放轮询为 **0.526 秒**，Debug + ASan/UBSan 为 **0.413 秒**。这些检查不代表 SQL 主动取消、HTTP 或真实服务集成。
 
-证据索引：[Linux 监控后端证据](../pgvn/evidence/linux-monitor-backend.json)。冻结的 Release 与 Debug 运行分别位于 `artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/` 和 `artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/`；报告保留实际 dirty build identity，不重标为后续 clean 提交。
+证据索引：[Linux 监控后端证据](../pgvn/evidence/linux-monitor-backend.json)。当前冻结的 Release 与 Debug 运行分别位于 `artifacts/pgvn/linux-monitor/linux-monitor-0f158271268e/` 和 `artifacts/pgvn/linux-monitor/linux-monitor-1addffb8a852/`；报告保留实际 dirty build identity，不重标为后续 clean 提交。
 
 ### 17.3 平台与指标限制
 
 - CPU 时间来自 `CLOCK_PROCESS_CPUTIME_ID`，转换为 100 纳秒单位；CPU 百分比按 `_SC_NPROCESSORS_ONLN` 在线主机 CPU 数归一化，不按 cgroup quota 归一化。
-- RSS 由 `/proc/self/statm` 驻留页数乘 `_SC_PAGESIZE` 近似估算；Linux 无法提供私有已提交字节，JSON/series 值为 `null`，Prometheus 省略 `pgvn_process_private_bytes`，不以 RSS 或虚拟内存代替。
+- RSS 由 `/proc/self/statm` 驻留页数乘 `_SC_PAGESIZE` 近似估算；私有已提交字节在此 Linux 实现中不可用，JSON/series 值为 `null`，Prometheus 省略 `pgvn_process_private_bytes`，不以 RSS 或虚拟内存代替。
 - 连接异步轮询从 `PQconnectStartParams` 开始后采用单调时钟 3 秒期限，但初始 DNS 解析仍可能阻塞。单调时钟失败时会 fail closed。
 - 本阶段没有回归验证 Windows 路径，也没有测试启用遥测的 `pgvnserve`、HTTP listener/endpoint、网页、Apache、部署或生产运行。
 

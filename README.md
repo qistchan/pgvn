@@ -72,6 +72,8 @@ The table describes the Windows preview's product capabilities. Linux availabili
 
 Linux `maintenance freeze` is explicitly rejected before database access or child execution. CLI stdin cancellation is supported, but an already-running synchronous SQL call is **not actively cancelled by a signal**; the lock-wait test exits at PostgreSQL's configured statement timeout. Creating monitor tokens does not enable a Linux monitoring endpoint.
 
+Linux monitoring CPU is normalized by online host CPUs, RSS is approximate, and private committed bytes are unavailable through this Linux implementation (not substituted with RSS or virtual size). Windows monitoring paths were not regression-tested; this component checkpoint does not enable telemetry in `pgvnserve` and keeps `complete_product: false`.
+
 ### Build and run Linux components
 
 Use Linux x86_64, Python 3, and the verified SDK in the Ubuntu 24.04 builder environment. Follow the [pinned SDK and builder preparation](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) first; substitute your actual SDK path below (the preparation example uses `linux-sdk-repro`). Builds verify local inputs and do not implicitly download dependencies.
@@ -107,9 +109,9 @@ This runs in the foreground, not as an installed systemd service. Keep passwords
 
 ### Linux validation status
 
-Recorded Release and ASan/UBSan runs each passed **24 native-service checks**, **38 administration checks**, **26 POSIX Hook component checks**, and **23 monitoring backend checks** in separate frozen builds; these are distinct component checkpoints, not a combined or full-product acceptance run. See the [service evidence](docs/pgvn/evidence/linux-native-serve.json), [admin evidence](docs/pgvn/evidence/linux-native-admin.json), [Hook evidence](docs/pgvn/evidence/linux-hook-runtime-components.json), and [monitor backend evidence](docs/pgvn/evidence/linux-monitor-backend.json).
+Recorded Release and ASan/UBSan runs each passed **24 native-service checks**, **38 administration checks**, **26 POSIX Hook component checks**, and **39 monitoring backend checks** in separate frozen builds; these are distinct component checkpoints, not a combined or full-product acceptance run. See the [service evidence](docs/pgvn/evidence/linux-native-serve.json), [admin evidence](docs/pgvn/evidence/linux-native-admin.json), [Hook evidence](docs/pgvn/evidence/linux-hook-runtime-components.json), and [monitor backend evidence](docs/pgvn/evidence/linux-monitor-backend.json).
 
-The service/admin/monitor suites use fixed PostgreSQL **18.6** in disposable containers with no published database ports. The builder/test environment was Ubuntu **24.04.5**, on an Ubuntu **22.04.5** outer host—not a clean Ubuntu 24.04 host deployment acceptance. With the verified SDK and local `pgvn-linux-builder:24.04` / `postgres:18.6` images prepared (if using the preparation guide's `pgvn-linux-builder:ubuntu24` tag, add `--builder-image pgvn-linux-builder:ubuntu24`):
+The service/admin/monitor suites use PostgreSQL **18.6** in disposable containers with no published database ports. The corrected monitor runs observed builder image `pgvn-linux-builder:24.04` and PostgreSQL image `postgres:18.6` via `docker image inspect`; the runner does not gate on fixed image digests. The builder/test environment was Ubuntu **24.04.5**, on an Ubuntu **22.04.5** outer host—not a clean Ubuntu 24.04 host deployment acceptance. Runner SDK paths may be absolute or repository-relative, but must resolve inside the repository mounted at `/repo`. `run_linux_monitor.py` accepts `--builder-image <tag>` to select another local builder image.
 
 ```sh
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release

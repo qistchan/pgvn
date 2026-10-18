@@ -74,6 +74,8 @@ PgVN 面向希望保留标准 SVN 客户端工作流，同时通过统一 Postgr
 
 Linux `maintenance freeze` 会在连接数据库或启动子进程前明确拒绝执行。CLI 支持 stdin 信号取消，但**信号不会主动取消已经执行中的同步 SQL**；锁等待测试通过 PostgreSQL 配置的语句超时退出。能创建监控令牌不代表 Linux 已有监控端点。
 
+Linux 监控 CPU 按在线主机 CPU 归一化，RSS 为近似值，私有已提交字节在此 Linux 实现中不可用（不会以 RSS 或虚拟内存替代）。本阶段未回归验证 Windows 监控路径，也未在 `pgvnserve` 中启用遥测；`complete_product` 仍为 `false`。
+
 ### 构建与运行 Linux 组件
 
 需要 Linux x86_64、Python 3，以及 Ubuntu 24.04 构建环境中的已校验 SDK。先按[固定 SDK 与构建环境准备说明](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)操作，再将下列 SDK 路径替换为实际路径（准备示例使用 `linux-sdk-repro`）。构建会校验本地输入，不会隐式下载依赖。
@@ -109,9 +111,9 @@ build/pgvn/linux/release-admin/bin/pgvnserve \
 
 ### Linux 验证状态
 
-已记录的 Release 与 ASan/UBSan 各通过 **24 项原生服务检查**、**38 项管理 CLI 检查**、**26 项 POSIX Hook 组件检查**及 **23 项监控后端检查**，分别对应不同冻结构建，不是一次合并或完整产品验收。详见[服务证据](docs/pgvn/evidence/linux-native-serve.json)、[管理 CLI 证据](docs/pgvn/evidence/linux-native-admin.json)、[Hook 证据](docs/pgvn/evidence/linux-hook-runtime-components.json)及[监控后端证据](docs/pgvn/evidence/linux-monitor-backend.json)。
+已记录的 Release 与 ASan/UBSan 各通过 **24 项原生服务检查**、**38 项管理 CLI 检查**、**26 项 POSIX Hook 组件检查**及 **39 项监控后端检查**，分别对应不同冻结构建，不是一次合并或完整产品验收。详见[服务证据](docs/pgvn/evidence/linux-native-serve.json)、[管理 CLI 证据](docs/pgvn/evidence/linux-native-admin.json)、[Hook 证据](docs/pgvn/evidence/linux-hook-runtime-components.json)及[监控后端证据](docs/pgvn/evidence/linux-monitor-backend.json)。
 
-服务/管理/监控套件使用固定 PostgreSQL **18.6** 的一次性容器，不公开数据库端口。构建/测试环境为 Ubuntu **24.04.5**，外层主机为 Ubuntu **22.04.5**，不计作全新 Ubuntu 24.04 主机部署验收。准备好已校验 SDK 和本地 `pgvn-linux-builder:24.04` / `postgres:18.6` 镜像后（若沿用准备指南中的 `pgvn-linux-builder:ubuntu24` 标签，附加 `--builder-image pgvn-linux-builder:ubuntu24`）：
+服务/管理/监控套件使用 PostgreSQL **18.6** 一次性容器，不公开数据库端口。修正后的监控运行通过 `docker image inspect` 记录实际 `pgvn-linux-builder:24.04` 与 `postgres:18.6` 镜像，不以固定镜像摘要作为门槛。构建/测试环境为 Ubuntu **24.04.5**，外层主机为 Ubuntu **22.04.5**，不计作全新 Ubuntu 24.04 主机部署验收。runner 的 SDK 路径可为绝对路径或仓库相对路径，但解析后必须位于挂载到 `/repo` 的仓库内。`run_linux_monitor.py` 支持 `--builder-image <tag>` 选择其他本地 builder 镜像：
 
 ```sh
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release
