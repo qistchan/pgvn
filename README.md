@@ -4,17 +4,18 @@
 
 **Subversion protocols · PostgreSQL storage · No per-repository directories**
 
-A PostgreSQL-backed Subversion server for Windows, offering native SVN/DAV access, centralized repository administration, and an embedded monitoring console.
+A PostgreSQL-backed Subversion server with a Windows preview and native Linux development builds. Windows offers SVN/DAV access and an embedded monitoring console; Linux currently provides a foreground SVN service and administration CLI.
 
 [![Status: first usable preview](https://img.shields.io/badge/status-first_usable_preview-blue?style=flat-square)](#project-status)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
 [![Platform: Windows x64](https://img.shields.io/badge/platform-Windows_x64-0078D4?style=flat-square)](#quick-start)
+[![Linux x86_64: development](https://img.shields.io/badge/Linux_x86__64-development-orange?style=flat-square)](#linux-support)
 [![Subversion: 1.14.5](https://img.shields.io/badge/Subversion-1.14.5-809CC9?style=flat-square)](#prerequisites)
 [![PostgreSQL: 18.6](https://img.shields.io/badge/PostgreSQL-18.6-4169E1?style=flat-square)](#prerequisites)
 
 **English** · [简体中文](README.zh-CN.md)
 
-[Overview](#product-overview) · [Quick start](#quick-start) · [GUI Manager](#windows-configuration-gui) · [Polarion migration](#polarion-gui-migration) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
+[Overview](#product-overview) · [Quick start](#quick-start) · [Linux](#linux-support) · [GUI Manager](#windows-configuration-gui) · [Polarion migration](#polarion-gui-migration) · [Web console](#web-console) · [Architecture](#architecture) · [Usage](#use-pgvn) · [Documentation](#documentation)
 
 </div>
 
@@ -31,6 +32,7 @@ A PostgreSQL-backed Subversion server for Windows, offering native SVN/DAV acces
 | --- | --- |
 | Understand the product and implementation | [Product overview](#product-overview), [features](#features), and [architecture](#architecture) |
 | Try a deployment on a fresh Windows host | [Quick start](#quick-start) (from database preparation to running services) or [Windows configuration GUI](#windows-configuration-gui) |
+| Build or evaluate native Linux components | [Linux support](#linux-support): current scope, build/run commands, and isolated validation |
 | Replace single-host Polarion SVN with the GUI | [Windows migration rehearsal, validation, and rollback](#polarion-gui-migration) |
 | Connect clients or migrate existing history | [Usage](#use-pgvn) and [administration and migration](#administration-and-migration) |
 | Develop PgVN or assess validation coverage | [Build from source](#build-from-source) and [project status](#project-status) |
@@ -45,6 +47,8 @@ The earlier PgFS filesystem-plugin PoC serves as the underlying storage engine, 
 
 ## Features
 
+The table describes the Windows preview's product capabilities. Linux availability is listed separately in [Linux support](#linux-support); DAV, monitoring, and deployment tooling are not yet ported.
+
 | Capability | What PgVN provides |
 | --- | --- |
 | Standard client access | `svn://` via `pgvnserve`; HTTP/HTTPS via `mod_dav_pgvn` and `mod_authz_pgvn`. |
@@ -53,6 +57,58 @@ The earlier PgFS filesystem-plugin PoC serves as the underlying storage engine, 
 | Unified durable state | Repository history, locks, configuration, and persistent DAV transaction state all reside in PostgreSQL. |
 | Operations console | Embedded read-only web console for service health, repositories, database activity, nodes, Apache workers, and request errors. |
 | Windows deployment & GUI | Self-contained x64 runtime, PowerShell deployment scripts, `LocalService` Windows services, integrity checks, backup/restore automation, and the native **PgVN Manager** desktop GUI. |
+
+## Linux support
+
+**Linux x86_64 is a development target, not a complete distribution or production deployment package.** The native binaries now run real repository operations against PostgreSQL, rather than only component probes. Windows packages, PowerShell deployment scripts, and PgVN Manager are not Linux installation tools.
+
+| Component | Current Linux scope |
+| --- | --- |
+| `pgvnserve` | Foreground `svn://` service with authenticated client access, connection limits, and SIGINT/SIGTERM drain. Requires `--monitor-disabled`; telemetry-enabled serving is not validated. |
+| `pgvnadmin` | Schema initialization/migration/checks, role grants, repositories, policy publication, credentials, monitor tokens, dump/load/verify/look, and maintenance hotcopy/verify/purge. |
+| PgFS, credentials, and external Hooks | Native storage and OpenSSL credential components; versioned Hook configuration and POSIX Hook execution with timeout/cancellation and contained descendant cleanup. Full native-service + external-Hook integration remains unvalidated. |
+| Not yet delivered | Monitor HTTP/API, Apache/DAV modules, Linux packages/systemd/service-account deployment, backup/restore automation, and the full SVN CLI/SVNKit/HTTP/HTTPS protocol matrix. |
+
+Linux `maintenance freeze` is explicitly rejected before database access or child execution. CLI stdin cancellation is supported, but an already-running synchronous SQL call is **not actively cancelled by a signal**; the lock-wait test exits at PostgreSQL's configured statement timeout. Creating monitor tokens does not enable a Linux monitoring endpoint.
+
+### Build and run Linux components
+
+Use Linux x86_64, Python 3, and the verified SDK in the Ubuntu 24.04 builder environment. Follow the [pinned SDK and builder preparation](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) first; substitute your actual SDK path below (the preparation example uses `linux-sdk-repro`). Builds verify local inputs and do not implicitly download dependencies.
+
+```sh
+# Run inside the prepared builder environment; admin also builds pgvnserve.
+python3 scripts/pgvn/build.py --target linux --components admin \
+  --configuration Release --linux-sdk build/pgvn/linux-sdk
+build/pgvn/linux/release-admin/bin/pgvnadmin --version
+build/pgvn/linux/release-admin/bin/pgvnserve --version
+```
+
+Keep the output's `bin/` and matching `lib/` together. `--components serve` builds the service-only development component. For ASan/UBSan, use `--configuration Debug --sanitize`; admin output is then `build/pgvn/linux/debug-admin-sanitized/`.
+
+Before starting a listener, create a separate database and login roles, then use the [Linux administration guide](docs/pgvn/linux-native-admin.md) to initialize schemas, grant permissions, create a protected key, and provision repository policy and credentials. The CLI does not create PostgreSQL databases or login roles; new repositories deny access by default. Configure the service role, key, identity domain, and listener using the [native service guide](docs/pgvn/linux-native-serve.md), then run:
+
+```sh
+# After provisioning; replace the configuration path with your own UTF-8 file.
+build/pgvn/linux/release-admin/bin/pgvnserve \
+  --config /absolute/path/pgvnserve.ini --monitor-disabled
+```
+
+This runs in the foreground, not as an installed systemd service. Keep passwords and keys out of source control and shell history.
+
+### Linux validation status
+
+Recorded Release and ASan/UBSan runs each passed **24 native-service checks**, **38 administration checks**, and **26 POSIX Hook component checks** in their respective frozen builds; these are separate checkpoints, not a single full-product acceptance run. See the [service evidence](docs/pgvn/evidence/linux-native-serve.json), [admin evidence](docs/pgvn/evidence/linux-native-admin.json), and [Hook evidence](docs/pgvn/evidence/linux-hook-runtime-components.json).
+
+The service/admin suites use fixed PostgreSQL **18.6** in disposable containers with no published database ports. The builder/test environment was Ubuntu **24.04.5**, on an Ubuntu **22.04.5** outer host—not a clean Ubuntu 24.04 host deployment acceptance. With the verified SDK and local `pgvn-linux-builder:24.04` / `postgres:18.6` images prepared (if using the preparation guide's `pgvn-linux-builder:ubuntu24` tag, add `--builder-image pgvn-linux-builder:ubuntu24`):
+
+```sh
+python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release
+python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
+python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Release
+python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
+```
+
+Never use a deployment database for tests. Admin stdin rendezvous checks use test-only `SYS_PTRACE`; Hook containment tests need a separate cgroup setup, not a production privilege template. Reports retain `complete_product: false`; remaining work is tracked in the [Linux development plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md).
 
 ## Web console
 
@@ -261,7 +317,7 @@ To **roll back**: first stop Polarion and all write sources, then stop the `PgVN
 
 ## Quick start
 
-Run steps 1–5 in a single elevated PowerShell session. Deploy the PostgreSQL server separately; the PgVN runtime package includes PostgreSQL and SVN client binaries.
+This quick start is for **Windows**; Linux developers should use [Linux support](#linux-support). Run steps 1–5 in a single elevated PowerShell session. Deploy the PostgreSQL server separately; the PgVN runtime package includes PostgreSQL and SVN client binaries.
 
 | Step | Action | Expected result |
 | --- | --- | --- |
@@ -532,7 +588,7 @@ The first usable preview has been confirmed running with a local Polarion instan
 
 ## Build from source
 
-Building from source requires Python 3, LLVM-MinGW, and the pinned upstream source trees and SDKs. Copy `config/build.example.json` to `config/build.local.json` (which is Git-ignored) and configure your local paths. External SDKs and any local Polarion installation are treated strictly as read-only inputs.
+Building **Windows** from source requires Python 3, LLVM-MinGW, and the pinned upstream source trees and SDKs. For Linux, use the [native build instructions](#linux-support). Copy `config/build.example.json` to `config/build.local.json` (which is Git-ignored) and configure your local paths. External SDKs and any local Polarion installation are treated strictly as read-only inputs.
 
 ```powershell
 Copy-Item -LiteralPath config/build.example.json -Destination config/build.local.json
@@ -546,7 +602,7 @@ python scripts/pgvn/package.py --development
 
 Product and dependency versions, schemas, and capabilities now share `src/pgvn/version.json`. New runtime metadata, package manifests, and generated GUI version attributes use this source; freezing a build checks the actual APR/APR-util/libpq versions. The rebuilt GUI requires a matching runtime package and checks its version, API, schemas, and capabilities. Previously documented bundles retain their original build identity.
 
-The first Linux development prerequisite can run without SDKs:
+Linux build-metadata checks can also run without SDKs:
 
 ```sh
 python scripts/pgvn/build.py --metadata-only --target linux --configuration Release
@@ -555,13 +611,7 @@ python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
 
 `--metadata-only` prepares the version header and source/migration inventories under `build/pgvn/metadata/linux/`; it does not build Linux server or module binaries. See the [execution checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata) for package pairing, remaining Windows validation, and the implementation sequence.
 
-Linux development now includes native components: catalog schema 7 adds native-SVN-only bypass settings, and the shared context and protocol I/O use POSIX counter, cancellation, and monotonic-clock interfaces. Components were checked on Ubuntu 24.04 with an isolated PostgreSQL 18.6 server. Windows acceptance is deferred as requested; complete Linux hosts and client protocol matrices remain pending. A pinned Linux FS SDK and ELF development build are now available for isolated validation and content-transfer experiments (see the next checkpoint). Historical runtime packages do not support the new setting. See the [execution record and reproduction entry point](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-bypass-components).
-
-The [Linux FS build and performance checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance) documents the pinned SDK, ELF checks, reproduction commands, and limits of the binary-content experiment. These FS artifacts are not a complete Linux server or installation package.
-
-Linux credential components now use OpenSSL EVP and descriptor-based key-file checks. Release and ASan/UBSan probes passed vector, permission, real SQL and rotation checks. The [credential checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials) documents the owner-only key policy, artifacts and remaining cross-OS validation; the Linux admin/server hosts remain pending.
-
-Catalog schema 8 adds versioned logical Hook declarations and node-local filename mappings. The [Hook configuration checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) records compatibility, missing-implementation rejection, and native component checks; POSIX process execution remains pending.
+Linux now includes native `pgvnserve`, `pgvnadmin`, and POSIX external Hook execution; see [Linux support](#linux-support) for build/run commands and limits. Earlier [FS/SDK](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance), [credential](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials), and [Hook configuration](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) checkpoints remain component-specific evidence. Current catalog schema 8 includes versioned logical Hook declarations and node-local mappings; historical packages retain their original schema and capabilities.
 
 Run test gates via `scripts/pgvn` and `tests/pgvn`. Full M5 validation requires real-browser evidence, a configured JDK + SVNKit environment, and the dedicated test PostgreSQL cluster; see [Browser and test prerequisites](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径) and the [M5 development notes](docs/pgvn/M5-development.zh-CN.md). Because test gates provision isolated databases, register temporary services, and occasionally restart the **test** PostgreSQL cluster, never point test scripts at a deployment database. Legacy PgFS scripts and test outputs are retained as historical references only and do not represent current PgVN acceptance.
 
@@ -585,6 +635,8 @@ docs/pgvn/            Architecture specs, operational guides, and validation evi
 ## Project status
 
 **First usable preview — Windows (2026-10-17).** The project owner confirmed successful local Polarion operation with PgVN; see the [operation record](docs/pgvn/progress.zh-CN.md#first-usable-preview) for scope details. All previously recorded compatibility results and remaining milestone requirements remain in effect.
+
+**Linux development checkpoints:** native service, administration CLI, and POSIX Hook execution have separate recorded checks; [Linux support](#linux-support) lists their scope. They do not extend the Windows milestone acceptance below to Linux or complete M6/M7.
 
 | Milestone | Scope | Status |
 | --- | --- | --- |
@@ -619,10 +671,12 @@ Recent validation records are summarized below. Each record applies strictly to 
 
 ## Documentation
 
-Both the English and Chinese READMEs cover the product overview, Polarion GUI migration, and quick-start workflows. Detailed engineering and operational guides are currently maintained in Chinese:
+Both the English and Chinese READMEs cover the product overview, Linux development, Polarion GUI migration, and quick-start workflows. Most detailed engineering and operational guides are in Chinese; the Linux service and CLI guides are in English:
 
 | Guide | Contents |
 | --- | --- |
+| [Linux native service](docs/pgvn/linux-native-serve.md) | Foreground SVN listener, configuration, signal drain, and isolated validation |
+| [Linux administration CLI](docs/pgvn/linux-native-admin.md) | Native build, database/credential setup, history commands, and cancellation limits |
 | [Windows deployment guide](deploy/windows/README.zh-CN.md) | Installation, database roles, Windows services, TLS, backup, restore, and upgrades |
 | [PgVN Manager GUI guide](tools/pgvn-manager/README.zh-CN.md) | Desktop GUI workflow, service management, maintenance actions, and restore boundaries |
 | [GUI validation & delivery record](docs/pgvn/manager-validation.zh-CN.md) | Combined runtime + GUI bundle details, checksums, and local integration evidence |
