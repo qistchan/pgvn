@@ -91,7 +91,7 @@ def main():
     parser.add_argument("--target", choices=("windows", "linux"), default="windows" if os.name == "nt" else "linux")
     parser.add_argument("--metadata-only", action="store_true", help="prepare shared version/source inputs without SDKs or product compilation")
     parser.add_argument("--configuration", choices=("Debug", "Release"), default="Debug")
-    parser.add_argument("--components", choices=("all", "fs", "credentials", "hook-config"), default="all")
+    parser.add_argument("--components", choices=("all", "fs", "credentials", "hook-config", "hooks"), default="all")
     parser.add_argument("--linux-sdk", type=Path, help="verified SDK from prepare_linux_sdk.py")
     parser.add_argument("--fs-content-transfer", choices=("binary", "hex"), default="binary",
                         help="FS experiment control: binary bytea or legacy hex baseline")
@@ -102,14 +102,14 @@ def main():
         metadata = write_metadata(ROOT, output, args.target, args.configuration)
         print(json.dumps({"output": str(output), "build_identity": metadata["build_identity"], "products_built": False}))
         return
-    if args.target == "linux" and args.components in ("fs", "credentials", "hook-config"):
+    if args.target == "linux" and args.components in ("fs", "credentials", "hook-config", "hooks"):
         if args.linux_sdk is None:
             parser.error("--linux-sdk is required for native component builds")
         from build_linux import build_component
         print(json.dumps(build_component(args.linux_sdk, args.configuration, args.components, args.fs_content_transfer, args.sanitize)))
         return
     if args.components != "all":
-        parser.error("--components fs/credentials/hook-config currently applies to Linux only")
+        parser.error("--components fs/credentials/hook-config/hooks currently applies to Linux only")
     if args.target != "windows" or os.name != "nt":
         parser.error("Complete native Linux hosts are not implemented yet (PX-L01–PX-L06); use --components fs --linux-sdk PATH or --metadata-only")
     if args.config is None:

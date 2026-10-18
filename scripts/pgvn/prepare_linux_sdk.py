@@ -25,7 +25,8 @@ def digest(path):
 def inventory(prefix):
     return {p.relative_to(prefix).as_posix(): digest(p)
             for directory in ("bin", "lib", "include", "sources/subversion/subversion/include",
-                              "sources/subversion/subversion/libsvn_fs")
+                              "sources/subversion/subversion/libsvn_fs",
+                              "sources/subversion/subversion/libsvn_subr")
             for p in sorted((prefix / directory).rglob("*")) if p.is_file()}
 
 

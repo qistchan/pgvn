@@ -1,0 +1,216 @@
+{
+  "format": 1,
+  "checkpoint": "PX-L05 POSIX external hook runtime component",
+  "date": "2026-10-18",
+  "status": "PASS",
+  "complete_product": false,
+  "milestone_complete": false,
+  "host_os": "Ubuntu 22.04.5 LTS",
+  "builder_image": "pgvn-linux-builder:24.04",
+  "builder_image_id": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+  "reproducibility": {
+    "path": "artifacts/pgvn/linux-hook-runtime/fix3/reproducibility.md",
+    "sha256": "f88bbb3d66399a9da847b217ba6d6dffad62f65c3fd65dba8900d2df0526273d"
+  },
+  "runs": {
+    "final-release": {
+      "report": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/final-release/report.json",
+        "sha256": "62c6b04bae38bbb618c9033b85fcdf5626dd38078f79c588f1ba9a39d90c6453"
+      },
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Release",
+        "git_commit": "f384f8c54252ac9403771fba30356bc6159d7644",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "f3b7d9fe225c6e7d3710127241e96cc85caff0048d349edf28c3604d9aaab014",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "environment": {
+        "os": "Linux-6.8.0-1061-aws-x86_64-with-glibc2.39",
+        "os_release": {
+          "NAME": "Ubuntu",
+          "ID": "ubuntu",
+          "PRETTY_NAME": "Ubuntu 24.04.5 LTS",
+          "VERSION_ID": "24.04",
+          "VERSION": "24.04.5 LTS (Noble Numbat)",
+          "VERSION_CODENAME": "noble",
+          "ID_LIKE": "debian",
+          "HOME_URL": "https://www.ubuntu.com/",
+          "SUPPORT_URL": "https://help.ubuntu.com/",
+          "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+          "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+          "UBUNTU_CODENAME": "noble",
+          "LOGO": "ubuntu-logo"
+        },
+        "kernel": "6.8.0-1061-aws",
+        "python": "3.12.3",
+        "architecture": "x86_64",
+        "uid": 1000
+      },
+      "sanitizers": [],
+      "passed": 26,
+      "total": 26,
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "build_manifest": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/final-release/build-input-snapshot/build-manifest.json",
+        "sha256": "57339ca6221d0e50a91c1ab83fe6483bc69d7c8dd913218212e1f75ab561a296"
+      },
+      "snapshot": "artifacts/pgvn/linux-hook-runtime/fix3/final-release/build-input-snapshot",
+      "source_files": 190,
+      "runtime_files": 53,
+      "migration_files": 12,
+      "all_case_cgroups_empty": true
+    },
+    "final-debug": {
+      "report": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/final-debug/report.json",
+        "sha256": "4b3e6f5e3d944f4959ab8df982deb1291747998553eed7e3d275e521043cb7ab"
+      },
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Debug",
+        "git_commit": "f384f8c54252ac9403771fba30356bc6159d7644",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "f3b7d9fe225c6e7d3710127241e96cc85caff0048d349edf28c3604d9aaab014",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "environment": {
+        "os": "Linux-6.8.0-1061-aws-x86_64-with-glibc2.39",
+        "os_release": {
+          "NAME": "Ubuntu",
+          "ID": "ubuntu",
+          "PRETTY_NAME": "Ubuntu 24.04.5 LTS",
+          "VERSION_ID": "24.04",
+          "VERSION": "24.04.5 LTS (Noble Numbat)",
+          "VERSION_CODENAME": "noble",
+          "ID_LIKE": "debian",
+          "HOME_URL": "https://www.ubuntu.com/",
+          "SUPPORT_URL": "https://help.ubuntu.com/",
+          "BUG_REPORT_URL": "https://bugs.launchpad.net/ubuntu/",
+          "PRIVACY_POLICY_URL": "https://www.ubuntu.com/legal/terms-and-policies/privacy-policy",
+          "UBUNTU_CODENAME": "noble",
+          "LOGO": "ubuntu-logo"
+        },
+        "kernel": "6.8.0-1061-aws",
+        "python": "3.12.3",
+        "architecture": "x86_64",
+        "uid": 1000
+      },
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "passed": 26,
+      "total": 26,
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "build_manifest": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/final-debug/build-input-snapshot/build-manifest.json",
+        "sha256": "c10968f8471780dd66c186089444e21d8a4a5425160ecdc01885aa24aaf9ab48"
+      },
+      "snapshot": "artifacts/pgvn/linux-hook-runtime/fix3/final-debug/build-input-snapshot",
+      "source_files": 190,
+      "runtime_files": 53,
+      "migration_files": 12,
+      "all_case_cgroups_empty": true
+    }
+  },
+  "limitations": [
+    "Component tests, not full pgvnserve/pgvnadmin/Apache deployment or protocol acceptance.",
+    "Database-dependent hook-config and bypass regressions not run: pinned image pulls received Docker Hub HTTP 429.",
+    "Windows W1/W2 not run; M6/M7, PGVN-601/602 and earlier strict-difference FAIL remain unchanged.",
+    "Tests used a privileged container with host cgroup access; probes ran as uid 1000 under a dedicated writable test slice. This is not production systemd service acceptance."
+  ],
+  "additional_checks": {
+    "metadata": {
+      "passed": 20,
+      "total": 20,
+      "log": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix2/final3/metadata-tests.log",
+        "sha256": "7e5cc26a9a713b7f799bbbfa84457a57dde03a9ea979397190d137013ca7d468"
+      }
+    },
+    "python_syntax": {
+      "path": "artifacts/pgvn/linux-hook-runtime/fix3/py_compile.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "unknown_case_rejection": {
+      "path": "artifacts/pgvn/linux-hook-runtime/fix3/unknown-case/report.json",
+      "sha256": "544bba6f7b305d1db29cb5c9bd7a4c7aeb2bbe67ae0396e0ad3fc0831ff1ede3"
+    }
+  },
+  "blocked_regressions": [
+    {
+      "command": "python3 tests/pgvn/run_linux_hook_config.py --sdk build/pgvn/linux-sdk --builder-image pgvn-linux-builder:24.04",
+      "setup_log": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/postgres-pull.log",
+        "sha256": "f0f9b0b15be7a635182fe2ef02d405a85cc3e7b0b47b0ed42b06e93337ed6819"
+      }
+    },
+    {
+      "command": "python3 tests/pgvn/run_bypass_components.py",
+      "setup_log": {
+        "path": "artifacts/pgvn/linux-hook-runtime/fix3/bypass-builder-build.log",
+        "sha256": "f34dfa1419f8323efc91ab2e7a00d7667a81ba72c7f3003f147ae944aefa0ca5"
+      }
+    }
+  ]
+}
