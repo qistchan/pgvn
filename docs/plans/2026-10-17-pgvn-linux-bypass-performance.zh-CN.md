@@ -580,3 +580,34 @@ python3 tests/pgvn/run_linux_hooks.py --sdk build/pgvn/linux-sdk \
 sanitizer 改用 `debug-hooks-sanitized/bin/hook_runner_probe` 和独立输出目录。完整 Docker/临时 slice 设置、镜像 ID 和失败日志保留在证据索引中的 `reproducibility.md`；测试特权容器设置不可直接当生产部署模板。
 
 先补跑受阻的配置/bypass 数据库回归；后续仍为 listener/信号排空、监控 HTTP、原生 pgvnserve/pgvnadmin、Apache、部署/systemd、备份恢复和实际 SVN CLI/SVNKit/DAV 协议矩阵。**Linux 整体开发与验收尚未完成**；Windows W1/W2、M6/M7、PGVN-601/602 及原严格差分 FAIL 保持原状态。
+
+<a id="linux-native-serve"></a>
+## 15. Linux 原生 SVN 服务检查点（2026-10-18）
+
+已接入生产 core、PgFS、固定 Subversion 1.14.5 的 repository/protocol 补丁，产出真实前台 ELF `pgvnserve`，不是协议适配探针。构建入口为 `--target linux --components serve`；运行必须显式指定 `--config FILE --monitor-disabled`。Linux monitor HTTP、管理 CLI、Apache/DAV 和完整包仍未实现，不能将本节当作 PX-L01–PX-L10 或完整产品验收。配置与复现入口见 [Linux 原生服务说明](../pgvn/linux-native-serve.md)。
+
+### 15.1 生命周期与公共代码
+
+POSIX listener 使用非阻塞 APR socket、可回收 pthread worker、最多 64 个连接槽及单调时钟排空。主线程阻塞并同步接收 SIGINT/SIGTERM；停止接收新连接后，给在途命令十秒宽限，再取消 socket I/O，等待线程正常清理，不强杀线程。十秒是 I/O 宽限，不能解释成所有数据库/Hook 清理均在十秒内硬终止。
+
+真实在途提交暴露了旧 control connection 的停止检查会拒绝已接纳命令的后续 SQL：新增按 context/thread 的命令准入状态，停止后拒绝新命令，但已接纳命令可以完成控制查询，结束时清除状态。该公共路径也影响 Windows，Windows W1/W2 仍未验证。遥测锁与计数器使用平台封装；当前前台入口关闭遥测，启用遥测时的服务行为尚未验收。另修复 Hook 公共抽取后 `policy.c` 残留的事件名称引用。
+
+数据库不可用时按 1/2/4/8/15 秒退避重试，可被停止信号打断；坏配置、缺 key、schema 不匹配和 bind 冲突返回相应失败类别。日志不输出 DSN 或凭据。构建记录实际 ELF 依赖、私有上游源码/补丁摘要和生成配置；新增私有源码须匹配固定归档，不接受额外未校验的 C/header 文件。
+
+### 15.2 实测结果
+
+固定 PostgreSQL **18.6** 镜像已恢复可用。最终 Release 与 Debug + ASan/UBSan **各 24/24 项服务检查通过**，另有元数据 **20/20** 与 Python 语法检查通过。测试在 Ubuntu **24.04.5 容器**、GCC 13.3.0 内运行；外层主机为 Ubuntu **22.04.5**，并非 Ubuntu 24.04 主机部署验收。PostgreSQL 为无公开端口的隔离临时容器，全部迁移以非超级用户角色执行。
+
+覆盖真实 SVN CLI 认证、错误口令拒绝、info/checkout/commit/update/cat 字节一致性；配置/容量/key/schema/bind 失败；槽位复用、三轮各 16 个并发握手断连；SIGINT/SIGTERM、停止后的端口复用；数据库重试中停止、数据库恢复后的就绪。停止测试严格检查进程退出码与 sanitizer 日志。
+
+在途提交测试先确认 PostgreSQL 实际持有排他关系锁，并确认 PgVN SQL 正在该锁上等待，再发送 SIGTERM；不是依赖 sleep 猜测命令已进入。Release 提交及服务退出约 **4.90 秒**，sanitizer 提交约 **4.87 秒**、退出约 **4.89 秒**；停止后重新启动仍能读取提交内容。停滞 socket 的排空退出分别约 **10.15/10.14 秒**。这些是功能测试观测值，不是性能基准。
+
+数据库 Hook 配置回归本轮重新通过 **69 项编排检查**，Release/sanitizer **各 114 项 C 断言**；其中进程分派仍是明确失败的适配器，不代表重新验证外部 Hook 生命周期。最终服务证据冻结 194 个源输入、生成元数据、SDK 清单、私有上游输入及运行产物，保留实际构建时 `c9fdc35` + dirty 身份，不改称后续提交的 clean 构建。完整索引见 [原生服务证据](../pgvn/evidence/linux-native-serve.json)。
+
+Supabase 仅查询了管理 API 元数据：可用项目为 PostgreSQL 17.11，未执行 SQL、重置密码或修改项目，也未替代本轮固定 18.6 验证。
+
+此前受阻的 bypass 回归也已恢复并通过 **37 项编排检查**。使用仓库原 Dockerfile 和系统 CA bundle 构建 `pgvn-bypass-builder:ubuntu24`，再将已校验的固定 Subversion 归档解压到 runner 所需的忽略目录；未修改 SDK，也未用固定 SDK 的标签冒充该发行版依赖组件测试。
+
+### 15.3 剩余验收
+
+下一步仍需 Linux 监控 HTTP/启用遥测验证、原生 pgvnadmin、Apache/DAV、生产服务账号与 systemd/cgroup 委派、部署和备份恢复，以及更完整的 SVN CLI/SVNKit/HTTP/HTTPS/Hook/锁/配置切换协议矩阵。本节没有验证真实外部 Hook 与原生服务组合运行，也没有完成 Windows W1/W2、M6/M7、PGVN-601/602 或修复原严格差分 FAIL。

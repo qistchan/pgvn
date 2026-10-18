@@ -17,7 +17,7 @@ static svn_error_t *wait_socket(apr_socket_t *socket,apr_pool_t *pool,apr_int16_
     for(;;) {
         if(pgvn_cancel_is_set(io_cancel))
             return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN SVN connection cancelled after the drain deadline");
-        uint64_t now;
+        uint64_t now=0;
         int clock_status=pgvn_monotonic_milliseconds(&now);
         if(clock_status) return svn_error_wrap_apr(clock_status,"PgVN monotonic clock failed");
         if(now>=deadline) return svn_error_wrap_apr(APR_TIMEUP,"PgVN SVN connection exceeded its idle timeout");
@@ -38,7 +38,7 @@ static svn_error_t *socket_io(apr_socket_t *socket,apr_pool_t *pool,char *buffer
     if(!status && interval!=0) status=apr_socket_timeout_set(socket,0);
     if(status) { *length=0; return svn_error_wrap_apr(status,"PgVN SVN nonblocking socket configuration failed"); }
     apr_size_t requested=*length;
-    uint64_t started;
+    uint64_t started=0;
     int clock_status=pgvn_monotonic_milliseconds(&started);
     if(clock_status) { *length=0; return svn_error_wrap_apr(clock_status,"PgVN monotonic clock failed"); }
     uint64_t deadline=started+30000;
@@ -157,4 +157,14 @@ svn_error_t *pgvn_svn_command(repository_t *repository,const char *user,apr_pool
     if(user) return pgvn_credential_check(repository->pgvn_context,repository->pgvn_domain,
         user,repository->pgvn->credential_generation,pool);
     return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_svn_command_begin(repository_t *repository)
+{
+    return pgvn_control_request_begin(repository->pgvn_context);
+}
+
+svn_error_t *pgvn_svn_command_end(repository_t *repository)
+{
+    return pgvn_control_request_end(repository->pgvn_context);
 }

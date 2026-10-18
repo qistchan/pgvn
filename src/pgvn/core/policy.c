@@ -140,7 +140,7 @@ svn_error_t *pgvn_hook_dispatch(const pgvn_policy *policy,const pgvn_hook_contex
         return svn_error_create(SVN_ERR_REPOS_DISABLED_FEATURE,NULL,"Revision property changes require an explicit PgVN pre-revprop-change hook policy");
     if(!handler || !strcmp(handler,"allow")) return SVN_NO_ERROR;
     if(!strcmp(handler,"reject"))
-        return svn_error_createf(SVN_ERR_REPOS_HOOK_FAILURE,NULL,"PgVN %s policy rejected the event",events[event->event]);
+        return svn_error_createf(SVN_ERR_REPOS_HOOK_FAILURE,NULL,"PgVN %s policy rejected the event",pgvn_hook_name(event->event));
     return svn_error_create(SVN_ERR_UNSUPPORTED_FEATURE,NULL,"PgVN hook handler has not been implemented");
 }
 
@@ -155,7 +155,7 @@ svn_error_t *pgvn_repos_hook_context(void *baton,const char *event,const char *u
 {
     pgvn_repository *repository=baton;
     int code=-1;
-    for(int i=0;i<9;++i) if(!strcmp(events[i],event)) code=i;
+    for(int i=0;i<9;++i) if(!strcmp(pgvn_hook_name((pgvn_hook_event)i),event)) code=i;
     if(code<0) return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"Unknown PgVN hook event");
     if(!repository->administrative && (code==0 || code==1 || code==3 || code==5 || code==7))
         SVN_ERR(pgvn_policy_revalidate(repository->policy,repository->context,pool));

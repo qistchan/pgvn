@@ -2,6 +2,7 @@
 #define PGVN_INTERNAL_H
 #include "../platform/platform.h"
 #include <apr_thread_mutex.h>
+#include <apr_thread_proc.h>
 #include "svn_config.h"
 #include <libpq-fe.h>
 #include "pgvn.h"
@@ -13,6 +14,7 @@ struct pgvn_context {
     int statement_timeout_ms;
     PGconn *control;
     apr_thread_mutex_t *control_mutex;
+    apr_threadkey_t *control_request_key;
     svn_boolean_t control_transaction;
     int minimum_catalog_version;
     int catalog_version;
@@ -83,6 +85,9 @@ svn_error_t *pgvn_policy_acquire_internal(pgvn_policy **policy,pgvn_context *con
 svn_error_t *pgvn_exec(PGresult **result, pgvn_context *context, PGconn *connection,
                        const char *sql, int count, const char *const *values);
 svn_error_t *pgvn_connect(PGconn **connection, pgvn_context *context);
+svn_error_t *pgvn_control_request_begin(pgvn_context *context);
+svn_error_t *pgvn_control_request_end(pgvn_context *context);
+svn_boolean_t pgvn_control_request_active(pgvn_context *context);
 void pgvn_metric_query(void *baton, const char *sqlstate, apr_interval_time_t elapsed);
 void pgvn_metric_closed(void *baton);
 svn_error_t *pgvn_control_begin(pgvn_context *context);
