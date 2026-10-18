@@ -478,7 +478,7 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
     int root=open_absolute_directory(policy->context->hook_root);
     if(root<0) return hook_failure(pool,"could not securely open hook-root");
     int executable=descriptor_above_stdio(openat(root,handler->executable,
-        O_RDONLY|O_NOFOLLOW|O_CLOEXEC));
+        O_RDONLY|O_NONBLOCK|O_NOFOLLOW|O_CLOEXEC));
     struct stat executable_info;
     int executable_error=0;
     if(executable<0) executable_error=errno;

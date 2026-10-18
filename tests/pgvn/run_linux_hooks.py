@@ -24,7 +24,7 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def freeze_build_inputs(probe, manifest, output):
+def freeze_build_inputs(probe, manifest, output, sdk):
     build_root = probe.parents[1]
     expected_probe = (build_root / "bin/hook_runner_probe").resolve(strict=True)
     if probe != expected_probe:
@@ -73,7 +73,7 @@ def freeze_build_inputs(probe, manifest, output):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination)
 
-    sdk_manifest = ROOT / "build/pgvn/linux-sdk/sdk-manifest.json"
+    sdk_manifest = sdk / "sdk-manifest.json"
     if sha256(sdk_manifest) != manifest["sdk_manifest_sha256"]:
         raise RuntimeError("SDK manifest hash differs from build manifest")
     shutil.copy2(sdk_manifest, snapshot / "sdk-manifest.json")
@@ -103,6 +103,7 @@ def process_state(pid):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--probe", type=Path, required=True)
+    parser.add_argument("--sdk", type=Path, default=ROOT / "build/pgvn/linux-sdk")
     parser.add_argument("--cgroup-root", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--case", dest="cases", action="append",
@@ -120,7 +121,7 @@ def main():
         "linux-hooks-" + time.strftime("%Y%m%d-%H%M%S", time.gmtime()))
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
-    build_snapshot = freeze_build_inputs(probe, manifest, output)
+    build_snapshot = freeze_build_inputs(probe, manifest, output, args.sdk.resolve(strict=True))
     selected_cases = set(args.cases) if args.cases else None
     records = []
     failures = []
@@ -157,6 +158,8 @@ def main():
                 pass
             elif file_kind == "directory":
                 hook.mkdir()
+            elif file_kind == "fifo":
+                os.mkfifo(hook, 0o700)
             elif file_kind == "symlink":
                 target = hook_root / "probe-target"
                 target.write_text(script_source(source), encoding="utf-8")
@@ -292,6 +295,9 @@ open(@TOUCHED@, "w").close()
     run_case("non-executable-fails-closed", "open(@TOUCHED@, 'w').close()\n",
              expected_pass=False, expected_message="missing, non-executable", executable=False,
              assert_not_run=True)
+    run_case("fifo-executable-fails-closed", "open(@TOUCHED@, 'w').close()\n",
+             expected_pass=False, expected_message="not a regular file", file_kind="fifo",
+             assert_not_run=True)
     run_case("symlink-executable-fails-closed", "open(@TOUCHED@, 'w').close()\n",
              expected_pass=False, expected_message="missing, non-executable", file_kind="symlink",
              assert_not_run=True)
@@ -328,6 +334,11 @@ open(@TOUCHED@, "w").close()
     run_case("success-kills-descendant", "import os, sys, time\npid=os.fork()\nif pid == 0:\n os.setsid()\n child=os.fork()\n if child: os._exit(0)\n open(@PIDFILE@,'w').write(str(os.getpid()))\n time.sleep(60)\n os._exit(0)\nos.waitpid(pid,0)\nwhile not os.path.exists(@PIDFILE@): time.sleep(.01)\nsys.exit(0)\n")
     run_case("concurrent-hooks-preserve-unrelated-child",
              "import os, sys, time\nsys.stdin.buffer.read()\npid=os.fork()\nif pid == 0:\n os.setsid()\n time.sleep(60)\n os._exit(0)\nos._exit(0)\n", mode="concurrent")
+
+    if selected_cases is not None:
+        missing = selected_cases - {check["name"] for check in checks}
+        if missing:
+            failures.extend("unknown case: " + name for name in sorted(missing))
 
     try:
         os_release = platform.freedesktop_os_release()
