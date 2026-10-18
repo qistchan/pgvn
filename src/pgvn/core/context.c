@@ -50,9 +50,40 @@ svn_error_t *pgvn_exec(PGresult **result,pgvn_context *context,PGconn *connectio
     return SVN_NO_ERROR;
 }
 
-svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
+svn_boolean_t pgvn_control_request_active(pgvn_context *context)
+{
+    void *active=NULL;
+    if(!context->control_request_key ||
+        apr_threadkey_private_get(&active,context->control_request_key)!=APR_SUCCESS)
+        return FALSE;
+    return active==context;
+}
+
+svn_error_t *pgvn_control_request_begin(pgvn_context *context)
 {
     if(pgvn_cancel_is_set(context->cancellation_event))
+        return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new control requests are disabled");
+    apr_status_t status=apr_threadkey_private_set(context,context->control_request_key);
+    if(status) return svn_error_wrap_apr(status,"PgVN control request admission failed");
+    if(pgvn_cancel_is_set(context->cancellation_event)) {
+        status=apr_threadkey_private_set(NULL,context->control_request_key);
+        svn_error_t *error=svn_error_create(SVN_ERR_CANCELLED,NULL,
+            "PgVN is draining; new control requests are disabled");
+        return status ? svn_error_compose_create(error,
+            svn_error_wrap_apr(status,"PgVN control request admission cleanup failed")) : error;
+    }
+    return SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_control_request_end(pgvn_context *context)
+{
+    apr_status_t status=apr_threadkey_private_set(NULL,context->control_request_key);
+    return status ? svn_error_wrap_apr(status,"PgVN control request cleanup failed") : SVN_NO_ERROR;
+}
+
+svn_error_t *pgvn_connect(PGconn **connection,pgvn_context *context)
+{
+    if(pgvn_cancel_is_set(context->cancellation_event) && !pgvn_control_request_active(context))
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new database connections are disabled");
     pgvn_telemetry_connection(1,0,0);
     if(pgvn_atomic_increment32(&context->leases)>32) {
@@ -98,7 +129,8 @@ const char *pgvn_new_uuid(apr_pool_t *pool)
 
 static svn_error_t *ensure_control_connection(pgvn_context *context)
 {
-    if(!context->control_transaction && pgvn_cancel_is_set(context->cancellation_event))
+    if(!context->control_transaction && pgvn_cancel_is_set(context->cancellation_event) &&
+       !pgvn_control_request_active(context))
         return svn_error_create(SVN_ERR_CANCELLED,NULL,"PgVN is draining; new control requests are disabled");
     /* Detect an idle socket's already-received disconnect before sending the
      * next command. This consumes input only; it never retries a SQL command. */
@@ -173,6 +205,8 @@ svn_error_t *pgvn_database_open(pgvn_context **output,const pgvn_context_options
         return svn_error_create(SVN_ERR_INCORRECT_PARAMS,NULL,"PgVN database timeouts exceed supported limits");
     apr_status_t status=apr_thread_mutex_create(&context->control_mutex,APR_THREAD_MUTEX_NESTED,pool);
     if(status) return svn_error_wrap_apr(status,"PgVN control mutex initialization failed");
+    status=apr_threadkey_private_create(&context->control_request_key,NULL,pool);
+    if(status) return svn_error_wrap_apr(status,"PgVN control request key initialization failed");
     SVN_ERR(pgvn_connect(&context->control,context));
     apr_pool_cleanup_register(pool,context,cleanup_context,apr_pool_cleanup_null);
     apr_uuid_t uuid; char buffer[APR_UUID_FORMATTED_LENGTH+1];

@@ -81,9 +81,14 @@ def prepare_protocol(source, destination, specification):
 {{
   server_baton_t *b = baton;
   apr_time_t started = pgvn_command_start();
-  svn_error_t *err = pgvn_svn_command(b->repository, b->client_info->user, pool);
+  svn_error_t *err = pgvn_svn_command_begin(b->repository);
+  svn_boolean_t admitted = !err;
+  if (!err)
+    err = pgvn_svn_command(b->repository, b->client_info->user, pool);
   if (err) err = svn_error_create(SVN_ERR_RA_SVN_CMD_ERR, err, NULL);
   else err = {handler}(conn, pool, params, baton);
+  if (admitted)
+    err = svn_error_compose_create(err, pgvn_svn_command_end(b->repository));
   pgvn_command_finish("{name}", started, err);
   return err;
 }}
@@ -101,13 +106,13 @@ def prepare_protocol(source, destination, specification):
             "  SVN_ERR(pgvn_svn_password(&password, repository, *user, pool));")
     replace("libsvn_ra_svn/cram.c", """  compute_digest(sdigest, challenge, password);
   if (memcmp(cdigest, sdigest, sizeof(sdigest)) != 0)""", """  compute_digest(sdigest, challenge, password);
-  SecureZeroMemory((void *)password, strlen(password));
+      pgvn_secure_zero((void *)password, strlen(password));
   unsigned char difference = 0;
   for (size_t i = 0; i < sizeof(sdigest); ++i) difference |= cdigest[i] ^ sdigest[i];
-  SecureZeroMemory(sdigest, sizeof(sdigest));
+  pgvn_secure_zero(sdigest, sizeof(sdigest));
   if (difference)""")
     replace("libsvn_ra_svn/cram.c", "  apr_md5_final(digest, &ctx);\n}",
-            "  apr_md5_final(digest, &ctx);\n  SecureZeroMemory(secret, sizeof(secret));\n  SecureZeroMemory(&ctx, sizeof(ctx));\n}")
+            "  apr_md5_final(digest, &ctx);\n  pgvn_secure_zero(secret, sizeof(secret));\n  pgvn_secure_zero(&ctx, sizeof(ctx));\n}")
     replace("libsvn_ra_svn/cram.c", '"Username not found"', '"Authentication failed"')
     replace("libsvn_ra_svn/cram.c", '"Password incorrect"', '"Authentication failed"')
     replace("libsvn_ra_svn/marshal.c", "return conn->block_handler ? 0 : -1;", "return conn->block_handler ? 0 : 30 * APR_USEC_PER_SEC;")

@@ -41,10 +41,19 @@ static svn_error_t *bind_repository(pgvn_repository **output,pgvn_context *conte
     SVN_ERR(pgvn_policy_acquire_internal(&repository->policy,context,id,0,administrative,pool));
     /* The pinned public constructor is deprecated but supplies the complete
      * loader-owned layout. No path dispatch or filesystem operation occurs. */
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     repository->fs=svn_fs_new(NULL,pool);
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
     PGconn *connection;
     SVN_ERR(pgvn_connect(&connection,context));
     pgfs_observer observer={query_observer,close_observer,administrative ? NULL : pgvn_guard_publish,repository,

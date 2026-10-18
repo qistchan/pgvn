@@ -11,10 +11,47 @@ import platform
 import re
 import shutil
 import subprocess
+import tarfile
 
 from build_metadata import collect, sha256, write_metadata, check_runtime
+from prepare_upstream import prepare as prepare_upstream
+from prepare_protocol import prepare_protocol
 
 ROOT = Path(__file__).resolve().parents[2]
+
+def verify_subversion_inputs(svn,work):
+    lock=json.loads((ROOT/"scripts/pgvn/linux-dependencies.json").read_text())
+    source=next(item for item in lock["sources"] if item["name"]=="subversion")
+    archive=ROOT/"vendor/linux-archives"/source["archive"]
+    if sha256(archive)!=source["sha256"]:
+        raise ValueError("Pinned Subversion archive checksum mismatch")
+    specifications=((ROOT/"patches/pgvn/subversion-1.14.5/repos.json","libsvn_repos"),
+                    (ROOT/"patches/pgvn/subversion-1.14.5/protocol.json",""))
+    names=set()
+    for specification,root in specifications:
+        spec=json.loads(specification.read_text())
+        names.update("subversion-1.14.5/subversion/"+(root+"/" if root else "")+name
+                     for name in spec["base_sha256"])
+    directories=("libsvn_repos","svnserve","libsvn_ra_svn","libsvn_fs_util","libsvn_diff","libsvn_delta")
+    with tarfile.open(archive) as bundle:
+        archive_names=set(bundle.getnames())
+        names.update("subversion-1.14.5/subversion/"+p.relative_to(svn).as_posix()
+                     for directory in directories
+                     for p in sorted((svn/directory).iterdir())
+                     if p.is_file() and p.suffix in (".c",".h")
+                     and "subversion-1.14.5/subversion/"+p.relative_to(svn).as_posix() in archive_names)
+        for name in sorted(names):
+            member=bundle.extractfile(name)
+            if member is None or sha256_bytes(member.read())!=sha256(svn/name.split("/subversion/",1)[1]):
+                raise ValueError("Configured Subversion source differs from pinned archive: "+name)
+    return {"archive_sha256":source["sha256"],
+            "source_files":{name:sha256(svn/name.split("/subversion/",1)[1]) for name in sorted(names)},
+            "generated_private_config_sha256":sha256(svn/"svn_private_config.h")}
+
+
+def sha256_bytes(value):
+    import hashlib
+    return hashlib.sha256(value).hexdigest()
 
 
 def build_component(sdk, configuration, component="fs", content_transfer="binary", sanitize=False):
@@ -137,6 +174,64 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc", *flags, ROOT / "tests/pgvn" / (probe_name + ".c"), ROOT / "src/pgvn/core/build_info.c",
              library, *libraries, *extras, "-o", probe])
         elf = probe
+    elif component == "serve":
+        upstream_inputs=verify_subversion_inputs(svn,work)
+        flags += ["-I",svn,"-I",ROOT/"src/pgvn/serve"]
+        repository_source=work/"upstream/libsvn_repos"
+        repository_hashes=prepare_upstream(svn/"libsvn_repos",repository_source,
+            ROOT/"patches/pgvn/subversion-1.14.5/repos.json")
+        protocol_hashes=prepare_protocol(svn,work/"upstream",
+            ROOT/"patches/pgvn/subversion-1.14.5/protocol.json")
+        legacy.BUILD,legacy.SVN,legacy.ROOT=work,svn,ROOT
+        callbacks=legacy.generate_stubs()[1]
+        for path in (work/"upstream/svnserve",work/"upstream/libsvn_ra_svn",repository_source,
+                     svn/"svnserve",svn/"libsvn_repos",svn/"libsvn_ra_svn",svn/"libsvn_delta",
+                     svn/"libsvn_diff",svn/"libsvn_fs_util"):
+            flags += ["-I",path]
+        sources=[]
+        for source in sorted((ROOT/"src/pgvn/core").glob("*.c")):
+            if source.name=="hooks_win.c":
+                continue
+            sources.append(("core-"+source.stem,source,flags))
+        sources.append(("core-credentials-posix",ROOT/"src/pgvn/platform/credentials_posix.c",flags))
+        sources.append(("core-pgfs",ROOT/"src/libsvn_fs_pg/pgfs.c",flags))
+        upstream_flags=[flag for flag in flags if flag!="-Werror"]
+        upstream_flags += ["-Wno-deprecated-declarations","-Wno-missing-field-initializers"]
+        for source in sorted(repository_source.glob("*.c")):
+            sources.append(("repos-"+source.stem,source,upstream_flags))
+        objects=[]
+        for name,source,compile_flags in sources:
+            output=work/(name+".o")
+            run(["cc",*compile_flags,"-DPGVN_STATIC","-c",source,"-o",output])
+            objects.append(output)
+        library=work/"lib/libpgvn_serve_core.a"
+        library.unlink(missing_ok=True)
+        run(["ar","rcs",library,*objects])
+        protocol_sources=[work/"upstream/svnserve"/name for name in ("serve.c","logger.c","log-escape.c")]
+        protocol_sources += [work/"upstream/libsvn_ra_svn"/name for name in
+                             ("marshal.c","streams.c","editorp.c","cram.c","deprecated.c")]
+        protocol_objects=[]
+        for source in protocol_sources:
+            output=work/("protocol-"+source.stem+".o")
+            run(["cc",*upstream_flags,"-c",source,"-o",output])
+            protocol_objects.append(output)
+        probe=work/"bin/pgvnserve"
+        server_sources=[ROOT/"src/pgvn/serve/listener.c",ROOT/"src/pgvn/serve/listener_posix.c",
+                        ROOT/"src/pgvn/serve/main.c",ROOT/"src/pgvn/serve/main_posix.c",
+                        ROOT/"src/pgvn/serve/protocol.c",ROOT/"src/pgvn/core/build_info.c"]
+        run(["cc",*flags,"-DPGVN_STATIC",*server_sources,*protocol_objects,library,
+             *libraries,"-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread",
+             "-Wl,-z,defs","-o",probe])
+        fixture=work/"bin/serve_fixture"
+        run(["cc",*flags,"-DPGVN_STATIC",ROOT/"tests/pgvn/serve_fixture.c",library,*libraries,
+             "-lsvn_fs_util-1","-lsvn_diff-1","-lcrypto","-pthread","-Wl,-z,defs","-o",fixture])
+        upstream_inputs.update({"repository_patch_sha256":sha256(ROOT/"patches/pgvn/subversion-1.14.5/repos.json"),
+            "protocol_patch_sha256":sha256(ROOT/"patches/pgvn/subversion-1.14.5/protocol.json"),
+            "repository_source_sha256":repository_hashes,"protocol_source_sha256":protocol_hashes,
+            "applied_repositories_patch_sha256":sha256(work/"upstream/applied-repos.patch"),
+            "applied_protocol_patch_sha256":sha256(work/"upstream/applied-protocol.patch"),
+            "pgfs_stub_inventory_sha256":sha256(work/"generated/pgfs_stubs.h")})
+        elf=probe
     else:
         raise ValueError("Unknown Linux component")
     runtime = json.loads(run([probe, "--version"]))
@@ -175,6 +270,7 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
               "compiler": run(["cc", "--version"]).splitlines()[0],
               "sdk_dependencies": copied,
               "elf_dynamic": run(["readelf", "-d", elf]), "callbacks": callbacks,
+              "upstream_inputs":upstream_inputs if component=="serve" else None,
               "files": {p.relative_to(work).as_posix(): sha256(p) for directory in ("bin", "lib")
                         for p in sorted((work / directory).iterdir()) if p.is_file()}}
     (work / "build-manifest.json").write_text(json.dumps(result, indent=2) + "\n")

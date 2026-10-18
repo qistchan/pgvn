@@ -8,8 +8,11 @@
 typedef LONG pgvn_atomic32;
 typedef LONG64 pgvn_atomic64;
 typedef HANDLE pgvn_cancel_event;
+typedef SRWLOCK pgvn_rwlock;
+#define PGVN_RWLOCK_INITIALIZER SRWLOCK_INIT
 #else
 #include <errno.h>
+#include <pthread.h>
 #include <time.h>
 typedef int32_t pgvn_atomic32;
 typedef int64_t pgvn_atomic64;
@@ -17,6 +20,8 @@ typedef int64_t pgvn_atomic64;
  * and keeps the state alive until all workers have joined. */
 typedef struct pgvn_cancel_state { volatile pgvn_atomic32 signalled; } pgvn_cancel_state;
 typedef pgvn_cancel_state *pgvn_cancel_event;
+typedef pthread_rwlock_t pgvn_rwlock;
+#define PGVN_RWLOCK_INITIALIZER PTHREAD_RWLOCK_INITIALIZER
 #endif
 
 _Static_assert(sizeof(pgvn_atomic32)==4 && sizeof(pgvn_atomic64)==8,"PgVN counter widths must be stable");
@@ -57,6 +62,15 @@ static inline pgvn_atomic64 pgvn_atomic_add64(volatile pgvn_atomic64 *value,pgvn
 #endif
 }
 
+static inline pgvn_atomic32 pgvn_atomic_exchange32(volatile pgvn_atomic32 *value,pgvn_atomic32 replacement)
+{
+#ifdef _WIN32
+    return InterlockedExchange(value,replacement);
+#else
+    return __atomic_exchange_n(value,replacement,__ATOMIC_SEQ_CST);
+#endif
+}
+
 static inline pgvn_atomic32 pgvn_atomic_read32(volatile pgvn_atomic32 *value)
 {
 #ifdef _WIN32
@@ -72,6 +86,42 @@ static inline pgvn_atomic64 pgvn_atomic_read64(volatile pgvn_atomic64 *value)
     return InterlockedCompareExchange64(value,0,0);
 #else
     return __atomic_load_n(value,__ATOMIC_SEQ_CST);
+#endif
+}
+
+static inline void pgvn_rwlock_write_lock(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    AcquireSRWLockExclusive(lock);
+#else
+    (void)pthread_rwlock_wrlock(lock);
+#endif
+}
+
+static inline void pgvn_rwlock_read_lock(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    AcquireSRWLockShared(lock);
+#else
+    (void)pthread_rwlock_rdlock(lock);
+#endif
+}
+
+static inline void pgvn_rwlock_write_unlock(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    ReleaseSRWLockExclusive(lock);
+#else
+    (void)pthread_rwlock_unlock(lock);
+#endif
+}
+
+static inline void pgvn_rwlock_read_unlock(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    ReleaseSRWLockShared(lock);
+#else
+    (void)pthread_rwlock_unlock(lock);
 #endif
 }
 

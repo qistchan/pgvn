@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "listener.h"
 #include <stdio.h>
 #include <string.h>
@@ -223,3 +224,4 @@ void pgvn_listener_stop(pgvn_listener *listener,void (*progress)(void))
     pgvn_svn_set_io_cancel(NULL); CloseHandle(listener->io_cancel);
     DeleteCriticalSection(&listener->mutex);
 }
+#endif
