@@ -1,0 +1,219 @@
+{
+  "format": 1,
+  "checkpoint": "Linux native foreground SVN host and POSIX listener",
+  "date": "2026-10-18",
+  "status": "PASS",
+  "complete_product": false,
+  "milestone_complete": false,
+  "host_os": "Ubuntu 22.04.5 LTS",
+  "builder_os": "Ubuntu 24.04.5 LTS",
+  "runs": {
+    "release": {
+      "status": "PASS",
+      "checks": 24,
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Release",
+        "git_commit": "c9fdc35657edeb0734606c7ca64fa53247eb8ece",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "ccc43c5aacb20e56960b1df63621a67b2465d13e0e601d0391b08abaa0e919b2",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "source_count": 194,
+      "elapsed_seconds": {
+        "inflight_commit_seconds": 4.898609668000063,
+        "inflight_service_shutdown_seconds": 4.899699227000383,
+        "stalled_client_shutdown_seconds": 10.147188535000168,
+        "startup_retry_stop_seconds": 0.0011108570006399532,
+        "database_recovery_readiness_seconds": 4.015063840999574
+      },
+      "images": {
+        "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+        "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+      },
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "reports": [
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/report.json",
+          "sha256": "9721e5fb7149d853a69bc4fc20681157e6c15c21b5da941ae2558e4d62164c12"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/serve-suite-report.json",
+          "sha256": "56c0cba178bed92ad9c41c64959097c564902e2e71f0bde17d3f419fc84e8ab6"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/reproducibility.md",
+          "sha256": "eb403d6f9a3d5e9be80c4575f5d9b00123472f4609b0d555164493c8e8f2096c"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/inputs/build-metadata.json",
+          "sha256": "7b412a849b47b909374cb44c096e045b601e065da409c6465680d7dbd2300aeb"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/inputs/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/frozen-product/build-manifest.json",
+          "sha256": "48b352349b5833fc4019b0265b05a878131fb933838fdb0ebd5150aae7644d11"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/orchestration-commands.jsonl",
+          "sha256": "ed6002afac0debbb8b4db3621a8ffb599514fe95e487493f7fdd19ad615c4e77"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-15c37fd41249/svn-commands.jsonl",
+          "sha256": "8766f95e21a3fe1ccb2f6fdc9e9fcfcbb06047960984cba40def2f92c6b2c542"
+        }
+      ]
+    },
+    "sanitized": {
+      "status": "PASS",
+      "checks": 24,
+      "build_identity": {
+        "product": "PgVN",
+        "version": "0.1.0-dev",
+        "milestone": "M5",
+        "upstream": {
+          "subversion": "1.14.5",
+          "apr": "1.7.6",
+          "apr_util": "1.6.3",
+          "httpd": "2.4.68",
+          "postgresql": "18.6"
+        },
+        "schemas": {
+          "catalog": 8,
+          "fs": 4
+        },
+        "api_version": 1,
+        "cache_format_version": 0,
+        "capabilities": {
+          "repository_by_id": true,
+          "svn_protocol": true,
+          "dav_protocol": true,
+          "monitor": "full",
+          "svn_authz_bypass": true,
+          "cache_local": false,
+          "cache_redis": false
+        },
+        "identity_format": 1,
+        "svn_base": "1.14.5",
+        "target_os": "linux",
+        "target_arch": "x86_64",
+        "configuration": "Debug",
+        "git_commit": "c9fdc35657edeb0734606c7ca64fa53247eb8ece",
+        "git_worktree_dirty": true,
+        "source_manifest_sha256": "ccc43c5aacb20e56960b1df63621a67b2465d13e0e601d0391b08abaa0e919b2",
+        "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+      },
+      "source_count": 194,
+      "elapsed_seconds": {
+        "inflight_commit_seconds": 4.874995992999175,
+        "inflight_service_shutdown_seconds": 4.890279712999472,
+        "stalled_client_shutdown_seconds": 10.144251050000094,
+        "startup_retry_stop_seconds": 0.007495457000004535,
+        "database_recovery_readiness_seconds": 4.015172437999354
+      },
+      "images": {
+        "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+        "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+      },
+      "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+      "reports": [
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/report.json",
+          "sha256": "82759cc1ac66cab97d88f8fce8f194076e02ae1cedd6b5fca0e37b95239b4d31"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/serve-suite-report.json",
+          "sha256": "6a90a251d50ec40d5cb0091c0d76e717aa768cbd402293beb337bf72a5c27d46"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/reproducibility.md",
+          "sha256": "63031827f21e870942a29e3cc8c5622200778bdcf4c4497a3335339b3f9b9c70"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/inputs/build-metadata.json",
+          "sha256": "050c8b415b56231874ce21ce60519fb8d62f1463698b599fc7b1ffc0a2cd07fd"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/inputs/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/frozen-product/build-manifest.json",
+          "sha256": "8f7143072866dcfa68129afd5490e5bde8c52044cff3a3645f45e023cbe0a72c"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/orchestration-commands.jsonl",
+          "sha256": "c8f9d493992713a273891306afbe80377c62cb62a34dee9abf47c6755bdbd8de"
+        },
+        {
+          "path": "artifacts/pgvn/linux-native-serve/linux-serve-324c529e1de4/svn-commands.jsonl",
+          "sha256": "2dea5e5901a7ac3335c8b2df757787924f83a17f7986d723095a88b21e54f819"
+        }
+      ]
+    }
+  },
+  "regressions": {
+    "hook_config": {
+      "report": {
+        "path": "artifacts/pgvn/tests/linux-hook-config-d86d60a17163/report.json",
+        "sha256": "057341c67e842956b6de47467a4c935623e9f6bf0ba0a5f60aee4d841f90ccc3"
+      },
+      "orchestration_checks": 69,
+      "release_assertions": 114,
+      "sanitized_assertions": 114
+    },
+    "bypass": {
+      "report": {
+        "path": "artifacts/pgvn/tests/bypass-c99f4f459bc5/report.json",
+        "sha256": "67179cb5cfc58579e8d9c674ebbf5cb281608bf6ff84a80eb8f93111984062f0"
+      },
+      "probe": {
+        "path": "artifacts/pgvn/tests/bypass-c99f4f459bc5/probe.json",
+        "sha256": "73475d2e3dfe80aa0a4d49677fa8528ee5e169fd84ad4dce577f5b796b70200b"
+      },
+      "orchestration_checks": 37
+    }
+  },
+  "additional_checks": {
+    "metadata": "20/20 (verification handoff)",
+    "python_syntax": "PASS (verification handoff)"
+  },
+  "limitations": [
+    "Linux administration, monitor HTTP, telemetry-enabled serving, Apache/DAV and deployment/package acceptance remain pending.",
+    "No production systemd or cgroup delegation acceptance; native service plus external Hook integration was not tested.",
+    "Windows W1/W2, M6/M7, PGVN-601/602 and previous strict-difference FAIL status are unchanged.",
+    "Supabase management metadata only: PostgreSQL 17.11 was not used for SQL tests or as a replacement for pinned PostgreSQL 18.6.",
+    "Recorded dirty build identities and original evidence are preserved, not relabelled as the final clean commit."
+  ]
+}
