@@ -56,3 +56,7 @@ build/test run. The development host may differ from the target builder; do not
 describe a host-only run as an Ubuntu 24.04 verification. This milestone
 delivers only the hook runtime component; the remaining Linux product
 milestones and Windows W1/W2 validation remain separate.
+
+For component commands, recorded results, and outstanding regressions, see
+[the PX-L05 runtime checkpoint](../plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-runtime)
+and [the evidence index](evidence/linux-hook-runtime-components.json).

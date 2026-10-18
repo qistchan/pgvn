@@ -538,3 +538,45 @@ python3 scripts/pgvn/build.py --target linux --components hook-config \
 本节验证结果与原始日志索引见 [Hook 配置证据](../pgvn/evidence/linux-hook-config-components.json)。源输入和产物保留构建时的 `55f1996` + dirty 身份；后续提交不会将它们改称 clean 构建。
 
 下一步接入 POSIX 进程执行器：共享事件 JSON、无 shell argv、环境白名单、输入/输出上限、单调超时、停止取消与后代清理。逃离进程组的后代必须采用专用 cgroup 等已验证边界，不能用仅终止主进程的检查替代。随后推进 listener/信号排空、监控 HTTP、实际主程序/Apache 和部署。完整 Linux 服务、线协议、Windows W1/W2、M6/M7、PGVN-601/602 及原严格差分 FAIL 状态不变。
+
+<a id="linux-hook-runtime"></a>
+## 14. PX-L05 检查点：POSIX 外部 Hook 执行器（2026-10-18）
+
+本节完成第 13 节后续的**进程执行组件**，不是完整 Linux 产品或 PX-L05 服务级验收。产物为 `libpgvn_hooks.a` 和开发探针 `hook_runner_probe`；公共构建入口支持 `--target linux --components hooks`，完整产品仍未实现。
+
+### 14.1 执行边界
+
+Windows 与 Linux 共享事件 JSON、失败结果及 pre-lock token 解析。Linux 使用字面 argv（无 shell）、明确环境白名单、固定输入/输出上限、单调时钟超时及停止取消。启动时逐级拒绝符号链接，安全重开并固定可执行文件描述符；FIFO、目录、不可执行文件及无效 UTF-8/超限输入拒绝执行。
+
+外部 Hook 要求节点配置绝对路径 `hook-cgroup-root`，在可写 cgroup v2 委派目录中建立独立子组，必须支持 `cgroup.kill`。父进程在释放启动门之前完成入组；所有返回路径执行有界清理，不能确认组内进程清空时返回失败。没有仅杀主进程、仅进程组或 shell 回退。cgroup 是可信运维 Hook 的生命周期边界，不是恶意代码沙箱。详见 [配置与运行边界](../pgvn/linux-hook-runtime.md)。
+
+审查补齐了重复 `waitpid` 意外收割其他子进程、启动门写入 SIGPIPE、持续输出饿死超时/取消检查，以及 FIFO 打开阻塞等边界；回归覆盖并发 Hook 与无关子进程退出状态隔离。
+
+### 14.2 验证与证据
+
+固定 SDK、GCC 13.3.0，Ubuntu **24.04.5 构建/测试容器**中 Release 与 Debug + ASan/UBSan **各 26/26 项行为检查通过**；外层主机是 Ubuntu **22.04.5**，不将容器验证称为 Ubuntu 24.04 主机部署验收。使用 host cgroup namespace 的特权测试容器，但实际探针以 uid 1000 执行，专用测试 slice 授权可写；每项结束后的子组均为空。此设置不替代正式服务账号及 systemd 委派验收。
+
+场景包括真实进程 JSON/UTF-8/二进制属性、字面参数、环境及文件描述符泄漏检查、拒绝和输出截断、锁 token、文件及 cgroup 失败关闭、setsid/double-fork 后代清理、超时/取消、持续输出和并发。另有元数据 **20/20**、Python 语法检查通过；未知 `--case` 确认拒绝，不能以零测试报成功。
+
+结构化结果及原始日志索引见 [POSIX Hook 证据](../pgvn/evidence/linux-hook-runtime-components.json)。每套冻结 190 个源文件、12 个迁移、生成元数据、SDK 清单和 53 个运行文件；保留实际构建时的 `f384f8c` + dirty 身份，不改称后续提交的 clean 构建。源输入、运行文件与清单摘要已核对；旧性能和配置证据未重新计算或改写身份。
+
+**未运行的回归：** 固定 `postgres:18.6` 及 bypass-builder 的 Ubuntu 基础镜像拉取均遭遇 Docker Hub HTTP 429。数据库 Hook 配置与 bypass 回归本轮未执行，不能沿用第 13 节旧结果充当本轮通过。Windows 公共 Hook 代码有抽取变更，但 Windows 编译及 W1/W2 未执行。
+
+### 14.3 复现与下一步
+
+在准备好的 Ubuntu 24.04 builder 与固定 SDK 内运行：
+
+```sh
+python3 scripts/pgvn/build.py --target linux --components hooks \
+  --configuration Release --linux-sdk build/pgvn/linux-sdk
+python3 scripts/pgvn/build.py --target linux --components hooks \
+  --configuration Debug --sanitize --linux-sdk build/pgvn/linux-sdk
+# 以非 root 服务账号运行；CGROUP_ROOT 为已委派、可写且独占的真实 cgroup v2 目录。
+python3 tests/pgvn/run_linux_hooks.py --sdk build/pgvn/linux-sdk \
+  --probe build/pgvn/linux/release-hooks/bin/hook_runner_probe \
+  --cgroup-root "$CGROUP_ROOT" --output artifacts/pgvn/tests/hooks-release
+```
+
+sanitizer 改用 `debug-hooks-sanitized/bin/hook_runner_probe` 和独立输出目录。完整 Docker/临时 slice 设置、镜像 ID 和失败日志保留在证据索引中的 `reproducibility.md`；测试特权容器设置不可直接当生产部署模板。
+
+先补跑受阻的配置/bypass 数据库回归；后续仍为 listener/信号排空、监控 HTTP、原生 pgvnserve/pgvnadmin、Apache、部署/systemd、备份恢复和实际 SVN CLI/SVNKit/DAV 协议矩阵。**Linux 整体开发与验收尚未完成**；Windows W1/W2、M6/M7、PGVN-601/602 及原严格差分 FAIL 保持原状态。
