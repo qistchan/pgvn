@@ -26,6 +26,26 @@ typedef pthread_rwlock_t pgvn_rwlock;
 
 _Static_assert(sizeof(pgvn_atomic32)==4 && sizeof(pgvn_atomic64)==8,"PgVN counter widths must be stable");
 
+static inline int pgvn_rwlock_init(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    InitializeSRWLock(lock);
+    return 0;
+#else
+    return pthread_rwlock_init(lock,NULL);
+#endif
+}
+
+static inline int pgvn_rwlock_destroy(pgvn_rwlock *lock)
+{
+#ifdef _WIN32
+    (void)lock;
+    return 0;
+#else
+    return pthread_rwlock_destroy(lock);
+#endif
+}
+
 static inline pgvn_atomic32 pgvn_atomic_increment32(volatile pgvn_atomic32 *value)
 {
 #ifdef _WIN32
@@ -59,6 +79,15 @@ static inline pgvn_atomic64 pgvn_atomic_add64(volatile pgvn_atomic64 *value,pgvn
     return InterlockedAdd64(value,amount);
 #else
     return __atomic_add_fetch(value,amount,__ATOMIC_SEQ_CST);
+#endif
+}
+
+static inline pgvn_atomic64 pgvn_atomic_exchange64(volatile pgvn_atomic64 *value,pgvn_atomic64 replacement)
+{
+#ifdef _WIN32
+    return InterlockedExchange64(value,replacement);
+#else
+    return __atomic_exchange_n(value,replacement,__ATOMIC_SEQ_CST);
 #endif
 }
 

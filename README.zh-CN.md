@@ -47,7 +47,7 @@ PgVN 面向希望保留标准 SVN 客户端工作流，同时通过统一 Postgr
 
 ## 产品特性
 
-下表描述 Windows 预览版的产品能力。Linux 可用范围单独列于 [Linux 支持](#linux-support)；DAV、监控与部署工具尚未完成移植。
+下表描述 Windows 预览版的产品能力。Linux 可用范围单独列于 [Linux 支持](#linux-support)；DAV、监控 HTTP/网页与部署工具尚未完成移植。
 
 | 能力 | PgVN 提供的实现 |
 | --- | --- |
@@ -68,10 +68,13 @@ PgVN 面向希望保留标准 SVN 客户端工作流，同时通过统一 Postgr
 | --- | --- |
 | `pgvnserve` | 前台 `svn://` 服务，支持认证访问、连接限制与 SIGINT/SIGTERM 排空。必须使用 `--monitor-disabled`；启用遥测的服务运行尚未验证。 |
 | `pgvnadmin` | schema 初始化/迁移/检查、角色授权、仓库、策略发布、凭据、监控令牌、dump/load/verify/look，以及 maintenance hotcopy/verify/purge。 |
+| 监控数据后端 | POSIX 采样器、生产监控数据 API 与进程指标；通过隔离后端探针验证，不包含 HTTP 端点/网页，也未在 `pgvnserve` 中启用遥测。 |
 | PgFS、凭据与外部 Hook | 原生存储和 OpenSSL 凭据组件；版本化 Hook 配置及支持超时、取消和受控后代清理的 POSIX Hook 执行器。原生服务与真实外部 Hook 的完整组合验收仍待完成。 |
-| 尚未交付 | 监控 HTTP/API、Apache/DAV 模块、Linux 包/systemd/服务账号部署、备份恢复自动化，以及完整 SVN CLI/SVNKit/HTTP/HTTPS 协议矩阵。 |
+| 尚未交付 | 监控 HTTP 监听器/端点与网页渲染、Apache/DAV 模块、Linux 包/systemd/服务账号部署、备份恢复自动化，以及完整 SVN CLI/SVNKit/HTTP/HTTPS 协议矩阵。 |
 
 Linux `maintenance freeze` 会在连接数据库或启动子进程前明确拒绝执行。CLI 支持 stdin 信号取消，但**信号不会主动取消已经执行中的同步 SQL**；锁等待测试通过 PostgreSQL 配置的语句超时退出。能创建监控令牌不代表 Linux 已有监控端点。
+
+Linux 监控 CPU 按在线主机 CPU 归一化，RSS 为近似值，私有已提交字节在此 Linux 实现中不可用（不会以 RSS 或虚拟内存替代）。本阶段未回归验证 Windows 监控路径，也未在 `pgvnserve` 中启用遥测；`complete_product` 仍为 `false`。
 
 ### 构建与运行 Linux 组件
 
@@ -84,6 +87,15 @@ python3 scripts/pgvn/build.py --target linux --components admin \
 build/pgvn/linux/release-admin/bin/pgvnadmin --version
 build/pgvn/linux/release-admin/bin/pgvnserve --version
 ```
+
+监控数据后端使用单独的组件构建入口：
+
+```sh
+python3 scripts/pgvn/build.py --target linux --components monitor \
+  --configuration Release --linux-sdk build/pgvn/linux-sdk
+```
+
+该构建只生成静态后端库和测试探针，位于 `build/pgvn/linux/release-monitor/`；不会构建 HTTP 主机或渲染网页。ASan/UBSan 构建使用 `--configuration Debug --sanitize`，监控产物位于 `build/pgvn/linux/debug-monitor-sanitized/`。
 
 保留输出目录中配套的 `bin/` 和 `lib/`。`--components serve` 用于仅构建服务开发组件。ASan/UBSan 构建改用 `--configuration Debug --sanitize`，admin 产物位于 `build/pgvn/linux/debug-admin-sanitized/`。
 
@@ -99,15 +111,17 @@ build/pgvn/linux/release-admin/bin/pgvnserve \
 
 ### Linux 验证状态
 
-已记录的 Release 与 ASan/UBSan 各通过 **24 项原生服务检查**、**38 项管理 CLI 检查**和 **26 项 POSIX Hook 组件检查**，分别对应各自冻结构建，不是一次完整产品验收。详见[服务证据](docs/pgvn/evidence/linux-native-serve.json)、[管理 CLI 证据](docs/pgvn/evidence/linux-native-admin.json)及 [Hook 证据](docs/pgvn/evidence/linux-hook-runtime-components.json)。
+已记录的 Release 与 ASan/UBSan 各通过 **24 项原生服务检查**、**38 项管理 CLI 检查**、**26 项 POSIX Hook 组件检查**及 **39 项监控后端检查**，分别对应不同冻结构建，不是一次合并或完整产品验收。详见[服务证据](docs/pgvn/evidence/linux-native-serve.json)、[管理 CLI 证据](docs/pgvn/evidence/linux-native-admin.json)、[Hook 证据](docs/pgvn/evidence/linux-hook-runtime-components.json)及[监控后端证据](docs/pgvn/evidence/linux-monitor-backend.json)。
 
-服务/管理套件使用固定 PostgreSQL **18.6** 的一次性容器，不公开数据库端口。构建/测试环境为 Ubuntu **24.04.5**，外层主机为 Ubuntu **22.04.5**，不计作全新 Ubuntu 24.04 主机部署验收。准备好已校验 SDK 和本地 `pgvn-linux-builder:24.04` / `postgres:18.6` 镜像后（若沿用准备指南中的 `pgvn-linux-builder:ubuntu24` 标签，附加 `--builder-image pgvn-linux-builder:ubuntu24`）：
+服务/管理/监控套件使用 PostgreSQL **18.6** 一次性容器，不公开数据库端口。修正后的监控运行通过 `docker image inspect` 记录实际 `pgvn-linux-builder:24.04` 与 `postgres:18.6` 镜像，不以固定镜像摘要作为门槛。构建/测试环境为 Ubuntu **24.04.5**，外层主机为 Ubuntu **22.04.5**，不计作全新 Ubuntu 24.04 主机部署验收。runner 的 SDK 路径可为绝对路径或仓库相对路径，但解析后必须位于挂载到 `/repo` 的仓库内。`run_linux_monitor.py` 支持 `--builder-image <tag>` 选择其他本地 builder 镜像：
 
 ```sh
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
 python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Release
 python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
+python3 tests/pgvn/run_linux_monitor.py --sdk build/pgvn/linux-sdk --configuration Release
+python3 tests/pgvn/run_linux_monitor.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
 ```
 
 切勿使用业务部署库运行测试。管理套件仅为确认 stdin 等待状态使用测试专用的 `SYS_PTRACE`；Hook 隔离测试另需 cgroup 设置，不能当作生产权限模板。报告保留 `complete_product: false`；剩余事项见 [Linux 开发计划](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md)。
@@ -617,7 +631,7 @@ python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
 
 `--metadata-only` 仅生成 `build/pgvn/metadata/linux/` 下的版本头和源码/迁移清单，尚不构建 Linux 服务端或模块。完整推进顺序、包配对命令及 Windows 待验项目见[计划执行检查点](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata)。
 
-Linux 已包含原生 `pgvnserve`、`pgvnadmin` 和 POSIX 外部 Hook 执行器；构建运行入口及限制见 [Linux 支持](#linux-support)。早期 [FS/SDK](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)、[凭据](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)与 [Hook 配置](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)检查点仍作为各组件的独立证据。当前 catalog schema 8 包含版本化逻辑 Hook 声明和节点本地映射；历史运行包保留各自原始 schema 与能力。
+Linux 已包含原生 `pgvnserve`、`pgvnadmin`、POSIX 外部 Hook 执行器及单独验证的监控数据后端；构建运行入口及限制见 [Linux 支持](#linux-support)。早期 [FS/SDK](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance)、[凭据](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials)、[Hook 配置](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config)与[监控后端](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-monitor-backend)检查点仍是各组件的独立证据。当前 catalog schema 8 包含版本化逻辑 Hook 声明和节点本地映射；历史运行包保留各自原始 schema 与能力。
 
 验证测试统一通过 `scripts/pgvn` 与 `tests/pgvn` 执行。运行完整的 M5 门禁需要真实浏览器验证环境、配置好的 JDK/SVNKit 以及专用测试 PostgreSQL 集群，详见[浏览器与测试准备](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径)和 [M5 开发记录](docs/pgvn/M5-development.zh-CN.md)。由于测试门禁会创建隔离数据库、注册临时服务，且部分故障测试会重启**测试数据库集群**，请切勿将测试脚本指向业务部署库。仓库中保留的早期 PgFS 脚本与记录仅供历史参考，不作为当前 PgVN 构建的验收依据。
 
@@ -677,12 +691,13 @@ docs/pgvn/            架构规范、运维指南与验证证据归档
 
 ## 文档导航
 
-中英文 README 的产品介绍、Linux 开发、Polarion GUI 迁移与快速部署内容保持同步；详细工程设计与运维指南主要使用中文，Linux 服务与 CLI 指南使用英文：
+中英文 README 的产品介绍、Linux 开发、Polarion GUI 迁移与快速部署内容保持同步；详细工程设计与运维指南主要使用中文，Linux 服务、CLI 与监控后端指南使用英文：
 
 | 指南 | 内容概要 |
 | --- | --- |
 | [Linux 原生服务](docs/pgvn/linux-native-serve.md) | 前台 SVN 监听器、配置、信号排空与隔离验证 |
 | [Linux 管理 CLI](docs/pgvn/linux-native-admin.md) | 原生构建、数据库/凭据配置、历史命令与取消限制 |
+| [Linux 监控后端](docs/pgvn/linux-monitor-backend.md) | 组件构建、隔离 PostgreSQL 验证、指标语义与范围限制 |
 | [Windows 部署指南](deploy/windows/README.zh-CN.md) | 安装校验、数据库角色、Windows 服务、TLS 配置、备份恢复与升级流程 |
 | [PgVN Manager GUI 指南](tools/pgvn-manager/README.zh-CN.md) | 桌面配置工具使用流程、服务管理、日常维护与恢复边界说明 |
 | [GUI 本机验证与交付记录](docs/pgvn/manager-validation.zh-CN.md) | 完整运行与 GUI 组合包说明、文件校验摘要与本机集成测试证据 |

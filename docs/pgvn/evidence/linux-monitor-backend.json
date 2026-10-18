@@ -1,0 +1,138 @@
+{
+  "format": 1,
+  "checkpoint": "Linux monitoring data backend",
+  "date": "2026-10-18",
+  "status": "PASS",
+  "complete_product": false,
+  "milestone_complete": false,
+  "host_os": "Ubuntu 22.04.5 LTS",
+  "builder_os": "Ubuntu 24.04.5 LTS",
+  "scope": "POSIX monitoring data backend, production data API, and isolated PostgreSQL 18.6 acceptance probe; no HTTP listener, rendered UI, or telemetry-enabled service integration",
+  "images": {
+    "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+    "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+  },
+  "image_ids_observed_by": "docker image inspect",
+  "postgres_server_version_num": "180006",
+  "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+  "source_manifest_sha256": "61e52b333c423f0f523fa485bd153ad4b2a485ea12ddd8e6d793d5538f196ddb",
+  "build_identity": {
+    "git_commit": "c77e6d63444ee2a75a29251f806c873799a2124f",
+    "git_worktree_dirty": true,
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+  },
+  "runs": {
+    "release": {
+      "run_id": "linux-monitor-d5d9b83c3fa0",
+      "status": "PASS",
+      "configuration": "Release",
+      "checks": 39,
+      "sanitizers": [],
+      "sampler_sessions_after_stop": 0,
+      "sampler_locks_after_stop": 0,
+      "sampler_session_release_wait_seconds": 0.401,
+      "evidence": [
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/report.json",
+          "sha256": "d4d025c43fc0e700a6b162c5411dddd38c4ec89514166c2227c949fb0ebb9f8e"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/reproducibility.md",
+          "sha256": "f77deab6e875280236460a0840bcc71d73086fe03bcd70f39b3d22d1817ff556"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/process.json",
+          "sha256": "12430557b25fc4f5cbd993dc67b0bd345d23c49d67fc97795adcfb2e9602ef10"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/metrics.prom",
+          "sha256": "7ae6ad9be1d9b16442d2d0ce35fe9c3c630af3e0273a54af65c1256b05939528"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/probe-output.txt",
+          "sha256": "ff1a1e409328fc752b12574d49e6adbfc7a72c859ddb182df4a80b41b1303786"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/postgres.log",
+          "sha256": "6fb1af4cffd23526866c351643d587cb2b9c1ee80274d226f384a67b320cad9c"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/build-manifest.json",
+          "sha256": "e55ef4dfb8e1d0c7cc0eddabc908e7d5c7d5edc2eecc5760e317ee1d79d574b3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/build-inputs.json",
+          "sha256": "83298e293afdb8f6975390b9c4e324c70a500b3c445da91eb3fe3a5fb5b6eb7b"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-d5d9b83c3fa0/inputs/monitor/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        }
+      ]
+    },
+    "debug_sanitized": {
+      "run_id": "linux-monitor-81f1a9c26908",
+      "status": "PASS",
+      "configuration": "Debug",
+      "checks": 39,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "sampler_sessions_after_stop": 0,
+      "sampler_locks_after_stop": 0,
+      "sampler_session_release_wait_seconds": 0.395,
+      "evidence": [
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/report.json",
+          "sha256": "6e0b29c8d0fbe37588a5e010c258a0eb4f1057dafbb0f992423254de7e102662"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/reproducibility.md",
+          "sha256": "d6f6ddd918978ccd919229d719805c567fc286fa204867c6d8b6bae02d7455df"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/process.json",
+          "sha256": "4418cc59b82c3dedb971b1542564ab2a54233cd3553254db8ddd146e2181bab6"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/metrics.prom",
+          "sha256": "e25fa97a1d0befbec37e94461d63b0ce5e752d62e0c5bd2675b46ac78037c640"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/probe-output.txt",
+          "sha256": "f5800c5d3823d0f4724af1165563a8e707733185a4bf1cd52b0f342dc84e6f6d"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/postgres.log",
+          "sha256": "bf90257eb43c6b3fb7cc6258f8ba593eaaace97e8170f4be8c1c805c4c9edc86"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/build-manifest.json",
+          "sha256": "ef2af82b1ca73dea0ae00cb751b6f1bd242f8aa23d7fec899dfad83c56953683"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/build-inputs.json",
+          "sha256": "718ff5dc1799c1b8a80b2ae7d713cc35051a766191f05a2a2cb2125392367770"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-81f1a9c26908/inputs/monitor/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "The probe exercises the production monitoring data API, not an HTTP endpoint or rendered UI.",
+    "Business readiness in the probe is synthetic; telemetry-enabled pgvnserve integration remains unvalidated and real service runs must use --monitor-disabled.",
+    "CPU normalization uses online host CPUs, not cgroup quota.",
+    "Linux RSS is approximate; private committed bytes are unavailable through this Linux implementation and remain null/omitted.",
+    "Initial DNS resolution may block despite bounded connection polling after PQconnectStartParams begins.",
+    "The initial configured but not business-ready state is tested; unconfigured bootstrap is not tested.",
+    "Shutdown is bounded while a sampler query waits on a relational lock; the probe does not validate HTTP or telemetry-enabled service integration.",
+    "Windows behavior was not regression-tested in this phase.",
+    "No shared or Supabase database was used; complete_product remains false."
+  ]
+}

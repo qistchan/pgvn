@@ -47,7 +47,7 @@ The earlier PgFS filesystem-plugin PoC serves as the underlying storage engine, 
 
 ## Features
 
-The table describes the Windows preview's product capabilities. Linux availability is listed separately in [Linux support](#linux-support); DAV, monitoring, and deployment tooling are not yet ported.
+The table describes the Windows preview's product capabilities. Linux availability is listed separately in [Linux support](#linux-support); DAV, the monitoring HTTP/UI, and deployment tooling are not yet ported.
 
 | Capability | What PgVN provides |
 | --- | --- |
@@ -66,10 +66,13 @@ The table describes the Windows preview's product capabilities. Linux availabili
 | --- | --- |
 | `pgvnserve` | Foreground `svn://` service with authenticated client access, connection limits, and SIGINT/SIGTERM drain. Requires `--monitor-disabled`; telemetry-enabled serving is not validated. |
 | `pgvnadmin` | Schema initialization/migration/checks, role grants, repositories, policy publication, credentials, monitor tokens, dump/load/verify/look, and maintenance hotcopy/verify/purge. |
+| Monitor data backend | POSIX sampler, production monitor data API, and process metrics; validated through an isolated backend probe. This does not provide an HTTP endpoint/UI or enable telemetry in `pgvnserve`. |
 | PgFS, credentials, and external Hooks | Native storage and OpenSSL credential components; versioned Hook configuration and POSIX Hook execution with timeout/cancellation and contained descendant cleanup. Full native-service + external-Hook integration remains unvalidated. |
-| Not yet delivered | Monitor HTTP/API, Apache/DAV modules, Linux packages/systemd/service-account deployment, backup/restore automation, and the full SVN CLI/SVNKit/HTTP/HTTPS protocol matrix. |
+| Not yet delivered | Monitor HTTP listener/endpoint and rendered web UI, Apache/DAV modules, Linux packages/systemd/service-account deployment, backup/restore automation, and the full SVN CLI/SVNKit/HTTP/HTTPS protocol matrix. |
 
 Linux `maintenance freeze` is explicitly rejected before database access or child execution. CLI stdin cancellation is supported, but an already-running synchronous SQL call is **not actively cancelled by a signal**; the lock-wait test exits at PostgreSQL's configured statement timeout. Creating monitor tokens does not enable a Linux monitoring endpoint.
+
+Linux monitoring CPU is normalized by online host CPUs, RSS is approximate, and private committed bytes are unavailable through this Linux implementation (not substituted with RSS or virtual size). Windows monitoring paths were not regression-tested; this component checkpoint does not enable telemetry in `pgvnserve` and keeps `complete_product: false`.
 
 ### Build and run Linux components
 
@@ -82,6 +85,15 @@ python3 scripts/pgvn/build.py --target linux --components admin \
 build/pgvn/linux/release-admin/bin/pgvnadmin --version
 build/pgvn/linux/release-admin/bin/pgvnserve --version
 ```
+
+The monitor data backend is a separate component-only build:
+
+```sh
+python3 scripts/pgvn/build.py --target linux --components monitor \
+  --configuration Release --linux-sdk build/pgvn/linux-sdk
+```
+
+It produces a static backend library and a test probe under `build/pgvn/linux/release-monitor/`; it does not build an HTTP host or render the web UI. For ASan/UBSan, use `--configuration Debug --sanitize`; monitor output is then under `build/pgvn/linux/debug-monitor-sanitized/`.
 
 Keep the output's `bin/` and matching `lib/` together. `--components serve` builds the service-only development component. For ASan/UBSan, use `--configuration Debug --sanitize`; admin output is then `build/pgvn/linux/debug-admin-sanitized/`.
 
@@ -97,15 +109,17 @@ This runs in the foreground, not as an installed systemd service. Keep passwords
 
 ### Linux validation status
 
-Recorded Release and ASan/UBSan runs each passed **24 native-service checks**, **38 administration checks**, and **26 POSIX Hook component checks** in their respective frozen builds; these are separate checkpoints, not a single full-product acceptance run. See the [service evidence](docs/pgvn/evidence/linux-native-serve.json), [admin evidence](docs/pgvn/evidence/linux-native-admin.json), and [Hook evidence](docs/pgvn/evidence/linux-hook-runtime-components.json).
+Recorded Release and ASan/UBSan runs each passed **24 native-service checks**, **38 administration checks**, **26 POSIX Hook component checks**, and **39 monitoring backend checks** in separate frozen builds; these are distinct component checkpoints, not a combined or full-product acceptance run. See the [service evidence](docs/pgvn/evidence/linux-native-serve.json), [admin evidence](docs/pgvn/evidence/linux-native-admin.json), [Hook evidence](docs/pgvn/evidence/linux-hook-runtime-components.json), and [monitor backend evidence](docs/pgvn/evidence/linux-monitor-backend.json).
 
-The service/admin suites use fixed PostgreSQL **18.6** in disposable containers with no published database ports. The builder/test environment was Ubuntu **24.04.5**, on an Ubuntu **22.04.5** outer host—not a clean Ubuntu 24.04 host deployment acceptance. With the verified SDK and local `pgvn-linux-builder:24.04` / `postgres:18.6` images prepared (if using the preparation guide's `pgvn-linux-builder:ubuntu24` tag, add `--builder-image pgvn-linux-builder:ubuntu24`):
+The service/admin/monitor suites use PostgreSQL **18.6** in disposable containers with no published database ports. The corrected monitor runs observed builder image `pgvn-linux-builder:24.04` and PostgreSQL image `postgres:18.6` via `docker image inspect`; the runner does not gate on fixed image digests. The builder/test environment was Ubuntu **24.04.5**, on an Ubuntu **22.04.5** outer host—not a clean Ubuntu 24.04 host deployment acceptance. Runner SDK paths may be absolute or repository-relative, but must resolve inside the repository mounted at `/repo`. `run_linux_monitor.py` accepts `--builder-image <tag>` to select another local builder image.
 
 ```sh
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Release
 python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
 python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Release
 python3 tests/pgvn/run_linux_serve.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
+python3 tests/pgvn/run_linux_monitor.py --sdk build/pgvn/linux-sdk --configuration Release
+python3 tests/pgvn/run_linux_monitor.py --sdk build/pgvn/linux-sdk --configuration Debug --sanitize
 ```
 
 Never use a deployment database for tests. Admin stdin rendezvous checks use test-only `SYS_PTRACE`; Hook containment tests need a separate cgroup setup, not a production privilege template. Reports retain `complete_product: false`; remaining work is tracked in the [Linux development plan](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md).
@@ -611,7 +625,7 @@ python -m unittest discover -s tests/pgvn -p test_build_metadata.py -v
 
 `--metadata-only` prepares the version header and source/migration inventories under `build/pgvn/metadata/linux/`; it does not build Linux server or module binaries. See the [execution checkpoint](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#p0-version-metadata) for package pairing, remaining Windows validation, and the implementation sequence.
 
-Linux now includes native `pgvnserve`, `pgvnadmin`, and POSIX external Hook execution; see [Linux support](#linux-support) for build/run commands and limits. Earlier [FS/SDK](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance), [credential](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials), and [Hook configuration](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config) checkpoints remain component-specific evidence. Current catalog schema 8 includes versioned logical Hook declarations and node-local mappings; historical packages retain their original schema and capabilities.
+Linux now includes native `pgvnserve`, `pgvnadmin`, POSIX external Hook execution, and a separately verified monitoring data backend; see [Linux support](#linux-support) for build/run commands and limits. Earlier [FS/SDK](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-fs-performance), [credential](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-credentials), [Hook configuration](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-hook-config), and [monitor backend](docs/plans/2026-10-17-pgvn-linux-bypass-performance.zh-CN.md#linux-monitor-backend) checkpoints remain component-specific evidence. Current catalog schema 8 includes versioned logical Hook declarations and node-local mappings; historical packages retain their original schema and capabilities.
 
 Run test gates via `scripts/pgvn` and `tests/pgvn`. Full M5 validation requires real-browser evidence, a configured JDK + SVNKit environment, and the dedicated test PostgreSQL cluster; see [Browser and test prerequisites](docs/pgvn/M4-monitor.zh-CN.md#验证与性能口径) and the [M5 development notes](docs/pgvn/M5-development.zh-CN.md). Because test gates provision isolated databases, register temporary services, and occasionally restart the **test** PostgreSQL cluster, never point test scripts at a deployment database. Legacy PgFS scripts and test outputs are retained as historical references only and do not represent current PgVN acceptance.
 
@@ -671,12 +685,13 @@ Recent validation records are summarized below. Each record applies strictly to 
 
 ## Documentation
 
-Both the English and Chinese READMEs cover the product overview, Linux development, Polarion GUI migration, and quick-start workflows. Most detailed engineering and operational guides are in Chinese; the Linux service and CLI guides are in English:
+Both the English and Chinese READMEs cover the product overview, Linux development, Polarion GUI migration, and quick-start workflows. Most detailed engineering and operational guides are in Chinese; the Linux service, CLI, and monitoring backend guides are in English:
 
 | Guide | Contents |
 | --- | --- |
 | [Linux native service](docs/pgvn/linux-native-serve.md) | Foreground SVN listener, configuration, signal drain, and isolated validation |
 | [Linux administration CLI](docs/pgvn/linux-native-admin.md) | Native build, database/credential setup, history commands, and cancellation limits |
+| [Linux monitoring backend](docs/pgvn/linux-monitor-backend.md) | Component build, isolated PostgreSQL validation, metric semantics, and scope limits |
 | [Windows deployment guide](deploy/windows/README.zh-CN.md) | Installation, database roles, Windows services, TLS, backup, restore, and upgrades |
 | [PgVN Manager GUI guide](tools/pgvn-manager/README.zh-CN.md) | Desktop GUI workflow, service management, maintenance actions, and restore boundaries |
 | [GUI validation & delivery record](docs/pgvn/manager-validation.zh-CN.md) | Combined runtime + GUI bundle details, checksums, and local integration evidence |
