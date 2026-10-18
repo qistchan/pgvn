@@ -1,0 +1,133 @@
+{
+  "format": 1,
+  "checkpoint": "Linux monitoring data backend",
+  "date": "2026-10-18",
+  "status": "PASS",
+  "complete_product": false,
+  "milestone_complete": false,
+  "host_os": "Ubuntu 22.04.5 LTS",
+  "builder_os": "Ubuntu 24.04.5 LTS",
+  "scope": "POSIX monitoring data backend, production data API, and isolated PostgreSQL acceptance probe; no HTTP listener or rendered UI",
+  "images": {
+    "pgvn-linux-builder:24.04": "sha256:44016326629a493a5c2ecd36b82cb05ed136565ec89437531c4a87b36c59efa7",
+    "postgres:18.6": "sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336"
+  },
+  "postgres_server_version_num": "180006",
+  "sdk_manifest_sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055",
+  "source_manifest_sha256": "a9c79620cfc58085e76708d1e5f25f20d8d7f48b59051d70d768ca70da0bcf85",
+  "build_identity": {
+    "git_commit": "7de723a6324749f632784cccce64a829773659d6",
+    "git_worktree_dirty": true,
+    "target_os": "linux",
+    "target_arch": "x86_64",
+    "migrations_sha256": "1cdf5d732a2bb8a84612d88901e9d6482ea46a9203ccb592bab217ebf44deeb2"
+  },
+  "runs": {
+    "release": {
+      "run_id": "linux-monitor-4e10b4e266e0",
+      "status": "PASS",
+      "configuration": "Release",
+      "checks": 23,
+      "sanitizers": [],
+      "sampler_sessions_after_stop": 0,
+      "sampler_session_release_wait_seconds": 0.369,
+      "evidence": [
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/report.json",
+          "sha256": "f6a359eab7fcdd5b7923aea64418b940e7695bd4341b1913861bfcb2bf31cfd3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/reproducibility.md",
+          "sha256": "9587d9ef1955eaf65b86ca501f8b80c40db059f8b2303cf041f008e2eef07a9b"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/process.json",
+          "sha256": "c80aad632516dc191d2a030408988901e12c3802761570f5bbdd3d888ff556bf"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/metrics.prom",
+          "sha256": "dcb85560c6f649c89be0011ec35fc8a471e56de57c24dc9c67ecbe29ad2c85cc"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/probe-output.txt",
+          "sha256": "cdde6295b090691e6a09f07ca52381f3097aa09a46d25c71291d1e783649eae0"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/postgres.log",
+          "sha256": "49415471449a0e3e54593e687d54f3c948d06f5fdf6fa53a2c1fedec4203940c"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/inputs/monitor/build-manifest.json",
+          "sha256": "e28bb2f6f1b3abb6695667ca6528611fc2a985b3a163388a0a31e468a53419e3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/inputs/monitor/build-inputs.json",
+          "sha256": "329893d5baedd730db9399b5faf16c3625a787e7bac45cef8a3574397ce307f8"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/inputs/monitor/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        }
+      ]
+    },
+    "debug_sanitized": {
+      "run_id": "linux-monitor-fa3241fe6d3b",
+      "status": "PASS",
+      "configuration": "Debug",
+      "checks": 23,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "sampler_sessions_after_stop": 0,
+      "sampler_session_release_wait_seconds": 0.385,
+      "evidence": [
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/report.json",
+          "sha256": "86f2c560cf577e957f6f6b5e1033dc0e1819cff5dc9837636dcab8dd1f19a556"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/reproducibility.md",
+          "sha256": "c1d614d40b57b3b81e5e5b4abdcb12905aa13a5b9f576f8cf4e80d819d909492"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/process.json",
+          "sha256": "8db7a9c126113fab8fba74cbe5eb30cb39c762a209da145e5b47b0c7b4c37aa6"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/metrics.prom",
+          "sha256": "626acd486f7c8947304c648de66e9da6c2256cab4400487571166aa185e2a79f"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/probe-output.txt",
+          "sha256": "6bb3a29b5f5bc0488b673562184e0d73832abf6670f77e31f0a6d9bfa7b0a5e3"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/postgres.log",
+          "sha256": "1551b0784ad372ad1b9ad2d72b5490542de2662c2e2801d9941c343a9118d911"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/inputs/monitor/build-manifest.json",
+          "sha256": "a23bdff473cfeae4bbb918be8087aa7983be932a6f252c1104993d1f7d5e9638"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/inputs/monitor/build-inputs.json",
+          "sha256": "50f23fafa3922c655f227cec06b52b81b9a75c255172014c26e2fcce8667d989"
+        },
+        {
+          "path": "artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/inputs/monitor/sdk-manifest.json",
+          "sha256": "ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "The probe exercises the production monitoring data API, not an HTTP endpoint or rendered UI.",
+    "Business readiness in the probe is synthetic; telemetry-enabled pgvnserve integration remains unvalidated and real service runs must use --monitor-disabled.",
+    "CPU normalization uses online host CPUs, not cgroup quota.",
+    "Linux RSS is approximate; private committed bytes are unavailable and remain null/omitted.",
+    "Initial DNS resolution may block despite bounded connection polling after PQconnectStartParams begins.",
+    "Windows behavior was not regression-tested in this phase.",
+    "No shared or Supabase database was used; complete_product remains false."
+  ]
+}

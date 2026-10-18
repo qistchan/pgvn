@@ -18,6 +18,7 @@ from build_metadata import collect, sha256, write_metadata, check_runtime
 from prepare_upstream import prepare as prepare_upstream
 from prepare_protocol import prepare_protocol
 from embed_migrations import CATALOG, STORAGE, embed
+from embed_web import embed_web
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -182,6 +183,21 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
         run(["cc", *flags, ROOT / "tests/pgvn" / (probe_name + ".c"), ROOT / "src/pgvn/core/build_info.c",
              library, *libraries, *extras, "-o", probe])
         elf = probe
+    elif component == "monitor":
+        embed_web(ROOT,work/"generated")
+        objects=[]
+        for relative in ("monitor/data.c","core/telemetry.c","core/errors.c","platform/credentials_posix.c"):
+            source=ROOT/"src/pgvn"/relative
+            output=work/(source.stem+"-"+str(len(objects))+".o")
+            run(["cc",*flags,"-c",source,"-o",output])
+            objects.append(output)
+        library=work/"lib/libpgvn_monitor.a"
+        library.unlink(missing_ok=True)
+        run(["ar","rcs",library,*objects])
+        probe=work/"bin/linux_monitor_probe"
+        run(["cc",*flags,ROOT/"tests/pgvn/linux_monitor_probe.c",ROOT/"src/pgvn/core/build_info.c",
+             library,*libraries,"-lcrypto","-pthread","-o",probe])
+        elf=probe
     elif component in ("serve", "admin"):
         upstream_inputs=verify_subversion_inputs(svn,work)
         flags += ["-I",svn,"-I",ROOT/"src/pgvn/serve"]
@@ -262,6 +278,22 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
     if component=="admin":
         admin_runtime=json.loads(run([work/"bin/pgvnadmin","--version"]))
         check_runtime(admin_runtime,metadata["build_identity"])
+    if component=="monitor":
+        products=[{"name":"linux_monitor_probe","path":"bin/linux_monitor_probe","role":"test_probe"},
+                  {"name":"libpgvn_monitor.a","path":"lib/libpgvn_monitor.a","role":"monitor_data_backend"}]
+        monitor_inputs={
+            "sources":{relative:sha256(ROOT/"src/pgvn"/relative) for relative in
+                       ("monitor/data.c","core/telemetry.c","core/errors.c",
+                        "platform/credentials_posix.c")},
+            "probe_sha256":sha256(ROOT/"tests/pgvn/linux_monitor_probe.c"),
+            "build_info_sha256":sha256(ROOT/"src/pgvn/core/build_info.c"),
+            "web_header_sha256":sha256(work/"generated/pgvn_web.h"),
+            "assets":{name:sha256(ROOT/"web/pgvn-monitor"/name)
+                      for name in ("index.html","monitor.css","monitor.js")},
+            "migrations":{relative:sha256(ROOT/relative) for relative in
+                          ["sql/"+name for name in STORAGE]+
+                          ["sql/pgvn/"+name for name in CATALOG]},
+        }
     runtime = json.loads(run([probe, "--version"]))
     check_runtime(runtime, metadata["build_identity"])
     if run([work / "bin/svn", "--version", "--quiet"]).strip() != metadata["build_identity"]["svn_base"]:
@@ -291,6 +323,8 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
            if component=="serve" else
            "Native Linux administrative CLI and supporting foreground SVN listener using production protocol/core; monitoring, Apache/DAV and packages not built"
            if component=="admin" else
+           "Linux monitoring data backend and probe only; HTTP listener, web UI, telemetry-enabled service integration, Apache/DAV and packages not built"
+           if component=="monitor" else
            "Linux "+component+" development artifacts; remaining hosts/package not built")
     result = {"format": 1, "scope": scope,
               "build_identity": metadata["build_identity"], "sdk_manifest_sha256": sha256(manifest_path),
@@ -303,10 +337,21 @@ def build_component(sdk, configuration, component="fs", content_transfer="binary
               "compiler": run(["cc", "--version"]).splitlines()[0],
               "sdk_dependencies": copied,
               "elf_dynamic": run(["readelf", "-d", elf]), "callbacks": callbacks,
-              "products":products if component in ("serve","admin") else [],
+              "products":products if component in ("serve","admin","monitor") else [],
+              "complete_product":False,
+              "monitor_inputs":monitor_inputs if component=="monitor" else None,
               "admin_runtime":admin_runtime if component=="admin" else None,
               "admin_migrations":migration_inputs if component=="admin" else None,
               "upstream_inputs":upstream_inputs if component in ("serve","admin") else None,
+              "monitor_limitations":["No HTTP listener or server integration",
+                                     "Rendered web UI is not built or tested",
+                                     "CPU percentage uses online host CPU count, not cgroup quota",
+                                     "Linux RSS is approximate",
+                                     "Private committed bytes are unavailable on Linux",
+                                     "Initial DNS resolution may block",
+                                     "Windows regression was not run"]
+                                  if component=="monitor" else None,
+              "component_products":products if component=="monitor" else None,
               "files": {p.relative_to(work).as_posix(): sha256(p) for directory in ("bin", "lib")
                         for p in sorted((work / directory).iterdir()) if p.is_file()}}
     (work / "build-manifest.json").write_text(json.dumps(result, indent=2) + "\n")

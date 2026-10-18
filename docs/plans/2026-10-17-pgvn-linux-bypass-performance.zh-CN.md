@@ -649,3 +649,29 @@ python3 tests/pgvn/run_linux_admin.py --sdk build/pgvn/linux-sdk --configuration
 ### 16.3 剩余工作
 
 原生管理 CLI 的已测命令不再列为未移植，但 Linux freeze、安全备份恢复编排及主动 SQL 取消仍需后续工作。监控 HTTP/启用遥测、Apache/DAV、systemd/生产账号/cgroup 委派、部署包、完整协议矩阵和原生服务结合真实外部 Hook 的验收仍未完成。Windows W1/W2、M6/M7、PGVN-601/602 和既有严格差分 FAIL 状态不变；本轮未重跑未改动的 Hook/bypass 回归。继续保留 `complete_product: false`。
+
+<a id="linux-monitor-backend"></a>
+## 17. Linux 监控数据后端检查点（2026-10-18，组件验证）
+
+### 17.1 交付范围
+
+新增 `--components monitor`，将生产监控数据后端移植至 POSIX：采样器生命周期、数据库轮询、资源指标、就绪数据及 `pgvn_monitor_api`。构建产物为静态后端库与测试探针；构建过程生成 `pgvn_web.h` 供构建输入/摘要使用，但不构建 HTTP listener，也不渲染监控网页。Linux `pgvnserve` 遥测尚未启用或验收，实际服务必须继续显式使用 `--monitor-disabled`。探针中的业务就绪标志为合成输入，不代表真实 SVN 服务集成。
+
+构建与隔离验收步骤见 [Linux 监控后端指南](../pgvn/linux-monitor-backend.md)。本阶段不包含 HTTP/API endpoint、网页渲染、Apache/DAV、systemd、部署或完整 Linux 产品验收，`complete_product` 保持 `false`。
+
+### 17.2 实测与证据
+
+固定 PostgreSQL **18.6** 下，Release 与 Debug + ASan/UBSan **各 23 项检查通过**。测试使用 `pgvn-linux-builder:24.04` 和 `postgres:18.6` 固定镜像；数据库容器无公开端口并处于隔离网络，探针只加入该数据库的网络命名空间。构建/测试环境为 Ubuntu **24.04.5** 容器，外层 Ubuntu **22.04.5** 主机；SDK 清单 SHA-256 为 `ebefa9ab7454a3a2fb4a1cffcac42ff966787032c3c4f3f309d256e65d8b6055`。
+
+检查覆盖初始化与就绪/模拟业务就绪、tick 过期及恢复、生产 API 的有效与异常查询、受限 reader/writer 采样、令牌授权/撤销、数据库中断恢复、阻塞查询期间有界停止、停止后采样数据库会话释放、CPU/RSS 采样及 private-byte 缺失语义。Release 结束后剩余采样会话数为 0（轮询确认时间 **0.369 秒**）；Debug + ASan/UBSan 为 0（**0.385 秒**）。探针输出另保存了代表性的进程 JSON 与 Prometheus 指标。
+
+证据索引：[Linux 监控后端证据](../pgvn/evidence/linux-monitor-backend.json)。冻结的 Release 与 Debug 运行分别位于 `artifacts/pgvn/linux-monitor/linux-monitor-4e10b4e266e0/` 和 `artifacts/pgvn/linux-monitor/linux-monitor-fa3241fe6d3b/`；报告保留实际 dirty build identity，不重标为后续 clean 提交。
+
+### 17.3 平台与指标限制
+
+- CPU 时间来自 `CLOCK_PROCESS_CPUTIME_ID`，转换为 100 纳秒单位；CPU 百分比按 `_SC_NPROCESSORS_ONLN` 在线主机 CPU 数归一化，不按 cgroup quota 归一化。
+- RSS 由 `/proc/self/statm` 驻留页数乘 `_SC_PAGESIZE` 近似估算；Linux 无法提供私有已提交字节，JSON/series 值为 `null`，Prometheus 省略 `pgvn_process_private_bytes`，不以 RSS 或虚拟内存代替。
+- 连接异步轮询从 `PQconnectStartParams` 开始后采用单调时钟 3 秒期限，但初始 DNS 解析仍可能阻塞。单调时钟失败时会 fail closed。
+- 本阶段没有回归验证 Windows 路径，也没有测试启用遥测的 `pgvnserve`、HTTP listener/endpoint、网页、Apache、部署或生产运行。
+
+Linux 监控组件只证明数据后端范围内的行为，不代表 Linux 完整产品支持或性能结论。此前各节中的 Windows W1/W2、M6/M7、PGVN-601/602 和严格差分状态不变。
