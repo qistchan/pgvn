@@ -20,6 +20,77 @@ def script_source(body):
     return "#!/usr/bin/python3\n" + body
 
 
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def freeze_build_inputs(probe, manifest, output):
+    build_root = probe.parents[1]
+    expected_probe = (build_root / "bin/hook_runner_probe").resolve(strict=True)
+    if probe != expected_probe:
+        raise RuntimeError("probe must be the manifest's hook_runner_probe")
+    runtime_hashes = {}
+    for relative, expected in manifest["files"].items():
+        path = build_root / relative
+        resolved = path.resolve(strict=True)
+        if not resolved.is_file() or not resolved.is_relative_to(build_root.resolve()):
+            raise RuntimeError("manifest file is not a local regular file: " + relative)
+        actual = sha256(resolved)
+        if actual != expected:
+            raise RuntimeError("manifest hash mismatch for " + relative)
+        runtime_hashes[relative] = actual
+    if "bin/hook_runner_probe" not in runtime_hashes:
+        raise RuntimeError("build manifest does not record hook_runner_probe")
+
+    snapshot = output / "build-input-snapshot"
+    snapshot.mkdir()
+    shutil.copy2(build_root / "build-manifest.json", snapshot / "build-manifest.json")
+    generated = build_root / "generated"
+    build_inputs = json.loads((generated / "build-inputs.json").read_text(encoding="utf-8"))
+    if build_inputs["build_identity"] != manifest["build_identity"]:
+        raise RuntimeError("generated build identity differs from build manifest")
+    generated_snapshot = snapshot / "generated"
+    generated_snapshot.mkdir()
+    for name in ("build-inputs.json", "pgvn_build_info.h"):
+        source = generated / name
+        shutil.copy2(source, generated_snapshot / name)
+
+    source_snapshot = snapshot / "sources"
+    migration_snapshot = snapshot / "migrations"
+    for relative, expected in build_inputs["sources"].items():
+        source = ROOT / relative
+        if sha256(source) != expected:
+            raise RuntimeError("source changed before snapshot: " + relative)
+        destination = source_snapshot / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+    for namespace, files in build_inputs["migrations"].items():
+        for name, expected in files.items():
+            source = ROOT / ("sql/pgvn" if namespace == "pgvn" else "sql") / name
+            if sha256(source) != expected:
+                raise RuntimeError("migration changed before snapshot: " + namespace + "/" + name)
+            destination = migration_snapshot / namespace / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+
+    sdk_manifest = ROOT / "build/pgvn/linux-sdk/sdk-manifest.json"
+    if sha256(sdk_manifest) != manifest["sdk_manifest_sha256"]:
+        raise RuntimeError("SDK manifest hash differs from build manifest")
+    shutil.copy2(sdk_manifest, snapshot / "sdk-manifest.json")
+    return {
+        "directory": str(snapshot),
+        "manifest": str(snapshot / "build-manifest.json"),
+        "generated": str(generated_snapshot),
+        "source_count": len(build_inputs["sources"]),
+        "migration_count": sum(len(files) for files in build_inputs["migrations"].values()),
+        "runtime_file_count": len(runtime_hashes),
+        "sdk_manifest": str(snapshot / "sdk-manifest.json"),
+        "manifest_sha256": sha256(snapshot / "build-manifest.json"),
+        "probe_sha256": runtime_hashes["bin/hook_runner_probe"],
+        "runtime_files": runtime_hashes,
+    }
+
+
 def process_state(pid):
     try:
         contents = (Path("/proc") / str(pid) / "stat").read_text(encoding="ascii")
@@ -34,6 +105,8 @@ def main():
     parser.add_argument("--probe", type=Path, required=True)
     parser.add_argument("--cgroup-root", type=Path, required=True)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--case", dest="cases", action="append",
+                        help="run only this named case; may be repeated")
     args = parser.parse_args()
     probe = args.probe.resolve(strict=True)
     cgroup_root = args.cgroup_root.resolve(strict=True)
@@ -47,6 +120,8 @@ def main():
         "linux-hooks-" + time.strftime("%Y%m%d-%H%M%S", time.gmtime()))
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
+    build_snapshot = freeze_build_inputs(probe, manifest, output)
+    selected_cases = set(args.cases) if args.cases else None
     records = []
     failures = []
     checks = []
@@ -64,6 +139,8 @@ def main():
                  environment_overrides=None, relative_cgroup_root=False,
                  symlink_cgroup_root=False):
         nonlocal records
+        if selected_cases is not None and name not in selected_cases:
+            return
         with tempfile.TemporaryDirectory(prefix="pgvn-hook-case-") as temporary:
             work = Path(temporary)
             hook_root = work / "hooks"
@@ -105,19 +182,33 @@ def main():
             case_environment = environment.copy()
             if environment_overrides:
                 case_environment.update(environment_overrides)
-            result = subprocess.run(command,
-                                    env=case_environment, capture_output=True, text=True, timeout=15)
-            record = {"name": name, "command": command, "returncode": result.returncode,
-                      "stdout": result.stdout, "stderr": result.stderr,
+            try:
+                result = subprocess.run(command,
+                                        env=case_environment, capture_output=True, text=True, timeout=15)
+                timed_out = False
+                result_stdout, result_stderr = result.stdout, result.stderr
+                returncode = result.returncode
+            except subprocess.TimeoutExpired as timeout_error:
+                timed_out = True
+                result_stdout = timeout_error.stdout or ""
+                result_stderr = timeout_error.stderr or ""
+                if isinstance(result_stdout, bytes):
+                    result_stdout = result_stdout.decode(errors="replace")
+                if isinstance(result_stderr, bytes):
+                    result_stderr = result_stderr.decode(errors="replace")
+                returncode = None
+            record = {"name": name, "command": command, "returncode": returncode,
+                      "stdout": result_stdout, "stderr": result_stderr,
+                      "timed_out": timed_out,
                       "elapsed_seconds": time.monotonic()-started,
                       "script_sha256": hashlib.sha256(hook.read_bytes()).hexdigest()
                       if hook.is_file() else None}
             records.append(record)
-            passed = (result.returncode == 0) == expected_pass
+            passed = not timed_out and (returncode == 0) == expected_pass
             if expected_message:
-                passed = passed and expected_message in result.stdout + result.stderr
+                passed = passed and expected_message in result_stdout + result_stderr
             if maximum_output is not None:
-                passed = passed and len(result.stdout)+len(result.stderr)<=maximum_output
+                passed = passed and len(result_stdout)+len(result_stderr)<=maximum_output
             if assert_not_run:
                 passed = passed and not touched.exists()
             if name in ("setsid-timeout", "setsid-cancellation", "success-kills-descendant"):
@@ -177,6 +268,14 @@ open(@TOUCHED@, "w").close()
     run_case("rejected-hook-output", "import sys\nsys.stdin.buffer.read()\nsys.stderr.write('提交被策略拒绝')\nsys.exit(3)\n",
              expected_pass=False, expected_message="提交被策略拒绝")
     run_case("output-flood-is-drained", "import sys\nsys.stdin.buffer.read()\nsys.stdout.buffer.write(b'x'*200000)\nsys.stderr.buffer.write(b'y'*200000)\n")
+    run_case("continuous-stdout-timeout",
+             "import sys\nwhile True:\n sys.stdout.buffer.write(b'x'*4096)\n sys.stdout.buffer.flush()\n",
+             timeout=1, expected_pass=False, expected_message="exceeded its timeout",
+             maximum_output=11000)
+    run_case("continuous-stderr-cancellation",
+             "import sys\nwhile True:\n sys.stderr.buffer.write(b'y'*4096)\n sys.stderr.buffer.flush()\n",
+             mode="cancel", timeout=10, expected_pass=False, expected_message="cancelled",
+             maximum_output=11000)
     run_case("rejection-output-is-bounded",
              "import sys\nsys.stdin.buffer.read()\nsys.stderr.buffer.write(b'x'*200000)\nsys.exit(3)\n",
              expected_pass=False, expected_message="with output:", maximum_output=11000)
@@ -211,6 +310,7 @@ open(@TOUCHED@, "w").close()
     run_case("symlink-cgroup-root-rejected", "open(@TOUCHED@, 'w').close()\n",
              expected_pass=False, expected_message="requires a writable cgroup v2",
              symlink_cgroup_root=True, assert_not_run=True)
+    run_case("early-child-exit", "import os\nos._exit(0)\n")
     run_case("oversized-argument-fails-closed", "open(@TOUCHED@, 'w').close()\n",
              mode="large-argument", expected_pass=False,
              expected_message="arguments exceed the UTF-8 resource limits", assert_not_run=True)
@@ -226,6 +326,8 @@ open(@TOUCHED@, "w").close()
     run_case("setsid-cancellation", "import os, time\npid=os.fork()\nif pid == 0:\n os.setsid()\n child=os.fork()\n if child: os._exit(0)\n open(@PIDFILE@,'w').write(str(os.getpid()))\n time.sleep(60)\n os._exit(0)\nos.waitpid(pid,0)\nwhile not os.path.exists(@PIDFILE@): time.sleep(.01)\ntime.sleep(60)\n",
              mode="cancel", timeout=10, expected_pass=False, expected_message="cancelled")
     run_case("success-kills-descendant", "import os, sys, time\npid=os.fork()\nif pid == 0:\n os.setsid()\n child=os.fork()\n if child: os._exit(0)\n open(@PIDFILE@,'w').write(str(os.getpid()))\n time.sleep(60)\n os._exit(0)\nos.waitpid(pid,0)\nwhile not os.path.exists(@PIDFILE@): time.sleep(.01)\nsys.exit(0)\n")
+    run_case("concurrent-hooks-preserve-unrelated-child",
+             "import os, sys, time\nsys.stdin.buffer.read()\npid=os.fork()\nif pid == 0:\n os.setsid()\n time.sleep(60)\n os._exit(0)\nos._exit(0)\n", mode="concurrent")
 
     try:
         os_release = platform.freedesktop_os_release()
@@ -239,6 +341,8 @@ open(@TOUCHED@, "w").close()
               "build_identity": manifest["build_identity"],
               "sdk_manifest_sha256": manifest["sdk_manifest_sha256"],
               "compiler": manifest["compiler"], "sanitizers": manifest["sanitizers"], "probe": str(probe),
+              "manifest": str(manifest_path), "build_snapshot": build_snapshot,
+              "case_filter": sorted(selected_cases) if selected_cases is not None else None,
               "cgroup_root": str(cgroup_root), "checks": checks, "runs": records,
               "failures": failures}
     report_path = output / "report.json"

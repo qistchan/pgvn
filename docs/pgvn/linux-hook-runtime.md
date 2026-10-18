@@ -38,7 +38,10 @@ versioned event JSON on standard input, and uses a deliberate environment
 allowlist. It reopens the configured hook root and executable without following
 symlinks, pins the executable file descriptor for execution, bounds retained
 output, and drains pipes nonblocking. On every outcome it kills the dispatch
-cgroup and requires it to become empty before returning. Missing or unusable
+cgroup and waits boundedly for it to become empty before returning. If a
+cgroup cannot become empty, including because a descendant is stuck in
+uninterruptible sleep, the executor returns a cleanup failure diagnosis rather
+than waiting indefinitely or claiming hook success. Missing or unusable
 containment is a dispatch error, not hook success.
 
 Cgroups here provide process-lifecycle containment for trusted,

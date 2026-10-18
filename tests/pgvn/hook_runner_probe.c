@@ -1,8 +1,10 @@
+#include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 #include <apr_general.h>
@@ -32,6 +34,24 @@ static int report_error(svn_error_t *error)
     fprintf(stderr,"FAIL: %s\n",svn_err_best_message(error,message,sizeof(message)));
     svn_error_clear(error);
     return 1;
+}
+
+typedef struct concurrent_worker {
+    const pgvn_policy *policy;
+    const pgvn_hook_context *event;
+    apr_pool_t *pool;
+    svn_error_t *error;
+} concurrent_worker;
+
+static void *run_concurrent_hook(void *baton)
+{
+    concurrent_worker *worker=baton;
+    if(apr_pool_create(&worker->pool,NULL)!=APR_SUCCESS) {
+        worker->error=NULL;
+        return NULL;
+    }
+    worker->error=pgvn_external_hook(worker->policy,worker->event,worker->pool);
+    return NULL;
 }
 
 int main(int argc,char **argv)
@@ -112,6 +132,82 @@ int main(int argc,char **argv)
     event.capabilities=capabilities;
     const char *token=NULL;
     if(!strcmp(argv[1],"token") || !strcmp(argv[1],"bad-token")) event.lock_token_result=&token;
+
+    if(!strcmp(argv[1],"concurrent")) {
+        int ready[2]={-1,-1};
+        pid_t unrelated=-1;
+        pthread_t threads[4];
+        concurrent_worker workers[4]={{0}};
+        int thread_count=0,thread_failure=0,joined=0,destroyed=0,unrelated_reaped=0;
+        if(pipe(ready)) {
+            perror("concurrent readiness pipe");
+            goto fail;
+        }
+        unrelated=fork();
+        if(unrelated<0) {
+            perror("concurrent unrelated child");
+            goto concurrent_fail;
+        }
+        if(!unrelated) {
+            close(ready[0]);
+            ssize_t written=write(ready[1],"1",1);
+            (void)written;
+            _exit(42);
+        }
+        close(ready[1]); ready[1]=-1;
+        char ready_byte;
+        ssize_t ready_size;
+        do ready_size=read(ready[0],&ready_byte,1); while(ready_size<0 && errno==EINTR);
+        close(ready[0]); ready[0]=-1;
+        if(ready_size!=1) {
+            fputs("FAIL: concurrent unrelated child readiness\n",stderr);
+            goto concurrent_fail;
+        }
+        for(int i=0;i<4;++i) {
+            workers[i].policy=&policy;
+            workers[i].event=&event;
+            if(pthread_create(&threads[i],NULL,run_concurrent_hook,&workers[i])) {
+                thread_failure=1;
+                break;
+            }
+            ++thread_count;
+        }
+        for(int i=0;i<thread_count;++i) pthread_join(threads[i],NULL);
+        joined=1;
+        for(int i=0;i<thread_count;++i) {
+            if(!workers[i].pool || workers[i].error) {
+                thread_failure=1;
+                if(workers[i].error) {
+                    char message[10000];
+                    fprintf(stderr,"FAIL: concurrent hook %d: %s\n",i,
+                        svn_err_best_message(workers[i].error,message,sizeof(message)));
+                    svn_error_clear(workers[i].error);
+                }
+            }
+            if(workers[i].pool) apr_pool_destroy(workers[i].pool);
+        }
+        destroyed=1;
+        int unrelated_status=0;
+        pid_t waited=waitpid(unrelated,&unrelated_status,0);
+        if(waited==unrelated) unrelated_reaped=1;
+        if(thread_failure || waited!=unrelated || !WIFEXITED(unrelated_status) ||
+            WEXITSTATUS(unrelated_status)!=42) {
+            fprintf(stderr,"FAIL: unrelated child status was not preserved (waited=%ld status=%d errno=%d)\n",
+                (long)waited,unrelated_status,errno);
+            goto concurrent_fail;
+        }
+        close(marker);
+        puts("PASS concurrent");
+        apr_pool_destroy(pool); apr_terminate();
+        return 0;
+concurrent_fail:
+        if(ready[0]>=0) close(ready[0]);
+        if(ready[1]>=0) close(ready[1]);
+        if(unrelated>0 && !unrelated_reaped) (void)waitpid(unrelated,NULL,0);
+        if(!joined) for(int i=0;i<thread_count;++i) pthread_join(threads[i],NULL);
+        if(!destroyed) for(int i=0;i<thread_count;++i) if(workers[i].pool) apr_pool_destroy(workers[i].pool);
+        goto fail;
+    }
 
     pgvn_cancel_state cancellation={0};
     if(!strcmp(argv[1],"cancel")) context.cancellation_event=&cancellation;

@@ -135,7 +135,7 @@ gcc -std=c17 -D_POSIX_C_SOURCE=200809L -pthread -O0 -g -Wall -Wextra -Werror -Wn
     -I "$PGVN_COMPONENT_WORK/upstream/svnserve" -I /src/src/libsvn_fs_pg \
     -I /src/vendor/subversion-1.14.5/subversion/include -I /usr/include/subversion-1 \
     $(pkg-config --cflags apr-1 apr-util-1 libpq) \
-    /src/tests/pgvn/bypass_probe.c /src/src/pgvn/core/policy.c /src/src/pgvn/core/policy_protocol.c /src/src/pgvn/core/hooks_config.c \
+    /src/tests/pgvn/bypass_probe.c /src/src/pgvn/core/policy.c /src/src/pgvn/core/policy_protocol.c /src/src/pgvn/core/hooks_config.c /src/src/pgvn/core/hooks_common.c \
     /src/src/pgvn/core/catalog.c /src/src/pgvn/core/context.c /src/src/pgvn/serve/protocol.c \
     -Wl,--gc-sections -lsvn_repos-1 -lsvn_subr-1 $(pkg-config --libs apr-1 apr-util-1 libpq) -o /tmp/bypass-probe
 node --check /src/web/pgvn-monitor/monitor.js

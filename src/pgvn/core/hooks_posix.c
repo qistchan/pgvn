@@ -25,6 +25,8 @@
 #include "private/svn_utf_private.h"
 
 #define HOOK_OUTPUT_LIMIT 8192
+#define HOOK_OUTPUT_DRAIN_BYTES (64u*1024u)
+#define HOOK_OUTPUT_DRAIN_READS 16u
 #define HOOK_ARGUMENT_LIMIT 16
 #define HOOK_ARGUMENT_BYTES 2048
 #define HOOK_EXEC_LIMIT (128u*1024u)
@@ -59,6 +61,7 @@ static svn_error_t *hook_message(const char *message)
 
 static int descriptor_above_stdio(int descriptor)
 {
+    if(descriptor<0) return -1;
     if(descriptor>=3) return descriptor;
     int replacement=fcntl(descriptor,F_DUPFD_CLOEXEC,3);
     int saved=errno;
@@ -382,8 +385,12 @@ static void launch_child(const int input[2],const int output[2],const int errors
 static int capture_output(hook_output *output)
 {
     char buffer[4096];
-    for(;;) {
-        ssize_t size=read(output->fd,buffer,sizeof(buffer));
+    size_t remaining=HOOK_OUTPUT_DRAIN_BYTES;
+    unsigned reads=0;
+    while(remaining && reads<HOOK_OUTPUT_DRAIN_READS) {
+        size_t requested=remaining<sizeof(buffer) ? remaining : sizeof(buffer);
+        ++reads;
+        ssize_t size=read(output->fd,buffer,requested);
         if(size>0) {
             size_t retain=(size_t)size;
             if(retain>HOOK_OUTPUT_LIMIT-output->size) {
@@ -392,12 +399,14 @@ static int capture_output(hook_output *output)
             }
             memcpy(output->data+output->size,buffer,retain);
             output->size+=retain;
+            remaining-=(size_t)size;
         } else if(!size) {
             close(output->fd); output->fd=-1; return 0;
-        } else if(errno==EINTR) continue;
+        } else if(errno==EINTR) return 0;
         else if(errno==EAGAIN || errno==EWOULDBLOCK) return 0;
         else { close(output->fd); output->fd=-1; return -1; }
     }
+    return 0;
 }
 
 static int read_exec_status(int *fd,int *child_error)
@@ -417,6 +426,17 @@ static void close_pipe(int descriptors[2])
     if(descriptors[0]>=0) close(descriptors[0]);
     if(descriptors[1]>=0) close(descriptors[1]);
     descriptors[0]=descriptors[1]=-1;
+}
+
+static void consume_generated_sigpipe(svn_boolean_t pipe_was_pending,
+    svn_boolean_t pipe_write_error,const sigset_t *blocked)
+{
+    sigset_t pending;
+    if(!pipe_was_pending && pipe_write_error && !sigpending(&pending) &&
+        sigismember(&pending,SIGPIPE)) {
+        struct timespec immediate={0,0};
+        (void)sigtimedwait(blocked,NULL,&immediate);
+    }
 }
 
 svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_context *event,apr_pool_t *pool)
@@ -508,6 +528,17 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
         failure="could not prepare process pipes";
         goto done;
     }
+    sigemptyset(&blocked); sigaddset(&blocked,SIGPIPE);
+    if(pthread_sigmask(SIG_BLOCK,&blocked,&old_mask)) {
+        failure="could not safely prepare hook input delivery";
+        goto done;
+    }
+    mask_blocked=TRUE;
+    if(sigpending(&pending)) {
+        failure="could not inspect pending hook input signals";
+        goto done;
+    }
+    pipe_was_pending=sigismember(&pending,SIGPIPE);
     stdout_output.fd=output_pipe[0]; output_pipe[0]=-1;
     stderr_output.fd=error_pipe[0]; error_pipe[0]=-1;
     child=fork();
@@ -533,22 +564,15 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
         error=hook_message("was cancelled during service shutdown");
         goto done;
     }
-    if(write_all(gate[1],"1",1)) { failure="could not release hook process"; goto done; }
+    if(write_all(gate[1],"1",1)) {
+        if(errno==EPIPE) pipe_write_error=TRUE;
+        failure="could not release hook process";
+        goto done;
+    }
     close(gate[1]); gate[1]=-1;
     if(clock_gettime(CLOCK_MONOTONIC,&start_time)) { failure="could not start hook deadline"; goto done; }
     uint64_t deadline=(uint64_t)start_time.tv_sec*1000+
         (uint64_t)start_time.tv_nsec/1000000+(uint64_t)handler->timeout_seconds*1000;
-    sigemptyset(&blocked); sigaddset(&blocked,SIGPIPE);
-    if(pthread_sigmask(SIG_BLOCK,&blocked,&old_mask)) {
-        failure="could not safely prepare hook input delivery";
-        goto done;
-    }
-    mask_blocked=TRUE;
-    if(sigpending(&pending)) {
-        failure="could not inspect pending hook input signals";
-        goto done;
-    }
-    pipe_was_pending=sigismember(&pending,SIGPIPE);
     for(;;) {
         struct pollfd descriptors[4];
         nfds_t count=0;
@@ -586,21 +610,23 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
             }
         }
         if(failure) break;
-        pid_t waited=waitpid(child,&status,WNOHANG);
-        if(waited==child) {
-            child_done=TRUE;
-            child=-1;
-            if(!killed) {
-                if(cgroup_kill(&group)) { failure="could not terminate hook descendants after process exit"; break; }
-                killed=TRUE;
+        if(!child_done && child>0) {
+            pid_t waited=waitpid(child,&status,WNOHANG);
+            if(waited==child) {
+                child_done=TRUE;
+                child=-1;
+                if(!killed) {
+                    if(cgroup_kill(&group)) { failure="could not terminate hook descendants after process exit"; break; }
+                    killed=TRUE;
+                }
+                if(input_pipe[1]>=0) {
+                    if(input_offset<input->len) pipe_write_error=TRUE;
+                    close(input_pipe[1]); input_pipe[1]=-1;
+                }
+            } else if(waited<0 && errno!=EINTR) {
+                failure="could not wait for hook process";
+                break;
             }
-            if(input_pipe[1]>=0) {
-                if(input_offset<input->len) pipe_write_error=TRUE;
-                close(input_pipe[1]); input_pipe[1]=-1;
-            }
-        } else if(waited<0 && errno!=EINTR) {
-            failure="could not wait for hook process";
-            break;
         }
         if(child_done && stdout_output.fd<0 && stderr_output.fd<0 && exec_complete) break;
         if(clock_gettime(CLOCK_MONOTONIC,&now)) { failure="could not check hook deadline"; break; }
@@ -613,11 +639,7 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
     }
 
     if(mask_blocked) {
-        if(pipe_was_pending==FALSE && pipe_write_error &&
-            !sigpending(&pending) && sigismember(&pending,SIGPIPE)) {
-            struct timespec immediate={0,0};
-            (void)sigtimedwait(&blocked,NULL,&immediate);
-        }
+        consume_generated_sigpipe(pipe_was_pending,pipe_write_error,&blocked);
         (void)pthread_sigmask(SIG_SETMASK,&old_mask,NULL);
         mask_blocked=FALSE;
     }
@@ -631,10 +653,7 @@ svn_error_t *pgvn_external_hook(const pgvn_policy *policy,const pgvn_hook_contex
 
 done:
     if(mask_blocked) {
-        if(!pipe_was_pending && pipe_write_error && !sigpending(&pending) && sigismember(&pending,SIGPIPE)) {
-            struct timespec immediate={0,0};
-            (void)sigtimedwait(&blocked,NULL,&immediate);
-        }
+        consume_generated_sigpipe(pipe_was_pending,pipe_write_error,&blocked);
         (void)pthread_sigmask(SIG_SETMASK,&old_mask,NULL);
     }
     close_pipe(input_pipe); close_pipe(output_pipe); close_pipe(error_pipe);
